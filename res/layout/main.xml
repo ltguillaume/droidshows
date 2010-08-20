@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   android:orientation="vertical"
+   android:layout_width="fill_parent"
+   android:layout_height="fill_parent"
+   >
+<TableLayout android:id="@+id/TableLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent" android:background="@drawable/headerbg">
+	<TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content" android:layout_width="fill_parent"><ImageView android:layout_width="wrap_content" android:src="@drawable/header_logo" android:layout_height="wrap_content" android:id="@+id/headerimage1">
+	</ImageView>
+
+</TableRow>
+	</TableLayout><ListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/android:list">
+
+</ListView><TextView android:id="@+id/android:empty" android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="4dip" android:text="@string/layout_main_no_items"/>
+	
+
+
+</LinearLayout>
