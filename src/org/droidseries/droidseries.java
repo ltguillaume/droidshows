@@ -3,6 +3,7 @@ package org.droidseries;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 //import java.util.Collections;
 //import java.util.Comparator;
 import java.util.List;
@@ -55,7 +56,8 @@ public class droidseries extends ListActivity {
 	/* Menus */
 	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
 	private static final int PREFERENCES_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
-	private static final int ABOUT_MENU_ITEM = PREFERENCES_MENU_ITEM + 1;
+	private static final int SORT_MENU_ITEM = PREFERENCES_MENU_ITEM + 1;
+	private static final int ABOUT_MENU_ITEM = SORT_MENU_ITEM + 1;
 	private static final int EXIT_MENU_ITEM = ABOUT_MENU_ITEM + 1;
 	private static final int UPDATEALL_MENU_ITEM = EXIT_MENU_ITEM + 1;
 	
@@ -81,6 +83,10 @@ public class droidseries extends ListActivity {
 	private TheTVDB theTVDB;
 	private Utils utils = new Utils();
 	private Update updateDS = new Update();
+	
+	private static final int SORT_BY_NAME = 0;
+	private static final int SORT_BY_LAST_UNSEEN = 1;
+	private static int sortOption = SORT_BY_NAME;
     
 	public static SQLiteStore db;
 	
@@ -153,6 +159,7 @@ public class droidseries extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
+        menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort)).setIcon(android.R.drawable.ic_menu_upload);
         menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update_all)).setIcon(android.R.drawable.ic_menu_upload);
         //menu.add(0, PREFERENCES_MENU_ITEM, 0, "Preferences").setIcon(android.R.drawable.ic_menu_preferences);
         menu.add(0, ABOUT_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_info_details);
@@ -167,6 +174,9 @@ public class droidseries extends ListActivity {
     	switch (item.getItemId()) {
     		case ADD_SERIE_MENU_ITEM:
     			onSearchRequested();
+    			break;
+    		case SORT_MENU_ITEM:
+    			toggleSort();
     			break;
     		case UPDATEALL_MENU_ITEM:
     			updateAllSeries();
@@ -191,6 +201,14 @@ public class droidseries extends ListActivity {
     			this.finish();
     	}
     	return super.onOptionsItemSelected(item);
+    }
+    
+    public void toggleSort() {
+    	sortOption--;
+    	if (sortOption < 0) {
+    		sortOption = SORT_BY_LAST_UNSEEN;
+    	}
+    	getUserSeries();
     }
 
 	/* context menu */
@@ -421,6 +439,7 @@ public class droidseries extends ListActivity {
 		}
 		
 		String nextEpisode = db.getNextEpisode(serieid, -1);
+		Date nextAir = db.getNextAir(serieid, -1);
 		
 		String query = "SELECT serieName, posterThumb FROM series WHERE id = '" + serieid + "'";
         Cursor c = db.Query(query);
@@ -438,7 +457,7 @@ public class droidseries extends ListActivity {
         int tmpSeasons = db.getSeasonCount(serieid);
        	Drawable d = Drawable.createFromPath(tmpPoster);
         
-       	TVShowItem tvsi = new TVShowItem(serieid, tmpPoster, d, tmpName, tmpSeasons, nextEpisode, unwatched, completelyWatched);
+       	TVShowItem tvsi = new TVShowItem(serieid, tmpPoster, d, tmpName, tmpSeasons, nextEpisode, nextAir, unwatched, completelyWatched);
        	return tvsi;
     }
     
@@ -451,8 +470,15 @@ public class droidseries extends ListActivity {
         };
         
         try {
-        	List<String> serieids = db.getSeries();
-        	
+        	List<String> serieids;
+        	if (SORT_BY_NAME == sortOption) {
+        		serieids = db.getSeriesByName();
+        	} else if (SORT_BY_LAST_UNSEEN == sortOption) {
+        		serieids = db.getSeriesByNextEpisode();
+        	} else {
+        		serieids = db.getSeries();
+        	}
+        	series.clear();
         	for(int i=0; i < serieids.size(); i++) {
         		TVShowItem tvsi = createTVShowItem(serieids.get(i));
 	            series.add(tvsi);
@@ -478,14 +504,18 @@ public class droidseries extends ListActivity {
 	            	else {
 	            		TVShowItem tmpTVSI = series_adapter.getItem(i);
 		            	int unwatched = db.getEPUnwatched(tmpTVSI.getSerieId());
-		            	tmpTVSI.setEpNotSeen(unwatched);
 		            	if(unwatched != tmpTVSI.getEpNotSeen()) {
 		            		if(unwatched == 0) {
 		            			tmpTVSI.setCompletelyWatched(true);
+		            		} else {
+		            			tmpTVSI.setCompletelyWatched(false);
 		            		}
+			            	tmpTVSI.setEpNotSeen(unwatched);
 		        		}
 		            	String nextEpisode = db.getNextEpisode(tmpTVSI.getSerieId(), -1);
+		            	Date nextAir = db.getNextAir(tmpTVSI.getSerieId(), -1);
 		            	tmpTVSI.setNextEpisode(nextEpisode);
+		            	tmpTVSI.setNextAir(nextAir);
 	            	}
 	            }
 	    	}
@@ -493,7 +523,23 @@ public class droidseries extends ListActivity {
 	        Comparator<TVShowItem> comperator = new Comparator<TVShowItem>() {
 	        	@Override
 	            public int compare(TVShowItem object1, TVShowItem object2) {
-	            	return object1.getName().compareToIgnoreCase(object2.getName());
+	        		if (SORT_BY_LAST_UNSEEN == sortOption) {
+	        			// note: nextAir can be null when there are no next episode
+	        			Date nextAir1 = object1.getNextAir();
+	        			Date nextAir2 = object2.getNextAir();
+	        			if (nextAir1 == null && nextAir2 == null) {
+	        				return object1.getName().compareToIgnoreCase(object2.getName());
+	        			}
+	        			if (nextAir1 == null) {
+	        				return 1;
+	        			}
+	        			if (nextAir2 == null) {
+	        				return -1;
+	        			}
+	        			return nextAir1.compareTo(nextAir2);
+	        		} else {
+	        			return object1.getName().compareToIgnoreCase(object2.getName());
+	        		}
 	            }
 	        };
 	        series_adapter.sort(comperator);

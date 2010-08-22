@@ -245,14 +245,41 @@ public class SQLiteStore extends SQLiteOpenHelper {
 		return episodes;
 	}
 	
-	public List<String> getSeries() {
+	private List<String> getSeries(String orderBy) {
 		List<String> series = new ArrayList<String>();
 		try {
-			Cursor cseries = Query("SELECT id FROM series ORDER BY serieName ASC");
+			Cursor cseries = Query("SELECT id FROM series ORDER BY " + orderBy + " ASC");
 			cseries.moveToFirst();
 			if (cseries != null && cseries.isFirst()) {
 				do {
 					series.add(cseries.getString(0));
+				} while ( cseries.moveToNext() );
+			}
+			
+			cseries.close();
+		} catch(SQLiteException e){
+			Log.e("DroidSeries", e.getMessage());
+		}
+		return series;
+	}
+	
+	public List<String> getSeries() {
+		return getSeriesByName();
+	}
+	
+	public List<String> getSeriesByName() {
+		return getSeries("serieName");
+	}
+	
+	public List<String> getSeriesByNextEpisode() {
+		List<String> series = new ArrayList<String>();
+		try {
+			Cursor cseries = Query("SELECT s.id, min(e.firstAired) AS nextAir FROM series AS s LEFT JOIN episodes AS e ON e.serieId = s.id WHERE e.seen = 0 AND seasonNumber <> 0 GROUP BY s.id ORDER BY nextAir ASC");
+			cseries.moveToFirst();
+			if (cseries != null && cseries.isFirst()) {
+				do {
+					series.add(cseries.getString(0));
+					Log.d("DroidSeries", "Adding serie [" + cseries.getString(0) + "] next air [" + cseries.getShort(1) + "]");
 				} while ( cseries.moveToNext() );
 			}
 			
@@ -338,6 +365,38 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			Log.e("DroidSeries", e.getMessage());
 		}
 		return unwatched;
+	}
+	
+	public Date getNextAir(String serieId, int snumber) {
+		Date na = null;
+		Cursor c = null;
+		try {
+			if(snumber == -1) {
+				c = Query("SELECT firstAired FROM episodes WHERE serieId='" + serieId + "' and seen=0 and seasonNumber <> 0 ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+			}
+			else {
+				c = Query("SELECT firstAired FROM episodes WHERE serieId='" + serieId + "' and seen=0 and seasonNumber=" + snumber + " ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+			}
+			
+			c.moveToFirst();
+			if (c != null && c.isFirst()) {
+				
+				int faCol = c.getColumnIndex("firstAired");
+				
+				if(!c.getString(faCol).equals("")) {
+    				try {
+    					SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
+    					na = SDF.parse(c.getString(faCol));
+					} catch (ParseException e) {
+						Log.e(MY_DEBUG_TAG, e.getMessage());
+					}
+				}
+			}
+			c.close();
+		} catch(SQLiteException e){
+			Log.e("DroidSeries", e.getMessage());
+		}
+		return na;
 	}
 	
 	public String getNextEpisode(String serieId, int snumber) {

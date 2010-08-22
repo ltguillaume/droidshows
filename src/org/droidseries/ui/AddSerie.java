@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.droidseries.R;
@@ -331,9 +332,10 @@ public class AddSerie extends ListActivity {
 
                 		int nseasons = droidseries.db.getSeasonCount(sToAdd.getId());
                 		String nextEpisode = droidseries.db.getNextEpisode(sToAdd.getId(), -1);
+                		Date nextAir= droidseries.db.getNextAir(sToAdd.getId(), -1);
                 		int unwatched = droidseries.db.getEPUnwatched(sToAdd.getId());
                 		Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
-    					TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, unwatched, false);
+    					TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatched, false);
     		            droidseries.series.add(tvsi);
     		            
     					runOnUiThread(droidseries.updateListView);

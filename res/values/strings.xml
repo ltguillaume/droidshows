@@ -90,5 +90,9 @@
 
 
 
-<string name="messages_title_updating_all_series">Updating all shows</string>
+<string name="menu_sort">Sort</string><string name="messages_title_updating_all_series">Updating all shows</string>
+
+
+
+
 </resources>

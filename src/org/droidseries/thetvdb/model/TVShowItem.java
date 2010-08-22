@@ -1,5 +1,7 @@
 package org.droidseries.thetvdb.model;
 
+import java.util.Date;
+
 import android.graphics.drawable.Drawable;
 
 public class TVShowItem {
@@ -9,16 +11,18 @@ public class TVShowItem {
 	private String name;
 	private int snumber;
 	private String nextEpisode;
+	private Date nextAir;
 	private boolean completelyWatched;
 	private int epNotSeen;
 	
-	public TVShowItem(String serieid, String icon, Drawable dicon, String name, int snumber, String nextEpisode, int epNotSeen, boolean completelyWatched) {
+	public TVShowItem(String serieid, String icon, Drawable dicon, String name, int snumber, String nextEpisode, Date nextAir, int epNotSeen, boolean completelyWatched) {
 		this.serieid = serieid;
 		this.icon = icon;
 		this.dicon = dicon;
 		this.name = name;
 		this.snumber = snumber;
 		this.nextEpisode = nextEpisode;
+		this.nextAir = nextAir;
 		this.epNotSeen = epNotSeen;
 		this.completelyWatched = completelyWatched;
 	}
@@ -49,6 +53,14 @@ public class TVShowItem {
 	
 	public void setSNumber(int snumber) {
 		this.snumber = snumber;
+	}
+	
+	public Date getNextAir() {
+		return this.nextAir;
+	}
+	
+	public void setNextAir(Date nextAir) {
+		this.nextAir = nextAir;
 	}
 	
 	public String getNextEpisode() {
