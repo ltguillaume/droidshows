@@ -90,6 +90,8 @@ public class droidseries extends ListActivity {
 	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
 	private static final int SORT_BY_LAST_UNSEEN = 1;
+	private static final int SORT_BY_NAME_ICON = android.R.drawable.ic_menu_sort_alphabetically;
+	private static final int SORT_BY_LAST_UNSEEN_ICON = android.R.drawable.ic_menu_agenda;
 	private static int sortOption = SORT_BY_NAME;
     
 	public static SQLiteStore db;
@@ -168,13 +170,24 @@ public class droidseries extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
-        menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort)).setIcon(android.R.drawable.ic_menu_upload);
+        menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort)).setIcon(SORT_BY_LAST_UNSEEN_ICON);
         menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update_all)).setIcon(android.R.drawable.ic_menu_upload);
         //menu.add(0, PREFERENCES_MENU_ITEM, 0, "Preferences").setIcon(android.R.drawable.ic_menu_preferences);
         menu.add(0, ABOUT_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_info_details);
         menu.add(0, EXIT_MENU_ITEM, 0, getString(R.string.menu_exit)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
         return super.onCreateOptionsMenu(menu);
     }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {       
+        if(sortOption == SORT_BY_LAST_UNSEEN) {
+             menu.findItem(SORT_MENU_ITEM).setIcon(SORT_BY_NAME_ICON);
+        } else { 
+             menu.findItem(SORT_MENU_ITEM).setIcon(SORT_BY_LAST_UNSEEN_ICON);
+        }
+
+        return super.onPrepareOptionsMenu(menu); 
+   }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
