@@ -274,12 +274,30 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	public List<String> getSeriesByNextEpisode() {
 		List<String> series = new ArrayList<String>();
 		try {
+			// Note: completely seen series won't be returned by this query
 			Cursor cseries = Query("SELECT s.id, min(e.firstAired) AS nextAir FROM series AS s LEFT JOIN episodes AS e ON e.serieId = s.id WHERE e.seen = 0 AND seasonNumber <> 0 GROUP BY s.id ORDER BY nextAir ASC");
 			cseries.moveToFirst();
 			if (cseries != null && cseries.isFirst()) {
 				do {
 					series.add(cseries.getString(0));
 					Log.d("DroidSeries", "Adding serie [" + cseries.getString(0) + "] next air [" + cseries.getShort(1) + "]");
+				} while ( cseries.moveToNext() );
+			}
+			
+			cseries.close();
+			// This completes the method by adding the completely seen series
+			StringBuilder sb = new StringBuilder();
+			for (String sid : series) {
+				sb.append("'").append(sid).append("',");
+			}
+			// remove the extra comma
+			sb.delete(sb.length() - 1, sb.length());
+			cseries = Query("SELECT s.id FROM series AS s WHERE s.id NOT IN (" + sb.toString() + ") ORDER BY serieName ASC");
+			cseries.moveToFirst();
+			if (cseries != null && cseries.isFirst()) {
+				do {
+					series.add(cseries.getString(0));
+					Log.d("DroidSeries", "Adding completely seen serie [" + cseries.getString(0) + "]");
 				} while ( cseries.moveToNext() );
 			}
 			
