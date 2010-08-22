@@ -418,17 +418,8 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	 */
 	
 	public void updateUnwatchedSeason(String serieId, int nseason) {
-		Cursor c = null;
 		try {
-			c = Query("SELECT episodeNumber FROM episodes WHERE serieId='" + serieId + "' AND seasonNumber=" + nseason);
-			c.moveToFirst();
-			int count = c.getCount();
-
-			for(int i = 0; i < count; i++) {
-				db.execSQL("UPDATE episodes SET seen=1 WHERE serieId='" + serieId + "' AND seasonNumber=" + nseason + " AND episodeNumber=" + c.getInt(0));
-				c.moveToNext();
-			}
-			c.close();
+			db.execSQL("UPDATE episodes SET seen=1 WHERE serieId='" + serieId + "' AND seasonNumber=" + nseason);
 		} catch(SQLiteException e){
 			Log.e("DroidSeries", e.getMessage());
 		}
