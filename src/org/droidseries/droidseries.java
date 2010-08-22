@@ -25,6 +25,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.drawable.Drawable;
@@ -83,12 +84,16 @@ public class droidseries extends ListActivity {
 	private TheTVDB theTVDB;
 	private Utils utils = new Utils();
 	private Update updateDS = new Update();
+
+	private static final String PREF_NAME = "DroidSeriedPref";
 	
+	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
 	private static final int SORT_BY_LAST_UNSEEN = 1;
 	private static int sortOption = SORT_BY_NAME;
     
 	public static SQLiteStore db;
+	private SharedPreferences sharedPrefs;
 	
     /** Called when the activity is first created. */
     @Override
@@ -117,6 +122,10 @@ public class droidseries extends ListActivity {
 	     		Log.e(TAG, "Unable to create database");
 	     	}
      	}
+     	
+     	// restore the preferences (for now just sort)
+     	sharedPrefs = getSharedPreferences(PREF_NAME, 0);
+        sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
         
      	series = new ArrayList<TVShowItem>();
         
@@ -546,6 +555,14 @@ public class droidseries extends ListActivity {
             series_adapter.notifyDataSetChanged();
         }
     };
+    
+    @Override
+	public void onPause() {
+    	super.onPause();
+    	SharedPreferences.Editor ed = sharedPrefs.edit();
+        ed.putInt(SORT_PREF_NAME, sortOption);
+        ed.commit();
+    }
     
     @Override
 	public void onDestroy() {
