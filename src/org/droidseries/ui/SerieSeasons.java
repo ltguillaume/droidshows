@@ -198,7 +198,7 @@ public class SerieSeasons extends ListActivity {
 	            }
 	            
 	            boolean completelyWatched = false;
-		        int epNotSeen = droidseries.db.getSeasonEPWatched(serieid, iseasons.get(i));
+		        int epNotSeen = droidseries.db.getSeasonEPUnwatched(serieid, iseasons.get(i));
 		        
 		        if(epNotSeen != -1) {
 			        if(epNotSeen == 0) {
@@ -239,7 +239,7 @@ public class SerieSeasons extends ListActivity {
         @Override
         public void run() {
         	for(int i = 0; i < seasons.size(); i++) {
-        		int epNotSeen = droidseries.db.getSeasonEPWatched(seasons.get(i).getSerieId(), seasons.get(i).getSNumber());
+        		int epNotSeen = droidseries.db.getSeasonEPUnwatched(seasons.get(i).getSerieId(), seasons.get(i).getSNumber());
         		if (seasons.get(i).getEpNotSeen() != epNotSeen) {
         			seasons.get(i).setEpNotSeen(epNotSeen);
         			if(epNotSeen != 0) {

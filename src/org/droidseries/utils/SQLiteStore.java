@@ -325,7 +325,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
 		return unwatched;
 	}
 	
-	public int getSeasonEPWatched(String serieId, int snumber) {
+	public int getSeasonEPUnwatched(String serieId, int snumber) {
 		int unwatched = 0;
 		try {
 			Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId + "' AND seasonNumber=" + snumber + " AND seen=0");
