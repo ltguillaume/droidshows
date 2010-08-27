@@ -30,9 +30,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
@@ -54,7 +52,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class droidseries extends ListActivity {
-	public static String VERSION = "0.1.4-3";
+	public static String VERSION = "0.1.4-4";
 	public static String CONTRIBUTORS = "Jeremy Wickersheimer";
 	
 	/* Menus */

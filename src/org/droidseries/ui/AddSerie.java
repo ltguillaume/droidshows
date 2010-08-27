@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.droidseries.R;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
