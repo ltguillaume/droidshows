@@ -177,7 +177,6 @@ public class SerieSeasons extends ListActivity {
         };
         
         try {
-        	Log.i(TAG, "!!! Reloading seasons!");
         	iseasons = new ArrayList<Integer>();
             Cursor cseasons = droidseries.db.Query("SELECT season FROM serie_seasons WHERE serieId = '" + serieid + "'");
             cseasons.moveToFirst();
@@ -262,6 +261,12 @@ public class SerieSeasons extends ListActivity {
         	seriesseasons_adapter.notifyDataSetChanged();
         }
     };
+    
+    @Override
+	protected void onSaveInstanceState(Bundle outState) {
+		m_ProgressDialog.dismiss();
+		super.onSaveInstanceState(outState);
+	}
 	
 	private class SeriesSeasonsAdapter extends ArrayAdapter<Season> {
 

@@ -30,7 +30,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
@@ -53,6 +55,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class droidseries extends ListActivity {
 	public static String VERSION = "0.1.4-3";
+	public static String CONTRIBUTORS = "Jeremy Wickersheimer";
 	
 	/* Menus */
 	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
@@ -73,19 +76,18 @@ public class droidseries extends ListActivity {
 	//private final String MY_DEBUG_TAG = getString(R.string.debug_tag);
 	private final static String TAG = "DroidSeries";
 	
-	private ProgressDialog m_ProgressDialog = null; 
+	private ProgressDialog m_ProgressDialog = null;
+	private static ProgressDialog updateAllSeriesPD = null;
 	private Runnable viewSeries;
 	
-	//public static List<String> series = null;
-	public static List<TVShowItem> series = null;
 	public static SeriesAdapter series_adapter;
-	//private Bitmap poster = null;
 	
-	private TheTVDB theTVDB;
+	private static TheTVDB theTVDB;
 	private Utils utils = new Utils();
 	private Update updateDS = new Update();
 
 	private static final String PREF_NAME = "DroidSeriedPref";
+	private SharedPreferences sharedPrefs;
 	
 	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
@@ -93,9 +95,20 @@ public class droidseries extends ListActivity {
 	private static final int SORT_BY_NAME_ICON = android.R.drawable.ic_menu_sort_alphabetically;
 	private static final int SORT_BY_LAST_UNSEEN_ICON = android.R.drawable.ic_menu_agenda;
 	private static int sortOption = SORT_BY_NAME;
-    
+	
+	public static Thread deleteTh = null;
+	private static boolean bDeleteTh = false;
+	public static Thread updateShowTh = null;
+	private static boolean bUpdateShowTh = false;
+	public static Thread updateAllShowsTh = null;
+	private static boolean bUpdateAllShowsTh = false;
+	
+	/*
+	 * public stuff that is needed somewhere else, not the best way to go.. but it's working
+	 */
 	public static SQLiteStore db;
-	private SharedPreferences sharedPrefs;
+	public static List<TVShowItem> series = null;
+	
 	
     /** Called when the activity is first created. */
     @Override
@@ -212,7 +225,7 @@ public class droidseries extends ListActivity {
     				m_AlertDlg.cancel();
     			}
     			m_AlertDlg = new AlertDialog.Builder(this)
-    			.setMessage(getString(R.string.menu_about_content).replace("\\n","\n").replace("${VERSION}", getVersion()))
+    			.setMessage(getString(R.string.menu_about_content).replace("\\n","\n").replace("${VERSION}", VERSION).replace("${CONTRIBUTORS}", CONTRIBUTORS))
     			.setTitle(getString(R.string.menu_about))
     			.setIcon(R.drawable.icon)
     			.setCancelable(true)
@@ -251,7 +264,7 @@ public class droidseries extends ListActivity {
 				return true;
 			case DELETE_CONTEXT:
 				//TODO: add a verification to be sure that the TV show was well eliminated 
-				
+				//TODO: fix the dialog progress / thread on screen rotation problem
 				final int spos = info.position;
 				final Runnable deleteserie = new Runnable(){
 		            @Override
@@ -262,7 +275,10 @@ public class droidseries extends ListActivity {
 						series.remove(series.get(spos));
 						runOnUiThread(updateListView);
 						
-						m_ProgressDialog.dismiss();
+						if (!bDeleteTh) {
+							m_ProgressDialog.dismiss();
+							bDeleteTh = false;
+						}
 						
 						Context context = getApplicationContext();
 						CharSequence text =  String.format(getString(R.string.messages_delete_sucessful),sname);
@@ -282,10 +298,10 @@ public class droidseries extends ListActivity {
 				alertDialog.setCancelable(false);
 				alertDialog.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
 				      public void onClick(DialogInterface dialog, int which) {
-				    	Thread thread =  new Thread(null, deleteserie, "MagentoBackground");
-					        thread.start();
-					        m_ProgressDialog = ProgressDialog.show(droidseries.this,    
-					              getString(R.string.messages_title_delete_serie), getString(R.string.messages_delete_serie), true);
+				    	deleteTh = new Thread(null, deleteserie, "MagentoBackground");
+				    	deleteTh.start();
+					    m_ProgressDialog = ProgressDialog.show(droidseries.this,    
+					           getString(R.string.messages_title_delete_serie), getString(R.string.messages_delete_serie), true);
 				        return;
 				    } });
 				alertDialog.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
@@ -365,6 +381,8 @@ public class droidseries extends ListActivity {
 		}
 	}
     
+	//TODO: fix the progress dialog crash on screen rotation
+	//thread keeps running and should be killed or the progress dialog shown after the rotation
     private void updateSerie(String serieId) {
     	final String id = serieId;
     	
@@ -382,13 +400,16 @@ public class droidseries extends ListActivity {
                 	else {
                 		//TODO: add a message here
                 	}
-                	m_ProgressDialog.dismiss();
+                	if(!bUpdateShowTh) {
+                		m_ProgressDialog.dismiss();
+                		bUpdateShowTh = false;
+                	}
                 	theTVDB = null;
                 }
     		};
     		
-    		Thread thread =  new Thread(null, updateserierun, "MagentoBackground");
-            thread.start();
+    		updateShowTh = new Thread(null, updateserierun, "MagentoBackground");
+    		updateShowTh.start();
             m_ProgressDialog = ProgressDialog.show(droidseries.this,    
                   getString(R.string.messages_title_updating_serie), getString(R.string.messages_update_serie), true);
     	}
@@ -401,6 +422,23 @@ public class droidseries extends ListActivity {
     	}
     }
     
+    //updateAllShowsTh
+    public synchronized void startUpdateAllShowsTh(){
+		if(updateAllShowsTh == null){
+			updateAllShowsTh = new Thread();
+			updateAllShowsTh.start();
+		}
+	}
+
+	public synchronized void stopUpdateAllShowsTh(){
+		if(updateAllShowsTh != null){
+			Thread moribund = updateAllShowsTh;
+			updateAllShowsTh = null;
+		    moribund.interrupt();
+		}
+	}
+	
+    //TODO: change the progress dialog type to show the current tv show update progress
     private void updateAllSeries() {
     	if (!utils.isNetworkAvailable(droidseries.this)) {
     		CharSequence text = getString(R.string.messages_no_internet);
@@ -410,21 +448,35 @@ public class droidseries extends ListActivity {
 			toast.show();
     	}
     	else {
+    		
+
     		final Runnable updateallseries = new Runnable(){
                 @Override
                 public void run() {
                 	theTVDB = new TheTVDB("8AC675886350B3C3");
                 	for(int i=0; i < series.size(); i++) {
+                		if(bUpdateAllShowsTh) {
+                			stopUpdateAllShowsTh();
+                			bUpdateAllShowsTh = false;
+                			return;
+                		}
                 		Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), "en");                                	
                 		db.updateSerie(sToUpdate);
+                		if(!bUpdateAllShowsTh) {
+                			updateAllSeriesPD.incrementProgressBy(1);
+                		}
                 	}
                 	
                 	runOnUiThread(droidseries.updateListView);
-                	m_ProgressDialog.dismiss();
+                	if (!bUpdateAllShowsTh) {
+                		updateAllSeriesPD.dismiss();
+                		bUpdateAllShowsTh = false;
+                	}
                 	theTVDB = null;
                 }
     		};
-    		
+            
+        	updateAllSeriesPD = new ProgressDialog(this);
     		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 			alertDialog.setTitle(getString(R.string.messages_title_update_all_series));
 			alertDialog.setMessage(getString(R.string.dialog_update_all_series));
@@ -432,11 +484,16 @@ public class droidseries extends ListActivity {
 			alertDialog.setCancelable(false);
 			alertDialog.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
 			      public void onClick(DialogInterface dialog, int which) {
-			    	  Thread thread =  new Thread(null, updateallseries, "MagentoBackground");
-			            thread.start();
-			            m_ProgressDialog = ProgressDialog.show(droidseries.this,    
-			                  getString(R.string.messages_title_updating_all_series), getString(R.string.messages_update_all_series), true);
-			        return;
+			    	  updateAllSeriesPD.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+				      updateAllSeriesPD.setTitle(getString(R.string.messages_title_updating_all_series));
+				      updateAllSeriesPD.setMessage(getString(R.string.messages_update_all_series));
+				      updateAllSeriesPD.setCancelable(false);
+				      updateAllSeriesPD.setMax(series.size());
+				      updateAllSeriesPD.setProgress(0);
+				      updateAllSeriesPD.show();
+			          updateAllShowsTh =  new Thread(null, updateallseries, "MagentoBackground");
+			    	  updateAllShowsTh.start();
+			          return;
 			    } });
 			alertDialog.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
 			      public void onClick(DialogInterface dialog, int which) {
@@ -445,10 +502,6 @@ public class droidseries extends ListActivity {
 			alertDialog.show();	
     	}
     }
-    
-    private String getVersion() {
-		return droidseries.VERSION;
-	}
     
     private static TVShowItem createTVShowItem(String serieid) {
     	String tmpName = "";
@@ -575,6 +628,24 @@ public class droidseries extends ListActivity {
     	SharedPreferences.Editor ed = sharedPrefs.edit();
         ed.putInt(SORT_PREF_NAME, sortOption);
         ed.commit();
+        
+        if(deleteTh != null) {
+			if(deleteTh.isAlive()) {
+				bDeleteTh = true;
+	        }
+		}
+        
+        if(updateShowTh != null) {
+			if(updateShowTh.isAlive()) {
+				bUpdateShowTh = true;
+	        }
+		}
+        
+        if(updateAllShowsTh != null) {
+			if(updateAllShowsTh.isAlive()) {
+				bUpdateAllShowsTh = true;
+	        }
+		}
     }
     
     @Override
@@ -596,6 +667,12 @@ public class droidseries extends ListActivity {
     public boolean onSearchRequested() {
         return super.onSearchRequested();
     }
+    
+    @Override
+	protected void onSaveInstanceState(Bundle outState) {
+		m_ProgressDialog.dismiss();
+		super.onSaveInstanceState(outState);
+	}
         	
     public class SeriesAdapter extends ArrayAdapter<TVShowItem> {
 

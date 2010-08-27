@@ -24,6 +24,8 @@
 \n
 \nCopyright (C) 2010 Carlos Limpinho, Paulo Cabido
 \n
+\nContributors: ${CONTRIBUTORS}
+\n
 \nThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
 \n
 \nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details (http://www.gnu.org/licenses).</string>
@@ -68,7 +70,7 @@
 <string name="messages_episodes">Episodes</string>
 <string name="messsages_view_ep_details">View episode details</string>
 <string name="messages_unknown">Unknown</string><string name="messages_overview">Overview</string>
-<string name="messages_no_next_episodes">All episodes have been watched</string><string name="messages_thetbdb_con_error">Error connecting to TheTVDB.com. Please try again.</string><string name="messages_show_exists">TV show %s already exists.</string><string name="messages_context_mark_seasonunseen">Mark all episodes as unseen</string><string name="messages_context_mark_asseenuptothis">Seasons up to here are seen</string><string name="episode_directors">Director(s):</string>
+<string name="messages_no_next_episodes">All episodes have been watched</string><string name="messages_thetvdb_con_error">Error connecting to TheTVDB.com. Please try again.</string><string name="messages_show_exists">TV show %s already exists.</string><string name="messages_context_mark_seasonunseen">Mark all episodes as unseen</string><string name="messages_context_mark_asseenuptothis">Seasons up to here are seen</string><string name="episode_directors">Director(s):</string>
 
 <string name="episode_writers">Writer(s):</string>
 <string name="episode_guest_stars">Guest stars:</string>

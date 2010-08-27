@@ -13,6 +13,8 @@ import java.util.List;
 
 import org.droidseries.R;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -63,8 +65,10 @@ public class AddSerie extends ListActivity {
 	private TheTVDB theTVDB;
 	
 	private SeriesSearchAdapter seriessearch_adapter;
-	private ProgressDialog m_ProgressDialog = null; 
-	private Runnable viewSeries;
+	
+	/* DIALOGS */
+	private final static int ID_DIALOG_SEARCHING = 1;
+	private final static int ID_DIALOG_ADD = 2;
 	
 	/* Option Menus */
 	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
@@ -76,6 +80,12 @@ public class AddSerie extends ListActivity {
 	
 	private Utils utils = new Utils();
 	
+	static String searchQuery = "";
+	//public static Thread threadAddShow = null;
+	private volatile Thread threadAddShow;
+	private static boolean bAddShowTh = false;
+	//private ProgressDialog m_ProgressDialog = null;
+	
 	@Override
 	  public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -84,7 +94,6 @@ public class AddSerie extends ListActivity {
 		
         setContentView(R.layout.add_serie);
         
-        
         List<Serie> search_series = new ArrayList<Serie>();
         
         this.seriessearch_adapter = new SeriesSearchAdapter(this, R.layout.row_search_series, search_series);
@@ -92,29 +101,13 @@ public class AddSerie extends ListActivity {
         
         Intent intent = getIntent();
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            final String searchQuery = intent.getStringExtra(SearchManager.QUERY);
+            searchQuery = intent.getStringExtra(SearchManager.QUERY);
             //setTitle("Search: " + searchQuery);
             TextView title = (TextView) findViewById(R.id.add_serie_title);
             title.setText("Search: " + searchQuery);
-           
-            viewSeries = new Runnable(){
-                @Override
-                public void run() {
-                	theTVDB = new TheTVDB("8AC675886350B3C3");
-                	if (theTVDB.getMirror() != null) {
-                		searchSeries(searchQuery);
-                	}
-                	else {
-                		//TODO: add a message here
-                	}
-                }
-            };
             
         	if (utils.isNetworkAvailable(AddSerie.this)) {
-        		Thread thread =  new Thread(null, viewSeries, "MagentoBackground");
-                thread.start();
-                m_ProgressDialog = ProgressDialog.show(AddSerie.this,    
-                      getString(R.string.messages_title_search_series), getString(R.string.messages_search_series), true);
+        		Search();
         	}
         	else {
         		CharSequence text = getString(R.string.messages_no_internet);
@@ -187,7 +180,7 @@ public class AddSerie extends ListActivity {
 	}
 	
 	
-	private Runnable returnRes = new Runnable() {
+	private Runnable reloadSearchSeries = new Runnable() {
         @Override
         public void run() {
         	seriessearch_adapter.clear();
@@ -196,7 +189,7 @@ public class AddSerie extends ListActivity {
                 for(int i=0;i<search_series.size();i++)
                 	seriessearch_adapter.add(search_series.get(i));
             }
-            m_ProgressDialog.dismiss();
+            removeDialogs();
             seriessearch_adapter.notifyDataSetChanged();
         }
     };
@@ -207,9 +200,10 @@ public class AddSerie extends ListActivity {
         	search_series = theTVDB.searchSeries(searchQuery , "en");
         	
         	if(search_series == null) {
-        		m_ProgressDialog.dismiss();
+        		//m_ProgressDialog.dismiss();
+        		dismissDialog(AddSerie.ID_DIALOG_SEARCHING);
         		
-        		CharSequence text = getText(R.string.messages_thetbdb_con_error);
+        		CharSequence text = getText(R.string.messages_thetvdb_con_error);
 				int duration = Toast.LENGTH_LONG;
 				
 				Looper.prepare();
@@ -218,13 +212,100 @@ public class AddSerie extends ListActivity {
 				Looper.loop();
         	}
         	else {
-                runOnUiThread(returnRes);	
+                runOnUiThread(reloadSearchSeries);	
         	}
           } catch (Exception e) { 
             Log.e(TAG, e.getMessage());
           }
     }
 	
+	/*
+	 * This methods handle the progress dialogs
+	 */
+	
+	@Override
+	protected Dialog onCreateDialog(int id) {
+		if(id == ID_DIALOG_SEARCHING){
+			ProgressDialog m_ProgressDialog = new ProgressDialog(this);
+			m_ProgressDialog.setMessage(getString(R.string.messages_search_series));
+			m_ProgressDialog.setIndeterminate(true);
+			m_ProgressDialog.setCancelable(true);
+			return m_ProgressDialog;
+		}
+		else if(id == ID_DIALOG_ADD) {
+			ProgressDialog m_ProgressDialog = new ProgressDialog(this);
+			m_ProgressDialog.setMessage(getString(R.string.messages_adding_serie));
+			m_ProgressDialog.setIndeterminate(true);
+			m_ProgressDialog.setCancelable(true);
+			return m_ProgressDialog;
+		}
+		return super.onCreateDialog(id);
+	}
+	
+	protected void removeDialogs() {
+		try {
+			dismissDialog(ID_DIALOG_SEARCHING);
+			removeDialog(ID_DIALOG_SEARCHING);
+		} catch (Exception e) {
+			//Log.d(TAG, "ID_DIALOG_SEARCHING - Remove Failed", e);
+		}
+		
+		try {
+			dismissDialog(ID_DIALOG_ADD);
+			removeDialog(ID_DIALOG_ADD);
+		} catch (Exception e) {
+			//Log.d(TAG, "ID_DIALOG_SEARCHING - Remove Failed", e);
+		}
+	}
+	
+	private void Search(){
+		showDialog(ID_DIALOG_SEARCHING);
+		new Thread(new Runnable(){
+			public void run(){
+				theTVDB = new TheTVDB("8AC675886350B3C3");
+            	if (theTVDB.getMirror() != null) {
+            		searchSeries(searchQuery);
+            	}
+            	else {
+            		Log.e(TAG, "Error searching for TV shows");
+            	}
+			}
+		}).start();
+	}
+	
+	public synchronized void startAddShowTh(){
+		if(threadAddShow == null){
+			threadAddShow = new Thread();
+			threadAddShow.start();
+		}
+	}
+
+	public synchronized void stopAddShowTh(){
+		if(threadAddShow != null){
+			Thread moribund = threadAddShow;
+		    threadAddShow = null;
+		    moribund.interrupt();
+		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		removeDialogs();
+		super.onSaveInstanceState(outState);
+	}
+
+	@Override
+	protected void onPause(){
+		if(threadAddShow != null) {
+			if(threadAddShow.isAlive()) {
+				//threadAddShow.stop(null);
+				Log.i(TAG, "!!! thread is running!");
+				bAddShowTh = true;
+	        }
+		}
+		super.onPause();
+	}
+
 	private void addSerie(final Serie s) {
 		Runnable addnewserie = new Runnable(){
             @Override
@@ -232,9 +313,10 @@ public class AddSerie extends ListActivity {
             	// gathers the TV show and all of its data
             	Serie sToAdd = theTVDB.getSerie(s.getId(), "en");
             	if (sToAdd == null) {
-            		m_ProgressDialog.dismiss();
+            		//m_ProgressDialog.dismiss();
+            		dismissDialog(AddSerie.ID_DIALOG_ADD);
             		
-            		CharSequence text = getText(R.string.messages_thetbdb_con_error);
+            		CharSequence text = getText(R.string.messages_thetvdb_con_error);
 					int duration = Toast.LENGTH_LONG;
 					
 					Looper.prepare();
@@ -246,6 +328,11 @@ public class AddSerie extends ListActivity {
             		//get the poster and save it in cache
                 	URL imageUrl;
     				try {
+    					if(bAddShowTh) {
+    						stopAddShowTh();
+    						bAddShowTh = false;
+    				        return;
+    					}
     					imageUrl = new URL( sToAdd.getPoster() );
     					URLConnection uc = imageUrl.openConnection();
     	                String contentType = uc.getContentType();
@@ -257,6 +344,11 @@ public class AddSerie extends ListActivity {
     		                }
     	                }
     	                try {
+    	                	if(bAddShowTh) {
+        						stopAddShowTh();
+        						bAddShowTh = false;
+        				        return;
+        					}
     	                	File cacheImage = new File(getApplicationContext().getFilesDir().getAbsolutePath() + imageUrl.getFile().toString());
     	                	FileUtils.copyURLToFile(imageUrl, cacheImage);
     	                	
@@ -288,7 +380,12 @@ public class AddSerie extends ListActivity {
     	                 	
     	                	float scaleWidth = ((float) newWidth) / width;
     	                	float scaleHeight = ((float) newHeight) / height;
-
+    	                	
+    	                	if(bAddShowTh) {
+        						stopAddShowTh();
+        						bAddShowTh = false;
+        				        return;
+        					}
     	                	Matrix matrix = new Matrix();
     	                	matrix.postScale(scaleWidth, scaleHeight);
     	                	
@@ -328,6 +425,11 @@ public class AddSerie extends ListActivity {
                     
                 	boolean sucesso = false;
                 	try {
+                		if(bAddShowTh) {
+    						stopAddShowTh();
+    						bAddShowTh = false;
+    				        return;
+    					}
                 		sToAdd.saveToDB(droidseries.db);
 
                 		int nseasons = droidseries.db.getSeasonCount(sToAdd.getId());
@@ -340,15 +442,19 @@ public class AddSerie extends ListActivity {
     		            
     					runOnUiThread(droidseries.updateListView);
     					
-    					runOnUiThread(returnRes);
+    					runOnUiThread(reloadSearchSeries);
     					
     					sucesso = true;
                 	} catch (Exception e) {
                 		Log.e(TAG, "Error adding TV show");
                 	}
                 	
-    				m_ProgressDialog.dismiss();
-    				
+    				//m_ProgressDialog.dismiss();
+                	if(!bAddShowTh) {
+                		dismissDialog(AddSerie.ID_DIALOG_ADD);
+                		bAddShowTh = false;
+					}
+                	
     				if(sucesso) {
     					CharSequence text = String.format(getString(R.string.messages_series_success) ,sToAdd.getSerieName());
     					int duration = Toast.LENGTH_LONG;
@@ -371,12 +477,21 @@ public class AddSerie extends ListActivity {
         }
     	
     	if(!alreadyExists) {
-    		Thread thread =  new Thread(null, addnewserie, "MagentoBackground");
-	        thread.start();
-	        m_ProgressDialog = ProgressDialog.show(AddSerie.this,    
-	              getString(R.string.messages_title_adding_serie), getString(R.string.messages_adding_serie), true);
+    		showDialog(ID_DIALOG_ADD);
+    		threadAddShow =  new Thread(null, addnewserie, "MagentoBackground");
+    		threadAddShow.start();
     	}
 	}
+	
+	/*@Override
+	protected void onResume(){
+		if (threadAddShow != null) {
+			if (threadAddShow.isAlive()) {
+				showDialog(ID_DIALOG_ADD);
+			}
+		}
+		super.onResume();
+	}*/
 	
 	private class SeriesSearchAdapter extends ArrayAdapter<Serie> {
 

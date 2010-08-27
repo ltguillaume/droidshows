@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="org.droidseries" android:versionName="0.1.4-3" android:versionCode="4">
     <application android:icon="@drawable/icon" android:label="@string/layout_app_name">
-        <activity android:label="@string/layout_app_name" android:name=".droidseries">
+        <activity android:label="@string/layout_app_name" android:name=".droidseries" android:configChanges="orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -11,7 +11,7 @@
 						 android:value=".ui.AddSerie" />
 		</activity>
 
-    <activity android:name=".ui.AddSerie" >
+    <activity android:name=".ui.AddSerie" android:configChanges="orientation">
         <intent-filter>
             <action android:name="android.intent.action.SEARCH" />
             <category android:name="android.intent.category.DEFAULT" />
@@ -22,7 +22,7 @@
     
 	<activity android:name=".ui.SerieOverview"></activity>
 	
-	<activity android:name=".ui.SerieSeasons"></activity>
+	<activity android:name=".ui.SerieSeasons" android:configChanges="orientation"></activity>
 	
 	<activity android:name=".ui.SerieViewPoster"></activity>
 	

@@ -91,7 +91,7 @@ public class SerieOverview extends Activity {
 			            		m_ProgressDialog.dismiss();
 			            		
 			            		if(utils.isNetworkAvailable(SerieOverview.this)) {
-			            			text = getText(R.string.messages_thetbdb_con_error);
+			            			text = getText(R.string.messages_thetvdb_con_error);
 									duration = Toast.LENGTH_LONG;
 			            		} else {
 			            			text = getText(R.string.messages_no_internet);
