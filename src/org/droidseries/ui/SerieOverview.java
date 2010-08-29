@@ -60,7 +60,7 @@ public class SerieOverview extends Activity {
 		
 		try {
 			serieid = getIntent().getStringExtra("serieid");
-			setTitle(getIntent().getStringExtra("name") + " - " + R.string.messages_overview);
+			setTitle(getIntent().getStringExtra("name") + " - " + getString(R.string.messages_overview));
 			tv.setText(getIntent().getStringExtra("overview"));
 		} catch (Exception e) {
 			Log.e(TAG, "Error getting the intent extra value.");
