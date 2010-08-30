@@ -273,7 +273,17 @@ public class TheTVDB {
 	        		series.setLanguage(xmldata.get(i+1).trim());
 	        	}
 	        	else if ( xmldata.get(i).contentEquals("<SeriesName>") && !xmldata.get(i+1).contentEquals("</SeriesName>") ) {
-	        		series.setSerieName(xmldata.get(i+1).trim());
+	        		String tmpSName = xmldata.get(i+1).trim();
+	        		int count = 1;
+	        		
+	        		while(!xmldata.get(i+count).contentEquals("</SeriesName>")) {
+	        			count++;
+	        			if(!xmldata.get(i+count).contentEquals("</SeriesName>")) {
+	        				tmpSName += xmldata.get(i+count).trim();
+	        			}
+	        		}
+	        		
+	        		series.setSerieName(tmpSName);
 	        	}
 	        	else if ( xmldata.get(i).contentEquals("<banner>") && !xmldata.get(i+1).contentEquals("</banner>") ) {
 	        		String s = xmldata.get(i+1).trim();

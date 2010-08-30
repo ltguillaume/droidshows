@@ -169,6 +169,8 @@ public class SerieSeasons extends ListActivity {
 	}
 	
 	private void getSeasons(){
+		seasons = new ArrayList<Season>();
+		
 		Runnable updateList = new Runnable() {
             @Override
             public void run() {
@@ -187,6 +189,7 @@ public class SerieSeasons extends ListActivity {
             }
             cseasons.close();
             
+            runOnUiThread(updateList);
             for(int i=0; i < iseasons.size(); i++) {
 				String tmpSeason = "";
 	            if(iseasons.get(i) == 0) {
@@ -218,6 +221,12 @@ public class SerieSeasons extends ListActivity {
 		        Season season = new Season(serieid, iseasons.get(i), tmpSeason, epNotSeen, completelyWatched, tmpNextEpisode, visibility);
             	seasons.add(season);
             }
+            
+            //for(int a=0; a<seriesseasons_adapter.getCount(); a++) {
+            	//Log.i(TAG, "!!! ELEMENT: " + seriesseasons_adapter.getItemId(a) );
+            //}
+            
+            Log.i(TAG, "!!! ADAPTER SIZE: " + seriesseasons_adapter.getCount() );
           } catch (Exception e) { 
             Log.e(TAG, "Error getting seasons");
           }
@@ -225,6 +234,7 @@ public class SerieSeasons extends ListActivity {
           //this only updates the list after getting all the seasons
       	  runOnUiThread(updateList);
           m_ProgressDialog.dismiss();
+          
     }
 	
 	private Runnable returnRes = new Runnable() {
@@ -237,6 +247,8 @@ public class SerieSeasons extends ListActivity {
 	public static Runnable updateListView = new Runnable() {
         @Override
         public void run() {
+        	//seriesseasons_adapter.clear();
+        	seriesseasons_adapter.notifyDataSetChanged();
         	for(int i = 0; i < seasons.size(); i++) {
         		int epNotSeen = droidseries.db.getSeasonEPUnwatched(seasons.get(i).getSerieId(), seasons.get(i).getSNumber());
         		if (seasons.get(i).getEpNotSeen() != epNotSeen) {
@@ -257,6 +269,7 @@ public class SerieSeasons extends ListActivity {
      	            }
         			seriesseasons_adapter.notifyDataSetChanged();
         		}
+        		//seriesseasons_adapter.add(seasons.get(i));
         	}
         	seriesseasons_adapter.notifyDataSetChanged();
         }
