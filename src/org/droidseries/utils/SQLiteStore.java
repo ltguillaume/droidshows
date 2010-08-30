@@ -534,8 +534,10 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	public void updateSerie(Serie s) {
 		try {
 			String tmpSOverview = "";
-			if(!TextUtils.isEmpty(s.getOverview())) {
-				tmpSOverview = s.getOverview().replace("\"", "'");
+			if(s.getOverview() != null) {
+				if(!TextUtils.isEmpty(s.getOverview())) {
+					tmpSOverview = s.getOverview().replace("\"", "'");
+				}
 			}
 			
 			String tmpSName = "";
