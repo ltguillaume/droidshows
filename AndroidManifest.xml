@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.droidseries" android:versionName="0.1.4-3" android:versionCode="4">
+      package="org.droidseries" android:versionName="0.1.5" android:versionCode="5">
     <application android:icon="@drawable/icon" android:label="@string/layout_app_name">
         <activity android:label="@string/layout_app_name" android:name=".droidseries" android:configChanges="orientation">
             <intent-filter>
