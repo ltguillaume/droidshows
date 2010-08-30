@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -50,6 +51,8 @@ public class SerieSeasons extends ListActivity {
 	
 	public static SeriesSeasonsAdapter seriesseasons_adapter;
 	
+	final Handler mHandler = new Handler();
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,20 +64,27 @@ public class SerieSeasons extends ListActivity {
         
         seasons = new ArrayList<Season>();
         
-        //sets the progress dialog that shows when seasons are loading
+        /*//Thread thread =  new Thread(null, returnRes, "MagentoBackground");
+        Thread thread = new Thread() {
+            public void run() {
+                mHandler.post(returnRes);
+            }
+        };
+        thread.start();*/
+        mHandler.postDelayed(new Runnable() {
+            public void run() {
+            	getSeasons();
+            }
+        }, 1000);
+
+        
+      //sets the progress dialog that shows when seasons are loading
         m_ProgressDialog = new ProgressDialog(this);
         m_ProgressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         m_ProgressDialog.setMessage("Loading seasons...");
         m_ProgressDialog.setIndeterminate(true);        
         m_ProgressDialog.show();
-        
-        Thread thread =  new Thread(null, returnRes, "MagentoBackground");
-        thread.start();
-        
-        
-        seriesseasons_adapter = new SeriesSeasonsAdapter(this, R.layout.row_serie_seasons, seasons);       
-        setListAdapter(seriesseasons_adapter);
-        
+
         //context menu
         registerForContextMenu(getListView());
         
@@ -92,6 +102,9 @@ public class SerieSeasons extends ListActivity {
             	}
             }
         });
+        
+        seriesseasons_adapter = new SeriesSeasonsAdapter(this, R.layout.row_serie_seasons, seasons);       
+        setListAdapter(seriesseasons_adapter);
 	}
 	
 	/* context menu */
@@ -189,7 +202,8 @@ public class SerieSeasons extends ListActivity {
             }
             cseasons.close();
             
-            runOnUiThread(updateList);
+            //runOnUiThread(updateList);
+            seasons.clear();
             for(int i=0; i < iseasons.size(); i++) {
 				String tmpSeason = "";
 	            if(iseasons.get(i) == 0) {
@@ -223,27 +237,30 @@ public class SerieSeasons extends ListActivity {
             }
             
             //for(int a=0; a<seriesseasons_adapter.getCount(); a++) {
-            	//Log.i(TAG, "!!! ELEMENT: " + seriesseasons_adapter.getItemId(a) );
+            //	Log.i(TAG, "!!! ELEMENT: " + seriesseasons_adapter.getItem(a).getSeason() );
             //}
+            
             
             Log.i(TAG, "!!! ADAPTER SIZE: " + seriesseasons_adapter.getCount() );
           } catch (Exception e) { 
             Log.e(TAG, "Error getting seasons");
           }
-          
+          seriesseasons_adapter.clear();
+          for(int s=0; s<seasons.size(); s++) {
+          	seriesseasons_adapter.add(seasons.get(s));
+          }
           //this only updates the list after getting all the seasons
       	  runOnUiThread(updateList);
-          m_ProgressDialog.dismiss();
-          
+          m_ProgressDialog.dismiss();    
     }
 	
-	private Runnable returnRes = new Runnable() {
+	/*private Runnable returnRes = new Runnable() {
         @Override
         public void run() {
         	getSeasons();
         }
-    };
-	
+    };*/
+    
 	public static Runnable updateListView = new Runnable() {
         @Override
         public void run() {
