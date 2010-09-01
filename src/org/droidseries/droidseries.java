@@ -364,7 +364,7 @@ public class droidseries extends ListActivity {
 		    		cactors.moveToFirst();
 		    		if(cactors != null && cactors.isFirst()) {
 		    			do {
-		    				genres.add(cactors.getString(0));
+		    				actors.add(cactors.getString(0));
 		    			} while ( cactors.moveToNext() );
 		    		}
 		    		cactors.close();
