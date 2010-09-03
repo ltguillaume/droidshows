@@ -14,9 +14,9 @@ public class Serie {
     private String id;
     private String serieId;
     private String language;
-    private String serieName;
+    private String serieName = "";
     private String banner;
-    private String overview;
+    private String overview = "";
     private String firstAired;
     private String imdbId;
     private String zap2ItId;

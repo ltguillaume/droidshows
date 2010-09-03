@@ -518,13 +518,17 @@ public class AddSerie extends ListActivity {
                     
                 if (ctv != null) {
                 	boolean alreadyExists = false;
-        	        for(int i=0; i < droidseries.series.size(); i++) {
-        	        	if( droidseries.series.get(i).getSerieId().equals( o.getId()) ) {
-        	            	alreadyExists = true;
-        	            	break;
-        	            }
-        	        }  
-        	            
+                	try {
+	        	        for(int i=0; i < droidseries.series.size(); i++) {
+	        	        	if( droidseries.series.get(i).getSerieId().equals( o.getId()) ) {
+	        	            	alreadyExists = true;
+	        	            	break;
+	        	            }
+	        	        }  
+                	} catch (Exception e) {
+                		//do nothing
+                	}
+                	
                     if(alreadyExists) {
                     	ctv.setCheckMarkDrawable(getResources().getDrawable(R.drawable.check_mark));
                     	//ctv.setVisibility(View.GONE);

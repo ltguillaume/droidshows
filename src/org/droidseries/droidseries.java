@@ -52,8 +52,8 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class droidseries extends ListActivity {
-	public static String VERSION = "0.1.5-1";
-	public static String CONTRIBUTORS = "Jeremy Wickersheimer";
+	public static String VERSION = "0.1.5-2";
+	public static String CONTRIBUTORS = "Jeremy Wickersheimer, Russell Schmidt";
 	
 	/* Menus */
 	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
