@@ -93,7 +93,7 @@ public class SerieEpisodes extends ListActivity {
 			case  VIEWEP_CONTEXT:
 				//TODO: check this
 				Intent viewEpisode = new Intent(SerieEpisodes.this, ViewEpisode.class);
-				String query = "SELECT episodeName, overview, rating " +
+				String query = "SELECT episodeName, overview, rating, firstAired " +
 				   			   "FROM episodes WHERE serieId='" + serieid + "' AND id = '" + episodes.get(info.position) + "'";
  
 				 Cursor c = droidseries.db.Query(query);
@@ -102,9 +102,11 @@ public class SerieEpisodes extends ListActivity {
 					 int enameCol = c.getColumnIndex("episodeName");
 	                 int overviewCol = c.getColumnIndex("overview");
 	                 int ratingCol = c.getColumnIndex("rating");
+	                 int airedCol = c.getColumnIndex("firstAired");
 					 viewEpisode.putExtra("episodename", c.getString(enameCol));
 					 viewEpisode.putExtra("episodeoverview", c.getString(overviewCol));
 					 viewEpisode.putExtra("episoderating", "Rating: " + c.getString(ratingCol));
+					 viewEpisode.putExtra("episodefirstaired", "Aired: " + c.getString(airedCol));
 					 c.close();
 					 
 					 List<String> guestStars = new ArrayList<String>();

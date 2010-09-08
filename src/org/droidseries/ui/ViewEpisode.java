@@ -49,6 +49,9 @@ public class ViewEpisode extends Activity {
 		
 		TextView episoderating = (TextView) findViewById(R.id.episoderating);
 		episoderating.setText(getIntent().getStringExtra("episoderating"));
+		
+		TextView episodefirstaired = (TextView) findViewById(R.id.firstaired);
+		episodefirstaired.setText(getIntent().getStringExtra("episodefirstaired"));
 	}
 	
 }
