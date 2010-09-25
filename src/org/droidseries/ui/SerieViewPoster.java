@@ -5,13 +5,13 @@ package org.droidseries.ui;
 //import java.io.FileNotFoundException;
 //import java.io.InputStream;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
 
-public class SerieViewPoster extends ListActivity {
+public class SerieViewPoster extends Activity {
 	
 	private final String MY_DEBUG_TAG = "DroidSeries";
 	
