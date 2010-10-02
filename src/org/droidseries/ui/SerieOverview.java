@@ -36,6 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 //import android.view.Window;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,7 @@ public class SerieOverview extends Activity {
 		super.onCreate(savedInstanceState);
 		
 		TextView tv = new TextView(this);
+		ScrollView sv = new ScrollView(this);
 		
 		try {
 			serieid = getIntent().getStringExtra("serieid");
@@ -67,7 +69,8 @@ public class SerieOverview extends Activity {
 			Log.e(TAG, "Error getting the intent extra value.");
 		}
 		
-	    setContentView(tv);
+		sv.addView(tv);
+	    setContentView(sv);
 	  }
 	
 	/* Options Menu */
