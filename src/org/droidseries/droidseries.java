@@ -31,6 +31,7 @@ import android.database.SQLException;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
@@ -53,7 +54,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class droidseries extends ListActivity {
 	public static String VERSION = "0.1.5-2";
-	public static String CONTRIBUTORS = "Jeremy Wickersheimer, Russell Schmidt";
+	public static String CONTRIBUTORS = "Jeremy Wickersheimer, Russell Schmidt, Walla";
 	
 	/* Menus */
 	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
@@ -388,6 +389,9 @@ public class droidseries extends ListActivity {
     		Runnable updateserierun = new Runnable(){
                 @Override
                 public void run() {
+                	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+                	wl.acquire();
                 	theTVDB = new TheTVDB("8AC675886350B3C3");
                 	if (theTVDB.getMirror() != null) {
                 		Serie sToUpdate = theTVDB.getSerie(id, "en");                                	
@@ -398,6 +402,8 @@ public class droidseries extends ListActivity {
                 	else {
                 		//TODO: add a message here
                 	}
+                	
+                	wl.release();
                 	if(!bUpdateShowTh) {
                 		m_ProgressDialog.dismiss();
                 		bUpdateShowTh = false;
@@ -446,11 +452,12 @@ public class droidseries extends ListActivity {
 			toast.show();
     	}
     	else {
-    		
-
     		final Runnable updateallseries = new Runnable(){
                 @Override
                 public void run() {
+                	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+                	wl.acquire();
                 	theTVDB = new TheTVDB("8AC675886350B3C3");
                 	for(int i=0; i < series.size(); i++) {
                 		if(bUpdateAllShowsTh) {
@@ -458,13 +465,20 @@ public class droidseries extends ListActivity {
                 			bUpdateAllShowsTh = false;
                 			return;
                 		}
-                		Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), "en");                                	
-                		db.updateSerie(sToUpdate);
+                		Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), "en");
+                		try {
+                			db.updateSerie(sToUpdate);
+                		}
+                		catch (Exception e) {
+                			wl.release();
+                		}
+                		
                 		if(!bUpdateAllShowsTh) {
                 			updateAllSeriesPD.incrementProgressBy(1);
                 		}
                 	}
                 	
+                	wl.release();
                 	runOnUiThread(droidseries.updateListView);
                 	if (!bUpdateAllShowsTh) {
                 		updateAllSeriesPD.dismiss();

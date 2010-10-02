@@ -28,6 +28,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -86,6 +87,9 @@ public class SerieOverview extends Activity {
 					Runnable addnewserie = new Runnable(){
 			            @Override
 			            public void run() {
+			            	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			            	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+			            	wl.acquire();
 			            	Serie sToAdd = theTVDB.getSerie(serieid, "en");
 			            	if (sToAdd == null) {
 			            		m_ProgressDialog.dismiss();
@@ -169,14 +173,17 @@ public class SerieOverview extends Activity {
 					                	
 					                    sToAdd.setPosterThumb(getApplicationContext().getFilesDir().getAbsolutePath() + "/thumbs" + imageUrl.getFile().toString());
 					                	sToAdd.setPosterInCache(getApplicationContext().getFilesDir().getAbsolutePath() + "/" + imageUrl.getFile().toString());
+					                	wl.release();
 					                } catch (Exception e) {
 					                	sToAdd.setPosterInCache("");
 					                	Log.e(TAG, "Error copying the poster to cache.");
+					                	wl.release();
 					                }
 								} catch (MalformedURLException e) {
 									//e.printStackTrace();
 								} catch (IOException e) {
 									//e.printStackTrace();
+									wl.release();
 								}
 				                
 								boolean sucesso = false;

@@ -531,26 +531,32 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	}
 	
 	//UPDATE table_name SET column1=value, column2=value2,... WHERE some_column=some_value
+	//TODO: fix a NullPointerException bug
 	public void updateSerie(Serie s) {
+		String tmpSOverview = "";
+		String tmpSName = "";
 		try {
-			String tmpSOverview = "";
 			if(s.getOverview() != null) {
 				if(!TextUtils.isEmpty(s.getOverview())) {
 					tmpSOverview = s.getOverview().replace("\"", "'");
 				}
 			}
 			
-			String tmpSName = "";
 			if(!TextUtils.isEmpty(s.getSerieName())) {
 				tmpSName = s.getSerieName().replace("\"", "'"); 
 			}
-			
+		} catch(SQLiteException e){
+			Log.e("DroidSeries", "Error updating TV show");
+			return;
+		}
+		
+		try {
 			db.execSQL("UPDATE series SET language='" + s.getLanguage() + "', serieName=\"" + tmpSName + "\", overview=\"" + tmpSOverview + "\", " +
 					   "firstAired='" + s.getFirstAired() + "', imdbId='" + s.getImdbId() + "', zap2ItId='" + s.getZap2ItId() + "', " +
 					   "airsDayOfWeek='" + s.getAirsDayOfWeek() + "', airsTime='" + s.getAirsTime() + "', contentRating='" + s.getContentRating() + "', " +
 					   "network='" + s.getNetwork() + "db', rating='" + s.getRating() + "', runtime='" + s.getRuntime() + "', " +
 					   "status='" + s.getStatus() + "', lastUpdated='" + s.getLastUpdated() + "' WHERE id='" + s.getId() + "'"); 
-			
+		
 			//seasons
 			db.execSQL("DELETE FROM serie_seasons WHERE serieId='" + s.getId() + "'");
 			for(int n=0; n < s.getNSeasons().size(); n++){
@@ -663,7 +669,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
 				c.close();
 			}
 		} catch(SQLiteException e){
-			Log.e("DroidSeries", e.getMessage());
+			Log.e("DroidSeries", "Error updating TV show");
 		}
 	}
 	

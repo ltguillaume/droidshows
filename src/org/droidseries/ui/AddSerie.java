@@ -25,6 +25,7 @@ import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -309,6 +310,9 @@ public class AddSerie extends ListActivity {
 		Runnable addnewserie = new Runnable(){
             @Override
             public void run() {
+            	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+            	wl.acquire();
             	// gathers the TV show and all of its data
             	Serie sToAdd = theTVDB.getSerie(s.getId(), "en");
             	if (sToAdd == null) {
@@ -412,13 +416,17 @@ public class AddSerie extends ListActivity {
     	                    
     	                    sToAdd.setPosterThumb(getApplicationContext().getFilesDir().getAbsolutePath() + "/thumbs" + imageUrl.getFile().toString());
     	                	sToAdd.setPosterInCache(getApplicationContext().getFilesDir().getAbsolutePath() + imageUrl.getFile().toString());
+    	                	wl.release();
     	                } catch (Exception e) {
     	                	sToAdd.setPosterInCache("");
     	                	Log.e(TAG, "Error copying the poster to cache.");
+    	                	wl.release();
     	                }
     				} catch (MalformedURLException e) {
     					//e.printStackTrace();
+    					wl.release();
     				} catch (IOException e) {
+    					wl.release();
     					//e.printStackTrace();
     				}
                     
