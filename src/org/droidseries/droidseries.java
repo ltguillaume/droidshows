@@ -453,10 +453,9 @@ public class droidseries extends ListActivity {
     	}
     	else {
     		final Runnable updateallseries = new Runnable(){
-                @Override
                 public void run() {
                 	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+                	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, TAG);
                 	wl.acquire();
                 	theTVDB = new TheTVDB("8AC675886350B3C3");
                 	for(int i=0; i < series.size(); i++) {
@@ -465,7 +464,9 @@ public class droidseries extends ListActivity {
                 			bUpdateAllShowsTh = false;
                 			return;
                 		}
+                		Log.d(TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName());
                 		Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), "en");
+                		Log.d(TAG, "Updating the database...");
                 		try {
                 			db.updateSerie(sToUpdate);
                 		}

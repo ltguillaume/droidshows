@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -67,8 +68,9 @@ public class AddSerie extends ListActivity {
 	private SeriesSearchAdapter seriessearch_adapter;
 	
 	/* DIALOGS */
-	private final static int ID_DIALOG_SEARCHING = 1;
-	private final static int ID_DIALOG_ADD = 2;
+	private ProgressDialog m_ProgressDialog = null;
+	//private final static int ID_DIALOG_SEARCHING = 1;
+	//private final static int ID_DIALOG_ADD = 2;
 	
 	/* Option Menus */
 	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
@@ -181,7 +183,6 @@ public class AddSerie extends ListActivity {
 	
 	
 	private Runnable reloadSearchSeries = new Runnable() {
-        @Override
         public void run() {
         	seriessearch_adapter.clear();
             if(search_series != null && search_series.size() > 0){
@@ -189,7 +190,7 @@ public class AddSerie extends ListActivity {
                 for(int i=0;i<search_series.size();i++)
                 	seriessearch_adapter.add(search_series.get(i));
             }
-            removeDialogs();
+            m_ProgressDialog.dismiss();
             seriessearch_adapter.notifyDataSetChanged();
         }
     };
@@ -200,8 +201,8 @@ public class AddSerie extends ListActivity {
         	search_series = theTVDB.searchSeries(searchQuery , "en");
         	
         	if(search_series == null) {
-        		//m_ProgressDialog.dismiss();
-        		dismissDialog(AddSerie.ID_DIALOG_SEARCHING);
+        		//dismissDialog(AddSerie.ID_DIALOG_SEARCHING);
+        		m_ProgressDialog.dismiss();
         		
         		CharSequence text = getText(R.string.messages_thetvdb_con_error);
 				int duration = Toast.LENGTH_LONG;
@@ -223,7 +224,7 @@ public class AddSerie extends ListActivity {
 	 * This methods handle the progress dialogs
 	 */
 	
-	@Override
+	/*@Override
 	protected Dialog onCreateDialog(int id) {
 		if(id == ID_DIALOG_SEARCHING){
 			ProgressDialog m_ProgressDialog = new ProgressDialog(this);
@@ -256,10 +257,12 @@ public class AddSerie extends ListActivity {
 		} catch (Exception e) {
 			//Log.d(TAG, "ID_DIALOG_SEARCHING - Remove Failed", e);
 		}
-	}
+	}*/
 	
 	private void Search(){
-		showDialog(ID_DIALOG_SEARCHING);
+		//showDialog(ID_DIALOG_SEARCHING);
+		m_ProgressDialog = ProgressDialog.show(AddSerie.this,    
+                getString(R.string.messages_title_updating_serie), getString(R.string.messages_adding_serie), true);
 		new Thread(new Runnable(){
 			public void run(){
 				theTVDB = new TheTVDB("8AC675886350B3C3");
@@ -290,7 +293,7 @@ public class AddSerie extends ListActivity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		removeDialogs();
+		m_ProgressDialog.dismiss();
 		super.onSaveInstanceState(outState);
 	}
 
@@ -308,16 +311,16 @@ public class AddSerie extends ListActivity {
 
 	private void addSerie(final Serie s) {
 		Runnable addnewserie = new Runnable(){
-            @Override
             public void run() {
             	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
             	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
             	wl.acquire();
+            	
             	// gathers the TV show and all of its data
             	Serie sToAdd = theTVDB.getSerie(s.getId(), "en");
             	if (sToAdd == null) {
-            		//m_ProgressDialog.dismiss();
-            		dismissDialog(AddSerie.ID_DIALOG_ADD);
+            		m_ProgressDialog.dismiss();
+            		//dismissDialog(AddSerie.ID_DIALOG_ADD);
             		
             		CharSequence text = getText(R.string.messages_thetvdb_con_error);
 					int duration = Toast.LENGTH_LONG;
@@ -328,6 +331,7 @@ public class AddSerie extends ListActivity {
 					Looper.loop();
             	}
             	else {
+            		Log.d(TAG, "Adding TV show: getting the poster");
             		//get the poster and save it in cache
                 	URL imageUrl;
     				try {
@@ -389,6 +393,7 @@ public class AddSerie extends ListActivity {
         						bAddShowTh = false;
         				        return;
         					}
+    	                	Log.d(TAG, "Adding TV show: resizing the poster and creating the thumbnail");
     	                	Matrix matrix = new Matrix();
     	                	matrix.postScale(scaleWidth, scaleHeight);
     	                	
@@ -416,7 +421,6 @@ public class AddSerie extends ListActivity {
     	                    
     	                    sToAdd.setPosterThumb(getApplicationContext().getFilesDir().getAbsolutePath() + "/thumbs" + imageUrl.getFile().toString());
     	                	sToAdd.setPosterInCache(getApplicationContext().getFilesDir().getAbsolutePath() + imageUrl.getFile().toString());
-    	                	wl.release();
     	                } catch (Exception e) {
     	                	sToAdd.setPosterInCache("");
     	                	Log.e(TAG, "Error copying the poster to cache.");
@@ -426,8 +430,8 @@ public class AddSerie extends ListActivity {
     					//e.printStackTrace();
     					wl.release();
     				} catch (IOException e) {
-    					wl.release();
     					//e.printStackTrace();
+    					wl.release();
     				}
                     
                 	boolean sucesso = false;
@@ -437,8 +441,11 @@ public class AddSerie extends ListActivity {
     						bAddShowTh = false;
     				        return;
     					}
+                		
+                		Log.d(TAG, "Adding TV show: saving TV show to database");
                 		sToAdd.saveToDB(droidseries.db);
-
+                		
+                		Log.d(TAG, "Adding TV show: creating the TV show item");
                 		int nseasons = droidseries.db.getSeasonCount(sToAdd.getId());
                 		String nextEpisode = droidseries.db.getNextEpisode(sToAdd.getId(), -1);
                 		Date nextAir= droidseries.db.getNextAir(sToAdd.getId(), -1);
@@ -451,14 +458,16 @@ public class AddSerie extends ListActivity {
     					
     					runOnUiThread(reloadSearchSeries);
     					
-    					sucesso = true;
+    					sucesso = true;    					
                 	} catch (Exception e) {
                 		Log.e(TAG, "Error adding TV show");
+                		wl.release();
                 	}
                 	
     				//m_ProgressDialog.dismiss();
                 	if(!bAddShowTh) {
-                		dismissDialog(AddSerie.ID_DIALOG_ADD);
+                		//dismissDialog(AddSerie.ID_DIALOG_ADD);
+                		m_ProgressDialog.dismiss();
                 		bAddShowTh = false;
 					}
                 	
@@ -471,6 +480,7 @@ public class AddSerie extends ListActivity {
     					toast.show();
     					Looper.loop();
     				}
+    				wl.release();
             	}
             }	
         };
@@ -484,7 +494,9 @@ public class AddSerie extends ListActivity {
         }
     	
     	if(!alreadyExists) {
-    		showDialog(ID_DIALOG_ADD);
+    		//showDialog(ID_DIALOG_ADD);
+    		m_ProgressDialog = ProgressDialog.show(AddSerie.this,    
+                    getString(R.string.messages_title_updating_serie), getString(R.string.messages_adding_serie), true);
     		threadAddShow =  new Thread(null, addnewserie, "MagentoBackground");
     		threadAddShow.start();
     	}
@@ -526,17 +538,13 @@ public class AddSerie extends ListActivity {
                     
                 if (ctv != null) {
                 	boolean alreadyExists = false;
-                	try {
-	        	        for(int i=0; i < droidseries.series.size(); i++) {
-	        	        	if( droidseries.series.get(i).getSerieId().equals( o.getId()) ) {
-	        	            	alreadyExists = true;
-	        	            	break;
-	        	            }
-	        	        }  
-                	} catch (Exception e) {
-                		//do nothing
-                	}
-                	
+        	        for(int i=0; i < droidseries.series.size(); i++) {
+        	        	if( droidseries.series.get(i).getSerieId().equals( o.getId()) ) {
+        	            	alreadyExists = true;
+        	            	break;
+        	            }
+        	        }  
+        	            
                     if(alreadyExists) {
                     	ctv.setCheckMarkDrawable(getResources().getDrawable(R.drawable.check_mark));
                     	//ctv.setVisibility(View.GONE);
