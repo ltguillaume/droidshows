@@ -262,7 +262,7 @@ public class AddSerie extends ListActivity {
 	private void Search(){
 		//showDialog(ID_DIALOG_SEARCHING);
 		m_ProgressDialog = ProgressDialog.show(AddSerie.this,    
-                getString(R.string.messages_title_updating_serie), getString(R.string.messages_adding_serie), true);
+                getString(R.string.messages_title_search_series), getString(R.string.messages_search_series), true);
 		new Thread(new Runnable(){
 			public void run(){
 				theTVDB = new TheTVDB("8AC675886350B3C3");

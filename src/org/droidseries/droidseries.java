@@ -29,9 +29,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.PowerManager;
+//import android.os.PowerManager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
@@ -53,7 +54,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class droidseries extends ListActivity {
-	public static String VERSION = "0.1.5-2";
+	public static String VERSION = "0.1.5-3";
 	public static String CONTRIBUTORS = "Jeremy Wickersheimer, Russell Schmidt, Walla";
 	
 	/* Menus */
@@ -686,6 +687,39 @@ public class droidseries extends ListActivity {
 		m_ProgressDialog.dismiss();
 		super.onSaveInstanceState(outState);
 	}
+    
+    //TODO: create update tv show async task
+    private static class UpdateTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+    	
+    }
+    
+    //TODO: create update all tv shows async task
+    private static class UpdateAllTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+    }
+    
+  //TODO: create delete tv shows async task
+    private static class DeleteTask extends AsyncTask<Void, Void, Void> {
+
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+    }
         	
     public class SeriesAdapter extends ArrayAdapter<TVShowItem> {
 
