@@ -176,7 +176,6 @@ public class SerieOverview extends Activity {
 					                	
 					                    sToAdd.setPosterThumb(getApplicationContext().getFilesDir().getAbsolutePath() + "/thumbs" + imageUrl.getFile().toString());
 					                	sToAdd.setPosterInCache(getApplicationContext().getFilesDir().getAbsolutePath() + "/" + imageUrl.getFile().toString());
-					                	wl.release();
 					                } catch (Exception e) {
 					                	sToAdd.setPosterInCache("");
 					                	Log.e(TAG, "Error copying the poster to cache.");
@@ -206,6 +205,7 @@ public class SerieOverview extends Activity {
 									sucesso = true;
 				            	} catch (Exception e) {
 				            		//does nothings
+				            		wl.release();
 				            	}
 				            	
 								m_ProgressDialog.dismiss();
@@ -219,6 +219,7 @@ public class SerieOverview extends Activity {
 									toast.show();
 									Looper.loop();
 								}
+								wl.release();
 			            	}
 			            }
 			        };

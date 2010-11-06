@@ -531,7 +531,12 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	}
 	
 	//UPDATE table_name SET column1=value, column2=value2,... WHERE some_column=some_value
-	public void updateSerie(Serie s) {
+	public void updateSerie(Serie s, boolean last_season) {
+		if(s == null) {
+			Log.e("DroidSeries", "Error: Serie is null");
+			return;
+		}
+		
 		try {
 			String tmpSOverview = "";
 			if(s.getOverview() != null) {
@@ -544,6 +549,30 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			if(!TextUtils.isEmpty(s.getSerieName())) {
 				tmpSName = s.getSerieName().replace("\"", "'"); 
 			}
+			
+			//get the last season
+			Cursor cms = null;
+			int max_season = -1;
+			if(last_season) {
+				try {
+					cms = Query("SELECT season FROM serie_seasons WHERE serieID='" + s.getId() + "'");
+					cms.moveToFirst();
+					if (cms != null && cms.isFirst()) {
+						do {
+							if(max_season < cms.getInt(0)) {
+								max_season = cms.getInt(0);
+							}
+							//Log.d("DroidSeries", "SEASON: " + max_season);
+						} while ( cms.moveToNext() );
+						
+					}
+					cms.close();
+				} catch(SQLiteException e){
+					Log.e("DroidSeries", e.getMessage());
+				}
+			}
+			
+			Log.d("DroidSeries", "MAX SEASON: " + max_season);
 			
 			db.execSQL("UPDATE series SET language='" + s.getLanguage() + "', serieName=\"" + tmpSName + "\", overview=\"" + tmpSOverview + "\", " +
 					   "firstAired='" + s.getFirstAired() + "', imdbId='" + s.getImdbId() + "', zap2ItId='" + s.getZap2ItId() + "', " +
@@ -575,6 +604,11 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			//episodes
 			//TODO: implement threads for episode update. Must know when they finish. (?)
 			for(int e=0; e < s.getEpisodes().size(); e++) {
+				if(max_season != -1) {
+					if(s.getEpisodes().get(e).getSeasonNumber() < max_season) {
+						continue;
+					}
+				}
 				//ver se o episodios existe na base de dados
 				Cursor c = Query("SELECT id FROM episodes WHERE id='" + s.getEpisodes().get(e).getId()  + "' AND serieId='" + s.getId() + "'");
 				c.moveToFirst();

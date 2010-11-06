@@ -395,7 +395,7 @@ public class droidseries extends ListActivity {
                 	theTVDB = new TheTVDB("8AC675886350B3C3");
                 	if (theTVDB.getMirror() != null) {
                 		Serie sToUpdate = theTVDB.getSerie(id, "en");                                	
-                		db.updateSerie(sToUpdate);
+                		db.updateSerie(sToUpdate, false);
                 	
                 		runOnUiThread(droidseries.updateListView);
                 	}
@@ -468,7 +468,7 @@ public class droidseries extends ListActivity {
                 		Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), "en");
                 		Log.d(TAG, "Updating the database...");
                 		try {
-                			db.updateSerie(sToUpdate);
+                			db.updateSerie(sToUpdate, true);
                 		}
                 		catch (Exception e) {
                 			wl.release();
