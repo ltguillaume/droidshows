@@ -312,9 +312,9 @@ public class AddSerie extends ListActivity {
 	private void addSerie(final Serie s) {
 		Runnable addnewserie = new Runnable(){
             public void run() {
-            	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-            	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-            	wl.acquire();
+            	//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+            	//PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+            	//wl.acquire();
             	
             	// gathers the TV show and all of its data
             	Serie sToAdd = theTVDB.getSerie(s.getId(), "en");
@@ -424,14 +424,14 @@ public class AddSerie extends ListActivity {
     	                } catch (Exception e) {
     	                	sToAdd.setPosterInCache("");
     	                	Log.e(TAG, "Error copying the poster to cache.");
-    	                	wl.release();
+    	                	//wl.release();
     	                }
     				} catch (MalformedURLException e) {
     					//e.printStackTrace();
-    					wl.release();
+    					//wl.release();
     				} catch (IOException e) {
     					//e.printStackTrace();
-    					wl.release();
+    					//wl.release();
     				}
                     
                 	boolean sucesso = false;
@@ -461,7 +461,7 @@ public class AddSerie extends ListActivity {
     					sucesso = true;    					
                 	} catch (Exception e) {
                 		Log.e(TAG, "Error adding TV show");
-                		wl.release();
+                		//wl.release();
                 	}
                 	
     				//m_ProgressDialog.dismiss();
@@ -480,7 +480,7 @@ public class AddSerie extends ListActivity {
     					toast.show();
     					Looper.loop();
     				}
-    				wl.release();
+    				//wl.release();
             	}
             }	
         };

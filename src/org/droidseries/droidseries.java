@@ -389,9 +389,9 @@ public class droidseries extends ListActivity {
     		Runnable updateserierun = new Runnable(){
                 @Override
                 public void run() {
-                	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-                	wl.acquire();
+                	//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                	//PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+                	//wl.acquire();
                 	theTVDB = new TheTVDB("8AC675886350B3C3");
                 	if (theTVDB.getMirror() != null) {
                 		Serie sToUpdate = theTVDB.getSerie(id, "en");                                	
@@ -403,7 +403,7 @@ public class droidseries extends ListActivity {
                 		//TODO: add a message here
                 	}
                 	
-                	wl.release();
+                	//wl.release();
                 	if(!bUpdateShowTh) {
                 		m_ProgressDialog.dismiss();
                 		bUpdateShowTh = false;
@@ -454,9 +454,9 @@ public class droidseries extends ListActivity {
     	else {
     		final Runnable updateallseries = new Runnable(){
                 public void run() {
-                	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, TAG);
-                	wl.acquire();
+                	//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                	//PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, TAG);
+                	//wl.acquire();
                 	theTVDB = new TheTVDB("8AC675886350B3C3");
                 	for(int i=0; i < series.size(); i++) {
                 		if(bUpdateAllShowsTh) {
@@ -471,7 +471,7 @@ public class droidseries extends ListActivity {
                 			db.updateSerie(sToUpdate, true);
                 		}
                 		catch (Exception e) {
-                			wl.release();
+                			//wl.release();
                 		}
                 		
                 		if(!bUpdateAllShowsTh) {
@@ -479,7 +479,7 @@ public class droidseries extends ListActivity {
                 		}
                 	}
                 	
-                	wl.release();
+                	//wl.release();
                 	runOnUiThread(droidseries.updateListView);
                 	if (!bUpdateAllShowsTh) {
                 		updateAllSeriesPD.dismiss();

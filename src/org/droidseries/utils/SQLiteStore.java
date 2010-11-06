@@ -572,7 +572,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
 				}
 			}
 			
-			Log.d("DroidSeries", "MAX SEASON: " + max_season);
+			//Log.d("DroidSeries", "MAX SEASON: " + max_season);
 			
 			db.execSQL("UPDATE series SET language='" + s.getLanguage() + "', serieName=\"" + tmpSName + "\", overview=\"" + tmpSOverview + "\", " +
 					   "firstAired='" + s.getFirstAired() + "', imdbId='" + s.getImdbId() + "', zap2ItId='" + s.getZap2ItId() + "', " +

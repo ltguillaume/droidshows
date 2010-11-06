@@ -90,9 +90,9 @@ public class SerieOverview extends Activity {
 					Runnable addnewserie = new Runnable(){
 			            @Override
 			            public void run() {
-			            	PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-			            	PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-			            	wl.acquire();
+			            	//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+			            	//PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
+			            	//wl.acquire();
 			            	Serie sToAdd = theTVDB.getSerie(serieid, "en");
 			            	if (sToAdd == null) {
 			            		m_ProgressDialog.dismiss();
@@ -179,13 +179,13 @@ public class SerieOverview extends Activity {
 					                } catch (Exception e) {
 					                	sToAdd.setPosterInCache("");
 					                	Log.e(TAG, "Error copying the poster to cache.");
-					                	wl.release();
+					                	//wl.release();
 					                }
 								} catch (MalformedURLException e) {
 									//e.printStackTrace();
 								} catch (IOException e) {
 									//e.printStackTrace();
-									wl.release();
+									//wl.release();
 								}
 				                
 								boolean sucesso = false;
@@ -205,7 +205,7 @@ public class SerieOverview extends Activity {
 									sucesso = true;
 				            	} catch (Exception e) {
 				            		//does nothings
-				            		wl.release();
+				            		//wl.release();
 				            	}
 				            	
 								m_ProgressDialog.dismiss();
@@ -219,7 +219,7 @@ public class SerieOverview extends Activity {
 									toast.show();
 									Looper.loop();
 								}
-								wl.release();
+								//wl.release();
 			            	}
 			            }
 			        };
