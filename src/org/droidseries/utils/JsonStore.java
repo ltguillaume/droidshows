@@ -66,7 +66,7 @@ public class JsonStore {
 				jObj.put("episodes", createJSONSEpisode(series.get(i).getEpisodes()) );
 				//jObj.put("nseasons", series.get(i).getNSeasons() );
 				jObj.put("nseasons", ListToJSONArrayInt(series.get(i).getNSeasons()) );
-				jObj.put("unwatched", series.get(i).getUnwatched() );
+				//jObj.put("unwatched", series.get(i).getUnwatched() );
 				jObj.put("posterInCache", series.get(i).getPosterInCache() );
 				
 				jArray.put(jObj);
@@ -281,7 +281,7 @@ public class JsonStore {
    		    //serie.setNSeasons(Integer.parseInt(jObj.optString("nseasons")));
    		    serie.setNSeasons( JSONArrayToListInt(jObj.optJSONArray("nseasons")) );
    		 
-   		    serie.setUnwatched(Integer.parseInt(jObj.optString("unwatched")));
+   		    //serie.setUnwatched(Integer.parseInt(jObj.optString("unwatched")));
    		    serie.setPosterInCache(jObj.optString("posterInCache"));
    		} catch (Exception e) {
    			Log.e(MY_DEBUG_TAG, e.getMessage());

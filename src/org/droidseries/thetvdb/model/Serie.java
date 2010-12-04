@@ -35,7 +35,6 @@ public class Serie {
     //custom attributes
     private List<Episode> episodes = new ArrayList<Episode>();
     private List<Integer> nseasons;
-    private int unwatched;
     private String posterInCache = "";
     private String posterThumb = "";
 
@@ -231,14 +230,6 @@ public class Serie {
     	this.nseasons = nseasons;
     }
     
-    public int getUnwatched(){
-    	return unwatched;
-    }
-    
-    public void setUnwatched(int unwatched) {
-    	this.unwatched = unwatched;
-    }
-    
     public String getPosterInCache() {
         return posterInCache;
     }
@@ -285,15 +276,14 @@ public class Serie {
     		SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, " +
     						 "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, " +
     						 "network, rating, runtime, status, fanart, lastUpdated, poster, " +
-    						 "unwatched, posterInCache, posterThumb) VALUES (" +
+    						 "posterInCache, posterThumb) VALUES (" +
     						 "'" + this.id + "', " + "'" + this.serieId + "', " + "'" + this.language + "', " +
     						 "\"" + tmpSName + "\", " + "'" + this.banner + "', " + "\"" + tmpOverview + "\", " +
     						 "'" + this.firstAired + "', " + "'" + this.imdbId + "', " + "'" + this.zap2ItId + "', " +
     						 "'" + this.airsDayOfWeek + "', " + "'" + this.airsTime + "', " + "'" + this.contentRating + "', " +
     						 "'" + this.network + "', " + "'" + this.rating + "', " + "'" + this.runtime + "', " +
     						 "'" + this.status + "', " + "'" + this.fanart + "', " + "'" + this.lastUpdated + "', " +
-    						 "'" + this.poster + "', " + "" + "'" + this.unwatched + "', " +
-    						 "'" + this.posterInCache + "', " + "'" + this.posterThumb + "'" +
+    						 "'" + this.poster + "', " + "'" + this.posterInCache + "', " + "'" + this.posterThumb + "'" +
     						 ");");
     		
     		for(int e=0; e < this.episodes.size(); e++) {
