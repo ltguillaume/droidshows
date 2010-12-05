@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Vector;
 
 import org.droidseries.droidseries;
 
@@ -44,6 +45,7 @@ public class Update {
 			if(version.equals("") || !version.equals(droidseries.VERSION)) {
 				u0141To0142(context, display);
 				u0142To0143(context, display);
+				u0154To0155(context, display);
 			}
 		} catch(SQLiteException e){
 			Log.e("DroidSeries", e.getMessage());
@@ -241,6 +243,91 @@ public class Update {
 			} catch (Exception e) {
 				//does nothings
 			}
+		}
+		
+		return true;
+	}
+	
+	private boolean u0154To0155(Context context, Display display) {
+		Log.d("DroidSeries", "UPDATING TO VERSION 0.1.5-5!!!");
+		String version = "";
+		try {
+			Cursor c = droidseries.db.Query("SELECT version FROM droidseries");
+			c.moveToFirst();
+			if (c != null && c.isFirst()) {
+				if (c.getCount() != 0) {
+					//get the version
+					version = c.getString(0);
+				}
+			}
+			c.close();
+		} catch(SQLiteException e){
+			Log.e("DroidSeries", e.getMessage());
+		}
+		
+		if(!version.equals("0.1.5-5")) {
+			//create new series table
+			droidseries.db.execQuery("CREATE TABLE IF NOT EXISTS series_new (" +
+	    			   "id VARCHAR PRIMARY KEY, " + //0
+	    			   "serieId VARCHAR, " +  //1
+	    			   "language VARCHAR, " + //2
+	    			   "serieName VARCHAR, " + //3
+	    			   "banner VARCHAR, " + //4
+	    			   "overview TEXT, " + //5
+	    			   "firstAired VARCHAR, " + //6
+	    			   "imdbId VARCHAR, " + //7
+	    			   "zap2ItId VARCHAR, " + //8		 
+	    			   "airsDayOfWeek VARCHAR, " + //9
+	    			   "airsTime VARCHAR, " + //10
+	    			   "contentRating VARCHAR, " + //11
+	    			   "network VARCHAR, " + //12
+	    			   "rating VARCHAR, " + //13
+	    			   "runtime VARCHAR, " + //14
+	    			   "status VARCHAR, " + //15
+	    			   "fanart VARCHAR, " + //16
+	    			   "lastUpdated VARCHAR, " + //17
+	    			   "poster VARCHAR," + //18
+	    			   "posterInCache VARCHAR, " + //19
+	    			   "posterThumb VARCHAR" + //20
+	    			   ")");
+			
+			Vector<String> foo = new Vector<String>();
+			//copy data from the old table to the new table
+			try {
+				Cursor c = droidseries.db.Query("SELECT id, serieId, language, serieName, banner, overview, firstAired, " +
+						"imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, network, rating, runtime, status, " +
+						"fanart, lastUpdated, poster, posterInCache, posterThumb FROM series");
+				c.moveToFirst();
+				if (c != null && c.isFirst()) {
+					if (c.getCount() != 0) {
+						do {
+							droidseries.db.execQuery("INSERT INTO series_new (id, serieId, language, serieName, banner, overview, " +
+		    						 "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, " +
+		    						 "network, rating, runtime, status, fanart, lastUpdated, poster, " +
+		    						 "posterInCache, posterThumb) VALUES (" +
+		    						 "'" + c.getString(0) + "', " + "'" + c.getString(1) + "', " + "'" + c.getString(2) + "', " +
+		    						 "\"" + c.getString(3) + "\", " + "'" + c.getString(4) + "', " + "\"" + c.getString(5) + "\", " +
+		    						 "'" + c.getString(6) + "', " + "'" + c.getString(7) + "', " + "'" + c.getString(8) + "', " +
+		    						 "'" + c.getString(9) + "', " + "'" + c.getString(10) + "', " + "'" + c.getString(11) + "', " +
+		    						 "'" + c.getString(12) + "', " + "'" + c.getString(13) + "', " + "'" + c.getString(14) + "', " +
+		    						 "'" + c.getString(15) + "', " + "'" + c.getString(16) + "', " + "'" + c.getString(17) + "', " +
+		    						 "'" + c.getString(18) + "', " + "'" + c.getString(19) + "', " + "'" + c.getString(20) + "'" +
+		    						 ")");
+						} while ( c.moveToNext() );
+					}
+				}
+				c.close();
+			} catch(SQLiteException e){
+				Log.e("DroidSeries", e.getMessage());
+			}
+			
+			//drop the old table
+			droidseries.db.execQuery("DROP TABLE series");
+			
+			//rename the new table
+			droidseries.db.execQuery("ALTER TABLE series_new RENAME TO series");
+			
+			droidseries.db.execQuery("UPDATE droidseries SET version='" + droidseries.VERSION + "'");
 		}
 		
 		return true;

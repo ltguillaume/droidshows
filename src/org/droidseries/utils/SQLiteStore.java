@@ -823,8 +823,8 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	    		
     	//criar as tabelas
 		dbase.execSQL("CREATE TABLE IF NOT EXISTS series (" +
-    			   "id VARCHAR, " + //nao serve para nada
-    			   "serieId VARCHAR PRIMARY KEY, " + //TODO: primary key?
+    			   "id VARCHAR PRIMARY KEY, " +
+    			   "serieId VARCHAR, " +
     			   "language VARCHAR, " +
     			   "serieName VARCHAR, " +
     			   "banner VARCHAR, " +

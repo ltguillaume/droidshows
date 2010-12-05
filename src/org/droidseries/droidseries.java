@@ -54,7 +54,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class droidseries extends ListActivity {
-	public static String VERSION = "0.1.5-4";
+	public static String VERSION = "0.1.5-5";
 	public static String CONTRIBUTORS = "Jeremy Wickersheimer, Russell Schmidt, Walla";
 	
 	/* Menus */
@@ -144,11 +144,12 @@ public class droidseries extends ListActivity {
         
      	series = new ArrayList<TVShowItem>();
         
+     	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+     	updateDS.updateDroidSeries(getApplicationContext(), display);
+     	
         viewSeries = new Runnable(){
             @Override
-            public void run() {
-            	Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-     			updateDS.updateDroidSeries(getApplicationContext(), display);
+            public void run() {            	
      			getUserSeries();
 			}
         };

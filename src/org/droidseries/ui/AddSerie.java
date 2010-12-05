@@ -443,6 +443,9 @@ public class AddSerie extends ListActivity {
     					}
                 		
                 		Log.d(TAG, "Adding TV show: saving TV show to database");
+                		//if(sToAdd.getSerieId() == null) {
+                		//	Log.d(TAG, "NULL SERIE ID! HAVE TO CHANGE THIS!");
+                		//}
                 		sToAdd.saveToDB(droidseries.db);
                 		
                 		Log.d(TAG, "Adding TV show: creating the TV show item");
