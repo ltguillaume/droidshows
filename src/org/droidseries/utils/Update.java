@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Vector;
 
 import org.droidseries.droidseries;
 
@@ -291,7 +290,6 @@ public class Update {
 	    			   "posterThumb VARCHAR" + //20
 	    			   ")");
 			
-			Vector<String> foo = new Vector<String>();
 			//copy data from the old table to the new table
 			try {
 				Cursor c = droidseries.db.Query("SELECT id, serieId, language, serieName, banner, overview, firstAired, " +
