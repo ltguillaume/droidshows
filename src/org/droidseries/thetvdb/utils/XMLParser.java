@@ -32,7 +32,7 @@ public class XMLParser {
             
             int retry = 0;
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("HEAD");
+            con.setRequestMethod("GET");
             while(retry < 2) {
             	if(con.getResponseCode() == HttpURLConnection.HTTP_OK) {
             		InputSource inputSourceURL =  new InputSource(url.openStream());
