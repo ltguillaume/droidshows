@@ -102,6 +102,8 @@ public class droidseries extends ListActivity {
 	private static boolean bUpdateShowTh = false;
 	public static Thread updateAllShowsTh = null;
 	private static boolean bUpdateAllShowsTh = false;
+	private boolean stopedUASTH = false;
+	
 	
 	/*
 	 * public stuff that is needed somewhere else, not the best way to go.. but it's working
@@ -264,8 +266,8 @@ public class droidseries extends ListActivity {
 				updateSerie(series.get(info.position).getSerieId());
 				return true;
 			case DELETE_CONTEXT:
-				//TODO: add a verification to be sure that the TV show was well eliminated 
-				//TODO: fix the dialog progress / thread on screen rotation problem
+				//TODO (1): add a verification to be sure that the TV show was well eliminated
+				//TODO (2): add the queue struct here, it may need to restart with pending actions to do (only half deleted)  
 				final int spos = info.position;
 				final Runnable deleteserie = new Runnable(){
 		            @Override
@@ -382,8 +384,8 @@ public class droidseries extends ListActivity {
 		}
 	}
     
-	//TODO: fix the progress dialog crash on screen rotation
-	//thread keeps running and should be killed or the progress dialog shown after the rotation
+	//TODO : change and create a struct for handling aditions and updates. The idea is to have a 
+	//queue of ids or somethings like similar to that, to process. Easy to stop and resume.
     private void updateSerie(String serieId) {
     	final String id = serieId;
     	
@@ -444,7 +446,9 @@ public class droidseries extends ListActivity {
 		}
 	}
 	
-    //TODO: change the progress dialog type to show the current tv show update progress
+    //TODO (1): change the progress dialog type to show the current tv show update progress
+	//TODO (2): change and create a struct for handling aditions and updates. The idea is to have a 
+	//queue of ids or somethings like similar to that, to process. Easy to stop and resume.
     private void updateAllSeries() {
     	if (!utils.isNetworkAvailable(droidseries.this)) {
     		CharSequence text = getString(R.string.messages_no_internet);
@@ -456,9 +460,6 @@ public class droidseries extends ListActivity {
     	else {
     		final Runnable updateallseries = new Runnable(){
                 public void run() {
-                	//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-                	//PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, TAG);
-                	//wl.acquire();
                 	theTVDB = new TheTVDB("8AC675886350B3C3");
                 	for(int i=0; i < series.size(); i++) {
                 		if(bUpdateAllShowsTh) {
@@ -473,7 +474,7 @@ public class droidseries extends ListActivity {
                 			db.updateSerie(sToUpdate, true);
                 		}
                 		catch (Exception e) {
-                			//wl.release();
+                			//does nothing
                 		}
                 		
                 		if(!bUpdateAllShowsTh) {
@@ -481,7 +482,6 @@ public class droidseries extends ListActivity {
                 		}
                 	}
                 	
-                	//wl.release();
                 	runOnUiThread(droidseries.updateListView);
                 	if (!bUpdateAllShowsTh) {
                 		updateAllSeriesPD.dismiss();
@@ -656,11 +656,21 @@ public class droidseries extends ListActivity {
 	        }
 		}
         
+        //TODO: make this work
         if(updateAllShowsTh != null) {
 			if(updateAllShowsTh.isAlive()) {
 				bUpdateAllShowsTh = true;
+				Log.d(TAG, "Updating all TV shows... before pause");
+				stopedUASTH = true;
 	        }
 		}
+    }
+    
+    @Override
+	public void onResume() {
+    	super.onResume();
+    	
+    	Log.d(TAG, "ON RESUME!!! : " + stopedUASTH);
     }
     
     @Override
