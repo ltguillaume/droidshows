@@ -88,7 +88,6 @@ public class SerieOverview extends Activity {
     			theTVDB = new TheTVDB("8AC675886350B3C3");
     			if(theTVDB.getMirror() != null) {
 					Runnable addnewserie = new Runnable(){
-			            @Override
 			            public void run() {
 			            	//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
 			            	//PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");

@@ -499,7 +499,7 @@ public class AddSerie extends ListActivity {
     	if(!alreadyExists) {
     		//showDialog(ID_DIALOG_ADD);
     		m_ProgressDialog = ProgressDialog.show(AddSerie.this,    
-                    getString(R.string.messages_title_updating_serie), getString(R.string.messages_adding_serie), true);
+                    getString(R.string.messages_title_adding_serie), getString(R.string.messages_adding_serie), true);
     		threadAddShow =  new Thread(null, addnewserie, "MagentoBackground");
     		threadAddShow.start();
     	}

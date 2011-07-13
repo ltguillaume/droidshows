@@ -155,7 +155,6 @@ public class SerieEpisodes extends ListActivity {
 		runOnUiThread(SerieSeasons.updateListView);
 		
 		Runnable changeEpisodeSeen = new Runnable(){
-	        @Override
 	        public void run() {
 	        	runOnUiThread(droidseries.updateListView);
 	        }

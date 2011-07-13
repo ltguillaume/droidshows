@@ -54,7 +54,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class droidseries extends ListActivity {
-	public static String VERSION = "0.1.5-5";
+	public static String VERSION = "0.1.5-6";
 	public static String CONTRIBUTORS = "Jeremy Wickersheimer, Russell Schmidt, Walla";
 	
 	/* Menus */
@@ -150,7 +150,6 @@ public class droidseries extends ListActivity {
      	updateDS.updateDroidSeries(getApplicationContext(), display);
      	
         viewSeries = new Runnable(){
-            @Override
             public void run() {            	
      			getUserSeries();
 			}
@@ -270,7 +269,6 @@ public class droidseries extends ListActivity {
 				//TODO (2): add the queue struct here, it may need to restart with pending actions to do (only half deleted)  
 				final int spos = info.position;
 				final Runnable deleteserie = new Runnable(){
-		            @Override
 		            public void run() {
 		            	String sname = db.getSerieName(series.get(spos).getSerieId());
 						
@@ -391,7 +389,6 @@ public class droidseries extends ListActivity {
     	
     	if (utils.isNetworkAvailable(droidseries.this)) {
     		Runnable updateserierun = new Runnable(){
-                @Override
                 public void run() {
                 	//PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                 	//PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
@@ -553,7 +550,6 @@ public class droidseries extends ListActivity {
     
     private void getUserSeries(){
     	Runnable updateList = new Runnable() {
-            @Override
             public void run() {
             	series_adapter.notifyDataSetChanged();
             }
@@ -581,7 +577,6 @@ public class droidseries extends ListActivity {
     }
     
     public static Runnable updateListView = new Runnable() {
-        @Override
         public void run() {
             //series_adapter.clear();
             series_adapter.notifyDataSetChanged();
@@ -611,8 +606,7 @@ public class droidseries extends ListActivity {
 	    	}
             
 	        Comparator<TVShowItem> comperator = new Comparator<TVShowItem>() {
-	        	@Override
-	            public int compare(TVShowItem object1, TVShowItem object2) {
+	        	public int compare(TVShowItem object1, TVShowItem object2) {
 	        		if (SORT_BY_LAST_UNSEEN == sortOption) {
 	        			// note: nextAir can be null when there are no next episode
 	        			Date nextAir1 = object1.getNextAir();
@@ -676,7 +670,6 @@ public class droidseries extends ListActivity {
     @Override
 	public void onDestroy() {
     	Runnable exitSeries = new Runnable(){
-            @Override
             public void run() {
             	db.close();
             }

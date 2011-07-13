@@ -129,7 +129,6 @@ public class SerieSeasons extends ListActivity {
 				runOnUiThread(SerieSeasons.updateListView);
 				
 				Runnable changeEpisodeSeen = new Runnable(){
-			        @Override
 			        public void run() {
 			        	runOnUiThread(droidseries.updateListView);
 			        }
@@ -147,7 +146,6 @@ public class SerieSeasons extends ListActivity {
 				runOnUiThread(SerieSeasons.updateListView);
 				
 				Runnable changeEpisodeUnSeen = new Runnable(){
-			        @Override
 			        public void run() {
 			        	runOnUiThread(droidseries.updateListView);
 			        }
@@ -166,7 +164,6 @@ public class SerieSeasons extends ListActivity {
 				runOnUiThread(SerieSeasons.updateListView);
 				
 				Runnable changeSeasonsSeen = new Runnable(){
-			        @Override
 			        public void run() {
 			        	runOnUiThread(droidseries.updateListView);
 			        }
@@ -185,7 +182,6 @@ public class SerieSeasons extends ListActivity {
 		seasons = new ArrayList<Season>();
 		
 		Runnable updateList = new Runnable() {
-            @Override
             public void run() {
             	seriesseasons_adapter.notifyDataSetChanged();
             }
@@ -262,7 +258,6 @@ public class SerieSeasons extends ListActivity {
     };*/
     
 	public static Runnable updateListView = new Runnable() {
-        @Override
         public void run() {
         	//seriesseasons_adapter.clear();
         	seriesseasons_adapter.notifyDataSetChanged();

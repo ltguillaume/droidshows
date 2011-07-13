@@ -38,15 +38,13 @@ public class Preferences extends PreferenceActivity implements OnSharedPreferenc
 	
 	private final String sharedPrefsFile = "org.droidseries_preferences";
 
-	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
 			String key) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void onClick(DialogInterface dialog, int which) {
+	public void onClick(DialogInterface arg0, int arg1) {
 		// TODO Auto-generated method stub
 		
 	}
