@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    
+<string name="debug_tag">DroidSeries</string><string name="layout_app_name">DroidSeries</string>
+
+<string name="layout_main_no_items">No Shows to display.</string>
+
+<string name="layout_search_no_items">No shows found.</string>
+
+
+
+
+
+
+
+
+<string name="layout_seasons_no_items">No seasons to display.</string><string name="search_serie">Search shows</string><string name="search_hint">Show to add</string><string name="menu_add_serie">Add a show</string><string name="menu_update_all">Update all shows</string><string name="menu_about">About</string><string name="menu_exit">Exit</string><string name="menu_about_content">DroidSeries is a TV Shows browser and tracker application for Android
+\n
+\nSee http://code.google.com/p/droidseries/ for more info.
+\n
+\nVersion ${VERSION}
+\nThe software has been released for testing.
+\n
+\nCopyright (C) 2010 Carlos Limpinho, Paulo Cabido
+\n
+\nContributors: ${CONTRIBUTORS}
+\n
+\nThis program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+\n
+\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details (http://www.gnu.org/licenses).</string>
+<string name="menu_context_update">Update</string><string name="menu_context_delete">Delete</string><string name="menu_context_viewposter">View poster</string><string name="menu_context_add_serie">Add show</string><string name="menu_context_view_serie_details">View shows details</string><string name="menu_search_add_serie">Search for shows to add</string><string name="dialog_OK">OK</string><string name="dialog_title_delete">Delete show?</string><string name="dialog_delete">Are you sure you want to delete %s?</string><string name="dialog_Cancel">Cancel</string><string name="dialog_title_update_all_series">Update all shows?</string><string name="dialog_update_all_series">This operation will take a while. Are you sure you want to update all the shows now?</string><string name="messages_title_loading_series">Loading shows</string>
+<string name="messages_loading_series">Loading data. Please wait...</string>
+
+
+
+
+
+
+
+
+<string name="messages_title_delete_serie">Deleting show</string><string name="messages_delete_serie">Deleting the shows data. Please wait...</string>
+
+
+
+
+<string name="messages_title_updating_serie">Updating show</string>
+<string name="messages_update_serie">Gathering show information. This operation can take a while. Please wait...</string>
+<string name="messages_no_internet">No Internet connection is available.</string>
+
+
+<string name="messages_title_update_all_series">Update all shows</string>
+<string name="messages_update_all_series">Gathering show information. This operation will take a while. Please wait...</string>
+<string name="messages_episodes_not_watched">episodes not watched</string><string name="messages_episode_not_watched">episode not watched</string>
+<string name="messages_seasons">Seasons</string>
+<string name="messages_season">Season</string><string name="messages_next_episode">Next episode:</string>
+<string name="messages_completely_watched">Completely watched</string><string name="messages_season_completely_watched">Season completely watched</string>
+
+<string name="messages_delete_sucessful">Show %s deleted!</string>
+
+<string name="messages_title_search_series">Searching shows</string>
+<string name="messages_search_series">Retrieving data ...</string>
+
+
+<string name="messages_series_success">Show %s added with success!</string>
+<string name="messages_title_adding_serie">Adding show</string>
+<string name="messages_adding_serie">Gathering show information. Please wait...</string>
+<string name="messages_context_mark_seasonseen">Mark all episodes as seen</string>
+<string name="messages_specials">Specials</string>
+<string name="messages_episodes">Episodes</string>
+<string name="messsages_view_ep_details">View episode details</string>
+<string name="messages_unknown">Unknown</string><string name="messages_overview">Overview</string>
+<string name="messages_no_next_episodes">All episodes have been watched</string><string name="messages_thetvdb_con_error">Error connecting to TheTVDB.com. Please try again.</string><string name="messages_show_exists">TV show %s already exists.</string><string name="messages_context_mark_seasonunseen">Mark all episodes as unseen</string><string name="messages_context_mark_asseenuptothis">Seasons up to here are seen</string><string name="episode_directors">Director(s):</string>
+
+<string name="episode_writers">Writer(s):</string>
+<string name="episode_guest_stars">Guest stars:</string>
+<string name="episode_no_guest_stars">Guest stars: No guest stars in this episode</string>
+<string name="series_first_aired">First Aired:</string>
+
+<string name="series_air_day">Air Day:</string>
+<string name="series_air_time">Air Time:</string>
+<string name="series_runtime_minutes">Runtime: %s minutes</string>
+<string name="series_runtime">Runtime:</string>
+<string name="series_network">Network:</string>
+<string name="series_genre">Genre:</string>
+<string name="series_rating">Rating:</string>
+<string name="series_actors">Actors:</string>
+
+
+
+
+
+
+
+<string name="menu_sort">Sort</string><string name="messages_title_updating_all_series">Updating all shows</string>
+
+
+
+
+</resources>

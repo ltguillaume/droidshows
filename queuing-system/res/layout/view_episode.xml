@@ -1,0 +1,57 @@
+<ScrollView android:id="@+id/ScrollView01"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android">
+	<TableLayout android:id="@+id/TableLayout01"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		xmlns:android="http://schemas.android.com/apk/res/android">
+		<TableRow android:id="@+id/TableRow01" android:layout_height="wrap_content"
+			android:layout_width="fill_parent">
+			<TextView android:layout_height="wrap_content" android:id="@+id/episodename"
+				android:padding="4dip" android:layout_width="fill_parent"
+				android:textStyle="bold" android:textSize="16sp" android:singleLine="false"></TextView>
+		</TableRow>
+		<TableRow android:id="@+id/TableRow02" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:padding="4dip"
+				android:id="@+id/episodeoverview" android:singleLine="false"></TextView>
+		</TableRow>
+
+		<TableRow android:id="@+id/TableRow03" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:id="@+id/TextView02" android:layout_width="wrap_content"
+				android:layout_height="wrap_content"></TextView>
+		</TableRow>
+
+		<TableRow android:id="@+id/TableRow04" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:padding="4dip"
+				android:id="@+id/episodedirector"></TextView>
+		</TableRow>
+		<TableRow android:id="@+id/TableRow05" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/episodewriter"
+				android:padding="4dip"></TextView>
+		</TableRow>
+		<TableRow android:id="@+id/TableRow07" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/episodegueststars"
+				android:padding="4dip"></TextView>
+		</TableRow>
+		<TableRow android:id="@+id/TableRow06" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:id="@+id/episoderating"
+				android:padding="4dip"></TextView>
+		</TableRow>
+		<TableRow android:id="@+id/TableRow08" android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<TextView android:layout_width="wrap_content" 
+			android:layout_height="wrap_content" android:id="@+id/firstaired"
+                android:padding="4dip"></TextView>
+		</TableRow>
+	</TableLayout>
+</ScrollView>
