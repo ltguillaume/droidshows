@@ -417,6 +417,29 @@ public class SQLiteStore extends SQLiteOpenHelper {
 		return na;
 	}
 	
+	public String getNextEpisodeId(String serieId, int snumber) {
+		int id=-1;
+		Cursor c = null;
+		try {
+			if(snumber == -1) {
+				c = Query("SELECT id FROM episodes WHERE serieId='" + serieId + "' and seen=0 and seasonNumber <> 0 ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+			}
+			else {
+				c = Query("SELECT id FROM episodes WHERE serieId='" + serieId + "' and seen=0 and seasonNumber=" + snumber + " ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+			}
+			
+			c.moveToFirst();
+			if(c!=null && c.isFirst()){
+				int index = c.getColumnIndex("id");
+				id = c.getInt(index);
+			}
+		}catch(SQLiteException e){
+			Log.e("DroidSeries", e.getMessage());
+		}
+		
+		return ""+id;
+	}
+	
 	public String getNextEpisode(String serieId, int snumber) {
 		String ne = "";
 		Cursor c = null;

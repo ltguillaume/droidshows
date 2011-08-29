@@ -66,7 +66,8 @@ public class droidseries extends ListActivity {
 	private static final int UPDATEALL_MENU_ITEM = EXIT_MENU_ITEM + 1;
 	
 	/* Context Menus */
-	private static final int UPDATE_CONTEXT = Menu.FIRST;
+	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = Menu.FIRST;
+	private static final int UPDATE_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT+1;
 	private static final int DELETE_CONTEXT = UPDATE_CONTEXT + 1;
 	private static final int VIEW_POSTER_CONTEXT = DELETE_CONTEXT + 1;
 	private static final int VIEW_SERIEDETAILS_CONTEXT = VIEW_POSTER_CONTEXT + 1; 
@@ -162,8 +163,7 @@ public class droidseries extends ListActivity {
              
         ListView lv = getListView();
         lv.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
             	try {
             		Intent serieSeasons = new Intent(droidseries.this, SerieSeasons.class);
             		serieSeasons.putExtra("serieid", droidseries.series.get(position).getSerieId());
@@ -251,6 +251,7 @@ public class droidseries extends ListActivity {
 	/* context menu */
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
+		menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, 0, getString(R.string.menu_context_mark_next_episode_as_seen));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
 		menu.add(0, DELETE_CONTEXT, 0,  getString(R.string.menu_context_delete));
 		menu.add(0, VIEW_POSTER_CONTEXT, 0,  getString(R.string.menu_context_viewposter));
@@ -261,6 +262,15 @@ public class droidseries extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		
 		switch (item.getItemId()) {
+			case MARK_NEXT_EPISODE_AS_SEEN_CONTEXT:				
+				TVShowItem serie = series.get(info.position);
+				String serieid = serie.getSerieId();
+				String nextEpisode = db.getNextEpisodeId(serieid, -1);
+				
+				db.updateUnwatchedEpisode(serieid, nextEpisode );
+				runOnUiThread(updateListView);
+
+				return true;
 			case UPDATE_CONTEXT:
 				updateSerie(series.get(info.position).getSerieId());
 				return true;
