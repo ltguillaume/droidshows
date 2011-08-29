@@ -67,8 +67,7 @@ public class SerieEpisodes extends ListActivity {
 		lView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		
         lView.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                int position, long id) {
+            public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
             	try {
             		droidseries.db.updateUnwatchedEpisode(serieid, episodes.get(position));
             	} catch (Exception e) {
