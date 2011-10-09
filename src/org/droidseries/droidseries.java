@@ -792,12 +792,19 @@ public class droidseries extends ListActivity {
 	            }
 	        }
 	                    
-	        if(holder.sne != null){
-	           	if(!serie.getCompletelyWatched()) {
-	           		holder.sne.setText(getString(R.string.messages_next_episode) + " " + serie.getNextEpisode());
-	           		holder.sne.setVisibility(View.VISIBLE);
-	            }
-	            else {
+					if(holder.sne != null){
+						if(!serie.getCompletelyWatched()) {
+							String serieid = serie.getSerieId();
+							Date nextAir = db.getNextAir(serieid, -1);
+							Date current = new Date();
+							if (nextAir.before(current)) {
+								holder.sne.setTypeface( holder.sne.getTypeface(), 1  );
+							}
+
+							holder.sne.setText(getString(R.string.messages_next_episode) + " " + serie.getNextEpisode());
+							holder.sne.setVisibility(View.VISIBLE);
+						}
+						else {
 	               	holder.sne.setVisibility(View.GONE);
 	            }
 	        }
