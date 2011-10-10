@@ -29,6 +29,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.drawable.Drawable;
+import	android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
@@ -798,16 +799,21 @@ public class droidseries extends ListActivity {
 							Date nextAir = db.getNextAir(serieid, -1);
 							Date current = new Date();
 							if (nextAir.before(current)) {
-								holder.sne.setTypeface( holder.sne.getTypeface(), 1  );
+								holder.sne.setTypeface( Typeface.DEFAULT, Typeface.BOLD );
+							}
+							else {
+								// Without this all next episodes lines would be bold after
+								// rotating screen
+								holder.sne.setTypeface( Typeface.DEFAULT, Typeface.NORMAL );
 							}
 
 							holder.sne.setText(getString(R.string.messages_next_episode) + " " + serie.getNextEpisode());
 							holder.sne.setVisibility(View.VISIBLE);
 						}
 						else {
-	               	holder.sne.setVisibility(View.GONE);
-	            }
-	        }
+							holder.sne.setVisibility(View.GONE);
+						}
+					}
 	                    
 			if(holder.icon != null){
 				try {
@@ -825,10 +831,10 @@ public class droidseries extends ListActivity {
         }
     }
     
-    static class ViewHolder {
-		TextView sn;
-        TextView si;
-        TextView sne;
-        ImageView icon;
-	}
+		static class ViewHolder {
+			TextView sn;
+			TextView si;
+			TextView sne;
+			ImageView icon;
+		}
 }
