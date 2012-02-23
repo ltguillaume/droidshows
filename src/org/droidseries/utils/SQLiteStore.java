@@ -34,7 +34,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
 
 	private final Context ctx;
 	
-	private final String MY_DEBUG_TAG = "DroidSeries";
+	private final String TAG = "DroidSeries";
 	
 	public SQLiteStore(Context context) {
     	super(context, DB_NAME, null, 1);
@@ -406,13 +406,15 @@ public class SQLiteStore extends SQLiteOpenHelper {
     					SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
     					na = SDF.parse(c.getString(faCol));
 					} catch (ParseException e) {
-						Log.e(MY_DEBUG_TAG, e.getMessage());
+						Log.e(TAG, e.getMessage());
+						return null;
 					}
 				}
 			}
 			c.close();
 		} catch(SQLiteException e){
 			Log.e("DroidSeries", e.getMessage());
+			return null;
 		}
 		return na;
 	}
@@ -473,7 +475,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
 						formatter = new SimpleDateFormat("yyyy");
 						epDataStr += formatter.format(epDate);	
 					} catch (ParseException e) {
-						Log.e(MY_DEBUG_TAG, e.getMessage());
+						Log.e(TAG, e.getMessage());
 					}
 				}
 				
