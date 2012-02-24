@@ -8,6 +8,7 @@ import org.droidseries.utils.SQLiteStore;
 
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class Serie {
 
@@ -272,7 +273,7 @@ public class Serie {
     		if(!TextUtils.isEmpty(this.serieName)) {
     			tmpSName = this.serieName.replace("\"", "'"); 
     		}
-    		
+    		    		
     		SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, " +
     						 "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, " +
     						 "network, rating, runtime, status, fanart, lastUpdated, poster, " +
@@ -292,6 +293,7 @@ public class Serie {
     		}
     		
 		} catch(SQLiteException e){
+			Log.e("DroidSeries", e.getMessage());
 			return false;
 		}
 		

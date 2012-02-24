@@ -482,6 +482,8 @@ public class AddSerie extends ListActivity {
     					Toast toast = Toast.makeText(getApplicationContext(), text, duration);
     					toast.show();
     					Looper.loop();
+    					
+    					//TODO: automatically close the intent
     				}
     				//wl.release();
             	}
