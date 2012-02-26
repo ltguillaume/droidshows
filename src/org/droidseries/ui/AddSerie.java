@@ -25,6 +25,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.PowerManager;
 import android.text.TextUtils;
@@ -87,6 +88,8 @@ public class AddSerie extends ListActivity {
 	private volatile Thread threadAddShow;
 	private static boolean bAddShowTh = false;
 	//private ProgressDialog m_ProgressDialog = null;
+	
+	private Handler handler = new Handler();
 	
 	@Override
 	  public void onCreate(Bundle savedInstanceState) {
@@ -288,6 +291,8 @@ public class AddSerie extends ListActivity {
 			Thread moribund = threadAddShow;
 		    threadAddShow = null;
 		    moribund.interrupt();
+		    //debuging
+		    Log.d(TAG, "addShow Thread stoped");
 		}
 	}
 
@@ -333,16 +338,38 @@ public class AddSerie extends ListActivity {
             	else {
             		Log.d(TAG, "Adding TV show: getting the poster");
             		//get the poster and save it in cache
-                	URL imageUrl;
+                	URL imageUrl = null;
+                	URLConnection uc = null;
+                	String contentType = "";
+                	
     				try {
     					if(bAddShowTh) {
+    						Log.d(TAG, "woooooooooooooo");
     						stopAddShowTh();
     						bAddShowTh = false;
     				        return;
     					}
-    					imageUrl = new URL( sToAdd.getPoster() );
-    					URLConnection uc = imageUrl.openConnection();
-    	                String contentType = uc.getContentType();
+    					
+    					try {
+    						imageUrl = new URL( sToAdd.getPoster() );
+        					uc = imageUrl.openConnection();
+        					//timetout, 20s for slow connections
+        					uc.setConnectTimeout(20000);
+
+        	                contentType = uc.getContentType();
+        	                Log.d(TAG, "fooooooooooooooo 1");
+	    				} 
+    					catch (MalformedURLException e) {
+	    					Log.e(TAG, e.getMessage());
+	    				} catch (IOException e) {
+	    					Log.e(TAG, e.getMessage());
+	    				}
+    					catch (Exception e) {
+    						Log.d(TAG, e.getMessage());
+    						Log.d(TAG, "fooooooooooooooo");
+    					}
+    					
+    					Log.d(TAG, "fooooooooooooooo 2");
     	                int contentLength = uc.getContentLength();
     	                if(!TextUtils.isEmpty(contentType)) {
     		                if (!contentType.startsWith("image/") || contentLength == -1) {
@@ -350,6 +377,7 @@ public class AddSerie extends ListActivity {
     		                	Log.e(TAG, "This is not a image.");
     		                }
     	                }
+    	                
     	                try {
     	                	if(bAddShowTh) {
         						stopAddShowTh();
@@ -424,14 +452,9 @@ public class AddSerie extends ListActivity {
     	                } catch (Exception e) {
     	                	sToAdd.setPosterInCache("");
     	                	Log.e(TAG, "Error copying the poster to cache.");
-    	                	//wl.release();
     	                }
-    				} catch (MalformedURLException e) {
-    					//e.printStackTrace();
-    					//wl.release();
-    				} catch (IOException e) {
-    					//e.printStackTrace();
-    					//wl.release();
+    				} catch (Exception e) {
+    					Log.e(TAG, e.getMessage());
     				}
                     
                 	boolean sucesso = false;
@@ -464,7 +487,6 @@ public class AddSerie extends ListActivity {
     					sucesso = true;    					
                 	} catch (Exception e) {
                 		Log.e(TAG, "Error adding TV show");
-                		//wl.release();
                 	}
                 	
     				//m_ProgressDialog.dismiss();
@@ -484,8 +506,12 @@ public class AddSerie extends ListActivity {
     					Looper.loop();
     					
     					//TODO: automatically close the intent
+    					handler.post(new Runnable() {
+    			            public void run() {
+    			            	AddSerie.this.finish();
+    			            }
+    			        });
     				}
-    				//wl.release();
             	}
             }	
         };
@@ -565,6 +591,7 @@ public class AddSerie extends ListActivity {
                     	ctv.setCheckMarkDrawable(getResources().getDrawable(android.R.drawable.ic_input_add));
 	                   	ctv.setOnClickListener(new OnClickListener() {
 	                   		public void onClick(View v) {
+	                   			bAddShowTh = false;
 	                   			addSerie(o);
 	                        }
 	                    });
