@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.droidseries.R;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -32,6 +33,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -89,7 +91,7 @@ public class AddSerie extends ListActivity {
 	private static boolean bAddShowTh = false;
 	//private ProgressDialog m_ProgressDialog = null;
 	
-	private Handler handler = new Handler();
+	private Handler handler;
 	
 	@Override
 	  public void onCreate(Bundle savedInstanceState) {
@@ -344,7 +346,6 @@ public class AddSerie extends ListActivity {
                 	
     				try {
     					if(bAddShowTh) {
-    						Log.d(TAG, "woooooooooooooo");
     						stopAddShowTh();
     						bAddShowTh = false;
     				        return;
@@ -355,9 +356,7 @@ public class AddSerie extends ListActivity {
         					uc = imageUrl.openConnection();
         					//timetout, 20s for slow connections
         					uc.setConnectTimeout(20000);
-
         	                contentType = uc.getContentType();
-        	                Log.d(TAG, "fooooooooooooooo 1");
 	    				} 
     					catch (MalformedURLException e) {
 	    					Log.e(TAG, e.getMessage());
@@ -366,10 +365,8 @@ public class AddSerie extends ListActivity {
 	    				}
     					catch (Exception e) {
     						Log.d(TAG, e.getMessage());
-    						Log.d(TAG, "fooooooooooooooo");
     					}
     					
-    					Log.d(TAG, "fooooooooooooooo 2");
     	                int contentLength = uc.getContentLength();
     	                if(!TextUtils.isEmpty(contentType)) {
     		                if (!contentType.startsWith("image/") || contentLength == -1) {
@@ -506,11 +503,12 @@ public class AddSerie extends ListActivity {
     					Looper.loop();
     					
     					//TODO: automatically close the intent
-    					handler.post(new Runnable() {
+    					/*handler.post(new Runnable() {
     			            public void run() {
-    			            	AddSerie.this.finish();
+    			            	AddSerie.this.dispatchKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK));
+    			            	AddSerie.this.finish();    			 	
     			            }
-    			        });
+    			        });*/
     				}
             	}
             }	
@@ -592,6 +590,7 @@ public class AddSerie extends ListActivity {
 	                   	ctv.setOnClickListener(new OnClickListener() {
 	                   		public void onClick(View v) {
 	                   			bAddShowTh = false;
+	                   			handler = new Handler();
 	                   			addSerie(o);
 	                        }
 	                    });
