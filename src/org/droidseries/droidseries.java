@@ -586,9 +586,12 @@ public class droidseries extends ListActivity {
 
         int tmpSeasons = db.getSeasonCount(serieid);
        	Drawable d = Drawable.createFromPath(tmpPoster);
-        
-       	TVShowItem tvsi = new TVShowItem(serieid, tmpPoster, d, tmpName, tmpSeasons, nextEpisode, nextAir, unwatched, completelyWatched);
-       	return tvsi;
+	boolean st = (db.getSerieStatus(serieid) == 1);
+
+	TVShowItem tvsi = new TVShowItem(serieid, tmpPoster, d, tmpName,
+		tmpSeasons, nextEpisode, nextAir, unwatched, st,
+		completelyWatched);
+	return tvsi;
     }
     
     private void getUserSeries(){
@@ -803,13 +806,17 @@ public class droidseries extends ListActivity {
             TVShowItem serie = items.get(position);
                
             int nunwatched = serie.getEpNotSeen();
-            
-	        if (holder.sn != null) {
-	           	holder.sn.setText( serie.getName() );                            
-	        }
-	                        
-	        if(holder.si != null){
-	           	String unwatched = "";
+
+	    if (holder.sn != null) {
+		    if (serie.getPassiveStatus()) {
+			    holder.sn.setText("[" + serie.getName() + "]");
+		    } else {
+			    holder.sn.setText(serie.getName());
+		    }
+	    }
+
+	    if (holder.si != null) {
+		    String unwatched = "";
 	            if (nunwatched == 0) {
 	               	unwatched = getString(R.string.messages_completely_watched);
 	            }
@@ -828,8 +835,8 @@ public class droidseries extends ListActivity {
 	            else {
 	            	holder.si.setText( serie.getSNumber() + " " + getString(R.string.messages_seasons) + " | " + unwatched );
 	            }
-	        }
-	                    
+	}
+
 					if(holder.sne != null){
 						if(!serie.getCompletelyWatched()) {
 							String serieid = serie.getSerieId();

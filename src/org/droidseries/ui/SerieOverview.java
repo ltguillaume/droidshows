@@ -196,7 +196,7 @@ public class SerieOverview extends Activity {
 				            		Date nextAir= droidseries.db.getNextAir(sToAdd.getId(), -1);
 				            		int unwatched = droidseries.db.getEPUnwatched(sToAdd.getId());
 				            		Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
-									TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatched, false);
+									TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatched, false, false);
 						            droidseries.series.add(tvsi);
 						            
 									runOnUiThread(droidseries.updateListView);
