@@ -293,16 +293,22 @@ public class droidseries extends ListActivity {
 
 				return true;
                         case TOGGLE_SERIE_STATUS_CONTEXT:
-				Log.d(TAG, "Toggle serie status case");
 				serie = series.get(info.position);
 				serieid = serie.getSerieId();
 				Integer st = db.getSerieStatus(serieid);
-				Log.d(TAG, "serieid=" + serieid);
-				Log.d(TAG, "Toggle serie status. oldstatus=" + st);
+				Log.d(TAG, "Toggle serie [" + serieid + "] status case");
 				st ^= 1;
-				Log.d(TAG, "                     newstatus=" + st);
 				db.updateSerieStatus(serieid, st);
-				getUserSeries(); // XXX Could be improved...
+
+				// Remove the show from the list if it is passive and
+				// if the filter is enabled
+				if (filterOption == FILTER_ENABLED && st == 1) {
+					series.remove(series.get(info.position));
+				} else {
+					// Update data to change the show's title on refresh
+					series.get(info.position).setPassiveStatus(st == 1);
+				}
+				runOnUiThread(updateListView);
 				return true;
 			case UPDATE_CONTEXT:
 				updateSerie(series.get(info.position).getSerieId());
