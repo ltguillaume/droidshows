@@ -45,6 +45,7 @@ public class Update {
 				u0141To0142(context, display);
 				u0142To0143(context, display);
 				u0154To0155(context, display);
+				u0156To0157(context, display);
 			}
 		} catch(SQLiteException e){
 			Log.e("DroidSeries", e.getMessage());
@@ -264,7 +265,7 @@ public class Update {
 			Log.e("DroidSeries", e.getMessage());
 		}
 		
-		if(!version.equals("0.1.5-5")) {
+		if (!(version.equals("0.1.5-5") || version.equals("0.1.5-6"))) {
 			//create new series table
 			droidseries.db.execQuery("CREATE TABLE IF NOT EXISTS series_new (" +
 	    			   "id VARCHAR PRIMARY KEY, " + //0
@@ -301,7 +302,7 @@ public class Update {
 						do {
 							droidseries.db.execQuery("INSERT INTO series_new (id, serieId, language, serieName, banner, overview, " +
 		    						 "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, " +
-		    						 "network, rating, runtime, status, fanart, lastUpdated, poster, " +
+		    						 "network, rating, runtime, status, fanart, lastUpdated, passiveStatus, poster, " +
 		    						 "posterInCache, posterThumb) VALUES (" +
 		    						 "'" + c.getString(0) + "', " + "'" + c.getString(1) + "', " + "'" + c.getString(2) + "', " +
 		    						 "\"" + c.getString(3) + "\", " + "'" + c.getString(4) + "', " + "\"" + c.getString(5) + "\", " +
@@ -330,5 +331,30 @@ public class Update {
 		
 		return true;
 	}
-	
+
+	private boolean u0156To0157(Context context, Display display) {
+		Log.d("DroidSeries", "UPDATING TO VERSION 0.1.5-7!!!");
+		String version = "";
+		try {
+			Cursor c = droidseries.db.Query("SELECT version FROM droidseries");
+			c.moveToFirst();
+			if (c != null && c.isFirst()) {
+				if (c.getCount() != 0) {
+					//get the version
+					version = c.getString(0);
+				}
+			}
+			c.close();
+		} catch (SQLiteException e) {
+			Log.e("DroidSeries", e.getMessage());
+		}
+
+		if (!version.equals("0.1.5-7")) {
+			// update series table
+			droidseries.db.execQuery("ALTER TABLE series ADD COLUMN passiveStatus INTEGER DEFAULT 0");
+			droidseries.db.execQuery("UPDATE droidseries SET version='" + droidseries.VERSION + "'");
+		}
+
+		return true;
+	}
 }

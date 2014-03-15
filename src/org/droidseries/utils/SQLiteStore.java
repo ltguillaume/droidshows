@@ -864,6 +864,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
     			   "status VARCHAR, " +
     			   "fanart VARCHAR, " +
     			   "lastUpdated VARCHAR, " +
+    			   "passiveStatus INT, " +
     			   "poster VARCHAR," +	 
     			   "posterInCache VARCHAR, " +
     			   "posterThumb VARCHAR" +
