@@ -32,7 +32,7 @@
 <string name="menu_context_update">Update</string><string name="menu_context_delete">Delete</string><string name="menu_context_viewposter">View poster</string><string name="menu_context_add_serie">Add show</string><string name="menu_context_view_serie_details">View shows details</string><string name="menu_search_add_serie">Search for shows to add</string><string name="dialog_OK">OK</string><string name="dialog_title_delete">Delete show?</string><string name="dialog_delete">Are you sure you want to delete %s?</string><string name="dialog_Cancel">Cancel</string><string name="dialog_title_update_all_series">Update all shows?</string><string name="dialog_update_all_series">This operation will take a while. Are you sure you want to update all the shows now?</string><string name="messages_title_loading_series">Loading shows</string>
 <string name="messages_loading_series">Loading data. Please wait...</string>
 
-
+<string name="menu_context_toggle_status">Toggle show status</string>
 
 
 

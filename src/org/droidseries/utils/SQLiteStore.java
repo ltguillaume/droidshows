@@ -339,7 +339,24 @@ public class SQLiteStore extends SQLiteOpenHelper {
 		}
 		return sname;
 	}
-	
+
+	public Integer getSerieStatus(String serieId) {
+		Integer sstatus = 0;
+		Cursor c = Query("SELECT passiveStatus FROM series WHERE id='" + serieId  + "'");
+		try {
+			c.moveToFirst();
+			if (c != null && c.isFirst()) {
+				sstatus = c.getInt(0);
+			}
+			c.close();
+		} catch(SQLiteException e){
+			c.close();
+			Log.e("DroidSeries", e.getMessage());
+			return null;
+		}
+		return sstatus;
+	}
+
 	public String getSeriePoster(String serieId) {
 		String sposter = "";
 		try {
@@ -552,7 +569,16 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			Log.e("DroidSeries", e.getMessage());
 		}
 	}
-	
+
+	public void updateSerieStatus(String serieId, int passiveStatus) {
+		try {
+			db.execSQL("UPDATE series SET passiveStatus=" + passiveStatus +
+                                   " WHERE id='" + serieId + "'");
+		} catch(SQLiteException e){
+			Log.e("DroidSeries", e.getMessage());
+		}
+	}
+
 	//UPDATE table_name SET column1=value, column2=value2,... WHERE some_column=some_value
 	public void updateSerie(Serie s, boolean last_season) {
 		if(s == null) {
