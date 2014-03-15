@@ -60,7 +60,8 @@ public class droidseries extends ListActivity {
 	
 	/* Menus */
 	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
-	private static final int PREFERENCES_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
+	private static final int TOGGLE_FILTER_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
+	private static final int PREFERENCES_MENU_ITEM = TOGGLE_FILTER_MENU_ITEM + 1;
 	private static final int SORT_MENU_ITEM = PREFERENCES_MENU_ITEM + 1;
 	private static final int ABOUT_MENU_ITEM = SORT_MENU_ITEM + 1;
 	private static final int EXIT_MENU_ITEM = ABOUT_MENU_ITEM + 1;
@@ -98,7 +99,12 @@ public class droidseries extends ListActivity {
 	private static final int SORT_BY_NAME_ICON = android.R.drawable.ic_menu_sort_alphabetically;
 	private static final int SORT_BY_LAST_UNSEEN_ICON = android.R.drawable.ic_menu_agenda;
 	private static int sortOption = SORT_BY_NAME;
-	
+
+	private static final String FILTER_PREF_NAME = "filter_passive";
+	private static final int FILTER_DISABLED = 0;
+	private static final int FILTER_ENABLED  = 1;
+	private static int filterOption = FILTER_DISABLED;
+
 	public static Thread deleteTh = null;
 	private static boolean bDeleteTh = false;
 	public static Thread updateShowTh = null;
@@ -146,6 +152,7 @@ public class droidseries extends ListActivity {
      	// restore the preferences (for now just sort)
      	sharedPrefs = getSharedPreferences(PREF_NAME, 0);
         sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
+        filterOption = sharedPrefs.getInt(FILTER_PREF_NAME, FILTER_DISABLED);
         
      	series = new ArrayList<TVShowItem>();
         
@@ -187,6 +194,7 @@ public class droidseries extends ListActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
+        menu.add(0, TOGGLE_FILTER_MENU_ITEM, 0, "Toggle filter");
         menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort)).setIcon(SORT_BY_LAST_UNSEEN_ICON);
         menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update_all)).setIcon(android.R.drawable.ic_menu_upload);
         //menu.add(0, PREFERENCES_MENU_ITEM, 0, "Preferences").setIcon(android.R.drawable.ic_menu_preferences);
@@ -214,6 +222,9 @@ public class droidseries extends ListActivity {
     		case ADD_SERIE_MENU_ITEM:
     			onSearchRequested();
     			break;
+		case TOGGLE_FILTER_MENU_ITEM:
+			toggleFilter();
+			break;
     		case SORT_MENU_ITEM:
     			toggleSort();
     			break;
@@ -241,7 +252,12 @@ public class droidseries extends ListActivity {
     	}
     	return super.onOptionsItemSelected(item);
     }
-    
+
+    public void toggleFilter() {
+	filterOption ^= 1;
+	getUserSeries();
+    }
+
     public void toggleSort() {
     	sortOption--;
     	if (sortOption < 0) {
@@ -593,8 +609,12 @@ public class droidseries extends ListActivity {
         	}
         	series.clear();
         	for(int i=0; i < serieids.size(); i++) {
-        		TVShowItem tvsi = createTVShowItem(serieids.get(i));
-	            series.add(tvsi);
+			String serieid = serieids.get(i);
+			Integer st = db.getSerieStatus(serieid);
+			if (filterOption == FILTER_DISABLED || st == 0) {
+				TVShowItem tvsi = createTVShowItem(serieid);
+				series.add(tvsi);
+			}
         	}
     	} catch (Exception e) {
     		Log.e(TAG, "Error populating the TVShowItems");
@@ -663,6 +683,7 @@ public class droidseries extends ListActivity {
     	super.onPause();
     	SharedPreferences.Editor ed = sharedPrefs.edit();
         ed.putInt(SORT_PREF_NAME, sortOption);
+        ed.putInt(FILTER_PREF_NAME, filterOption);
         ed.commit();
         
         if(deleteTh != null) {
