@@ -536,7 +536,7 @@ public class droidseries extends ListActivity {
                         Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), "en");
                         Log.d(TAG, "Updating the database...");
                         try {
-                            db.updateSerie(sToUpdate, true);
+                            db.updateSerie(sToUpdate, false);
                         }
                         catch (Exception e) {
                             //does nothing
