@@ -15,49 +15,49 @@ public class Mirrors {
     public static String TYPE_XML = "XML";
     public static String TYPE_BANNER = "BANNER";
     public static String TYPE_ZIP = "ZIP";
-    
+
     private static final Random RNDM = new Random();
-    
+
     private List<String> xmlList = new ArrayList<String>();
     private List<String> bannerList = new ArrayList<String>();
     private List<String> zipList = new ArrayList<String>();
-    
+
     public Mirrors(String apiKey) {
         try {
-	        String url = "http://www.thetvdb.com/api/" + apiKey + "/mirrors.xml";
-	        
-	        XMLParser xmlparser = new XMLParser();
-	        List<String> XMLData = xmlparser.parse(url);
-	        
-	        /* variaveis auxiliares para popular os mirrors */
-	        String mirror = "";
-	        int typeMask = 0;
-	        boolean mirrortag = false;
-	        
-	        /* ciclo que percorre a List que contem o XML resultante do parse */
-	        for (int i = 0; i < XMLData.size(); i++) { 
-	        	if (XMLData.get(i).contentEquals("<Mirror>")) {
-	        		mirrortag = true;
-	        		mirror = "";
-	    	        typeMask = 0;
-	        	}
-	        	if (mirrortag) {
-	        		if (XMLData.get(i).contentEquals("<mirrorpath>")) {
-	        			mirror = XMLData.get(i+1).trim();
-	        			typeMask = Integer.parseInt(XMLData.get(i+4).trim());
-	        			addMirror(typeMask, mirror);
-	        		}
-	        	}
-	        	else if (XMLData.get(i).contentEquals("</Mirror>"))
-	        	{
-	        		mirrortag = false;
-	        	}
-	        }
+            String url = "http://www.thetvdb.com/api/" + apiKey + "/mirrors.xml";
+
+            XMLParser xmlparser = new XMLParser();
+            List<String> XMLData = xmlparser.parse(url);
+
+            /* variaveis auxiliares para popular os mirrors */
+            String mirror = "";
+            int typeMask = 0;
+            boolean mirrortag = false;
+
+            /* ciclo que percorre a List que contem o XML resultante do parse */
+            for (int i = 0; i < XMLData.size(); i++) {
+                if (XMLData.get(i).contentEquals("<Mirror>")) {
+                    mirrortag = true;
+                    mirror = "";
+                    typeMask = 0;
+                }
+                if (mirrortag) {
+                    if (XMLData.get(i).contentEquals("<mirrorpath>")) {
+                        mirror = XMLData.get(i+1).trim();
+                        typeMask = Integer.parseInt(XMLData.get(i+4).trim());
+                        addMirror(typeMask, mirror);
+                    }
+                }
+                else if (XMLData.get(i).contentEquals("</Mirror>"))
+                {
+                    mirrortag = false;
+                }
+            }
         } catch (Exception e) {
             System.out.println("ERROR: TheTVDB API -> " + e.getMessage());
         }
     }
-    
+
     public String getMirror(String type) {
         String url = null;
         if (type.equals(TYPE_XML) && !xmlList.isEmpty()) {
@@ -69,7 +69,7 @@ public class Mirrors {
         }
         return url;
     }
-    
+
     private void addMirror(int typeMask, String url) {
         switch (typeMask) {
             case 1: xmlList.add(url);

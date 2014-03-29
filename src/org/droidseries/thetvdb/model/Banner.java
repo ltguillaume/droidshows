@@ -6,7 +6,7 @@ public class Banner {
     public static final String TYPE_SEASON = "season";
     public static final String TYPE_POSTER = "poster";
     public static final String TYPE_FANART = "fanart";
-    
+
     private String url;
     private String vignette;
     private String thumb;

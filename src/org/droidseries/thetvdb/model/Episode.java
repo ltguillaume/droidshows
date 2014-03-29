@@ -103,7 +103,7 @@ public class Episode {
     public void setDirectors(List<String> directors) {
         this.directors = directors;
     }
-    
+
     public void addDirector(String director) {
         this.directors.add(director);
     }
@@ -151,7 +151,7 @@ public class Episode {
     public void addGuestStar(String guestStar) {
         this.guestStars.add(guestStar);
     }
-    
+
     public String getImdbId() {
         return imdbId;
     }
@@ -211,7 +211,7 @@ public class Episode {
     public void addWriter(String writer) {
         this.writers.add(writer);
     }
-    
+
     public String getAbsoluteNumber() {
         return absoluteNumber;
     }
@@ -251,66 +251,66 @@ public class Episode {
     public void setSeasonId(String seasonId) {
         this.seasonId = seasonId;
     }
-    
+
     public boolean getSeen() {
-    	return this.seen;
+        return this.seen;
     }
-    
+
     public void setSeen(boolean visto) {
-    	this.seen = visto;
+        this.seen = visto;
     }
-    
+
     public boolean saveToDB(SQLiteStore SQLS) {
-    	try{
-    		for(int d=0; d < this.directors.size(); d++){
-	    		SQLS.execQuery("INSERT INTO directors (serieId, episodeId, director) " +
-						   "VALUES ('" + this.seriesId + "', '" + this.id + "', \"" + this.directors.get(d) + "\");");
-    		}
-			
-    		for(int g=0; g < this.guestStars.size(); g++){
-	    		SQLS.execQuery("INSERT INTO guestStars (serieId, episodeId, guestStar) " +
-						   "VALUES ('" + this.seriesId + "', '" + this.id + "', \"" + this.guestStars.get(g) + "\");");
-    		}
-    		
-    		for(int w=0; w < this.writers.size(); w++){
-	    		SQLS.execQuery("INSERT INTO writers (serieId, episodeId, writer) " +
-						   "VALUES ('" + this.seriesId + "', '" + this.id + "', \"" + this.writers.get(w) + "\");");
-    		}
-    		
-    		int iseen = 0;
-    		if(this.seen) {
-    			iseen = 1;
-    		}
-    		
-    		String tmpOverview = "";
-    		if(!TextUtils.isEmpty(this.overview)) {
-    			tmpOverview = this.overview.replace("\"", "'");
-    		}
-    		
-    		String tmpName = "";
-    		if(!TextUtils.isEmpty(this.episodeName)) {
-    			tmpName = this.episodeName.replace("\"", "'");
-    		}
-    		
-    		SQLS.execQuery("INSERT INTO episodes (serieId, id, combinedEpisodeNumber, combinedSeason, " +
-    						 "dvdChapter, dvdDiscId, dvdEpisodeNumber, dvdSeason, epImgFlag, episodeName, " +
-    						 "episodeNumber, firstAired, imdbId, language, overview, productionCode, rating, seasonNumber, " +
-    						 "absoluteNumber, filename, lastUpdated, seasonId, seen) VALUES (" +
-    						 "\"" + this.seriesId + "\", " + "'" + this.id + "', " + "'" + this.combinedEpisodeNumber + "', " +
-    						 "'" + this.combinedSeason + "', " + "'" + this.dvdChapter + "', " + "'" + this.dvdDiscId + "', " +
-    						 "'" + this.dvdEpisodeNumber + "', " + "'" + this.dvdSeason + "', " + "'" + this.epImgFlag + "', " +
-    						 "\"" + tmpName + "\", " + "" + this.episodeNumber + ", " + "'" + this.firstAired + "', " +
-    						 "'" + this.imdbId + "', " + "'" + this.language + "', " + "\"" + tmpOverview + "\", " +
-    						 "'" + this.productionCode + "', " +
-    						 "'" + this.rating + "', " + "" + this.seasonNumber + ", " + "'" + this.absoluteNumber + "', " +
-    						 "'" + this.filename + "', " + "'" + this.lastUpdated + "', " + "'" + this.seasonId + "', " +
-    						 "" + iseen + 
-    						 ");");
-		} catch(SQLiteException e){
-			Log.e("DroidSeries", e.getMessage());
-			return false;
-		}
-		
-		return true;
+        try{
+            for(int d=0; d < this.directors.size(); d++){
+                SQLS.execQuery("INSERT INTO directors (serieId, episodeId, director) " +
+                               "VALUES ('" + this.seriesId + "', '" + this.id + "', \"" + this.directors.get(d) + "\");");
+            }
+
+            for(int g=0; g < this.guestStars.size(); g++){
+                SQLS.execQuery("INSERT INTO guestStars (serieId, episodeId, guestStar) " +
+                               "VALUES ('" + this.seriesId + "', '" + this.id + "', \"" + this.guestStars.get(g) + "\");");
+            }
+
+            for(int w=0; w < this.writers.size(); w++){
+                SQLS.execQuery("INSERT INTO writers (serieId, episodeId, writer) " +
+                               "VALUES ('" + this.seriesId + "', '" + this.id + "', \"" + this.writers.get(w) + "\");");
+            }
+
+            int iseen = 0;
+            if(this.seen) {
+                iseen = 1;
+            }
+
+            String tmpOverview = "";
+            if(!TextUtils.isEmpty(this.overview)) {
+                tmpOverview = this.overview.replace("\"", "'");
+            }
+
+            String tmpName = "";
+            if(!TextUtils.isEmpty(this.episodeName)) {
+                tmpName = this.episodeName.replace("\"", "'");
+            }
+
+            SQLS.execQuery("INSERT INTO episodes (serieId, id, combinedEpisodeNumber, combinedSeason, " +
+                           "dvdChapter, dvdDiscId, dvdEpisodeNumber, dvdSeason, epImgFlag, episodeName, " +
+                           "episodeNumber, firstAired, imdbId, language, overview, productionCode, rating, seasonNumber, " +
+                           "absoluteNumber, filename, lastUpdated, seasonId, seen) VALUES (" +
+                           "\"" + this.seriesId + "\", " + "'" + this.id + "', " + "'" + this.combinedEpisodeNumber + "', " +
+                           "'" + this.combinedSeason + "', " + "'" + this.dvdChapter + "', " + "'" + this.dvdDiscId + "', " +
+                           "'" + this.dvdEpisodeNumber + "', " + "'" + this.dvdSeason + "', " + "'" + this.epImgFlag + "', " +
+                           "\"" + tmpName + "\", " + "" + this.episodeNumber + ", " + "'" + this.firstAired + "', " +
+                           "'" + this.imdbId + "', " + "'" + this.language + "', " + "\"" + tmpOverview + "\", " +
+                           "'" + this.productionCode + "', " +
+                           "'" + this.rating + "', " + "" + this.seasonNumber + ", " + "'" + this.absoluteNumber + "', " +
+                           "'" + this.filename + "', " + "'" + this.lastUpdated + "', " + "'" + this.seasonId + "', " +
+                           "" + iseen +
+                           ");");
+        } catch(SQLiteException e){
+            Log.e("DroidSeries", e.getMessage());
+            return false;
+        }
+
+        return true;
     }
 }

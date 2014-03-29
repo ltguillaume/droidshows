@@ -17,7 +17,7 @@ public class Banners {
     public void setSeriesList(List<Banner> seriesList) {
         this.seriesList = seriesList;
     }
-    
+
     public void addSeriesBanner(Banner banner) {
         this.seriesList.add(banner);
     }
@@ -29,7 +29,7 @@ public class Banners {
     public void setSeasonList(List<Banner> seasonList) {
         this.seasonList = seasonList;
     }
-    
+
     public void addSeasonBanner(Banner banner) {
         this.seasonList.add(banner);
     }
@@ -41,7 +41,7 @@ public class Banners {
     public void setPosterList(List<Banner> posterList) {
         this.posterList = posterList;
     }
-    
+
     public void addPosterBanner(Banner banner) {
         this.posterList.add(banner);
     }
@@ -53,11 +53,11 @@ public class Banners {
     public void setFanartList(List<Banner> fanartList) {
         this.fanartList = fanartList;
     }
-    
+
     public void addFanartBanner(Banner banner) {
         this.fanartList.add(banner);
     }
-    
+
     public void addBanner(Banner banner) {
         if (banner != null) {
             if (Banner.TYPE_SERIES.equalsIgnoreCase(banner.getBannerType())) {

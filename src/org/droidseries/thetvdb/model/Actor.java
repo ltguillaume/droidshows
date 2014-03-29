@@ -6,7 +6,7 @@ public class Actor implements Comparable<Actor> {
     private String role;
     private String image;
     private int sortOrder = 0;
-    
+
     public String getName() {
         return name;
     }

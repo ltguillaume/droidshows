@@ -118,7 +118,7 @@ public class Serie {
     public void setActors(List<String> actors) {
         this.actors = actors;
     }
-    
+
     public void addActor(String actor) {
         this.actors.add(actor);
     }
@@ -154,7 +154,7 @@ public class Serie {
     public void setGenres(List<String> genres) {
         this.genres = genres;
     }
-    
+
     public void addGenre(String genre) {
         this.genres.add(genre);
     }
@@ -214,23 +214,23 @@ public class Serie {
     public void setPoster(String poster) {
         this.poster = poster;
     }
-    
+
     public List<Episode> getEpisodes() {
-    	return episodes;
+        return episodes;
     }
-    
+
     public void setEpisodes(List<Episode> episodes) {
-    	this.episodes = episodes;
+        this.episodes = episodes;
     }
-    
+
     public List<Integer> getNSeasons(){
-    	return nseasons;
+        return nseasons;
     }
-    
+
     public void setNSeasons(List<Integer> nseasons) {
-    	this.nseasons = nseasons;
+        this.nseasons = nseasons;
     }
-    
+
     public String getPosterInCache() {
         return posterInCache;
     }
@@ -238,7 +238,7 @@ public class Serie {
     public void setPosterInCache(String posterInCache) {
         this.posterInCache = posterInCache;
     }
-    
+
     public String getPosterThumb() {
         return posterThumb;
     }
@@ -246,57 +246,57 @@ public class Serie {
     public void setPosterThumb(String posterThumb) {
         this.posterThumb = posterThumb;
     }
-    
+
     public boolean saveToDB(SQLiteStore SQLS) {
-    	try{
-    		for(int a=0; a < this.actors.size(); a++){
-	    		SQLS.execQuery("INSERT INTO actors (serieId, actor) " +
-						   "VALUES ('" + this.id  + "', \"" + this.actors.get(a) + "\");");
-    		}
-			
-    		for(int g=0; g < this.genres.size(); g++){
-	    		SQLS.execQuery("INSERT INTO genres (serieId, genre) " +
-						   "VALUES ('" + this.id  + "', '" + this.genres.get(g) + "');");
-    		}
-    		
-    		for(int n=0; n < this.nseasons.size(); n++){
-	    		SQLS.execQuery("INSERT INTO serie_seasons (serieId, season) " +
-						   "VALUES ('" + this.id  + "', '" + this.nseasons.get(n) + "');");
-    		}
-    		
-    		String tmpOverview = "";
-    		if(!TextUtils.isEmpty(this.overview)) {
-    			tmpOverview = this.overview.replace("\"", "'");
-    		}
-    		
-    		String tmpSName = "";
-    		if(!TextUtils.isEmpty(this.serieName)) {
-    			tmpSName = this.serieName.replace("\"", "'"); 
-    		}
-    		    		
-    		SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, " +
-    						 "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, " +
-    						 "network, rating, runtime, status, fanart, lastUpdated, poster, " +
-    						 "posterInCache, posterThumb) VALUES (" +
-    						 "'" + this.id + "', " + "'" + this.serieId + "', " + "'" + this.language + "', " +
-    						 "\"" + tmpSName + "\", " + "'" + this.banner + "', " + "\"" + tmpOverview + "\", " +
-    						 "'" + this.firstAired + "', " + "'" + this.imdbId + "', " + "'" + this.zap2ItId + "', " +
-    						 "'" + this.airsDayOfWeek + "', " + "'" + this.airsTime + "', " + "'" + this.contentRating + "', " +
-    						 "'" + this.network + "', " + "'" + this.rating + "', " + "'" + this.runtime + "', " +
-    						 "'" + this.status + "', " + "'" + this.fanart + "', " + "'" + this.lastUpdated + "', " +
-    						 "'" + this.poster + "', " + "'" + this.posterInCache + "', " + "'" + this.posterThumb + "'" +
-    						 ");");
-    		
-    		for(int e=0; e < this.episodes.size(); e++) {
-    			this.episodes.get(e).setSeriesId(this.id);
-    			this.episodes.get(e).saveToDB(SQLS);
-    		}
-    		
-		} catch(SQLiteException e){
-			Log.e("DroidSeries", e.getMessage());
-			return false;
-		}
-		
-		return true;
+        try{
+            for(int a=0; a < this.actors.size(); a++){
+                SQLS.execQuery("INSERT INTO actors (serieId, actor) " +
+                               "VALUES ('" + this.id  + "', \"" + this.actors.get(a) + "\");");
+            }
+
+            for(int g=0; g < this.genres.size(); g++){
+                SQLS.execQuery("INSERT INTO genres (serieId, genre) " +
+                               "VALUES ('" + this.id  + "', '" + this.genres.get(g) + "');");
+            }
+
+            for(int n=0; n < this.nseasons.size(); n++){
+                SQLS.execQuery("INSERT INTO serie_seasons (serieId, season) " +
+                               "VALUES ('" + this.id  + "', '" + this.nseasons.get(n) + "');");
+            }
+
+            String tmpOverview = "";
+            if(!TextUtils.isEmpty(this.overview)) {
+                tmpOverview = this.overview.replace("\"", "'");
+            }
+
+            String tmpSName = "";
+            if(!TextUtils.isEmpty(this.serieName)) {
+                tmpSName = this.serieName.replace("\"", "'");
+            }
+
+            SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, " +
+                           "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, " +
+                           "network, rating, runtime, status, fanart, lastUpdated, poster, " +
+                           "posterInCache, posterThumb) VALUES (" +
+                           "'" + this.id + "', " + "'" + this.serieId + "', " + "'" + this.language + "', " +
+                           "\"" + tmpSName + "\", " + "'" + this.banner + "', " + "\"" + tmpOverview + "\", " +
+                           "'" + this.firstAired + "', " + "'" + this.imdbId + "', " + "'" + this.zap2ItId + "', " +
+                           "'" + this.airsDayOfWeek + "', " + "'" + this.airsTime + "', " + "'" + this.contentRating + "', " +
+                           "'" + this.network + "', " + "'" + this.rating + "', " + "'" + this.runtime + "', " +
+                           "'" + this.status + "', " + "'" + this.fanart + "', " + "'" + this.lastUpdated + "', " +
+                           "'" + this.poster + "', " + "'" + this.posterInCache + "', " + "'" + this.posterThumb + "'" +
+                           ");");
+
+            for(int e=0; e < this.episodes.size(); e++) {
+                this.episodes.get(e).setSeriesId(this.id);
+                this.episodes.get(e).saveToDB(SQLS);
+            }
+
+        } catch(SQLiteException e){
+            Log.e("DroidSeries", e.getMessage());
+            return false;
+        }
+
+        return true;
     }
 }
