@@ -90,7 +90,7 @@ public class droidseries extends ListActivity {
 	private Utils utils = new Utils();
 	private Update updateDS = new Update();
 
-	private static final String PREF_NAME = "DroidSeriedPref";
+	private static final String PREF_NAME = "DroidSeriesPref";
 	private SharedPreferences sharedPrefs;
 	
 	private static final String SORT_PREF_NAME = "sort";
@@ -848,12 +848,18 @@ public class droidseries extends ListActivity {
 							String serieid = serie.getSerieId();
 							Date nextAir = db.getNextAir(serieid, -1);
 							Date current = new Date();
-							if (nextAir.before(current)) {
-								holder.sne.setTypeface( Typeface.DEFAULT, Typeface.BOLD );
+							
+							if (nextAir != null) {
+								if (nextAir.before(current)){
+									holder.sne.setTypeface( Typeface.DEFAULT, Typeface.BOLD );
+								}
+								else {
+									// Without this all next episodes lines would be bold after
+									// rotating screen
+									holder.sne.setTypeface( Typeface.DEFAULT, Typeface.NORMAL );
+								}
 							}
 							else {
-								// Without this all next episodes lines would be bold after
-								// rotating screen
 								holder.sne.setTypeface( Typeface.DEFAULT, Typeface.NORMAL );
 							}
 

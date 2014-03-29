@@ -34,7 +34,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
 
 	private final Context ctx;
 	
-	private final String MY_DEBUG_TAG = "DroidSeries";
+	private final String TAG = "DroidSeries";
 	
 	public SQLiteStore(Context context) {
     	super(context, DB_NAME, null, 1);
@@ -131,12 +131,11 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	 */
 	public List<Episode> getEpisodes(String serieId) {
 		List<Episode> episodes = null;
+		episodes = new ArrayList<Episode>();
+		
+		Cursor c = Query("SELECT * FROM episodes WHERE serieId = '" + serieId + "'");
 		
 		try {
-			episodes = new ArrayList<Episode>();
-			
-			Cursor c = Query("SELECT * FROM episodes WHERE serieId = '" + serieId + "'");
-			
 		    if (c != null) {
 		    	int idCol = c.getColumnIndex("id");
 			    int combinedEpisodeNumberCol = c.getColumnIndex("combinedEpisodeNumber");
@@ -239,16 +238,20 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			    }
 		    }
 		    c.close();
-		} catch(SQLiteException e){
-			//nao faz nada
+		} 
+		catch(SQLiteException e){
+			Log.e("DroidSeries", e.getMessage());
+			c.close();
 		}
 		return episodes;
 	}
 	
 	private List<String> getSeries(String orderBy) {
 		List<String> series = new ArrayList<String>();
+		Cursor cseries = Query("SELECT id FROM series ORDER BY " + orderBy + " ASC");
+		
 		try {
-			Cursor cseries = Query("SELECT id FROM series ORDER BY " + orderBy + " ASC");
+			
 			cseries.moveToFirst();
 			if (cseries != null && cseries.isFirst()) {
 				do {
@@ -259,6 +262,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			cseries.close();
 		} catch(SQLiteException e){
 			Log.e("DroidSeries", e.getMessage());
+			cseries.close();
 		}
 		return series;
 	}
@@ -273,9 +277,10 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	
 	public List<String> getSeriesByNextEpisode() {
 		List<String> series = new ArrayList<String>();
+		Cursor cseries = null;
 		try {
 			// Note: completely seen series won't be returned by this query
-			Cursor cseries = Query("SELECT s.id, min(e.firstAired) AS nextAir FROM series AS s LEFT JOIN episodes AS e ON e.serieId = s.id WHERE e.seen = 0 AND seasonNumber <> 0 GROUP BY s.id ORDER BY nextAir ASC");
+			cseries = Query("SELECT s.id, min(e.firstAired) AS nextAir FROM series AS s LEFT JOIN episodes AS e ON e.serieId = s.id WHERE e.seen = 0 AND seasonNumber <> 0 GROUP BY s.id ORDER BY nextAir ASC");
 			cseries.moveToFirst();
 			if (cseries != null && cseries.isFirst()) {
 				do {
@@ -303,6 +308,9 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			
 			cseries.close();
 		} catch(SQLiteException e){
+			if (cseries != null) {
+				cseries.close();
+			}
 			Log.e("DroidSeries", e.getMessage());
 		}
 		return series;
@@ -310,8 +318,8 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	
 	public List<String> getEpisodes(String serieId, int seasonNumber) {
 		List<String> episodes = new ArrayList<String>();
+		Cursor c = Query("SELECT id FROM episodes WHERE serieId='" + serieId + "' AND seasonNumber=" + seasonNumber + " ORDER BY episodeNumber ASC");
 		try {
-			Cursor c = Query("SELECT id FROM episodes WHERE serieId='" + serieId + "' AND seasonNumber=" + seasonNumber + " ORDER BY episodeNumber ASC");
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				do {
@@ -320,6 +328,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			}
 			c.close();
 		} catch(SQLiteException e){
+			c.close();
 			Log.e("DroidSeries", e.getMessage());
 		}
 		return episodes;
@@ -327,15 +336,17 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	
 	public String getSerieName(String serieId) {
 		String sname = "";
+		Cursor c = Query("SELECT serieName FROM series WHERE id='" + serieId  + "'");
 		try {
-			Cursor c = Query("SELECT serieName FROM series WHERE id='" + serieId  + "'");
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				sname = c.getString(0);
 			}
 			c.close();
 		} catch(SQLiteException e){
+			c.close();
 			Log.e("DroidSeries", e.getMessage());
+			return null;
 		}
 		return sname;
 	}
@@ -359,29 +370,32 @@ public class SQLiteStore extends SQLiteOpenHelper {
 
 	public String getSeriePoster(String serieId) {
 		String sposter = "";
+		Cursor c = Query("SELECT posterInCache FROM series WHERE id='" + serieId  + "'");
 		try {
-			Cursor c = Query("SELECT posterInCache FROM series WHERE id='" + serieId  + "'");
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				sposter = c.getString(0);
 			}
 			c.close();
 		} catch(SQLiteException e){
+			c.close();
 			Log.e("DroidSeries", e.getMessage());
+			return null;
 		}
 		return sposter;
 	}
 	
 	public int getEPUnwatched(String serieId) {
 		int unwatched = 0;
+		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId + "' AND seen=0 AND seasonNumber <> 0");
 		try {
-			Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId + "' AND seen=0 AND seasonNumber <> 0");
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				unwatched = c.getInt(0);
 			}
 			c.close();
 		} catch(SQLiteException e){
+			c.close();
 			Log.e("DroidSeries", e.getMessage());
 		}
 		return unwatched;
@@ -389,14 +403,15 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	
 	public int getSeasonEPUnwatched(String serieId, int snumber) {
 		int unwatched = 0;
+		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId + "' AND seasonNumber=" + snumber + " AND seen=0");
 		try {
-			Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId + "' AND seasonNumber=" + snumber + " AND seen=0");
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				unwatched = c.getInt(0);
 			}
 			c.close();
 		} catch(SQLiteException e){
+			c.close();
 			Log.e("DroidSeries", e.getMessage());
 		}
 		return unwatched;
@@ -423,13 +438,18 @@ public class SQLiteStore extends SQLiteOpenHelper {
     					SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
     					na = SDF.parse(c.getString(faCol));
 					} catch (ParseException e) {
-						Log.e(MY_DEBUG_TAG, e.getMessage());
+						Log.e(TAG, e.getMessage());
+						return null;
 					}
 				}
 			}
 			c.close();
 		} catch(SQLiteException e){
+			if(c != null) {
+				c.close();
+			}
 			Log.e("DroidSeries", e.getMessage());
+			return null;
 		}
 		return na;
 	}
@@ -450,7 +470,11 @@ public class SQLiteStore extends SQLiteOpenHelper {
 				int index = c.getColumnIndex("id");
 				id = c.getInt(index);
 			}
+			c.close();
 		}catch(SQLiteException e){
+			if(c != null) {
+				c.close();
+			}
 			Log.e("DroidSeries", e.getMessage());
 		}
 		
@@ -490,7 +514,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
 						formatter = new SimpleDateFormat("yyyy");
 						epDataStr += formatter.format(epDate);	
 					} catch (ParseException e) {
-						Log.e(MY_DEBUG_TAG, e.getMessage());
+						Log.e(TAG, e.getMessage());
 					}
 				}
 				
@@ -511,6 +535,9 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			}
 			c.close();
 		} catch(SQLiteException e){
+			if(c != null) {
+				c.close();
+			}
 			Log.e("DroidSeries", e.getMessage());
 		}
 		return ne;
@@ -518,13 +545,14 @@ public class SQLiteStore extends SQLiteOpenHelper {
 	
 	public int getSeasonCount(String serieId) {
 		int tmpSeasons = 0;
+		Cursor cseasons = Query("SELECT season FROM serie_seasons WHERE serieId = '" + serieId + "' AND season <> 0");
 		try {
-        	Cursor cseasons = Query("SELECT season FROM serie_seasons WHERE serieId = '" + serieId + "' AND season <> 0");
            	if (cseasons != null) {
            		tmpSeasons = cseasons.getCount();
            	}
            	cseasons.close();
 		} catch(SQLiteException e){
+			cseasons.close();
 			Log.e("DroidSeries", e.getMessage());
 		}
 		return tmpSeasons;
@@ -566,6 +594,9 @@ public class SQLiteStore extends SQLiteOpenHelper {
 			}
 			
 		} catch(SQLiteException e){
+			if(c != null) {
+				c.close();
+			}
 			Log.e("DroidSeries", e.getMessage());
 		}
 	}
@@ -617,6 +648,9 @@ public class SQLiteStore extends SQLiteOpenHelper {
 					}
 					cms.close();
 				} catch(SQLiteException e){
+					if (cms != null) {
+						cms.close();
+					}
 					Log.e("DroidSeries", e.getMessage());
 				}
 			}

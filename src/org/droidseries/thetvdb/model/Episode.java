@@ -8,6 +8,7 @@ import org.droidseries.utils.SQLiteStore;
 
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class Episode {
 
@@ -306,6 +307,7 @@ public class Episode {
     						 "" + iseen + 
     						 ");");
 		} catch(SQLiteException e){
+			Log.e("DroidSeries", e.getMessage());
 			return false;
 		}
 		

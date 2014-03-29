@@ -11,7 +11,7 @@
 						 android:value=".ui.AddSerie" />
 		</activity>
 
-    <activity android:name=".ui.AddSerie" android:configChanges="orientation">
+    <activity android:name=".ui.AddSerie" android:configChanges="orientation" android:launchMode="singleTop">
         <intent-filter>
             <action android:name="android.intent.action.SEARCH" />
             <category android:name="android.intent.category.DEFAULT" />
