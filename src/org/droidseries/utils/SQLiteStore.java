@@ -700,6 +700,19 @@ public class SQLiteStore extends SQLiteOpenHelper {
                                 "lastUpdated=?, seasonId=? WHERE id=? AND serieId=?");
 
                         //episodes
+
+                        // Create an ArrayList with episodes found in the DB
+                        // Let's do a single databade query to speed things up
+                        ArrayList<String> episodesIdList = new ArrayList<String>();
+                        Cursor cur = Query("SELECT id FROM episodes WHERE serieId='" + s.getId() + "'");
+                        if (cur.moveToFirst()) {
+                            do {
+                                episodesIdList.add(cur.getString(0));
+                            } while (cur.moveToNext());
+                        }
+                        cur.close();
+                        Log.d(TAG, "* DBG * . Found " + episodesIdList.size() + " episodes in the database");
+
                         //TODO: implement threads for episode update. Must know when they finish. (?)
                         for(int e=0; e < s.getEpisodes().size(); e++) {
                                 if(max_season != -1) {
@@ -707,10 +720,8 @@ public class SQLiteStore extends SQLiteOpenHelper {
                                                 continue;
                                         }
                                 }
-                                //ver se o episodios existe na base de dados
-                                Cursor c = Query("SELECT id FROM episodes WHERE id='" + s.getEpisodes().get(e).getId()  + "' AND serieId='" + s.getId() + "'");
-                                c.moveToFirst();
-                                if(c.getCount() == 1) { // The episode already exists
+                                // Check if the episode is already in the DB
+                                if (episodesIdList.contains(s.getEpisodes().get(e).getId())) {
                                         String tmpEOverview = "";
                                         if(!TextUtils.isEmpty(s.getEpisodes().get(e).getOverview())) {
                                                 tmpEOverview = s.getEpisodes().get(e).getOverview().replace("\"", "'");
@@ -827,7 +838,6 @@ public class SQLiteStore extends SQLiteOpenHelper {
                                                           ");");
                                         }
                                 }
-                                c.close();
                         }
                         db.setTransactionSuccessful();
                         db.endTransaction();
