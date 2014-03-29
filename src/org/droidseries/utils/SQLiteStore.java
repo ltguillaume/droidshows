@@ -655,6 +655,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
                         }
 
                         //Log.d("DroidSeries", "MAX SEASON: " + max_season);
+                        db.beginTransaction();
 
                         db.execSQL("UPDATE series SET language='" + s.getLanguage() + "', serieName=\"" + tmpSName + "\", overview=\"" + tmpSOverview + "\", " +
                                    "firstAired='" + s.getFirstAired() + "', imdbId='" + s.getImdbId() + "', zap2ItId='" + s.getZap2ItId() + "', " +
@@ -694,7 +695,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
                                 //ver se o episodios existe na base de dados
                                 Cursor c = Query("SELECT id FROM episodes WHERE id='" + s.getEpisodes().get(e).getId()  + "' AND serieId='" + s.getId() + "'");
                                 c.moveToFirst();
-                                if(c.getCount() == 1) {
+                                if(c.getCount() == 1) { // The episode already exists
                                         String tmpEOverview = "";
                                         if(!TextUtils.isEmpty(s.getEpisodes().get(e).getOverview())) {
                                                 tmpEOverview = s.getEpisodes().get(e).getOverview().replace("\"", "'");
@@ -788,6 +789,8 @@ public class SQLiteStore extends SQLiteOpenHelper {
                                 }
                                 c.close();
                         }
+                        db.setTransactionSuccessful();
+                        db.endTransaction();
                 } catch(SQLiteException e){
                         Log.e("DroidSeries", e.getMessage());
                 }
