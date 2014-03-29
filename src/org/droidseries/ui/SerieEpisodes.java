@@ -46,6 +46,7 @@ public class SerieEpisodes extends ListActivity {
 
         /* Context Menus */
         private static final int VIEWEP_CONTEXT = Menu.FIRST;
+        private static final int DELEP_CONTEXT = Menu.FIRST + 1;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -84,16 +85,18 @@ public class SerieEpisodes extends ListActivity {
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
                 super.onCreateContextMenu(menu, v, menuInfo);
                 menu.add(0, VIEWEP_CONTEXT, 0,  getString(R.string.messsages_view_ep_details));
+                menu.add(0, DELEP_CONTEXT, 0,   getString(R.string.messsages_delete_ep));
         }
 
         public boolean onContextItemSelected(MenuItem item) {
                 AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+                String query;
                 switch (item.getItemId()) {
                         case  VIEWEP_CONTEXT:
                                 //TODO: check this
                                 Intent viewEpisode = new Intent(SerieEpisodes.this, ViewEpisode.class);
-                                String query = "SELECT episodeName, overview, rating, firstAired " +
-                                                           "FROM episodes WHERE serieId='" + serieid + "' AND id = '" + episodes.get(info.position) + "'";
+                                query = "SELECT episodeName, overview, rating, firstAired " +
+                                        "FROM episodes WHERE serieId='" + serieid + "' AND id = '" + episodes.get(info.position) + "'";
 
                                  Cursor c = droidseries.db.Query(query);
                                  c.moveToFirst();
@@ -143,6 +146,14 @@ public class SerieEpisodes extends ListActivity {
 
                                          startActivity(viewEpisode);
                                  }
+                                return true;
+                        case DELEP_CONTEXT:
+                                query = "DELETE FROM episodes WHERE serieId='" + serieid + "' " +
+                                        "AND id = '" + episodes.get(info.position) + "'";
+
+                                Log.d(MY_DEBUG_TAG, query);
+                                droidseries.db.execQuery(query);
+                                episodes_adapter.remove(episodes_adapter.getItem(info.position));
                                 return true;
                         default:
                                 return super.onContextItemSelected(item);
@@ -213,6 +224,8 @@ public class SerieEpisodes extends ListActivity {
 
                             if (c.getInt(seenCol) == 1) {
                                 lView.setItemChecked(position, true);
+                            } else {
+                                lView.setItemChecked(position, false);
                             }
                         }
                     }

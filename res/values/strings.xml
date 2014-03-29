@@ -76,6 +76,7 @@
 <string name="messages_specials">Specials</string>
 <string name="messages_episodes">Episodes</string>
 <string name="messsages_view_ep_details">View episode details</string>
+<string name="messsages_delete_ep">Remove episode from DB</string>
 <string name="messages_unknown">Unknown</string>
 <string name="messages_overview">Overview</string>
 <string name="messages_no_next_episodes">All episodes have been watched</string>
