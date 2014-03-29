@@ -626,6 +626,7 @@ public class droidseries extends ListActivity {
                 }
         } catch (Exception e) {
                 Log.e(TAG, "Error populating the TVShowItems");
+                e.printStackTrace();
         }
         runOnUiThread(updateList);
         m_ProgressDialog.dismiss();
