@@ -430,6 +430,14 @@ public class droidseries extends ListActivity {
         }
     }
 
+    private String toastmessage="Data fetched - Updating DB now...";
+    private Runnable changeMessage = new Runnable() {
+        @Override
+        public void run() {
+            m_ProgressDialog.setMessage(toastmessage);
+        }
+    };
+
     //TODO : change and create a struct for handling aditions and updates. The idea is to have a
     //queue of ids or somethings like similar to that, to process. Easy to stop and resume.
     private void updateSerie(String serieId) {
@@ -443,8 +451,13 @@ public class droidseries extends ListActivity {
                         //wl.acquire();
                         theTVDB = new TheTVDB("8AC675886350B3C3");
                         if (theTVDB.getMirror() != null) {
+                            Log.d(TAG, "* DBG * droidseries.java:updateSerie #1 - Running getSerie - " + id);
                             Serie sToUpdate = theTVDB.getSerie(id, "en");
+                            Log.d(TAG, "* DBG * droidseries.java:updateSerie #2 - Running db.updateserie");
+                            toastmessage = "Updating DB - " + sToUpdate.getSerieName();
+                            runOnUiThread(changeMessage);
                             db.updateSerie(sToUpdate, false);
+                            Log.d(TAG, "* DBG * droidseries.java:updateSerie #3 - Done running db.updateserie");
 
                             runOnUiThread(droidseries.updateListView);
                         }
@@ -503,6 +516,11 @@ public class droidseries extends ListActivity {
                 toast.show();
         }
         else {
+            final Runnable updateMessage = new Runnable() {
+                public void run() {
+                    updateAllSeriesPD.setMessage(toastmessage);
+                }
+            };
             final Runnable updateallseries = new Runnable(){
                 public void run() {
                     theTVDB = new TheTVDB("8AC675886350B3C3");
@@ -513,6 +531,8 @@ public class droidseries extends ListActivity {
                             return;
                         }
                         Log.d(TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName());
+                        toastmessage = "Updating show:\n" + series.get(i).getName() + "...";
+                        runOnUiThread(updateMessage);
                         Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), "en");
                         Log.d(TAG, "Updating the database...");
                         try {
