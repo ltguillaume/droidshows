@@ -4,6 +4,8 @@ import org.droidseries.thetvdb.utils.XMLHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
+import java.io.InputStream;
+import java.io.BufferedInputStream;
 
 import android.util.Log;
 
@@ -35,7 +37,8 @@ public class XMLParser {
                     con.setRequestMethod("GET");
                     while(retry < 2) {
                         if(con.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                            InputSource inputSourceURL =  new InputSource(url.openStream());
+                            InputStream inputStream = new BufferedInputStream(url.openStream());
+                            InputSource inputSourceURL =  new InputSource(inputStream);
                             xr.parse(inputSourceURL);
                             break;
                         }
