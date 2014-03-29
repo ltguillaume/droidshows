@@ -21,6 +21,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.text.TextUtils;
@@ -609,6 +610,11 @@ public class SQLiteStore extends SQLiteOpenHelper {
                 }
         }
 
+        private void bindStringOrNull(SQLiteStatement statemnt, Integer index, String s) {
+            if (s == null) s = "";
+            statemnt.bindString(index, s);
+        }
+
         //UPDATE table_name SET column1=value, column2=value2,... WHERE some_column=some_value
         public void updateSerie(Serie s, boolean last_season) {
                 if(s == null) {
@@ -684,6 +690,15 @@ public class SQLiteStore extends SQLiteOpenHelper {
                                           "VALUES ('" + s.getId()  + "', '" + s.getGenres().get(g) + "');");
                         }
 
+                        SQLiteStatement updateEpisodeStatmnt = db.compileStatement(
+                                "UPDATE episodes SET combinedEpisodeNumber=?, combinedSeason=?, " +
+                                "dvdChapter=?, dvdDiscId=?, dvdEpisodeNumber=?, " +
+                                "dvdSeason=?, epImgFlag=?, episodeName=?, " +
+                                "episodeNumber=?, firstAired=?, imdbId=?, " +
+                                "language=?, overview=?, productionCode=?, " +
+                                "rating=?, seasonNumber=?, absoluteNumber=?, " +
+                                "lastUpdated=?, seasonId=? WHERE id=? AND serieId=?");
+
                         //episodes
                         //TODO: implement threads for episode update. Must know when they finish. (?)
                         for(int e=0; e < s.getEpisodes().size(); e++) {
@@ -708,6 +723,30 @@ public class SQLiteStore extends SQLiteOpenHelper {
 
                                         if(!tmpEName.equals("")) {
                                                 //Log.d("DroidSeries", "Updating episode " + tmpEName);
+                                                //updateEpisodeStatmnt.clearBindings();
+                                                updateEpisodeStatmnt.bindString(1, s.getEpisodes().get(e).getCombinedEpisodeNumber());
+                                                updateEpisodeStatmnt.bindString(2, s.getEpisodes().get(e).getCombinedSeason());
+                                                bindStringOrNull(updateEpisodeStatmnt, 3, s.getEpisodes().get(e).getDvdChapter());
+                                                bindStringOrNull(updateEpisodeStatmnt, 4, s.getEpisodes().get(e).getDvdDiscId());
+                                                updateEpisodeStatmnt.bindLong(5,   s.getEpisodes().get(e).getEpisodeNumber());
+                                                bindStringOrNull(updateEpisodeStatmnt, 6, s.getEpisodes().get(e).getDvdSeason());
+                                                bindStringOrNull(updateEpisodeStatmnt, 7, s.getEpisodes().get(e).getEpImgFlag());
+                                                updateEpisodeStatmnt.bindString(8, tmpEName);
+                                                updateEpisodeStatmnt.bindLong(9,   s.getEpisodes().get(e).getEpisodeNumber());
+                                                bindStringOrNull(updateEpisodeStatmnt, 10, s.getEpisodes().get(e).getFirstAired());
+                                                bindStringOrNull(updateEpisodeStatmnt, 11, s.getEpisodes().get(e).getImdbId());
+                                                bindStringOrNull(updateEpisodeStatmnt, 12, s.getEpisodes().get(e).getLanguage());
+                                                updateEpisodeStatmnt.bindString(13, tmpEOverview);
+                                                bindStringOrNull(updateEpisodeStatmnt, 14, s.getEpisodes().get(e).getProductionCode());
+                                                bindStringOrNull(updateEpisodeStatmnt, 15, s.getEpisodes().get(e).getRating());
+                                                updateEpisodeStatmnt.bindLong(16,   s.getEpisodes().get(e).getSeasonNumber());
+                                                bindStringOrNull(updateEpisodeStatmnt, 17, s.getEpisodes().get(e).getAbsoluteNumber());
+                                                updateEpisodeStatmnt.bindString(18, s.getEpisodes().get(e).getLastUpdated());
+                                                updateEpisodeStatmnt.bindString(19, s.getEpisodes().get(e).getSeasonId());
+                                                updateEpisodeStatmnt.bindString(20, s.getEpisodes().get(e).getId());
+                                                updateEpisodeStatmnt.bindString(21, s.getId());
+                                                updateEpisodeStatmnt.execute();
+                                                        /*
                                                 db.execSQL("UPDATE episodes SET combinedEpisodeNumber='" + s.getEpisodes().get(e).getCombinedEpisodeNumber() + "', combinedSeason='" + s.getEpisodes().get(e).getCombinedSeason() + "', dvdChapter='" + s.getEpisodes().get(e).getDvdChapter() + "', " +
                                                            "dvdChapter='" + s.getEpisodes().get(e).getDvdChapter() + "', dvdDiscId='" + s.getEpisodes().get(e).getDvdDiscId() + "', dvdEpisodeNumber=" + s.getEpisodes().get(e).getEpisodeNumber() + ", " +
                                                            "dvdSeason='" + s.getEpisodes().get(e).getDvdSeason() + "', epImgFlag='" + s.getEpisodes().get(e).getEpImgFlag() + "', episodeName=\"" + tmpEName + "\", " +
@@ -715,6 +754,7 @@ public class SQLiteStore extends SQLiteOpenHelper {
                                                            "language='" + s.getEpisodes().get(e).getLanguage() + "', overview=\"" + tmpEOverview + "\", productionCode='" + s.getEpisodes().get(e).getProductionCode() + "', " +
                                                            "rating='" + s.getEpisodes().get(e).getRating() + "', seasonNumber=" + s.getEpisodes().get(e).getSeasonNumber() + ", absoluteNumber='" + s.getEpisodes().get(e).getAbsoluteNumber() + "', " +
                                                            "lastUpdated='" + s.getEpisodes().get(e).getLastUpdated() + "', seasonId='" + s.getEpisodes().get(e).getSeasonId() + "' WHERE id='" + s.getEpisodes().get(e).getId() + "' AND serieId='" + s.getId() + "'");
+                                                           */
 
                                                 db.execSQL("DELETE FROM directors WHERE serieId='" + s.getId() + "'");
                                                 for(int d=0; d < s.getEpisodes().get(e).getDirectors().size(); d++){
