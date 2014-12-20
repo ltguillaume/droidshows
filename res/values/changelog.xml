@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changelog" translatable="false">DroidSeries
-\nVersion 0.1.5-7_Guillaume-3.5
+\nVersion 0.1.5-7_Guillaume-3.6
 \n\n1. Click Menu > Add a show
 \n2. Long-press show, season or episode for options
 \n3. Update all shows for latest information
@@ -13,6 +13,7 @@
 \n+ If show position changed, scroll back to show after "Mark next episode as seen" and Seasons list
 \n+ Option in [About] to only update shows\' last season (==fast)
 \n+ Click poster for show details
+\n+ View show details on IMDb
 \n* Sorting shows by first unseen episode
 \n* Clarified toggle and sort options
 \n* Episodes named "TBA" are excluded in unwatched count

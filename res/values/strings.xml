@@ -20,6 +20,7 @@
 <string name="menu_show_toggled">Show toggled</string>
 <string name="menu_hide_toggled">Hide toggled</string>
 <string name="menu_context_view_serie_details">Details</string>
+<string name="menu_context_view_imdb">View on IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_clean_db">Clean database</string>

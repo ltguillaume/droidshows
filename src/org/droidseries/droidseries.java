@@ -28,6 +28,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.drawable.Drawable;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -66,7 +67,8 @@ public class droidseries extends ListActivity
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = Menu.FIRST;
 	private static final int TOGGLE_SERIE_STATUS_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
 	private static final int VIEW_SERIEDETAILS_CONTEXT = TOGGLE_SERIE_STATUS_CONTEXT + 1;
-	private static final int UPDATE_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
+	private static final int VIEW_IMDB_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
+	private static final int UPDATE_CONTEXT = VIEW_IMDB_CONTEXT + 1;
 	private static final int DELETE_CONTEXT = UPDATE_CONTEXT + 1;
 	// private static final int VIEW_POSTER_CONTEXT = DELETE_CONTEXT + 1; //
 	public static String on;
@@ -257,6 +259,7 @@ public class droidseries extends ListActivity
 		menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, 0, getString(R.string.menu_context_mark_next_episode_as_seen));
 		menu.add(0, TOGGLE_SERIE_STATUS_CONTEXT, 0, getString(R.string.menu_toggle));
 		menu.add(0, VIEW_SERIEDETAILS_CONTEXT, 0, getString(R.string.menu_context_view_serie_details));
+		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
 		// menu.add(0, VIEW_POSTER_CONTEXT, 0, getString(R.string.menu_context_viewposter)); // Disabled by Guillaume
@@ -302,6 +305,12 @@ public class droidseries extends ListActivity
 					series.get(info.position).setPassiveStatus(st == 1);
 				}
 				listView.post(updateListView);
+				return true;
+			case VIEW_SERIEDETAILS_CONTEXT :
+				showDetails(series.get(info.position).getSerieId());
+				return true;
+			case VIEW_IMDB_CONTEXT :
+				IMDbDetails(series.get(info.position).getSerieId());
 				return true;
 			case UPDATE_CONTEXT :
 				updateSerie(series.get(info.position).getSerieId());
@@ -350,9 +359,6 @@ public class droidseries extends ListActivity
 				 * viewPoster.putExtra("seriename",
 				 * db.getSerieName(series.get(info.position).getSerieId())); viewPoster.putExtra("poster",
 				 * posterincache); startActivity(viewPoster); } return true; // Disabled by Guillaume */
-			case VIEW_SERIEDETAILS_CONTEXT :
-				showDetails(series.get(info.position).getSerieId());
-				return true;
 			default :
 				return super.onContextItemSelected(item);
 		}
@@ -416,6 +422,18 @@ public class droidseries extends ListActivity
 		}		
 	}
 
+	private void IMDbDetails(String serieId) {
+		String query = "SELECT imdbId FROM series WHERE id = '" + serieId + "'";
+		Cursor c = db.Query(query);
+		c.moveToFirst();
+		if (c != null && c.isFirst()) {
+			String imdbId = c.getString(0);
+			c.close();
+			Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/title/"+ imdbId));
+			startActivity(imdb);
+		}
+	}
+	
 	private void updateSerie(String serieId) {
 		final String id = serieId;
 		if (utils.isNetworkAvailable(droidseries.this)) {

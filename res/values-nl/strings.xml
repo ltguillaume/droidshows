@@ -20,6 +20,7 @@
 <string name="menu_show_toggled">[…] tonen</string>
 <string name="menu_hide_toggled">[…] verbergen</string>
 <string name="menu_context_view_serie_details">Informatie</string>
+<string name="menu_context_view_imdb">Bekijken op IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_clean_db">Database opschonen</string>

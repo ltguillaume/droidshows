@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.droidseries" android:versionCode="13" android:versionName="0.1.5-7_Guillaume-3.5">
+          package="org.droidseries" android:versionCode="13" android:versionName="0.1.5-7_Guillaume-3.6">
 
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11"></uses-sdk> <!-- Guillaume minSdkVersion="9" & targetSdkVersion="11" to force visual menu button in Android >= 3 -->
+    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11"></uses-sdk>
     <uses-permission android:name="android.permission.INTERNET"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
     
