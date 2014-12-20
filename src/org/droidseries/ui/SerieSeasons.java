@@ -218,11 +218,4 @@ public class SerieSeasons extends ListActivity
 		TextView season;
 		TextView info;
 	}
-	
-	@SuppressWarnings("deprecation")
-	@Override
-	public void onStop() {
-		infoTh.stop();
-		super.onStop();
-	}
 }

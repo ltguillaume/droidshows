@@ -785,7 +785,6 @@ public class droidseries extends ListActivity
 	@Override
 	public void onDestroy() {
 		Runnable exitSeries = new Runnable() { public void run() {
-				statsTh.stop();
 				db.close();
 		}};
 		Thread thSave = new Thread(null, exitSeries, "MagentoBackground");

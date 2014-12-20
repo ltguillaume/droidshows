@@ -207,7 +207,6 @@ public class AddSerie extends ListActivity
 	protected void onPause() {
 		if (threadAddShow != null) {
 			if (threadAddShow.isAlive()) {
-				// threadAddShow.stop(null);
 				Log.i(TAG, "!!! Thread is running!");
 				bAddShowTh = true;
 			}
@@ -494,10 +493,5 @@ public class AddSerie extends ListActivity
 			}
 			return v;
 		}
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
 	}
 }
