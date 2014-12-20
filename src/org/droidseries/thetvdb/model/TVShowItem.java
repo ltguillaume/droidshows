@@ -14,12 +14,14 @@ public class TVShowItem {
         private Date nextAir;
         private boolean completelyWatched;
         private boolean passiveStatus;
-        private int epNotSeen;
+        private int unwatchedAired;
+        private int unwatched;
+        private String showStatus;
 
         public TVShowItem(String serieid, String icon, Drawable dicon, String
                           name, int snumber, String nextEpisode, Date nextAir,
-                          int epNotSeen, boolean passiveStatus,
-                          boolean completelyWatched) {
+                          int unwatchedAired, int unwatched, boolean passiveStatus,
+                          boolean completelyWatched, String showStatus) {
                 this.serieid = serieid;
                 this.icon = icon;
                 this.dicon = dicon;
@@ -27,9 +29,11 @@ public class TVShowItem {
                 this.snumber = snumber;
                 this.nextEpisode = nextEpisode;
                 this.nextAir = nextAir;
-                this.epNotSeen = epNotSeen;
+                this.unwatchedAired = unwatchedAired;
+                this.unwatched = unwatched;
                 this.passiveStatus = passiveStatus;
                 this.completelyWatched = completelyWatched;
+                this.showStatus = showStatus;
         }
 
         public String getSerieId() {
@@ -60,14 +64,6 @@ public class TVShowItem {
                 this.snumber = snumber;
         }
 
-        public Date getNextAir() {
-                return this.nextAir;
-        }
-
-        public void setNextAir(Date nextAir) {
-                this.nextAir = nextAir;
-        }
-
         public String getNextEpisode() {
                 return this.nextEpisode;
         }
@@ -76,13 +72,29 @@ public class TVShowItem {
                 this.nextEpisode = nextEpisode;
         }
 
-        public int getEpNotSeen() {
-                return this.epNotSeen;
+        public Date getNextAir() {
+          return this.nextAir;
         }
 
-        public void setEpNotSeen(int epNotSeen) {
-                this.epNotSeen = epNotSeen;
+			  public void setNextAir(Date nextAir) {
+			          this.nextAir = nextAir;
+			  }
+  
+        public int getUnwatched() {
+                return this.unwatched;
         }
+
+        public void setUnwatched(int unwatched) {
+                this.unwatched = unwatched;
+        }
+
+        public int getUnwatchedAired() {
+          return this.unwatchedAired;
+        }
+
+			  public void setUnwatchedAired(int unwatchedAired) {
+			          this.unwatchedAired = unwatchedAired;
+			  }
 
         public boolean getCompletelyWatched() {
                 return this.completelyWatched;
@@ -106,5 +118,12 @@ public class TVShowItem {
 
         public void setDIcon(Drawable dicon) {
                 this.dicon = dicon;
+        }
+        public String getShowStatus() {
+                return this.showStatus;
+        }
+
+        public void setShowStatus(String showStatus) {
+                this.showStatus = showStatus;
         }
 }

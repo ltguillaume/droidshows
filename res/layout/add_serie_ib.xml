@@ -1,5 +1,1 @@
-<ImageButton android:id="@+id/addserieib" 
-			 android:layout_width="wrap_content" 
-			 android:layout_height="wrap_content" 
-			 xmlns:android="http://schemas.android.com/apk/res/android">
-</ImageButton>
+<ImageButton android:id="@+id/addserieib" android:layout_width="wrap_content" android:layout_height="wrap_content" xmlns:android="http://schemas.android.com/apk/res/android"/>

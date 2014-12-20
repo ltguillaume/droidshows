@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<RelativeLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<CheckBox android:id="@+id/checkbox" android:layout_width="wrap_content" android:layout_gravity="center_vertical" android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:focusable="false" android:focusableInTouchMode="false"/>
+		<TextView android:id="@+id/text" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_gravity="center_vertical" android:layout_toRightOf="@+id/checkbox" android:gravity="center_vertical" android:padding="4dp" android:text="@string/dialog_last_season" />
+	</RelativeLayout>
+	<ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent">
+	    <TextView android:id="@+id/changelog" android:layout_width="fill_parent" android:layout_height="wrap_content" android:text="@string/changelog" android:textSize="12sp" android:typeface="monospace"/>
+	</ScrollView>
+</LinearLayout>

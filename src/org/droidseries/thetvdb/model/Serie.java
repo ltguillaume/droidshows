@@ -2,10 +2,8 @@ package org.droidseries.thetvdb.model;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.droidseries.droidseries;
 import org.droidseries.utils.SQLiteStore;
-
-
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 import android.util.Log;
@@ -277,20 +275,20 @@ public class Serie {
             SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, " +
                            "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, " +
                            "network, rating, runtime, status, fanart, lastUpdated, poster, " +
-                           "posterInCache, posterThumb) VALUES (" +
-                           "'" + this.id + "', " + "'" + this.serieId + "', " + "'" + this.language + "', " +
+                           "posterInCache, posterThumb) VALUES ('"+ this.id +"', '"+ this.serieId +"', '"+ this.language + "', " +
                            "\"" + tmpSName + "\", " + "'" + this.banner + "', " + "\"" + tmpOverview + "\", " +
-                           "'" + this.firstAired + "', " + "'" + this.imdbId + "', " + "'" + this.zap2ItId + "', " +
-                           "'" + this.airsDayOfWeek + "', " + "'" + this.airsTime + "', " + "'" + this.contentRating + "', " +
-                           "'" + this.network + "', " + "'" + this.rating + "', " + "'" + this.runtime + "', " +
-                           "'" + this.status + "', " + "'" + this.fanart + "', " + "'" + this.lastUpdated + "', " +
-                           "'" + this.poster + "', " + "'" + this.posterInCache + "', " + "'" + this.posterThumb + "'" +
-                           ");");
+                           "'" + this.firstAired +"', '"+ this.imdbId +"', '"+ this.zap2ItId + "', " +
+                           "'" + this.airsDayOfWeek +"', '"+ this.airsTime +"', '"+ this.contentRating + "', " +
+                           "'" + this.network +"', '"+ this.rating +"', '"+ this.runtime + "', " +
+                           "'" + this.status +"', '"+ this.fanart +"', '"+ this.lastUpdated + "', " +
+                           "'" + this.poster +"', '"+ this.posterInCache +"', '"+ this.posterThumb + "');");
 
             for(int e=0; e < this.episodes.size(); e++) {
                 this.episodes.get(e).setSeriesId(this.id);
                 this.episodes.get(e).saveToDB(SQLS);
             }
+            
+            droidseries.db.updateShowStats(this.id);
 
         } catch(SQLiteException e){
             Log.e("DroidSeries", e.getMessage());

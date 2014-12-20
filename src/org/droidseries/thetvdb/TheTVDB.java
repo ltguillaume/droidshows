@@ -66,7 +66,7 @@ public class TheTVDB {
                 updated_serie.setUnwatched(parseUnwatchedEpisodes(episodes));
 
         } catch (Exception e) {
-                Log.e(MY_DEBUG_TAG, e.getMessage());
+                Log.e(TAG, e.getMessage());
         }
 
         return updated_serie;
@@ -144,7 +144,7 @@ public class TheTVDB {
                 }
                 }
         } catch (Exception e) {
-                Log.e(MY_DEBUG_TAG, e.getMessage());
+                Log.e(TAG, e.getMessage());
         }
 
         return banners;
@@ -167,7 +167,7 @@ public class TheTVDB {
                 }
                 }
         } catch (Exception e) {
-                Log.e(MY_DEBUG_TAG, e.getMessage());
+                Log.e(TAG, e.getMessage());
         }
 
         Collections.sort(results);

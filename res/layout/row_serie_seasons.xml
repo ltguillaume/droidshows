@@ -1,30 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight" android:padding="2dip">
-    
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_weight="1" android:layout_width="0dip" android:layout_height="fill_parent">
-        <TextView
-            android:layout_width="fill_parent"
-            android:gravity="center_vertical"
-			android:textStyle="bold" 
-			android:id="@+id/serieseason" 
-			android:textSize="15sp" android:layout_height="wrap_content"/>
-		<TextView
-            android:layout_width="fill_parent"
-            android:id="@+id/seasoninfo"
-            android:ellipsize="marquee"
-			android:singleLine="false" android:padding="2dip" android:layout_height="fill_parent"/>
-		<!-- TextView
-            android:layout_width="fill_parent"
-            android:layout_height="0dip"
-            android:layout_weight="1" 
-            android:id="@+id/seasonnextepisode"
-            android:ellipsize="marquee"
-			android:singleLine="false"/-->
-        
-        
-    </LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="?android:attr/listPreferredItemHeight" android:padding="6dip">
+	<TextView android:id="@+id/serieseason" android:layout_width="fill_parent" android:textStyle="bold" android:textSize="18sp" android:layout_height="0dip" android:layout_weight="1"/>
+	<TextView android:id="@+id/seasoninfo" android:layout_width="fill_parent" android:ellipsize="end" android:lineSpacingExtra="1dp" android:lines="2" android:layout_height="0dip" android:layout_weight="2"/>
 </LinearLayout>

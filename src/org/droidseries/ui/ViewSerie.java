@@ -1,106 +1,82 @@
 package org.droidseries.ui;
 
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import org.droidseries.R;
-
 import android.app.Activity;
+import java.text.ParseException;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
-public class ViewSerie extends Activity {
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-                super.onCreate(savedInstanceState);
-                setContentView(R.layout.view_serie);
-
-                TextView seriename = (TextView) findViewById(R.id.seriename);
-                seriename.setText(getIntent().getStringExtra("seriename"));
-                setTitle(getIntent().getStringExtra("seriename") + " - Overview");
-
-                TextView serieoverview = (TextView) findViewById(R.id.serieoverview);
-                serieoverview.setText(getIntent().getStringExtra("serieoverview"));
-
-                //firstaired
-                TextView firstaired = (TextView) findViewById(R.id.firstaired);
-                String tmpFA = getIntent().getStringExtra("firstaired");
-                if(!tmpFA.equals("")) {
-                        firstaired.setText(getString(R.string.series_first_aired) + " " + tmpFA);
-                }
-                else {
-                        firstaired.setText(getString(R.string.series_first_aired) + " " + getString(R.string.messages_unknown));
-                }
-
-                //airday
-                TextView airday = (TextView) findViewById(R.id.airday);
-                String tmpAirday = getIntent().getStringExtra("airday");
-                if(!tmpAirday.equals("")) {
-                        airday.setText(getString(R.string.series_air_day) + " " + tmpAirday);
-                }
-                else {
-                        airday.setText(getString(R.string.series_air_day) + " " + getString(R.string.messages_unknown));
-                }
-
-                //airtime
-                TextView airtime = (TextView) findViewById(R.id.airtime);
-                String tmpAirtime = getIntent().getStringExtra("airtime");
-                if(!tmpAirtime.equals("")){
-                        airtime.setText(getString(R.string.series_air_time) + " " + tmpAirtime);
-                }
-                else {
-                        airtime.setText(getString(R.string.series_air_time) + " " + getString(R.string.messages_unknown));
-                }
-
-
-                //runtime
-                TextView runtime = (TextView) findViewById(R.id.runtime);
-                String tmpRuntime = getIntent().getStringExtra("runtime");
-                if(!tmpRuntime.equals("")) {
-                        runtime.setText( String.format(getString(R.string.series_runtime_minutes), tmpRuntime) );
-                }
-                else {
-                        runtime.setText(getString(R.string.series_runtime) + " " + getString(R.string.messages_unknown));
-                }
-
-                //network
-                TextView network = (TextView) findViewById(R.id.network);
-                String tmpNetwork = getIntent().getStringExtra("network");
-                if(!tmpNetwork.equals("")) {
-                        network.setText(getString(R.string.series_network) + " " + tmpNetwork);
-                }
-                else {
-                        network.setText(getString(R.string.series_network) + " " + getString(R.string.messages_unknown));
-                }
-
-                //genre
-                TextView genre = (TextView) findViewById(R.id.genre);
-                String tmpGenre = getIntent().getStringExtra("genre");
-                if(!tmpGenre.equals("")) {
-                        genre.setText(getString(R.string.series_genre) + " " + tmpGenre);
-                }
-                else {
-                        genre.setText(getString(R.string.series_genre) + " " + getString(R.string.messages_unknown));
-                }
-
-                //rating
-                TextView rating = (TextView) findViewById(R.id.rating);
-                String tmpRating = getIntent().getStringExtra("rating");
-                if(!tmpRating.equals("")) {
-                        rating.setText(getString(R.string.series_rating) + " " + tmpRating);
-                }
-                else {
-                        rating.setText(getString(R.string.series_rating) + " " + getString(R.string.messages_unknown));
-                }
-
-                //serieactors
-                TextView serieactors = (TextView) findViewById(R.id.serieactors);
-                String tmpActors = getIntent().getStringExtra("serieactors");
-
-                if(!tmpActors.equals("")) {
-                        serieactors.setText(getString(R.string.series_actors) + " " + tmpActors);
-                }
-                else {
-                        serieactors.setText(getString(R.string.series_actors) + " " + getString(R.string.messages_unknown));
-                }
-
-        }
+public class ViewSerie extends Activity
+{
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.view_serie);
+		TextView seriename = (TextView) findViewById(R.id.seriename);
+		seriename.setText(getIntent().getStringExtra("seriename"));
+		setTitle(getIntent().getStringExtra("seriename") + " - "
+			+ getString(R.string.messages_overview));
+		TextView serieoverview = (TextView) findViewById(R.id.serieoverview);
+		serieoverview.setText(getIntent().getStringExtra("serieoverview"));
+		TextView status = (TextView) findViewById(R.id.status);
+		String statusValue = getIntent().getStringExtra("status");
+		if (statusValue.equalsIgnoreCase("Continuing")) {
+			statusValue = getString(R.string.showstatus_continuing);
+		} else if (statusValue.equalsIgnoreCase("Ended")) {
+			statusValue = getString(R.string.showstatus_ended);
+		}
+		status.setText(getString(R.string.series_status) +" "+ statusValue);
+		TextView firstaired = (TextView) findViewById(R.id.firstaired);
+		String firstairedValue = getIntent().getStringExtra("firstaired");
+		if (!firstairedValue.equals("")) {
+			try {
+				SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
+				Date epDate = SDF.parse(firstairedValue);
+				Format formatter = SimpleDateFormat.getDateInstance();
+				firstairedValue = formatter.format(epDate);
+			} catch (ParseException e) {
+				Log.e("DroidSeries", e.getMessage());
+			}
+		}
+		firstaired.setText(getString(R.string.series_first_aired) + " " + firstairedValue);
+		TextView airday = (TextView) findViewById(R.id.airday);
+		String airdayValue = getIntent().getStringExtra("airday");
+		if (airdayValue.equals("null")) {
+			airdayValue = "";
+		} else if (airdayValue.equalsIgnoreCase("Daily")) {
+			airdayValue = getString(R.string.messages_daily);
+		}
+		airday.setText(getString(R.string.series_air_day) + " " + airdayValue);
+		TextView airtime = (TextView) findViewById(R.id.airtime);
+		String airtimeValue = getIntent().getStringExtra("airtime");
+		if (airtimeValue.equals("null")) {
+			airtimeValue = "";
+		} else if (!airtimeValue.equals("")) {
+			try {
+				SimpleDateFormat SDF = new SimpleDateFormat("h:m a");
+				Date epDate = SDF.parse(airtimeValue);
+				Format formatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT);
+				airtimeValue = formatter.format(epDate);
+			} catch (ParseException e) {
+				Log.e("DroidSeries", e.getMessage());
+			}
+		}
+		airtime.setText(getString(R.string.series_air_time) + " " + airtimeValue);
+		TextView runtime = (TextView) findViewById(R.id.runtime);
+		runtime.setText(String.format(getString(R.string.series_runtime_minutes), getIntent().getStringExtra("runtime")));
+		TextView network = (TextView) findViewById(R.id.network);
+		network.setText(getString(R.string.series_network) + " "
+			+ getIntent().getStringExtra("network"));
+		TextView genre = (TextView) findViewById(R.id.genre);
+		genre.setText(getString(R.string.series_genre) + " " + getIntent().getStringExtra("genre"));
+		TextView rating = (TextView) findViewById(R.id.rating);
+		rating.setText(getString(R.string.series_rating) + " " + getIntent().getStringExtra("rating"));
+		TextView serieactors = (TextView) findViewById(R.id.serieactors);
+		serieactors.setText(getString(R.string.series_actors) + " "
+			+ getIntent().getStringExtra("serieactors"));
+	}
 }

@@ -18,7 +18,7 @@ import java.util.List;
 
 public class XMLParser {
 
-        private final String MY_DEBUG_TAG = "DroidSeries";
+        private final String TAG = "DroidSeries";
 
         public List<String> parse(String urlstr) {
             try {
@@ -51,7 +51,7 @@ public class XMLParser {
 
                     return XMLData;
             } catch (Exception e) {
-                    Log.e(MY_DEBUG_TAG, "Error opening or parsing the URL");
+                    Log.e(TAG, "Error opening or parsing the URL");
                     return null;
             }
         }

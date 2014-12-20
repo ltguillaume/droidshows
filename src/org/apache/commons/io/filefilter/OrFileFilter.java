@@ -151,11 +151,10 @@ public class OrFileFilter
                     buffer.append(",");
                 }
                 Object filter = fileFilters.get(i);
-                buffer.append(filter == null ? "null" : filter.toString());
+                buffer.append(filter == null ? "" : filter.toString());	// Guillaume: "null" to ""
             }
         }
         buffer.append(")");
         return buffer.toString();
     }
-
 }

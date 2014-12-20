@@ -4,19 +4,19 @@ public class Season {
         private String serieid;
         private int snumber;
         private String season;
-        private int epNotSeen;
+        private int unwatchedAired;
+        private int unwatched;
         private boolean completelyWatched;
         private String nextEpisode;
-        private int visibility;
 
-        public Season(String serieid, int snumber, String season, int epNotSeen, boolean completelyWatched, String nextEpisode, int visibility) {
+        public Season(String serieid, int snumber, String season, int unwatchedAired, int unwatched, boolean completelyWatched, String nextEpisode) {
                 this.serieid = serieid;
                 this.snumber = snumber;
                 this.season = season;
-                this.epNotSeen = epNotSeen;
+                this.unwatchedAired = unwatchedAired;
+                this.unwatched = unwatched;
                 this.completelyWatched = completelyWatched;
                 this.nextEpisode = nextEpisode;
-                this.visibility = visibility;
         }
 
         public String getSerieId() {
@@ -43,21 +43,21 @@ public class Season {
                 this.nextEpisode = nextEpisode;
         }
 
-        public int getVisibility() {
-                return this.visibility;
+        public int getUnwatched() {
+                return this.unwatched;
         }
 
-        public void setVisibility(int visibility) {
-                this.visibility = visibility;
+        public void setUnwatched(int unwatched) {
+                this.unwatched = unwatched;
         }
-
-        public int getEpNotSeen() {
-                return this.epNotSeen;
-        }
-
-        public void setEpNotSeen(int epNotSeen) {
-                this.epNotSeen = epNotSeen;
-        }
+        
+        public int getUnwatchedAired() {
+          return this.unwatchedAired;
+			  }
+			
+			  public void setUnwatchedAired(int unwatchedAired) {
+			          this.unwatchedAired = unwatchedAired;
+			  }
 
         public boolean getCompletelyWatched() {
                 return this.completelyWatched;
