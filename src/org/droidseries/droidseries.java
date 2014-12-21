@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.drawable.Drawable;
@@ -218,6 +219,12 @@ public class droidseries extends ListActivity
 					m_AlertDlg.cancel();
 				}
 				View about = View.inflate(this, R.layout.alert_about, null);
+				TextView changelog = (TextView) about.findViewById(R.id.changelog);
+				try {
+					changelog.setText(getString(R.string.changelog).replace("{v}", getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
+				} catch (NameNotFoundException e) {
+					e.printStackTrace();
+				}
 				CheckBox checkbox = (CheckBox) about.findViewById(R.id.checkbox);
 				checkbox.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {

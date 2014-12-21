@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="changelog" translatable="false">DroidSeries
-\nVersion 0.1.5-7_Guillaume-3.6
+\nVersion {v}
 \n\n1. Click Menu > Add a show
 \n2. Long-press show, season or episode for options
 \n3. Update all shows for latest information
