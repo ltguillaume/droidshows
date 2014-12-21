@@ -12,8 +12,8 @@
 \n+ Status of show in details, and "*" in overview if show is not continuing
 \n+ If show position changed, scroll back to show after "Mark next episode as seen" and Seasons list
 \n+ Option in [About] to only update shows\' last season (==fast)
-\n+ Click poster for show details
-\n+ View show details on IMDb
+\n+ Click poster for show details, long-click to view show details on IMDb 
+\n+ Context item to view show details on IMDb
 \n* Sorting shows by first unseen episode
 \n* Clarified toggle and sort options
 \n* Episodes named "TBA" are excluded in unwatched count

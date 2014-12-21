@@ -38,7 +38,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -220,7 +219,7 @@ public class droidseries extends ListActivity
 				}
 				View about = View.inflate(this, R.layout.alert_about, null);
 				CheckBox checkbox = (CheckBox) about.findViewById(R.id.checkbox);
-				checkbox.setOnClickListener(new OnClickListener() {
+				checkbox.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						lastSeasonOption ^= 1;
 					}
@@ -762,7 +761,7 @@ public class droidseries extends ListActivity
 				break;
 			}
 		}
-			runOnUiThread(updateListView);
+			listView.post(updateListView);
 			if (sortOption == SORT_BY_LAST_UNSEEN) {
 				final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
 				final int lastPosition = backFromSeasonPosition;
@@ -889,9 +888,15 @@ public class droidseries extends ListActivity
 				} catch (Exception e) {
 					// e.printStackTrace();
 				}
-				holder.icon.setOnClickListener(new OnClickListener() {
+				holder.icon.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View view) {
 							showDetails(items.get(position).getSerieId());
+					}
+				});
+				holder.icon.setOnLongClickListener(new View.OnLongClickListener() {
+					public boolean onLongClick(View view) {
+							IMDbDetails(items.get(position).getSerieId());
+							return true;
 					}
 				});
 			}
