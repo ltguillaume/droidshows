@@ -579,16 +579,18 @@ private void markNextEpSeen(final int oldListPosition) {
 		}
 	}
 
-	private static TVShowItem createTVShowItemScaffold(String serieid) {
+	private static TVShowItem createTVShowItemScaffold(String serieId) {
 		String name = "";
-		String query = "SELECT serieName FROM series WHERE id = '" + serieid + "'";
+		String query = "SELECT serieName, unwatchedAired FROM series WHERE id = '" + serieId + "'";
 		Cursor c = db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
+			if (c.getInt(c.getColumnIndex("unwatchedAired")) != db.getEPUnwatchedAired(serieId))	// Faster way?
+				db.updateShowStats(serieId);
 			name = c.getString(c.getColumnIndex("serieName"));
 		}
 		c.close();
-		TVShowItem tvsi = new TVShowItem(serieid, "", null, name, 0, "", null, 0, 0, false, false, "");
+		TVShowItem tvsi = new TVShowItem(serieId, "", null, name, 0, "", null, 0, 0, false, false, "");
 		return tvsi;
 	}
 	
