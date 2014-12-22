@@ -495,13 +495,11 @@ public class SQLiteStore extends SQLiteOpenHelper
 		int id = -1;
 		Cursor c = null;
 		try {
+			String today = dateFormat.format(new Date());
 			if (snumber == -1) {
-				c = Query("SELECT id FROM episodes WHERE serieId='" + serieId
-					+ "' and seen=0 and seasonNumber <> 0 ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' and seen=0 and seasonNumber <> 0 and firstAired <> '' AND firstAired < '" + today +"' ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			} else {
-				c = Query("SELECT id FROM episodes WHERE serieId='" + serieId
-					+ "' and seen=0 and seasonNumber=" + snumber
-					+ " ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' and seen=0 and seasonNumber="+ snumber	+" and firstAired <> '' AND firstAired < '" + today +"' ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			}
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {

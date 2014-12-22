@@ -364,22 +364,24 @@ private void markNextEpSeen(final int oldListPosition) {
 		serie = series.get(oldListPosition);
 		serieid = serie.getSerieId();
 		String nextEpisode = db.getNextEpisodeId(serieid, -1);
-		db.updateUnwatchedEpisode(serieid, nextEpisode);
-		final TVShowItem newSerie = createTVShowItem(serieid);
-		series.set(oldListPosition, newSerie);
-		listView.post(updateListView);
-		if (sortOption == SORT_BY_LAST_UNSEEN) {
-			final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
-			listView.post(new Runnable() {
-				public void run() {
-					int pos = series_adapter.getPosition(newSerie);
-					if (pos != oldListPosition) {
-						listView.setSelection(pos);
-						if (0 < pos && pos < listView.getCount() - 5)
-							listView.smoothScrollBy(-padding, 500);
+		if (!nextEpisode.equals("")) {
+			db.updateUnwatchedEpisode(serieid, nextEpisode);
+			final TVShowItem newSerie = createTVShowItem(serieid);
+			series.set(oldListPosition, newSerie);
+			listView.post(updateListView);
+			if (sortOption == SORT_BY_LAST_UNSEEN) {
+				final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
+				listView.post(new Runnable() {
+					public void run() {
+						int pos = series_adapter.getPosition(newSerie);
+						if (pos != oldListPosition) {
+							listView.setSelection(pos);
+							if (0 < pos && pos < listView.getCount() - 5)
+								listView.smoothScrollBy(-padding, 500);
+						}
 					}
-				}
-			});
+				});
+			}
 		}
 	}
 	
