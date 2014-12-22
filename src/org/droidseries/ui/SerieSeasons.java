@@ -47,11 +47,12 @@ public class SerieSeasons extends ListActivity
 		setTitle(droidseries.db.getSerieName(serieid) + " - " + getString(R.string.messages_seasons));
 		seasons = new ArrayList<Season>();
 		seriesseasons_adapter = new SeriesSeasonsAdapter(this, R.layout.row_serie_seasons, seasons);
-		setListAdapter(seriesseasons_adapter);
 		listView = getListView();
+		setListAdapter(seriesseasons_adapter);
 		getSeasons();
 		infoTh = new Thread(null, getSeasonInfo, "info");
 		infoTh.start();
+		listView.setOnTouchListener(new SwipeDetect());
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				try {

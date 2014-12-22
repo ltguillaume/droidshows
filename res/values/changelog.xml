@@ -14,6 +14,7 @@
 \n+ Option in [About] to only update shows\' last season (==fast)
 \n+ Click poster for show details, long-click to view show details on IMDb 
 \n+ Context item to view show details on IMDb
+\n+ Swipe right-to-left to mark next episode as seen, everywhere else in app it acts like back button
 \n* Sorting shows by first unseen episode
 \n* Clarified toggle and sort options
 \n* Episodes named "TBA" are excluded in unwatched count

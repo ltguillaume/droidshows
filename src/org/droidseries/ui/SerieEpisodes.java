@@ -21,6 +21,7 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -47,7 +48,7 @@ public class SerieEpisodes extends ListActivity {
 	private int nseason;
 	private List<String> episodes = null;
 
-	private ListView lView;
+	private ListView listView;
 
 	/* Context Menus */
 	private static final int VIEWEP_CONTEXT = Menu.FIRST;
@@ -56,21 +57,16 @@ public class SerieEpisodes extends ListActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			//setContentView(R.layout.main_serie_episodes);
 			setContentView(R.layout.serie_episodes);
-
 			serieid = getIntent().getStringExtra("serieid");
 			nseason = getIntent().getIntExtra("nseason", 0);
-
 			setTitle(droidseries.db.getSerieName(serieid) + " - " + getString(R.string.messages_season) + " " + nseason + " - " + getString(R.string.messages_episodes));
-
 			episodes = droidseries.db.getEpisodes(serieid, nseason);
-			lView = getListView();
-
+			listView = getListView();
 			episodes_adapter = new EpisodesAdapter(this, R.layout.row_serie_episodes, episodes);
-			lView.setAdapter(episodes_adapter);
-
-			lView.setOnItemClickListener(new OnItemClickListener() {
+			listView.setOnTouchListener(new SwipeDetect());
+			listView.setAdapter(episodes_adapter);
+			listView.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 					try {
 							startViewEpisode(episodes.get(position));
@@ -78,8 +74,7 @@ public class SerieEpisodes extends ListActivity {
 						Log.e(TAG, e.getMessage());
 					}
 				}
-			});
-			
+			});		
 			registerForContextMenu(getListView());
 	}
 

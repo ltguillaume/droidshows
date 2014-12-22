@@ -3,6 +3,7 @@ package org.droidseries.ui;
 import org.droidseries.R;
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 public class ViewEpisode extends Activity
@@ -11,6 +12,8 @@ public class ViewEpisode extends Activity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.view_episode);
+		View view = findViewById(R.id.viewEpisodes);
+		view.setOnTouchListener(new SwipeDetect());
 		TextView episodename = (TextView) findViewById(R.id.episodename);
 		episodename.setText(getIntent().getStringExtra("episodename"));
 		setTitle(getIntent().getStringExtra("episodename"));

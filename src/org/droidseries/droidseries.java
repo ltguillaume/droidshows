@@ -11,6 +11,7 @@ import org.droidseries.thetvdb.TheTVDB;
 import org.droidseries.thetvdb.model.Serie;
 import org.droidseries.thetvdb.model.TVShowItem;
 import org.droidseries.ui.SerieSeasons;
+import org.droidseries.ui.SwipeDetect;
 //import org.droidseries.ui.SerieViewPoster; // Disabled by Guillaume
 import org.droidseries.ui.ViewSerie;
 import org.droidseries.utils.SQLiteStore;
@@ -149,24 +150,30 @@ public class droidseries extends ListActivity
 		getUserSeries();
 		statsTh = new Thread(null, getShowInfo, "stats");
 		statsTh.start();
+		final SwipeDetect swipeDetect = new SwipeDetect();
+		listView.setOnTouchListener(swipeDetect);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				try {
-					String serieId = series.get(position).getSerieId();
-					backFromSeasonSerieId = serieId;
-					backFromSeasonPosition = position;
-					Intent serieSeasons = new Intent(droidseries.this, SerieSeasons.class);
-					serieSeasons.putExtra("serieid", serieId);
-					startActivity(serieSeasons);
-				} catch (Exception e) {
-					Log.e(TAG, e.getMessage());
+				if (swipeDetect.detected()) {
+					markNextEpSeen(position);
+				} else {
+					try {
+						String serieId = series.get(position).getSerieId();
+						backFromSeasonSerieId = serieId;
+						backFromSeasonPosition = position;
+						Intent serieSeasons = new Intent(droidseries.this, SerieSeasons.class);
+						serieSeasons.putExtra("serieid", serieId);
+						startActivity(serieSeasons);
+					} catch (Exception e) {
+						Log.e(TAG, e.getMessage());
+					}					
 				}
 			}
 		}); 
 		// register context menu
 		registerForContextMenu(listView);
 	}
-
+		
 	/* Options Menu */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -277,27 +284,7 @@ public class droidseries extends ListActivity
 		String serieid;
 		switch (item.getItemId()) {
 			case MARK_NEXT_EPISODE_AS_SEEN_CONTEXT :
-				final int oldListPosition = info.position;
-				serie = series.get(oldListPosition);
-				serieid = serie.getSerieId();
-				String nextEpisode = db.getNextEpisodeId(serieid, -1);
-				db.updateUnwatchedEpisode(serieid, nextEpisode);
-				final TVShowItem newSerie = createTVShowItem(serieid);
-				series.set(oldListPosition, newSerie);
-				listView.post(updateListView);
-				if (sortOption == SORT_BY_LAST_UNSEEN) {
-					final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
-					listView.post(new Runnable() {
-						public void run() {
-							int pos = series_adapter.getPosition(newSerie);
-							if (pos != oldListPosition) {
-								listView.setSelection(pos);
-								if (0 < pos && pos < listView.getCount() - 5)
-									listView.smoothScrollBy(-padding, 500);
-							}
-						}
-					});
-				}
+				markNextEpSeen(info.position);
 				return true;
 			case TOGGLE_SERIE_STATUS_CONTEXT :
 				serie = series.get(info.position);
@@ -370,11 +357,31 @@ public class droidseries extends ListActivity
 		}
 	}
 	
-	private Runnable changeMessage = new Runnable() {
-		public void run() {
-			m_ProgressDialog.setMessage(toastMessage);
+
+private void markNextEpSeen(final int oldListPosition) {
+		TVShowItem serie;
+		String serieid;
+		serie = series.get(oldListPosition);
+		serieid = serie.getSerieId();
+		String nextEpisode = db.getNextEpisodeId(serieid, -1);
+		db.updateUnwatchedEpisode(serieid, nextEpisode);
+		final TVShowItem newSerie = createTVShowItem(serieid);
+		series.set(oldListPosition, newSerie);
+		listView.post(updateListView);
+		if (sortOption == SORT_BY_LAST_UNSEEN) {
+			final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
+			listView.post(new Runnable() {
+				public void run() {
+					int pos = series_adapter.getPosition(newSerie);
+					if (pos != oldListPosition) {
+						listView.setSelection(pos);
+						if (0 < pos && pos < listView.getCount() - 5)
+							listView.smoothScrollBy(-padding, 500);
+					}
+				}
+			});
 		}
-	};
+	}
 	
 	private void showDetails(String serieId) {
 		Intent viewSerie = new Intent(droidseries.this, ViewSerie.class);
@@ -474,6 +481,12 @@ public class droidseries extends ListActivity
 		}
 	}
 
+	private Runnable changeMessage = new Runnable() {
+		public void run() {
+			m_ProgressDialog.setMessage(toastMessage);
+		}
+	};
+	
 	public synchronized void startUpdateAllShowsTh() {
 		if (updateAllShowsTh == null) {
 			updateAllShowsTh = new Thread();

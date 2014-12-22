@@ -8,6 +8,7 @@ import android.app.Activity;
 import java.text.ParseException;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 public class ViewSerie extends Activity
@@ -16,6 +17,8 @@ public class ViewSerie extends Activity
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.view_serie);
+		View view = findViewById(R.id.viewSerie);
+		view.setOnTouchListener(new SwipeDetect());
 		TextView seriename = (TextView) findViewById(R.id.seriename);
 		seriename.setText(getIntent().getStringExtra("seriename"));
 		setTitle(getIntent().getStringExtra("seriename") + " - "

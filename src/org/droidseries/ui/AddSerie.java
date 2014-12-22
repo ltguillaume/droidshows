@@ -420,6 +420,7 @@ public class AddSerie extends ListActivity
 			}
 		}
 		lv = getListView();
+		lv.setOnTouchListener(new SwipeDetect());
 		lv.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				try {
