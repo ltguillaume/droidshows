@@ -581,12 +581,10 @@ private void markNextEpSeen(final int oldListPosition) {
 
 	private static TVShowItem createTVShowItemScaffold(String serieId) {
 		String name = "";
-		String query = "SELECT serieName, unwatchedAired FROM series WHERE id = '" + serieId + "'";
+		String query = "SELECT serieName FROM series WHERE id = '" + serieId + "'";
 		Cursor c = db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
-			if (c.getInt(c.getColumnIndex("unwatchedAired")) != db.getEPUnwatchedAired(serieId))	// Faster way?
-				db.updateShowStats(serieId);
 			name = c.getString(c.getColumnIndex("serieName"));
 		}
 		c.close();
@@ -630,6 +628,17 @@ private void markNextEpSeen(final int oldListPosition) {
 						e.printStackTrace();
 					}
 				}
+			}
+			listView.post(new Runnable() {
+				public void run() {
+					series_adapter.notifyDataSetChanged();
+				}
+			});
+			for (int i = 0; i < series.size(); i++) {
+				String serieId = series.get(i).getSerieId();
+				int unwatchedAired = db.getEPUnwatchedAired(serieId);
+				db.execQuery("UPDATE series SET unwatchedAired="+ unwatchedAired +" WHERE id="+ serieId);		
+				series.get(i).setUnwatchedAired(unwatchedAired);
 			}
 			listView.post(new Runnable() {
 				public void run() {

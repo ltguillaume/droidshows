@@ -1,42 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="org.droidseries" android:versionCode="13" android:versionName="0.1.5-7_Guillaume-3.62">
-
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11"></uses-sdk>
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
-    
-    <application android:icon="@drawable/icon" android:label="@string/layout_app_name" android:allowBackup="true">
-        <activity android:label="@string/layout_app_name" android:name=".droidseries" android:configChanges="orientation">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <meta-data android:name="android.app.default_searchable"
-                       android:value=".ui.AddSerie" />
-        </activity>
-
-        <activity android:name=".ui.AddSerie" android:configChanges="orientation" android:launchMode="singleTop">
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                       android:resource="@layout/search_serie" />
-        </activity>
-
-        <activity android:name=".ui.SerieOverview"></activity>
-
-        <activity android:name=".ui.SerieSeasons" android:configChanges="orientation"></activity>
-
-        <activity android:name=".ui.SerieViewPoster"></activity>
-
-        <activity android:name=".ui.SerieEpisodes"></activity>
-
-        <activity android:name=".ui.ViewEpisode"></activity>
-
-        <activity android:name=".ui.ViewSerie"></activity>
-
-    </application>
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.droidseries" android:versionCode="13"
+    android:versionName="0.1.5-7_Guillaume-3.63">
+	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11"/>
+	<uses-permission android:name="android.permission.INTERNET"/>
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+	<application android:icon="@drawable/icon" android:label="@string/layout_app_name" android:allowBackup="true">
+	<activity android:label="@string/layout_app_name" android:name=".droidseries" android:configChanges="orientation">
+		<intent-filter>
+			<action android:name="android.intent.action.MAIN"/>
+			<category android:name="android.intent.category.LAUNCHER"/>
+		</intent-filter>
+		<meta-data android:name="android.app.default_searchable" android:value=".ui.AddSerie"/>
+	</activity>
+	<activity android:name=".ui.AddSerie" android:configChanges="orientation" android:launchMode="singleTop">
+		<intent-filter>
+			<action android:name="android.intent.action.SEARCH"/>
+			<category android:name="android.intent.category.DEFAULT"/>
+		</intent-filter>
+		<meta-data android:name="android.app.searchable" android:resource="@layout/search_serie"/>
+	</activity>
+	<activity android:name=".ui.SerieOverview"/>
+	<activity android:name=".ui.SerieSeasons" android:configChanges="orientation"/>
+	<!--<activity android:name=".ui.SerieViewPoster"/>-->
+	<activity android:name=".ui.SerieEpisodes" android:configChanges="orientation"/>
+	<activity android:name=".ui.ViewEpisode"/>
+	<activity android:name=".ui.ViewSerie"/>
+	</application>
 </manifest>
