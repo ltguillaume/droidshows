@@ -32,6 +32,7 @@
 <string name="dialog_update_all_series">Are you sure you want to update all the shows now?</string>
 <string name="dialog_update_speedup">\n\nYou can speed up this process with the option in Menu > About.</string>
 <string name="dialog_last_season">Update shows\' last season only</string>
+<string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="menu_toggle">Toggle status</string>
 <string name="messages_title_loading_series">DroidSeries</string>
 <string name="messages_title_loading_seasons">Loading seasons…</string>

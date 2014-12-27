@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
 import org.droidseries.thetvdb.TheTVDB;
 import org.droidseries.thetvdb.model.Serie;
 import org.droidseries.thetvdb.model.TVShowItem;
@@ -18,6 +19,7 @@ import org.droidseries.utils.SQLiteStore;
 import org.droidseries.utils.Utils;
 import org.droidseries.utils.Update;
 import org.droidseries.R;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -29,10 +31,10 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.drawable.Drawable;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
+import android.os.Vibrator;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Display;
@@ -100,6 +102,8 @@ public class droidseries extends ListActivity
 	private static final int UPDATE_ALL_SEASONS = 0;
 	private static final int UPDATE_LAST_SEASON_ONLY = 1;
 	private static int lastSeasonOption = UPDATE_ALL_SEASONS;
+	private static final String INCLUDE_SPECIALS_NAME = "include_specials";
+	public static boolean includeSpecialsOption = false;
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
 	private static boolean bUpdateShowTh = false;
@@ -141,6 +145,7 @@ public class droidseries extends ListActivity
 		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
 		filterOption = sharedPrefs.getInt(FILTER_PREF_NAME, FILTER_DISABLED);
 		lastSeasonOption = sharedPrefs.getInt(LAST_SEASON_PREF_NAME, UPDATE_ALL_SEASONS);
+		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 
 		series = new ArrayList<TVShowItem>();
 		series_adapter = new SeriesAdapter(this, R.layout.row, series);
@@ -156,6 +161,8 @@ public class droidseries extends ListActivity
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				if (swipeDetect.detected()) {
 					markNextEpSeen(position);
+					Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+					v.vibrate(150);
 				} else {
 					try {
 						String serieId = series.get(position).getSerieId();
@@ -232,13 +239,24 @@ public class droidseries extends ListActivity
 				} catch (NameNotFoundException e) {
 					e.printStackTrace();
 				}
-				CheckBox checkbox = (CheckBox) about.findViewById(R.id.checkbox);
-				checkbox.setOnClickListener(new View.OnClickListener() {
+				CheckBox lastSeasonCheckbox = (CheckBox) about.findViewById(R.id.last_season_checkbox);
+				lastSeasonCheckbox.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						lastSeasonOption ^= 1;
 					}
 				});
-				checkbox.setChecked(lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+				lastSeasonCheckbox.setChecked(lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+				CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials_checkbox);
+				includeSpecialsCheckbox.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						includeSpecialsOption = !includeSpecialsOption;
+						db.updateShowStats();
+						series.clear();
+						getUserSeries();
+						statsTh.run();
+					}
+				});
+				includeSpecialsCheckbox.setChecked(includeSpecialsOption);
 				m_AlertDlg = new AlertDialog.Builder(this)
 					.setView(about)
 					.setTitle(getString(R.string.layout_app_name)).setIcon(R.drawable.icon)
@@ -249,6 +267,7 @@ public class droidseries extends ListActivity
 				}).setCancelable(true).show();
 				break;
 			case EXIT_MENU_ITEM :
+				onPause();	// save options
 				this.finish();
 				System.exit(0);	// kill process
 		}
@@ -461,7 +480,7 @@ private void markNextEpSeen(final int oldListPosition) {
 						// Log.d(TAG, "* DBG * droidseries.java:updateSerie #2 - Running db.updateserie");
 						toastMessage = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
 						runOnUiThread(changeMessage);
-						db.updateSerie(sToUpdate, lastSeasonOption == 1);
+						db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 						// Log.d(TAG, "* DBG * droidseries.java:updateSerie #3 - Done running db.updateserie");
 					} else {
 						// TODO: add a message here
@@ -534,7 +553,7 @@ private void markNextEpSeen(final int oldListPosition) {
 						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), getString(R.string.lang_code));
 						Log.d(TAG, "Updating the database");
 						try {
-							db.updateSerie(sToUpdate, lastSeasonOption == 1);
+							db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 						} catch (Exception e) {
 							// does nothing
 						}
@@ -628,23 +647,19 @@ private void markNextEpSeen(final int oldListPosition) {
 						e.printStackTrace();
 					}
 				}
+				listView.post(new Runnable() {
+					public void run() {
+						series_adapter.notifyDataSetChanged();
+					}
+				});
 			}
-			listView.post(new Runnable() {
-				public void run() {
-					series_adapter.notifyDataSetChanged();
-				}
-			});
 			for (int i = 0; i < series.size(); i++) {
 				String serieId = series.get(i).getSerieId();
 				int unwatchedAired = db.getEPUnwatchedAired(serieId);
 				db.execQuery("UPDATE series SET unwatchedAired="+ unwatchedAired +" WHERE id="+ serieId);		
 				series.get(i).setUnwatchedAired(unwatchedAired);
 			}
-			listView.post(new Runnable() {
-				public void run() {
-					series_adapter.notifyDataSetChanged();
-				}
-			});
+			listView.post(updateListView);
 		}
 	};
 	
@@ -767,6 +782,7 @@ private void markNextEpSeen(final int oldListPosition) {
 		ed.putInt(SORT_PREF_NAME, sortOption);
 		ed.putInt(FILTER_PREF_NAME, filterOption);
 		ed.putInt(LAST_SEASON_PREF_NAME, lastSeasonOption);
+		ed.putBoolean(INCLUDE_SPECIALS_NAME, includeSpecialsOption);
 		ed.commit();
 		if (updateShowTh != null) {
 			if (updateShowTh.isAlive()) {
@@ -794,17 +810,17 @@ private void markNextEpSeen(final int oldListPosition) {
 				break;
 			}
 		}
-			listView.post(updateListView);
-			if (sortOption == SORT_BY_LAST_UNSEEN) {
-				final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
-				final int lastPosition = backFromSeasonPosition;
-				listView.post(new Runnable() {
-					public void run() {
-						int pos = series_adapter.getPosition(newSerie);
-						if (pos != lastPosition) {
-							listView.setSelection(pos);
-							if (0 < pos && pos < listView.getCount() - 5)
-								listView.smoothScrollBy(-padding, 0);
+		listView.post(updateListView);
+		if (sortOption == SORT_BY_LAST_UNSEEN) {
+			final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
+			final int lastPosition = backFromSeasonPosition;
+			listView.post(new Runnable() {
+				public void run() {
+					int pos = series_adapter.getPosition(newSerie);
+					if (pos != lastPosition) {
+						listView.setSelection(pos);
+						if (0 < pos && pos < listView.getCount() - 5)
+							listView.smoothScrollBy(-padding, 0);
 						}
 					}
 				});

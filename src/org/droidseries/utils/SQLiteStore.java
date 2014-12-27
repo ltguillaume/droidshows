@@ -386,7 +386,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		String today = dateFormat.format(new Date());
 		// END Guillaume
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId
-			+ "' AND seen=0 AND firstAired <> '' AND firstAired < '" + today + "' AND seasonNumber <> 0"); // Guillaume: added firstAired <> '' AND firstAired < '" + today + "' AND
+			+ "' AND seen=0 AND firstAired <> '' AND firstAired < '" + today + "'"+ (droidseries.includeSpecialsOption ? "" : " AND seasonNumber <> 0")); // Guillaume: added firstAired <> '' AND firstAired < '" + today + "' AND
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -420,12 +420,12 @@ public class SQLiteStore extends SQLiteOpenHelper
 		}
 		return unwatched;
 	}
-
 	// Guillaume: END
+
 	public int getEPUnwatched(String serieId) {
 		int unwatched = -1;
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId
-			+ "' AND seen=0 AND episodeName <> 'TBA' AND seasonNumber <> 0");	// Guillaume: AND episodeName <> 'TBA'
+			+ "' AND seen=0 AND episodeName <> 'TBA'"+ (droidseries.includeSpecialsOption ? "" : "AND seasonNumber <> 0"));	// Guillaume: AND episodeName <> 'TBA'
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -461,12 +461,11 @@ public class SQLiteStore extends SQLiteOpenHelper
 		Cursor c = null;
 		try {
 			if (snumber == -1) {
-				c = Query("SELECT firstAired FROM episodes WHERE serieId='" + serieId
-					+ "' and seen=0 and seasonNumber <> 0 ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+				c = Query("SELECT firstAired FROM episodes WHERE serieId='" + serieId + "' AND seen=0"
+						+ (droidseries.includeSpecialsOption ? "" : " AND seasonNumber <> 0") +" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			} else {
-				c = Query("SELECT firstAired FROM episodes WHERE serieId='" + serieId
-					+ "' and seen=0 and seasonNumber=" + snumber
-					+ " ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+				c = Query("SELECT firstAired FROM episodes WHERE serieId='" + serieId + "' and seen=0 and seasonNumber="+ snumber 
+						+ " ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			}
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -497,9 +496,9 @@ public class SQLiteStore extends SQLiteOpenHelper
 		try {
 			String today = dateFormat.format(new Date());
 			if (snumber == -1) {
-				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' and seen=0 and seasonNumber <> 0 and firstAired <> '' AND firstAired < '" + today +"' ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' AND seen=0 AND "+ (droidseries.includeSpecialsOption ? "" : "seasonNumber <> 0 AND ") +"firstAired <> '' AND firstAired < '" + today +"' ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			} else {
-				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' and seen=0 and seasonNumber="+ snumber	+" and firstAired <> '' AND firstAired < '" + today +"' ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' AND seen=0 AND seasonNumber="+ snumber	+" AND firstAired <> '' AND firstAired < '" + today +"' ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			}
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -521,13 +520,11 @@ public class SQLiteStore extends SQLiteOpenHelper
 		Cursor c = null;
 		try {
 			if (snumber == -1) {
-				c = Query("SELECT firstAired, episodeNumber, seasonNumber FROM episodes WHERE serieId='"
-					+ serieId
-					+ "' and seen=0 and seasonNumber <> 0 ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+				c = Query("SELECT firstAired, episodeNumber, seasonNumber FROM episodes WHERE serieId='"+ serieId
+					+"' AND seen=0"+ (droidseries.includeSpecialsOption ? "" : " AND seasonNumber <> 0") +" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			} else {
-				c = Query("SELECT firstAired, episodeNumber, seasonNumber FROM episodes WHERE serieId='"
-					+ serieId + "' and seen=0 and seasonNumber=" + snumber
-					+ " ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+				c = Query("SELECT firstAired, episodeNumber, seasonNumber FROM episodes WHERE serieId='"+ serieId
+					+"' AND seen=0 AND seasonNumber="+ snumber +" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			}
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -678,7 +675,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 						} while (cms.moveToNext());
 					}
 					cms.close();
-					Log.d(TAG, "Updating only last season "+ max_season +" of "+ tmpSName +" with" + (clean ? "" : "out") + " cleanup");
+					Log.d(TAG, "Updating only last season "+ max_season + (droidseries.includeSpecialsOption ? " and specials" : "") +" of "+ tmpSName +" with" + (clean ? "" : "out") + " cleanup");
 				} catch (SQLiteException e) {
 					if (cms != null) {
 						cms.close();
@@ -739,7 +736,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			}
 			for (int e = 0; e < s.getEpisodes().size(); e++) {
 				if (max_season != -1) {
-					if (s.getEpisodes().get(e).getSeasonNumber() < max_season) {
+					if (s.getEpisodes().get(e).getSeasonNumber() < max_season || (droidseries.includeSpecialsOption ? !(s.getEpisodes().get(e).getSeasonNumber() == 0) : true)) {	// include specials in update
 						continue;
 					}
 				}
