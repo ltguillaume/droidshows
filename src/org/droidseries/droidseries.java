@@ -387,12 +387,13 @@ private void markNextEpSeen(final int oldListPosition) {
 	
 	private void showDetails(String serieId) {
 		Intent viewSerie = new Intent(droidseries.this, ViewSerie.class);
-		String query = "SELECT serieName, overview, status, firstAired, airsDayOfWeek, airsTime, runtime, network, rating "
+		String query = "SELECT serieName, posterThumb, overview, status, firstAired, airsDayOfWeek, airsTime, runtime, network, rating "
 			+ "FROM series WHERE id = '" + serieId + "'";
 		Cursor c = db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			int snameCol = c.getColumnIndex("serieName");
+			int posterCol = c.getColumnIndex("posterThumb");
 			int overviewCol = c.getColumnIndex("overview");
 			int statusCol = c.getColumnIndex("status");
 			int firstAiredCol = c.getColumnIndex("firstAired");
@@ -402,6 +403,7 @@ private void markNextEpSeen(final int oldListPosition) {
 			int networkCol = c.getColumnIndex("network");
 			int ratingCol = c.getColumnIndex("rating");
 			viewSerie.putExtra("seriename", c.getString(snameCol));
+			viewSerie.putExtra("poster", c.getString(posterCol));
 			viewSerie.putExtra("serieoverview", c.getString(overviewCol));
 			viewSerie.putExtra("status", c.getString(statusCol));
 			viewSerie.putExtra("firstaired", c.getString(firstAiredCol));
@@ -412,8 +414,7 @@ private void markNextEpSeen(final int oldListPosition) {
 			viewSerie.putExtra("rating", c.getString(ratingCol));
 			c.close();
 			List<String> genres = new ArrayList<String>();
-			Cursor cgenres = db.Query("SELECT genre FROM genres WHERE serieId='"
-				+ serieId + "'");
+			Cursor cgenres = db.Query("SELECT genre FROM genres WHERE serieId='"+ serieId + "'");
 			cgenres.moveToFirst();
 			if (cgenres != null && cgenres.isFirst()) {
 				do {
@@ -423,8 +424,7 @@ private void markNextEpSeen(final int oldListPosition) {
 			cgenres.close();
 			viewSerie.putExtra("genre", genres.toString().replace("]", "").replace("[", ""));
 			List<String> actors = new ArrayList<String>();
-			Cursor cactors = db.Query("SELECT actor FROM actors WHERE serieId='"
-				+ serieId + "'");
+			Cursor cactors = db.Query("SELECT actor FROM actors WHERE serieId='"+ serieId + "'");
 			cactors.moveToFirst();
 			if (cactors != null && cactors.isFirst()) {
 				do {
@@ -895,18 +895,6 @@ private void markNextEpSeen(final int oldListPosition) {
 			}
 			if (holder.sne != null) {
 				if (!serie.getCompletelyWatched()) {
-					Date nextAir = serie.getNextAir();
-					Date current = new Date();
-					if (nextAir != null) {
-						if (nextAir.before(current)) {
-							holder.sne.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
-						} else {
-							// Without this all next episodes lines would be bold after rotating screen
-							holder.sne.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-						}
-					} else {
-						holder.sne.setTypeface(Typeface.DEFAULT, Typeface.NORMAL);
-					}
 					holder.sne.setText(getString(R.string.messages_next_episode) +" "+ serie.getNextEpisode());
 					holder.sne.setVisibility(View.VISIBLE);
 				} else {

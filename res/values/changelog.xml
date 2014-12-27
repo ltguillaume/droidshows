@@ -15,6 +15,7 @@
 \n+ Click poster for show details, long-click to view show details on IMDb 
 \n+ Context item to view show details on IMDb
 \n+ Swipe right-to-left to mark next episode as seen, everywhere else in app it acts like back button
+\n+ Poster in show overview
 \n* Sorting shows by first unseen episode
 \n* Clarified toggle and sort options
 \n* Episodes named "TBA" are excluded in unwatched count

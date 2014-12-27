@@ -1,22 +1,19 @@
 <ScrollView android:id="@+id/viewEpisodes" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 	<TableLayout android:layout_width="fill_parent" android:layout_height="fill_parent">
 		<TableRow android:layout_height="wrap_content" android:layout_width="fill_parent">
-			<TextView android:layout_height="wrap_content" android:id="@+id/episodename" android:padding="6dip" android:layout_width="fill_parent" android:textStyle="bold" android:textSize="16sp" android:singleLine="false"/>
+			<TextView android:layout_height="wrap_content" android:id="@+id/episodename" android:padding="6dip" android:layout_width="fill_parent" android:textStyle="bold" android:textSize="16sp" android:layout_weight="1"/>
 		</TableRow>
 		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dip" android:id="@+id/episodeoverview" android:singleLine="false"/>
+			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dip" android:id="@+id/episodeoverview" android:layout_weight="1"/>
 		</TableRow>
 		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dip" android:id="@+id/episodedirector" android:layout_weight="1"/>
 		</TableRow>
 		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dip" android:id="@+id/episodedirector"/>
+			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/episodewriter" android:padding="6dip" android:layout_weight="1"/>
 		</TableRow>
 		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/episodewriter" android:padding="6dip"/>
-		</TableRow>
-		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/episodegueststars" android:padding="6dip"/>
+			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/episodegueststars" android:padding="6dip" android:layout_weight="1"/>
 		</TableRow>
 		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
 			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/episoderating" android:padding="6dip"/>

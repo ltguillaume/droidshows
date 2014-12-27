@@ -3,9 +3,14 @@ package org.droidseries.ui;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import org.droidseries.R;
+
 import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
+
 import java.text.ParseException;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -21,10 +26,12 @@ public class ViewSerie extends Activity
 		view.setOnTouchListener(new SwipeDetect());
 		TextView seriename = (TextView) findViewById(R.id.seriename);
 		seriename.setText(getIntent().getStringExtra("seriename"));
-		setTitle(getIntent().getStringExtra("seriename") + " - "
-			+ getString(R.string.messages_overview));
+		setTitle(getIntent().getStringExtra("seriename") +" - "+ getString(R.string.messages_overview));
 		TextView serieoverview = (TextView) findViewById(R.id.serieoverview);
+		BitmapDrawable poster = (BitmapDrawable) BitmapDrawable.createFromPath(getIntent().getStringExtra("poster"));
+		poster.setTargetDensity(getResources().getDisplayMetrics().densityDpi);	// Don't auto-resize from mdpi to screen density
 		serieoverview.setText(getIntent().getStringExtra("serieoverview"));
+		serieoverview.setCompoundDrawablesWithIntrinsicBounds(null, null, poster, null);
 		TextView status = (TextView) findViewById(R.id.status);
 		String statusValue = getIntent().getStringExtra("status");
 		if (statusValue.equalsIgnoreCase("Continuing")) {
@@ -72,14 +79,12 @@ public class ViewSerie extends Activity
 		TextView runtime = (TextView) findViewById(R.id.runtime);
 		runtime.setText(String.format(getString(R.string.series_runtime_minutes), getIntent().getStringExtra("runtime")));
 		TextView network = (TextView) findViewById(R.id.network);
-		network.setText(getString(R.string.series_network) + " "
-			+ getIntent().getStringExtra("network"));
+		network.setText(getString(R.string.series_network) + " "+ getIntent().getStringExtra("network"));
 		TextView genre = (TextView) findViewById(R.id.genre);
 		genre.setText(getString(R.string.series_genre) + " " + getIntent().getStringExtra("genre"));
 		TextView rating = (TextView) findViewById(R.id.rating);
 		rating.setText(getString(R.string.series_rating) + " " + getIntent().getStringExtra("rating"));
 		TextView serieactors = (TextView) findViewById(R.id.serieactors);
-		serieactors.setText(getString(R.string.series_actors) + " "
-			+ getIntent().getStringExtra("serieactors"));
+		serieactors.setText(getString(R.string.series_actors) + " "+ getIntent().getStringExtra("serieactors"));
 	}
 }
