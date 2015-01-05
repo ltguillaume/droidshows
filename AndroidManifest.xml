@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.droidseries" android:versionCode="13"
-    android:versionName="0.1.5-7_Guillaume-3.70">
+    android:versionName="0.1.5-7_Guillaume-3.71">
 	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>

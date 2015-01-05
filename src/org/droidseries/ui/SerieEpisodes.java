@@ -68,10 +68,21 @@ public class SerieEpisodes extends ListActivity {
 			listView.setAdapter(episodes_adapter);
 			listView.setOnItemClickListener(new OnItemClickListener() {
 				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					try {
+					if (droidseries.fullLineCheckOption) {
+						try {
+							droidseries.db.updateUnwatchedEpisode(serieid, episodes.get(position));
+							CheckBox c = (CheckBox) view.findViewById(R.id.seen);
+							c.setChecked(!c.isChecked());
+						} catch (Exception e) {
+							Toast.makeText(getApplicationContext(), "Could not set episode seen state", Toast.LENGTH_LONG).show();
+							Log.e(TAG, e.getMessage());
+						}
+					} else {
+						try {
 							startViewEpisode(episodes.get(position));
-					} catch (Exception e) {
-						Log.e(TAG, e.getMessage());
+						} catch (Exception e) {
+							Log.e(TAG, e.getMessage());
+						}
 					}
 				}
 			});		

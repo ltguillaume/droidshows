@@ -33,6 +33,7 @@
 <string name="dialog_update_speedup">\n\nDit kan sneller met de optie in Menu > Over.</string>
 <string name="dialog_last_season">Alleen laatste seizoenen bijwerken</string>
 <string name="dialog_include_specials">Specials meetellen in overzicht</string>
+<string name="dialog_full_line_check">Hele regel gebruiken voor aanvinken aflevering</string>
 <string name="menu_toggle">Status […] veranderen</string>
 <string name="messages_title_loading_series">DroidSeries</string>
 <string name="messages_title_loading_seasons">Seizoenen worden geladen…</string>

@@ -101,9 +101,11 @@ public class droidseries extends ListActivity
 	private static final String LAST_SEASON_PREF_NAME = "last_season";
 	private static final int UPDATE_ALL_SEASONS = 0;
 	private static final int UPDATE_LAST_SEASON_ONLY = 1;
-	private static int lastSeasonOption = UPDATE_ALL_SEASONS;
+	private static int lastSeasonOption;
 	private static final String INCLUDE_SPECIALS_NAME = "include_specials";
-	public static boolean includeSpecialsOption = false;
+	public static boolean includeSpecialsOption;
+	private static final String FULL_LINE_CHECK_NAME = "full_line";
+	public static boolean fullLineCheckOption;
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
 	private static boolean bUpdateShowTh = false;
@@ -146,6 +148,7 @@ public class droidseries extends ListActivity
 		filterOption = sharedPrefs.getInt(FILTER_PREF_NAME, FILTER_DISABLED);
 		lastSeasonOption = sharedPrefs.getInt(LAST_SEASON_PREF_NAME, UPDATE_ALL_SEASONS);
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
+		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
 
 		series = new ArrayList<TVShowItem>();
 		series_adapter = new SeriesAdapter(this, R.layout.row, series);
@@ -239,14 +242,14 @@ public class droidseries extends ListActivity
 				} catch (NameNotFoundException e) {
 					e.printStackTrace();
 				}
-				CheckBox lastSeasonCheckbox = (CheckBox) about.findViewById(R.id.last_season_checkbox);
+				CheckBox lastSeasonCheckbox = (CheckBox) about.findViewById(R.id.last_season);
 				lastSeasonCheckbox.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						lastSeasonOption ^= 1;
 					}
 				});
 				lastSeasonCheckbox.setChecked(lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
-				CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials_checkbox);
+				CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials);
 				includeSpecialsCheckbox.setOnClickListener(new View.OnClickListener() {
 					public void onClick(View v) {
 						includeSpecialsOption = !includeSpecialsOption;
@@ -257,17 +260,27 @@ public class droidseries extends ListActivity
 					}
 				});
 				includeSpecialsCheckbox.setChecked(includeSpecialsOption);
+				CheckBox fullLineCheckbox = (CheckBox) about.findViewById(R.id.full_line_check);
+				fullLineCheckbox.setOnClickListener(new View.OnClickListener() {
+					public void onClick(View v) {
+						fullLineCheckOption = !fullLineCheckOption;
+					}
+				});
+				fullLineCheckbox.setChecked(fullLineCheckOption);
 				m_AlertDlg = new AlertDialog.Builder(this)
 					.setView(about)
 					.setTitle(getString(R.string.layout_app_name)).setIcon(R.drawable.icon)
-					.setPositiveButton(getString(R.string.dialog_clean_db), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						cleanUp();
-					}
-				}).setCancelable(true).show();
+					.setNeutralButton(getString(R.string.dialog_clean_db), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							cleanUp();
+						}
+					})
+					.setCancelable(true)
+					.show();
 				break;
 			case EXIT_MENU_ITEM :
 				onPause();	// save options
+				onDestroy(); // close threads and database
 				this.finish();
 				System.exit(0);	// kill process
 		}
@@ -783,6 +796,7 @@ private void markNextEpSeen(final int oldListPosition) {
 		ed.putInt(FILTER_PREF_NAME, filterOption);
 		ed.putInt(LAST_SEASON_PREF_NAME, lastSeasonOption);
 		ed.putBoolean(INCLUDE_SPECIALS_NAME, includeSpecialsOption);
+		ed.putBoolean(FULL_LINE_CHECK_NAME, fullLineCheckOption);
 		ed.commit();
 		if (updateShowTh != null) {
 			if (updateShowTh.isAlive()) {
@@ -832,11 +846,7 @@ private void markNextEpSeen(final int oldListPosition) {
 
 	@Override
 	public void onDestroy() {
-		Runnable exitSeries = new Runnable() { public void run() {
-				db.close();
-		}};
-		Thread thSave = new Thread(null, exitSeries, "MagentoBackground");
-		thSave.start();
+		db.close();
 		super.onDestroy();
 	}
 
