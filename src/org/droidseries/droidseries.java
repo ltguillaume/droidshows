@@ -846,6 +846,11 @@ private void markNextEpSeen(final int oldListPosition) {
 
 	@Override
 	public void onDestroy() {
+		try {
+			statsTh.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		db.close();
 		super.onDestroy();
 	}
