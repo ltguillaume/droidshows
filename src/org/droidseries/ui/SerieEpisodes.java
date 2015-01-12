@@ -136,7 +136,7 @@ public class SerieEpisodes extends ListActivity {
 
 			if (convertView == null) {
 				LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = vi.inflate(R.layout.row_serie_episodes, null);
+				convertView = vi.inflate(R.layout.row_serie_episodes, parent, false);
 
 				holder = new ViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.name);
@@ -176,7 +176,7 @@ public class SerieEpisodes extends ListActivity {
 
 				if (holder.name != null) {
 					String tmpName = "", tmpAired = "";
-					tmpName = (getString(R.string.messages_ep).isEmpty() ? "" : getString(R.string.messages_ep) +" ") + c.getInt(enumberCol) +". "+ c.getString(enameCol) + "\n";
+					tmpName = (getString(R.string.messages_ep).isEmpty() ? "" : getString(R.string.messages_ep) +" ") + c.getInt(enumberCol) +". "+ c.getString(enameCol);
 					if (!aired.equals(""))
 						tmpAired = getString(R.string.messages_aired) + " " + aired;
 					holder.name.setText(tmpName);

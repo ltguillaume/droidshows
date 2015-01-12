@@ -28,10 +28,14 @@ public class ViewSerie extends Activity
 		seriename.setText(getIntent().getStringExtra("seriename"));
 		setTitle(getIntent().getStringExtra("seriename") +" - "+ getString(R.string.messages_overview));
 		TextView serieoverview = (TextView) findViewById(R.id.serieoverview);
-		BitmapDrawable poster = (BitmapDrawable) BitmapDrawable.createFromPath(getIntent().getStringExtra("poster"));
-		poster.setTargetDensity(getResources().getDisplayMetrics().densityDpi);	// Don't auto-resize from mdpi to screen density
+		if (!getIntent().getStringExtra("poster").isEmpty()) {
+			BitmapDrawable poster = (BitmapDrawable) BitmapDrawable.createFromPath(getIntent().getStringExtra("poster"));
+			if (poster != null)  {
+				poster.setTargetDensity(getResources().getDisplayMetrics().densityDpi);	// Don't auto-resize from mdpi to screen density
+				serieoverview.setCompoundDrawablesWithIntrinsicBounds(null, null, poster, null);
+			}
+		}
 		serieoverview.setText(getIntent().getStringExtra("serieoverview"));
-		serieoverview.setCompoundDrawablesWithIntrinsicBounds(null, null, poster, null);
 		TextView status = (TextView) findViewById(R.id.status);
 		String statusValue = getIntent().getStringExtra("status");
 		if (statusValue.equalsIgnoreCase("Continuing")) {

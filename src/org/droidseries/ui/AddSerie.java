@@ -272,12 +272,10 @@ public class AddSerie extends ListActivity
 								+ imageUrl.getFile().toString());
 							FileUtils.copyURLToFile(imageUrl, cacheImage);
 							// TODO: Find a way to stop using bitmaps
-							Bitmap posterThumb = BitmapFactory.decodeFile(getApplicationContext().getFilesDir().getAbsolutePath()
-								+ imageUrl.getFile().toString());
+							Bitmap posterThumb = BitmapFactory.decodeFile(getApplicationContext().getFilesDir().getAbsolutePath() + imageUrl.getFile().toString());
 							int width = posterThumb.getWidth();
 							int height = posterThumb.getHeight();
-							// TODO: check this for other resolutions int newWidth = 42; int newHeight = 64; int
-							// newWidth = 128; int newHeight = 180;
+							// TODO: check this for other resolutions int newWidth = 42; int newHeight = 64; int newWidth = 128; int newHeight = 180;
 							Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
 							int Vwidth = display.getWidth();
 							int Vheight = display.getHeight();
@@ -454,7 +452,7 @@ public class AddSerie extends ListActivity
 			View v = convertView;
 			if (v == null) {
 				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				v = vi.inflate(R.layout.row_search_series, null);
+				v = vi.inflate(R.layout.row_search_series, parent, false);
 			}
 			final Serie o = items.get(position);
 			if (o != null) {

@@ -897,7 +897,7 @@ public class droidseries extends ListActivity
 			final ViewHolder holder;
 			if (convertView == null) {
 				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = vi.inflate(R.layout.row, null);
+				convertView = vi.inflate(R.layout.row, parent, false);
 				holder = new ViewHolder();
 				holder.sn = (TextView) convertView.findViewById(R.id.seriename);
 				holder.si = (TextView) convertView.findViewById(R.id.serieinfo);
@@ -950,25 +950,28 @@ public class droidseries extends ListActivity
 				}
 			}
 			if (holder.icon != null) {
-				try {
-					if (!serie.getIcon().equals("")) {
+				if (!serie.getIcon().equals("") && serie.getDIcon() != null) {
+					try {
 						holder.icon.setImageDrawable(serie.getDIcon());
 					}
-				} catch (Exception e) {
-					// e.printStackTrace();
+					catch (Exception e) {
+						holder.icon.setImageResource(R.drawable.noposter);
+					}
+				} else {
+					holder.icon.setImageResource(R.drawable.noposter);
 				}
-				holder.icon.setOnClickListener(new View.OnClickListener() {
-					public void onClick(View view) {
-							showDetails(items.get(position).getSerieId());
-					}
-				});
-				holder.icon.setOnLongClickListener(new View.OnLongClickListener() {
-					public boolean onLongClick(View view) {
-							IMDbDetails(items.get(position).getSerieId());
-							return true;
-					}
-				});
 			}
+			holder.icon.setOnClickListener(new View.OnClickListener() {
+				public void onClick(View view) {
+						showDetails(items.get(position).getSerieId());
+				}
+			});
+			holder.icon.setOnLongClickListener(new View.OnLongClickListener() {
+				public boolean onLongClick(View view) {
+						IMDbDetails(items.get(position).getSerieId());
+						return true;
+				}
+			});
 			return convertView;
 		}
 	}

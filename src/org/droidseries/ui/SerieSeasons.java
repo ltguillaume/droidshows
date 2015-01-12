@@ -124,7 +124,7 @@ public class SerieSeasons extends ListActivity
 			} else {
 				tmpSeason = getString(R.string.messages_season) + " " + iseasons.get(tmpS);
 			}
-			Season season = new Season(serieid, iseasons.get(tmpS), tmpSeason, 0, 0, true, "");
+			Season season = new Season(serieid, iseasons.get(tmpS), tmpSeason, -1, -1, true, "");
 			seasons.add(season);
 		}
 		for (int s = 0; s < iseasons.size(); s++) {
@@ -139,7 +139,6 @@ public class SerieSeasons extends ListActivity
 				int sNumber = seasons.get(i).getSNumber();
 				int unwatched = droidseries.db.getSeasonEPUnwatched(serieId, seasons.get(i).getSNumber());
 				if (seasons.get(i).getUnwatched() != unwatched) {	// Only update in adapter when something's changed
-					seasons.get(i).setUnwatched(unwatched);
 					int unwatchedAired = droidseries.db.getSeasonEPUnwatchedAired(serieId, sNumber);
 					seasons.get(i).setUnwatchedAired(unwatchedAired);
 					if (unwatchedAired != 0) {
@@ -148,13 +147,14 @@ public class SerieSeasons extends ListActivity
 					} else {
 						seasons.get(i).setCompletelyWatched(true);
 					}
+					seasons.get(i).setUnwatched(unwatched);
 				}
+				listView.post(new Runnable() {
+					public void run() {
+						seriesseasons_adapter.notifyDataSetChanged();
+					}
+				});
 			}
-			listView.post(new Runnable() {
-				public void run() {
-					seriesseasons_adapter.notifyDataSetChanged();
-				}
-			});
 		}
 	};
 
@@ -176,39 +176,40 @@ public class SerieSeasons extends ListActivity
 			final ViewHolder holder;
 			if (convertView == null) {
 				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				convertView = vi.inflate(R.layout.row_serie_seasons, null);
+				convertView = vi.inflate(R.layout.row_serie_seasons, parent, false);
 				holder = new ViewHolder();
 				holder.season = (TextView) convertView.findViewById(R.id.serieseason);
-				holder.info = (TextView) convertView.findViewById(R.id.seasoninfo);
+				holder.unwatched = (TextView) convertView.findViewById(R.id.unwatched);
+				holder.nextEpisode = (TextView) convertView.findViewById(R.id.nextepisode); 
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
+				if (holder.unwatched != null) holder.unwatched.setText("");
+				if (holder.nextEpisode != null) holder.nextEpisode.setText("");
 			}
 			Season s = items.get(position);
 			if (holder.season != null) {
 				holder.season.setText(s.getSeason());
 			}
-			String infoPart1 = "";
-			if (holder.info != null) {
-				int unwatchedAired = s.getUnwatchedAired();
+			if (holder.unwatched != null) {
 				int unwatched = s.getUnwatched();
 				if (unwatched != -1) {
 					if (unwatched == 0) {
-						infoPart1 = getString(R.string.messages_season_completely_watched);
+						holder.unwatched.setText(getString(R.string.messages_season_completely_watched));
 					} else {
-						infoPart1 = unwatchedAired + " " + getString(R.string.messages_of) + " " + unwatched + " ";
+						String firstPart = s.getUnwatchedAired() + " " + getString(R.string.messages_of) + " " + unwatched + " ";
 						if (unwatched == 1) {
-							infoPart1 += getString(R.string.messages_episode_not_watched) +"\n";
+							holder.unwatched.setText(firstPart + getString(R.string.messages_episode_not_watched));
 						} else {
-							infoPart1 += getString(R.string.messages_episodes_not_watched) +"\n";
+							holder.unwatched.setText(firstPart + getString(R.string.messages_episodes_not_watched));
 						}
 					}
 				}
+			}
+			if (holder.nextEpisode != null) {
 				if (!s.getCompletelyWatched()) {
-					holder.info.setText(infoPart1 + getString(R.string.messages_next_episode) + " "
+					holder.nextEpisode.setText(getString(R.string.messages_next_episode) + " "
 						+ s.getNextEpisode().replace("[on]", getString(R.string.messages_on)));
-				} else {
-					holder.info.setText(infoPart1);
 				}
 			}
 			return convertView;
@@ -217,6 +218,7 @@ public class SerieSeasons extends ListActivity
 	static class ViewHolder
 	{
 		TextView season;
-		TextView info;
+		TextView unwatched;
+		TextView nextEpisode;
 	}
 }
