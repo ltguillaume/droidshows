@@ -338,8 +338,7 @@ public class droidseries extends ListActivity
 				IMDbDetails(series.get(info.position).getSerieId());
 				return true;
 			case UPDATE_CONTEXT :
-				updateSerie(series.get(info.position).getSerieId());
-				listView.post(updateListView);
+				updateSerie(series.get(info.position).getSerieId(), info.position);
 				return true;
 			case DELETE_CONTEXT :
 				// TODO (1): add a verification to be sure that the TV show was well eliminated
@@ -390,11 +389,9 @@ public class droidseries extends ListActivity
 	}
 	
 
-private void markNextEpSeen(final int oldListPosition) {
-		TVShowItem serie;
-		String serieid;
-		serie = series.get(oldListPosition);
-		serieid = serie.getSerieId();
+	private void markNextEpSeen(final int oldListPosition) {
+		TVShowItem serie = series.get(oldListPosition);
+		String serieid = serie.getSerieId();
 		String nextEpisode = db.getNextEpisodeId(serieid, -1);
 		if (!nextEpisode.equals("")) {
 			db.updateUnwatchedEpisode(serieid, nextEpisode);
@@ -416,7 +413,7 @@ private void markNextEpSeen(final int oldListPosition) {
 			}
 		}
 	}
-	
+		
 	private void showDetails(String serieId) {
 		Intent viewSerie = new Intent(droidseries.this, ViewSerie.class);
 		String query = "SELECT serieName, posterThumb, overview, status, firstAired, airsDayOfWeek, airsTime, runtime, network, rating "
@@ -481,8 +478,9 @@ private void markNextEpSeen(final int oldListPosition) {
 		}
 	}
 	
-	private void updateSerie(String serieId) {
+	private void updateSerie(String serieId, int pos) {
 		final String id = serieId;
+		final int oldListPosition = pos;
 		if (utils.isNetworkAvailable(droidseries.this)) {
 			Runnable updateserierun = new Runnable() {
 				public void run() {
@@ -503,6 +501,22 @@ private void markNextEpSeen(final int oldListPosition) {
 						bUpdateShowTh = false;
 					}
 					theTVDB = null;
+					final TVShowItem newSerie = createTVShowItem(id);
+					series.set(oldListPosition, newSerie);
+					listView.post(updateListView);
+					if (sortOption == SORT_BY_LAST_UNSEEN) {
+						final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
+						listView.post(new Runnable() {
+							public void run() {
+								int pos = series_adapter.getPosition(newSerie);
+								if (pos != oldListPosition) {
+									listView.setSelection(pos);
+									if (0 < pos && pos < listView.getCount() - 5)
+										listView.smoothScrollBy(-padding, 500);
+								}
+							}
+						});
+					}
 				}
 			};
 			updateShowTh = new Thread(null, updateserierun, "MagentoBackground");
@@ -818,7 +832,7 @@ private void markNextEpSeen(final int oldListPosition) {
 		super.onRestart();
 		if (backFromSeasonSerieId != null && backFromSeasonPosition > -1) {
 			final TVShowItem newSerie = createTVShowItem(backFromSeasonSerieId);
-		for(int i = 0; i < series.size(); i += 1) {
+			for(int i = 0; i < series.size(); i += 1) {
 				if (series.get(i).getSerieId().equals(backFromSeasonSerieId)) {
 				series.set(i, newSerie);
 				break;

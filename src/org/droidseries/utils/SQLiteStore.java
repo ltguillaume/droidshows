@@ -675,7 +675,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 						} while (cms.moveToNext());
 					}
 					cms.close();
-					Log.d(TAG, "Updating only last season "+ max_season + (droidseries.includeSpecialsOption ? " and specials" : "") +" of "+ tmpSName +" with" + (clean ? "" : "out") + " cleanup");
+					Log.d(TAG, "Updating only last season "+ max_season +" and specials of "+ tmpSName +" with" + (clean ? "" : "out") + " cleanup");
 				} catch (SQLiteException e) {
 					if (cms != null) {
 						cms.close();
@@ -736,7 +736,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 			}
 			for (int e = 0; e < s.getEpisodes().size(); e++) {
 				if (max_season != -1) {
-					if (s.getEpisodes().get(e).getSeasonNumber() < max_season || (droidseries.includeSpecialsOption ? !(s.getEpisodes().get(e).getSeasonNumber() == 0) : true)) {	// include specials in update
+					int season = s.getEpisodes().get(e).getSeasonNumber();
+					if (season < max_season && season != 0) {	// include specials in update
 						continue;
 					}
 				}
@@ -918,12 +919,12 @@ public class SQLiteStore extends SQLiteOpenHelper
 					Log.d(TAG, s.getEpisodes().get(e).getSeasonNumber() +"x"+ s.getEpisodes().get(e).getEpisodeNumber() + " has been added.");
 				}
 			}
-			updateShowStats(s.getId());
 			db.setTransactionSuccessful();
 			db.endTransaction();
 		} catch (SQLiteException e) {
 			Log.e(TAG, e.getMessage());
 		}
+		updateShowStats(s.getId());
 	}
 
 	/* Delete Methods */
