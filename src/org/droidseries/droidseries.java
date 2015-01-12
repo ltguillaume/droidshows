@@ -163,9 +163,10 @@ public class droidseries extends ListActivity
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				if (swipeDetect.detected()) {
-					markNextEpSeen(position);
-					Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-					v.vibrate(150);
+					if (markNextEpSeen(position)) {
+						Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+						v.vibrate(150);
+					}
 				} else {
 					try {
 						String serieId = series.get(position).getSerieId();
@@ -389,11 +390,11 @@ public class droidseries extends ListActivity
 	}
 	
 
-	private void markNextEpSeen(final int oldListPosition) {
+	private boolean markNextEpSeen(final int oldListPosition) {
 		TVShowItem serie = series.get(oldListPosition);
 		String serieid = serie.getSerieId();
 		String nextEpisode = db.getNextEpisodeId(serieid, -1);
-		if (!nextEpisode.equals("")) {
+		if (!nextEpisode.equals("-1")) {
 			db.updateUnwatchedEpisode(serieid, nextEpisode);
 			final TVShowItem newSerie = createTVShowItem(serieid);
 			series.set(oldListPosition, newSerie);
@@ -411,7 +412,9 @@ public class droidseries extends ListActivity
 					}
 				});
 			}
+			return true;
 		}
+		return false;
 	}
 		
 	private void showDetails(String serieId) {

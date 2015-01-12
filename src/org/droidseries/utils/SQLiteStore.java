@@ -603,14 +603,13 @@ public class SQLiteStore extends SQLiteOpenHelper
 	public void updateUnwatchedEpisode(String serieId, String episodeId) {
 		Cursor c = null;
 		try {
-			c = Query("SELECT seen FROM episodes WHERE serieId='" + serieId + "' AND id='" + episodeId
-				+ "'");
+			c = Query("SELECT seen FROM episodes WHERE serieId='"+ serieId +"' AND id='"+ episodeId +"'");
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				int seen = c.getInt(0);
 				c.close();
 				seen ^= 1;
-				db.execSQL("UPDATE episodes SET seen="+ seen +" WHERE serieId='" + serieId + "' AND id='" + episodeId + "'");
+				db.execSQL("UPDATE episodes SET seen="+ seen +" WHERE serieId='"+ serieId +"' AND id='"+ episodeId +"'");
 			}
 		} catch (SQLiteException e) {
 			if (c != null) {
