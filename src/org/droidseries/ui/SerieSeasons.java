@@ -138,7 +138,7 @@ public class SerieSeasons extends ListActivity
 				String serieId = seasons.get(i).getSerieId();
 				int sNumber = seasons.get(i).getSNumber();
 				int unwatched = droidseries.db.getSeasonEPUnwatched(serieId, seasons.get(i).getSNumber());
-				if (seasons.get(i).getUnwatched() != unwatched) {	// Only update in adapter when something's changed
+				//if (seasons.get(i).getUnwatched() != unwatched) {	// Only update in adapter when something's changed
 					int unwatchedAired = droidseries.db.getSeasonEPUnwatchedAired(serieId, sNumber);
 					seasons.get(i).setUnwatchedAired(unwatchedAired);
 					if (unwatchedAired != 0) {
@@ -148,7 +148,7 @@ public class SerieSeasons extends ListActivity
 						seasons.get(i).setCompletelyWatched(true);
 					}
 					seasons.get(i).setUnwatched(unwatched);
-				}
+				//}
 				listView.post(new Runnable() {
 					public void run() {
 						seriesseasons_adapter.notifyDataSetChanged();
