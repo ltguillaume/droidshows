@@ -6,16 +6,14 @@ public class Season {
         private String season;
         private int unwatchedAired;
         private int unwatched;
-        private boolean completelyWatched;
         private String nextEpisode;
 
-        public Season(String serieid, int snumber, String season, int unwatchedAired, int unwatched, boolean completelyWatched, String nextEpisode) {
+        public Season(String serieid, int snumber, String season, int unwatchedAired, int unwatched, String nextEpisode) {
                 this.serieid = serieid;
                 this.snumber = snumber;
                 this.season = season;
                 this.unwatchedAired = unwatchedAired;
                 this.unwatched = unwatched;
-                this.completelyWatched = completelyWatched;
                 this.nextEpisode = nextEpisode;
         }
 
@@ -58,12 +56,4 @@ public class Season {
 			  public void setUnwatchedAired(int unwatchedAired) {
 			          this.unwatchedAired = unwatchedAired;
 			  }
-
-        public boolean getCompletelyWatched() {
-                return this.completelyWatched;
-        }
-
-        public void setCompletelyWatched(boolean completelyWatched) {
-                this.completelyWatched = completelyWatched;
-        }
 }

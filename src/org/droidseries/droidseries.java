@@ -30,6 +30,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -637,7 +638,7 @@ public class droidseries extends ListActivity
 			name = c.getString(c.getColumnIndex("serieName"));
 		}
 		c.close();
-		TVShowItem tvsi = new TVShowItem(serieId, "", null, name, 0, "", null, 0, 0, false, false, "");
+		TVShowItem tvsi = new TVShowItem(serieId, "", null, name, 0, "", null, 0, 0, false, "");
 		return tvsi;
 	}
 	
@@ -666,7 +667,6 @@ public class droidseries extends ListActivity
 					Drawable poster = Drawable.createFromPath(tmpPoster);
 					series.get(i).setDIcon(poster);
 				}
-				series.get(i).setCompletelyWatched((unwatchedAired == 0 ? true : false));
 				if (!tmpNextEpisode.equals("-1"))
 					series.get(i).setNextEpisode(tmpNextEpisode.replace("[on]", on));
 				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -712,7 +712,6 @@ public class droidseries extends ListActivity
 			tmpNextAir = c.getString(c.getColumnIndex("nextAir"));
 		}
 		c.close();
-		boolean completelyWatched = (unwatchedAired == 0 ? true : false);
 		if (!tmpNextEpisode.equals("-1"))
 			nextEpisode = tmpNextEpisode.replace("[on]", on);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -725,7 +724,7 @@ public class droidseries extends ListActivity
 		}
 		Drawable poster = Drawable.createFromPath(tmpPoster);
 		boolean status = (tmpStatus == 1);
-		TVShowItem tvsi = new TVShowItem(serieid, tmpPoster, poster, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, completelyWatched, showStatus);
+		TVShowItem tvsi = new TVShowItem(serieid, tmpPoster, poster, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, showStatus);
 		return tvsi;
 	}
 
@@ -764,15 +763,7 @@ public class droidseries extends ListActivity
 						series_adapter.add(series.get(i));
 					} else {
 						TVShowItem tmpTVSI = series_adapter.getItem(i);
-						int unwatched = series.get(i).getUnwatched();
-						if (unwatched != tmpTVSI.getUnwatched()) {
-							if (unwatched == 0) {
-								tmpTVSI.setCompletelyWatched(true);
-							} else {
-								tmpTVSI.setCompletelyWatched(false);
-							}
-							tmpTVSI.setUnwatched(unwatched);
-						}
+						tmpTVSI.setUnwatched(series.get(i).getUnwatched());
 						tmpTVSI.setUnwatchedAired(series.get(i).getUnwatchedAired());
 						tmpTVSI.setNextEpisode(series.get(i).getNextEpisode());
 						tmpTVSI.setNextAir(series.get(i).getNextAir());
@@ -907,6 +898,7 @@ public class droidseries extends ListActivity
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 				holder.icon.setOnClickListener(null);
+				holder.sne.setTypeface(null, Typeface.NORMAL);
 			}
 			TVShowItem serie = items.get(position);
 			int nunwatched = serie.getUnwatched();
@@ -921,30 +913,32 @@ public class droidseries extends ListActivity
 			if (holder.si != null) {
 				String siText = "";
 				int sNumber = serie.getSNumber();
-				if (sNumber == 1) { // Guillaume: removed "serie.getSNumber() == 0 || "
-					siText = sNumber +" "+ getString(R.string.messages_season) +" | ";
+				if (sNumber == 1) {
+					siText = sNumber +" "+ getString(R.string.messages_season);
 				} else {
-					siText = sNumber +" "+ getString(R.string.messages_seasons) +" | ";
+					siText = sNumber +" "+ getString(R.string.messages_seasons);
 				}
 				String unwatched = "";
-				if (nunwatchedAired == 0) { // Guillaume: was nunwatched
+				if (nunwatched == 0) {
 					unwatched = getString(R.string.messages_completely_watched);
 				} else {
-					if (nunwatched == 1) {
-						unwatched = nunwatchedAired + " " + getString(R.string.messages_of) + " " + nunwatched + " "
-							+ getString(R.string.messages_episode_not_watched); // Guillaume: added "nunwatchedAired + " " + getString(R.string.messages_of) + " " + "
+					unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes) : getString(R.string.messages_new_episode)) +" ";
+					if (nunwatchedAired > 0) {
+						unwatched = nunwatchedAired +" "+ getString(R.string.messages_of) +" "+ unwatched + getString(R.string.messages_ep_aired);
 					} else {
-						unwatched = nunwatchedAired + " " + getString(R.string.messages_of) + " " + nunwatched + " "
-							+ getString(R.string.messages_episodes_not_watched); // Guillaume: added "nunwatchedAired + " " + getString(R.string.messages_of) + " " + "
+						unwatched += getString(R.string.messages_to_be_aired);
 					}
 				}
 				String continuing = (serie.getShowStatus().equalsIgnoreCase("Continuing") ? "" : "*");	// Guillaume: gimme * if show's not continuing
-				holder.si.setText(siText + unwatched + continuing);
+				holder.si.setText(siText +" | "+ unwatched + continuing);
 			}
 			if (holder.sne != null) {
-				if (!serie.getCompletelyWatched()) {
+				if (nunwatched > 0) {
 					holder.sne.setText(getString(R.string.messages_next_episode) +" "+ serie.getNextEpisode());
 					holder.sne.setVisibility(View.VISIBLE);
+					if (nunwatchedAired > 0) {
+						holder.sne.setTypeface(null, Typeface.BOLD);
+					}
 				} else {
 					holder.sne.setVisibility(View.GONE);
 				}

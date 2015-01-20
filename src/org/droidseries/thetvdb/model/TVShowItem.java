@@ -12,7 +12,6 @@ public class TVShowItem {
         private int snumber;
         private String nextEpisode;
         private Date nextAir;
-        private boolean completelyWatched;
         private boolean passiveStatus;
         private int unwatchedAired;
         private int unwatched;
@@ -21,7 +20,7 @@ public class TVShowItem {
         public TVShowItem(String serieid, String icon, Drawable dicon, String
                           name, int snumber, String nextEpisode, Date nextAir,
                           int unwatchedAired, int unwatched, boolean passiveStatus,
-                          boolean completelyWatched, String showStatus) {
+                          String showStatus) {
                 this.serieid = serieid;
                 this.icon = icon;
                 this.dicon = dicon;
@@ -32,7 +31,6 @@ public class TVShowItem {
                 this.unwatchedAired = unwatchedAired;
                 this.unwatched = unwatched;
                 this.passiveStatus = passiveStatus;
-                this.completelyWatched = completelyWatched;
                 this.showStatus = showStatus;
         }
 
@@ -95,14 +93,6 @@ public class TVShowItem {
 			  public void setUnwatchedAired(int unwatchedAired) {
 			          this.unwatchedAired = unwatchedAired;
 			  }
-
-        public boolean getCompletelyWatched() {
-                return this.completelyWatched;
-        }
-
-        public void setCompletelyWatched(boolean completelyWatched) {
-                this.completelyWatched = completelyWatched;
-        }
 
         public boolean getPassiveStatus() {
                 return this.passiveStatus;

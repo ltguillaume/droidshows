@@ -47,8 +47,10 @@
 <string name="messages_no_internet">Er is geen internetverbinding.</string>
 <string name="messages_title_update_all_series">Alle series bijwerken</string>
 <string name="messages_update_all_series">Bezig met downloaden van nieuwe gegevens. Even geduld…</string>
-<string name="messages_episodes_not_watched">uitgezonden</string>
-<string name="messages_episode_not_watched">uitgezonden</string>
+<string name="messages_new_episodes">afleveringen</string>
+<string name="messages_new_episode">aflevering</string>
+<string name="messages_ep_aired">uitgezonden</string>
+<string name="messages_to_be_aired">resterend</string>
 <string name="messages_seasons">Seizoenen</string>
 <string name="messages_season">Seizoen</string>
 <string name="messages_next_episode">Volgende:</string>

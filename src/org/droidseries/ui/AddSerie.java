@@ -352,7 +352,7 @@ public class AddSerie extends ListActivity
 						int unwatchedAired = droidseries.db.getEPUnwatchedAired(sToAdd.getId());
 						int unwatched = droidseries.db.getEPUnwatched(sToAdd.getId());
 						Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
-						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatchedAired, unwatched, false, false, sToAdd.getStatus());
+						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatchedAired, unwatched, false, sToAdd.getStatus());
 						droidseries.series.add(tvsi);
 						runOnUiThread(droidseries.updateListView);
 						runOnUiThread(reloadSearchSeries);

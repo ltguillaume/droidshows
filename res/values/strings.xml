@@ -47,8 +47,10 @@
 <string name="messages_no_internet">No Internet connection is available.</string>
 <string name="messages_title_update_all_series">Update all shows</string>
 <string name="messages_update_all_series">Gathering shows information. This operation will take a while…</string>
-<string name="messages_episodes_not_watched">new episodes aired</string>
-<string name="messages_episode_not_watched">new episode aired</string>
+<string name="messages_new_episodes">new episodes</string>
+<string name="messages_new_episode">new episode</string>
+<string name="messages_ep_aired">aired</string>
+<string name="messages_to_be_aired">to be aired</string>
 <string name="messages_seasons">Seasons</string>
 <string name="messages_season">Season</string>
 <string name="messages_next_episode">Next episode:</string>

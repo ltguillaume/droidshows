@@ -2,13 +2,16 @@ package org.droidseries.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.droidseries.droidseries;
 import org.droidseries.thetvdb.model.Season;
 import org.droidseries.R;
+
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -124,7 +127,7 @@ public class SerieSeasons extends ListActivity
 			} else {
 				tmpSeason = getString(R.string.messages_season) + " " + iseasons.get(tmpS);
 			}
-			Season season = new Season(serieid, iseasons.get(tmpS), tmpSeason, -1, -1, true, "");
+			Season season = new Season(serieid, iseasons.get(tmpS), tmpSeason, -1, -1, "");
 			seasons.add(season);
 		}
 		for (int s = 0; s < iseasons.size(); s++) {
@@ -141,11 +144,8 @@ public class SerieSeasons extends ListActivity
 				//if (seasons.get(i).getUnwatched() != unwatched) {	// Only update in adapter when something's changed
 					int unwatchedAired = droidseries.db.getSeasonEPUnwatchedAired(serieId, sNumber);
 					seasons.get(i).setUnwatchedAired(unwatchedAired);
-					if (unwatchedAired != 0) {
-						seasons.get(i).setCompletelyWatched(false);
+					if (unwatched > 0) {
 						seasons.get(i).setNextEpisode(droidseries.db.getNextEpisode(serieId, sNumber));
-					} else {
-						seasons.get(i).setCompletelyWatched(true);
 					}
 					seasons.get(i).setUnwatched(unwatched);
 				//}
@@ -184,32 +184,41 @@ public class SerieSeasons extends ListActivity
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
-				if (holder.unwatched != null) holder.unwatched.setText("");
-				if (holder.nextEpisode != null) holder.nextEpisode.setText("");
+				holder.unwatched.setText("");
+				holder.nextEpisode.setText("");
+				holder.nextEpisode.setTypeface(null, Typeface.NORMAL);
 			}
 			Season s = items.get(position);
+			int nunwatched = s.getUnwatched();
+			int nunwatchedAired = s.getUnwatchedAired();
 			if (holder.season != null) {
 				holder.season.setText(s.getSeason());
 			}
 			if (holder.unwatched != null) {
-				int unwatched = s.getUnwatched();
-				if (unwatched != -1) {
-					if (unwatched == 0) {
+				if (nunwatched != -1) {
+					if (nunwatched == 0) {
 						holder.unwatched.setText(getString(R.string.messages_season_completely_watched));
 					} else {
-						String firstPart = s.getUnwatchedAired() + " " + getString(R.string.messages_of) + " " + unwatched + " ";
-						if (unwatched == 1) {
-							holder.unwatched.setText(firstPart + getString(R.string.messages_episode_not_watched));
+						String unwatched = "";
+						unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes) : getString(R.string.messages_new_episode)) +" ";
+						if (nunwatchedAired > 0) {
+							unwatched = nunwatchedAired +" "+ getString(R.string.messages_of) +" "+ unwatched + getString(R.string.messages_ep_aired);
 						} else {
-							holder.unwatched.setText(firstPart + getString(R.string.messages_episodes_not_watched));
+							unwatched += getString(R.string.messages_to_be_aired);
 						}
+						holder.unwatched.setText(unwatched);
 					}
 				}
 			}
 			if (holder.nextEpisode != null) {
-				if (!s.getCompletelyWatched()) {
-					holder.nextEpisode.setText(getString(R.string.messages_next_episode) + " "
-						+ s.getNextEpisode().replace("[on]", getString(R.string.messages_on)));
+				if (nunwatched > 0) {
+					holder.nextEpisode.setText(getString(R.string.messages_next_episode) + " "+ s.getNextEpisode().replace("[on]", getString(R.string.messages_on)));
+					holder.nextEpisode.setVisibility(View.VISIBLE);
+					if (nunwatchedAired > 0) {
+						holder.nextEpisode.setTypeface(null, Typeface.BOLD);
+					}
+				} else {
+					holder.nextEpisode.setVisibility(View.GONE);
 				}
 			}
 			return convertView;
