@@ -425,7 +425,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 	public int getEPUnwatched(String serieId) {
 		int unwatched = -1;
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId
-			+ "' AND seen=0 AND episodeName <> 'TBA'"+ (droidseries.includeSpecialsOption ? "" : "AND seasonNumber <> 0"));	// Guillaume: AND episodeName <> 'TBA'
+			+ "' AND seen=0 "+ (droidseries.includeSpecialsOption ? "" : "AND seasonNumber <> 0"));	// Guillaume: removed AND episodeName <> 'TBA'
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {

@@ -898,7 +898,6 @@ public class droidseries extends ListActivity
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 				holder.icon.setOnClickListener(null);
-				holder.sne.setTypeface(null, Typeface.NORMAL);
 			}
 			TVShowItem serie = items.get(position);
 			int nunwatched = serie.getUnwatched();
@@ -938,6 +937,10 @@ public class droidseries extends ListActivity
 					holder.sne.setVisibility(View.VISIBLE);
 					if (nunwatchedAired > 0) {
 						holder.sne.setTypeface(null, Typeface.BOLD);
+						holder.sne.setTextColor(getResources().getColor(android.R.color.secondary_text_dark));
+					} else {
+						holder.sne.setTypeface(null, Typeface.NORMAL);
+						holder.sne.setTextColor(getResources().getColor(android.R.color.tertiary_text_dark));
 					}
 				} else {
 					holder.sne.setVisibility(View.GONE);
