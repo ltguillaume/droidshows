@@ -937,13 +937,13 @@ public class droidseries extends ListActivity
 					holder.sne.setVisibility(View.VISIBLE);
 					if (nunwatchedAired > 0) {
 						holder.sne.setTypeface(null, Typeface.BOLD);
-						holder.sne.setTextColor(getResources().getColor(android.R.color.secondary_text_dark));
+						holder.sne.setEnabled(true);
 					} else {
 						holder.sne.setTypeface(null, Typeface.NORMAL);
-						holder.sne.setTextColor(getResources().getColor(android.R.color.tertiary_text_dark));
+						holder.sne.setEnabled(false);
 					}
 				} else {
-					holder.sne.setVisibility(View.GONE);
+					holder.sne.setText("");
 				}
 			}
 			if (holder.icon != null) {
