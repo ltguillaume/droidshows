@@ -18,7 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Looper;
@@ -32,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 //import android.view.Window;
-import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -273,10 +271,8 @@ public class AddSerie extends ListActivity
 							FileUtils.copyURLToFile(imageUrl, cacheImage);
 							// TODO: Find a way to stop using bitmaps
 							Bitmap posterThumb = BitmapFactory.decodeFile(getApplicationContext().getFilesDir().getAbsolutePath() + imageUrl.getFile().toString());
-							int width = posterThumb.getWidth();
-							int height = posterThumb.getHeight();
 							// TODO: check this for other resolutions int newWidth = 42; int newHeight = 64; int newWidth = 128; int newHeight = 180;
-							Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+							Display display = getWindowManager().getDefaultDisplay();
 							int Vwidth = display.getWidth();
 							int Vheight = display.getHeight();
 							int[] viewSize = utils.getViewSize(Vwidth, Vheight);
@@ -289,19 +285,14 @@ public class AddSerie extends ListActivity
 								newWidth = (int) (viewSize[0] * 0.26);
 								newHeight = (int) (viewSize[1] * 0.211);
 							}
-							float scaleWidth = ((float) newWidth) / width;
-							float scaleHeight = ((float) newHeight) / height;
 							if (bAddShowTh) {
 								stopAddShowTh();
 								bAddShowTh = false;
 								return;
 							}
 							Log.d(TAG, "Adding TV show: resizing the poster and creating the thumbnail");
-							Matrix matrix = new Matrix();
-							matrix.postScale(scaleWidth, scaleHeight);
-							Bitmap resizedBitmap = Bitmap.createBitmap(posterThumb, 0, 0, width, height, matrix, true);
-							File dirTmp = new File(getApplicationContext().getFilesDir().getAbsolutePath()
-								+ "/thumbs/banners/posters");
+							Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
+							File dirTmp = new File(getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs/banners/posters");
 							if (!dirTmp.isDirectory()) {
 								dirTmp.mkdirs();
 							}

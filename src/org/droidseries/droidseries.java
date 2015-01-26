@@ -11,6 +11,7 @@ import java.util.List;
 import org.droidseries.thetvdb.TheTVDB;
 import org.droidseries.thetvdb.model.Serie;
 import org.droidseries.thetvdb.model.TVShowItem;
+import org.droidseries.ui.IconView;
 import org.droidseries.ui.SerieSeasons;
 import org.droidseries.ui.SwipeDetect;
 //import org.droidseries.ui.SerieViewPoster; // Disabled by Guillaume
@@ -44,12 +45,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -138,7 +137,7 @@ public class droidseries extends ListActivity
 				Log.e(TAG, "Unable to create database");
 			}
 		}
-		Display display = ((WindowManager) getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
+		Display display = getWindowManager().getDefaultDisplay();
 		if(updateDS.updateDroidSeries(getApplicationContext(), display)) {
 			db.updateShowStats();
 		}
@@ -893,7 +892,7 @@ public class droidseries extends ListActivity
 				holder.sn = (TextView) convertView.findViewById(R.id.seriename);
 				holder.si = (TextView) convertView.findViewById(R.id.serieinfo);
 				holder.sne = (TextView) convertView.findViewById(R.id.serienextepisode);
-				holder.icon = (ImageView) convertView.findViewById(R.id.serieicon);
+				holder.icon = (IconView) convertView.findViewById(R.id.serieicon);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
@@ -977,6 +976,6 @@ public class droidseries extends ListActivity
 		TextView sn;
 		TextView si;
 		TextView sne;
-		ImageView icon;
+		IconView icon;
 	}
 }

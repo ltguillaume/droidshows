@@ -22,6 +22,7 @@
 \n* Clarified toggle and sort options
 \n* Episodes named "TBA" are excluded in unwatched count
 \n* Not showing "null" entries from DB
+\n* Posters now fill row height
 \n#Add show:
 \n+ Showing "[aired] of [season episodes]"
 \n+ Aired date in episodes list
