@@ -377,16 +377,13 @@ public class SQLiteStore extends SQLiteOpenHelper
 	/** public String getSeriePoster(String serieId) { String sposter = ""; Cursor c =
 	 * Query("SELECT posterInCache FROM series WHERE id='" + serieId + "'"); try { c.moveToFirst(); if
 	 * (c != null && c.isFirst()) { sposter = c.getString(0); } c.close(); } catch(SQLiteException e){
-	 * c.close(); Log.e(TAG, e.getMessage()); return null; } return sposter; } // Disabled
-	 * by Guillaume **/
+	 * c.close(); Log.e(TAG, e.getMessage()); return null; } return sposter; } // Guillaume-- **/
 	// Guillaume: get new episodes that are unwatched
 	public int getEPUnwatchedAired(String serieId) {
 		int unwatchedAired = 0;
-		// Guillaume: get today's date
-		String today = dateFormat.format(new Date());
-		// END Guillaume
+		String today = dateFormat.format(new Date());	// Get today's date
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId
-			+ "' AND seen=0 AND firstAired <> '' AND firstAired < '" + today + "'"+ (droidseries.includeSpecialsOption ? "" : " AND seasonNumber <> 0")); // Guillaume: added firstAired <> '' AND firstAired < '" + today + "' AND
+			+ "' AND seen=0 AND firstAired <> '' AND firstAired < '" + today + "'"+ (droidseries.includeSpecialsOption ? "" : " AND seasonNumber <> 0"));
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -402,12 +399,9 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public int getSeasonEPUnwatchedAired(String serieId, int snumber) {
 		int unwatched = -1;
-		// Guillaume: get today's date
-		String today = dateFormat.format(new Date());
-		// END Guillaume
+		String today = dateFormat.format(new Date());	// Get today's date
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId
-			+ "' AND seen=0 AND firstAired <> '' AND firstAired < '" + today + "' AND seasonNumber="
-			+ snumber); // Guillaume: added firstAired <> '' AND firstAired < '" + today + "' AND
+			+ "' AND seen=0 AND firstAired <> '' AND firstAired < '" + today + "' AND seasonNumber="+ snumber);
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -420,12 +414,11 @@ public class SQLiteStore extends SQLiteOpenHelper
 		}
 		return unwatched;
 	}
-	// Guillaume: END
 
 	public int getEPUnwatched(String serieId) {
 		int unwatched = -1;
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='" + serieId
-			+ "' AND seen=0 "+ (droidseries.includeSpecialsOption ? "" : "AND seasonNumber <> 0"));	// Guillaume: removed AND episodeName <> 'TBA'
+			+ "' AND seen=0 "+ (droidseries.includeSpecialsOption ? "" : "AND seasonNumber <> 0"));
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -720,7 +713,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 				+ "language=?, overview=?, productionCode=?, "
 				+ "rating=?, seasonNumber=?, absoluteNumber=?, "
 				+ "lastUpdated=?, seasonId=?"
-				+ (clean ? ", seen=? " : " ") + "WHERE id=? AND serieId=?"); // Guillaume: added (clean ? ", seen=? " : " ") episodes
+				+ (clean ? ", seen=? " : " ") + "WHERE id=? AND serieId=?"); // Guillaume
 			// Create an ArrayList with episodes found in the DB. Let's do a single database query to speed things up
 			ArrayList<String> episodesIdList = new ArrayList<String>();
 			if (!clean) {
@@ -743,13 +736,11 @@ public class SQLiteStore extends SQLiteOpenHelper
 				int inDB = 0;
 				int iseen = 0;
 				if (clean) {
-					// Log.d(TAG, "IF clean");
 					// Guillaume: check for redundant rows for this episode and delete them
 					int[] inDB_seen = cleanUp(s.getId(), s.getSerieName(), s.getEpisodes().get(e).getSeasonNumber(), s.getEpisodes().get(e).getEpisodeNumber(), s.getEpisodes().get(e).getId());
 					inDB = inDB_seen[0];
 					iseen = inDB_seen[1];
 				} else {
-					// Log.d(TAG, "ELSE");
 					// Check if the episode is already in the DB
 					if (episodesIdList.contains(s.getEpisodes().get(e).getId())) {
 						inDB = 1;

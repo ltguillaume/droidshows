@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="75dp" android:orientation="vertical" android:paddingTop="3dp" android:paddingLeft="6dp">
 	<TextView android:id="@+id/serieseason" android:layout_width="fill_parent" android:layout_height="wrap_content" android:lines="1" android:textStyle="bold" android:textSize="18sp"/>
-	<TextView android:id="@+id/unwatched" android:layout_width="fill_parent" android:layout_height="wrap_content" android:lines="1" android:ellipsize="end"/>
-	<TextView android:id="@+id/nextepisode" android:layout_width="fill_parent" android:layout_height="wrap_content" android:lines="1" android:ellipsize="end"/>
+	<TextView android:id="@+id/unwatched" android:layout_width="fill_parent" android:layout_height="wrap_content" android:singleLine="true" android:ellipsize="end"/>
+	<TextView android:id="@+id/nextepisode" android:layout_width="fill_parent" android:layout_height="wrap_content" android:singleLine="true" android:ellipsize="marquee"/>
 </LinearLayout>

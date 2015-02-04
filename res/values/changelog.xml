@@ -1,46 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="changelog" translatable="false">DroidSeries
-\nVersion {v}
-\n\n1. Click Menu > Add a show
-\n2. Long-press show, season or episode for options
-\n3. Update all shows for latest information
-\n\nFixes by Guillaume:
-\n#Overview:
-\n+ Showing "[aired unwatched] of [total unwatched]"
+<string name="changelog" translatable="false">DroidSeries v{v}
+\n\nOverview:
+\n+ Showing \"[aired unwatched] of [total unwatched]\"
 \n+ Added icon ic_menu_view for show/hide toggled
-\n+ Status of show in details, and "*" in overview if show is not continuing
-\n+ If show position changed, scroll back to show after "Mark next episode as seen" and Seasons list
-\n+ Option in [About] to only update shows\' last season (==fast)
-\n+ Click poster for show details, long-click to view show details on IMDb 
+\n+ Status of show in details, and * in overview if show is not continuing
+\n+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list
+\n+ Option in [About] to only update shows\' last season
 \n+ Context item to view show details on IMDb
-\n+ Swipe right-to-left to mark next episode as seen, everywhere else in app it acts like back button
+\n+ Tap cover for show info, long-press for IMDb details
+\n+ Swipe right-to-left to mark next episode as seen, everywhere else in app swiping acts like back button
 \n+ Poster in show overview
 \n+ Option to include specials in unwatched count
 \n+ Mark next episode seen via swipe now vibrates
 \n* Sorting shows by first unseen episode
 \n* Clarified toggle and sort options
-\n* Episodes named "TBA" are excluded in unwatched count
-\n* Not showing "null" entries from DB
+\n* Not showing \"null\" entries from DB
 \n* Posters now fill row height
-\n#Add show:
-\n+ Showing "[aired] of [season episodes]"
+\n\nSeasons/Episodes list:
+\n+ Showing \"[aired] of [season episodes]\"
 \n+ Aired date in episodes list
 \n+ Click on episode title for details, on checkmark to change seen state
+\n* Big performance improvement for entirely rewritten Seasons activity: is now almost instant
+\n\nAdd show:
 \n+ Icon resized rate_star_med_on_holo_dark for added shows
 \n+ Icon ic_menu_add for new shows
 \n* Fixed search not working after initial search
 \n* Centered icons vertically in search results
 \n- No large-size posters are saved to save space in /data/data/
-\n#Seasons/Episodes list:
-\n* Big performance improvement for entirely rewritten Seasons activity: is now almost instant
-\n#Update
-\n* Fixed double episodes on update
-\n#Other:
-\n+ [Clean database] in About to remove double episodes
+\n\nUpdate:
+\n* Prevent double episodes
+\n\nOther:
+\n+ [Clean database] in About to remove double episodes post hoc
 \n+ Menu (overflow) button should show up in Android 3.0+
 \n+ Dutch translation
-\n+ New icon file is a mix of iconeasy.com/icon/tv-shows-2-icon/ (Thrasos Varnava) and wallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)
 \n* Date/time format according to locale
 \n* Big performance improvement for Overview activity: is almost instant (values are kept up-to-date in series table)
 \n* Some progress dialogs cancelable
@@ -51,9 +44,8 @@
 \n* Code clean-up (all layouts revised)
 \n- Removed useless dependencies
 \n- Removed crappy features
-\n
-\n&#169;2010 Carlos Limpinho, Paulo Cabido under GPL: code.google.com/p/droidseries/
-\nModified by Mikael Berthe: gitorious.org/droidseries/mckaels-droidseries/
-\nGuillaume (2014-2015): guillaumejunk@hotmail.com
-</string>
+\n\n&#169;2010 Carlos Limpinho, Paulo Cabido under GPL:\ncode.google.com/p/droidseries
+\nModified by Mikael Berthe: gitorious.org/droidseries/mckaels-droidseries
+\n&#169;2014-2015 Guillaume: gitorious.org/droidseries/droidseries-guillaume
+\n\nNew icon file is a mix of iconeasy.com/icon/tv-shows-2-icon (Thrasos Varnava) and wallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)</string>
 </resources>

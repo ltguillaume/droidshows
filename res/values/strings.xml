@@ -34,6 +34,11 @@
 <string name="dialog_last_season">Update shows\' last season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to check episode</string>
+<string name="dialog_help">&#187; Swipe right-to-left to mark as seen
+\n&#187; Long-press items for more options
+\n&#187; Tap poster for show info
+\n&#187; Long-press poster for IMDb
+\n&#187; Update all shows for latest information</string>
 <string name="menu_toggle">Toggle status</string>
 <string name="messages_title_loading_series">DroidSeries</string>
 <string name="messages_title_loading_seasons">Loading seasons…</string>

@@ -73,13 +73,13 @@ public class AddSerie extends ListActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// requestWindowFeature(Window.FEATURE_NO_TITLE); // Disabled by Guillaume
+		// requestWindowFeature(Window.FEATURE_NO_TITLE); // Guillaume--
 		setContentView(R.layout.add_serie);
 		List<Serie> search_series = new ArrayList<Serie>();
 		this.seriessearch_adapter = new SeriesSearchAdapter(this, R.layout.row_search_series, search_series);
 		setListAdapter(seriessearch_adapter);
 		Intent intent = getIntent();
-		getSearchResults(intent); // Changed by Guillaume
+		getSearchResults(intent); // Guillaume
 	}
 
 	/* Options Menu */
@@ -314,9 +314,9 @@ public class AddSerie extends ListActivity
 							sToAdd.setPosterThumb(getApplicationContext().getFilesDir().getAbsolutePath()
 								+ "/thumbs" + imageUrl.getFile().toString());
 							// sToAdd.setPosterInCache(getApplicationContext().getFilesDir().getAbsolutePath() +
-							// imageUrl.getFile().toString()); // Disabled by Guillaume
+							// imageUrl.getFile().toString()); // Guillaume--
 							cacheImage.delete();
-							sToAdd.setPosterInCache(""); // Added by Guillaume
+							sToAdd.setPosterInCache(""); // Guillaume
 						} catch (Exception e) {
 							sToAdd.setPosterInCache("");
 							Log.e(TAG, "Error copying the poster to cache.");
@@ -388,7 +388,7 @@ public class AddSerie extends ListActivity
 
 	/* @Override protected void onResume(){ if (threadAddShow != null) { if (threadAddShow.isAlive())
 	 * { showDialog(ID_DIALOG_ADD); } } super.onResume(); } */
-	// Added by Guillaume: searches from within this activity were discarded
+	// Guillaume: searches from within this activity were discarded
 	@Override
 	protected void onNewIntent(Intent intent) {
 		getSearchResults(intent);
@@ -429,7 +429,7 @@ public class AddSerie extends ListActivity
 		// register context menu
 		registerForContextMenu(getListView());
 	}
-	// END Added by Guillaume
+	// END Guillaume
 	private class SeriesSearchAdapter extends ArrayAdapter<Serie>
 	{
 		private List<Serie> items;

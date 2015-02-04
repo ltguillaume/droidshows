@@ -14,13 +14,12 @@ import org.droidseries.thetvdb.model.TVShowItem;
 import org.droidseries.ui.IconView;
 import org.droidseries.ui.SerieSeasons;
 import org.droidseries.ui.SwipeDetect;
-//import org.droidseries.ui.SerieViewPoster; // Disabled by Guillaume
+//import org.droidseries.ui.SerieViewPoster; // Guillaume--
 import org.droidseries.ui.ViewSerie;
 import org.droidseries.utils.SQLiteStore;
 import org.droidseries.utils.Utils;
 import org.droidseries.utils.Update;
 import org.droidseries.R;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -240,6 +239,7 @@ public class droidseries extends ListActivity
 				TextView changelog = (TextView) about.findViewById(R.id.changelog);
 				try {
 					changelog.setText(getString(R.string.changelog).replace("{v}", getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
+					changelog.setTextColor(changelog.getTextColors().getDefaultColor());
 				} catch (NameNotFoundException e) {
 					e.printStackTrace();
 				}
@@ -308,7 +308,7 @@ public class droidseries extends ListActivity
 		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
-		// menu.add(0, VIEW_POSTER_CONTEXT, 0, getString(R.string.menu_context_viewposter)); // Disabled by Guillaume
+		// menu.add(0, VIEW_POSTER_CONTEXT, 0, getString(R.string.menu_context_viewposter)); // Guillaume--
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -383,7 +383,7 @@ public class droidseries extends ListActivity
 				 * { Intent viewPoster = new Intent(droidseries.this, SerieViewPoster.class);
 				 * viewPoster.putExtra("seriename",
 				 * db.getSerieName(series.get(info.position).getSerieId())); viewPoster.putExtra("poster",
-				 * posterincache); startActivity(viewPoster); } return true; // Disabled by Guillaume */
+				 * posterincache); startActivity(viewPoster); } return true; // Guillaume-- */
 			default :
 				return super.onContextItemSelected(item);
 		}
