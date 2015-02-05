@@ -281,7 +281,7 @@ public class droidseries extends ListActivity
 				break;
 			case EXIT_MENU_ITEM :
 				onPause();	// save options
-				onDestroy(); // close threads and database
+				onDestroy(); // close threads & db
 				this.finish();
 				System.exit(0);	// kill process
 		}
@@ -343,7 +343,6 @@ public class droidseries extends ListActivity
 				return true;
 			case DELETE_CONTEXT :
 				// TODO (1): add a verification to be sure that the TV show was well eliminated
-				// TODO (2): add the queue struct here, it may need to restart with pending actions to do (only half deleted)
 				final int spos = info.position;
 				final Runnable deleteserie = new Runnable() {
 					public void run() {
@@ -489,15 +488,15 @@ public class droidseries extends ListActivity
 				public void run() {
 					theTVDB = new TheTVDB("8AC675886350B3C3");
 					if (theTVDB.getMirror() != null) {
-						// Log.d(TAG, "* DBG * droidseries.java:updateSerie #1 - Running getSerie - " + id);
+						// Log.d(TAG, "Running getSerie - " + id);
 						Serie sToUpdate = theTVDB.getSerie(id, getString(R.string.lang_code));
-						// Log.d(TAG, "* DBG * droidseries.java:updateSerie #2 - Running db.updateserie");
+						// Log.d(TAG, "Running db.updateserie");
 						toastMessage = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
 						runOnUiThread(changeMessage);
 						db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
-						// Log.d(TAG, "* DBG * droidseries.java:updateSerie #3 - Done running db.updateserie");
+						// Log.d(TAG, "Done running db.updateserie");
 					} else {
-						// TODO: add a message here
+						Log.d(TAG, "theTVDB.getMirror() failed");
 					}
 					if (!bUpdateShowTh) {
 						m_ProgressDialog.dismiss();
@@ -585,7 +584,6 @@ public class droidseries extends ListActivity
 						try {
 							db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 						} catch (Exception e) {
-							// does nothing
 						}
 						if (!bUpdateAllShowsTh) {
 							updateAllSeriesPD.incrementProgressBy(1);
@@ -748,7 +746,7 @@ public class droidseries extends ListActivity
 			}
 			series_adapter.notifyDataSetChanged();
 		} catch (Exception e) {
-			Log.e(TAG, "Error populating TVShowItems, or not shows added yet.");
+			Log.e(TAG, "Error populating TVShowItems or no shows added yet");
 			e.printStackTrace();
 		}
 	}
@@ -772,7 +770,6 @@ public class droidseries extends ListActivity
 			Comparator<TVShowItem> comperator = new Comparator<TVShowItem>() {
 				public int compare(TVShowItem object1, TVShowItem object2) {
 					if (sortOption == SORT_BY_LAST_UNSEEN) {
-						// note: nextAir can be null when there are no next episodes
 						Date nextAir1 = object1.getNextAir();
 						Date nextAir2 = object2.getNextAir();
 						if (nextAir1 == null && nextAir2 == null) {
@@ -814,7 +811,6 @@ public class droidseries extends ListActivity
 		if (updateAllShowsTh != null) {
 			if (updateAllShowsTh.isAlive()) {
 				bUpdateAllShowsTh = true;
-				// Log.d(TAG, "Updating all TV shows… before pause");
 				stopedUASTH = true;
 			}
 		}**/
@@ -855,10 +851,9 @@ public class droidseries extends ListActivity
 	public void onDestroy() {
 		try {
 			statsTh.join();
+			db.close();
 		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
-		db.close();
 		super.onDestroy();
 	}
 
@@ -919,12 +914,15 @@ public class droidseries extends ListActivity
 				String unwatched = "";
 				if (nunwatched == 0) {
 					unwatched = getString(R.string.messages_completely_watched);
+					holder.si.setEnabled(false);
 				} else {
 					unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes) : getString(R.string.messages_new_episode)) +" ";
 					if (nunwatchedAired > 0) {
 						unwatched = nunwatchedAired +" "+ getString(R.string.messages_of) +" "+ unwatched + getString(R.string.messages_ep_aired);
+						holder.si.setEnabled(true);
 					} else {
 						unwatched += getString(R.string.messages_to_be_aired);
+						holder.si.setEnabled(false);
 					}
 				}
 				String continuing = (serie.getShowStatus().equalsIgnoreCase("Continuing") ? "" : "*");	// Guillaume: gimme * if show's not continuing
@@ -937,11 +935,9 @@ public class droidseries extends ListActivity
 					if (nunwatchedAired > 0) {
 						holder.sne.setTypeface(null, Typeface.BOLD);
 						holder.sne.setEnabled(true);
-						if (holder.si != null) holder.si.setEnabled(true);
 					} else {
 						holder.sne.setTypeface(null, Typeface.NORMAL);
 						holder.sne.setEnabled(false);
-						if (holder.si != null) holder.si.setEnabled(false);
 					}
 				} else {
 					holder.sne.setText("");
