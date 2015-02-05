@@ -937,9 +937,11 @@ public class droidseries extends ListActivity
 					if (nunwatchedAired > 0) {
 						holder.sne.setTypeface(null, Typeface.BOLD);
 						holder.sne.setEnabled(true);
+						if (holder.si != null) holder.si.setEnabled(true);
 					} else {
 						holder.sne.setTypeface(null, Typeface.NORMAL);
 						holder.sne.setEnabled(false);
+						if (holder.si != null) holder.si.setEnabled(false);
 					}
 				} else {
 					holder.sne.setText("");
