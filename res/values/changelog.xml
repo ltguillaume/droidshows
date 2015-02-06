@@ -9,7 +9,7 @@
 \n+ Option in [About] to only update shows\' last season
 \n+ Context item to view show details on IMDb
 \n+ Tap cover for show info, long-press for IMDb details
-\n+ Swipe right-to-left to mark next episode as seen, everywhere else in app swiping acts like back button
+\n+ Swipe right-to-left to mark next episode as seen (shows confirmation toast), everywhere else in app swiping acts like back button
 \n+ Poster in show overview
 \n+ Option to include specials in unwatched count
 \n+ Mark next episode seen via swipe now vibrates

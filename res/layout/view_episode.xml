@@ -1,5 +1,5 @@
 <ScrollView android:id="@+id/viewEpisodes" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-	<TableLayout android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<TableLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
 		<TableRow android:layout_height="wrap_content" android:layout_width="fill_parent">
 			<TextView android:layout_height="wrap_content" android:id="@+id/episodename" android:padding="6dp" android:layout_width="fill_parent" android:textStyle="bold" android:textSize="16sp" android:layout_weight="1"/>
 		</TableRow>

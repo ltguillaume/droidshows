@@ -28,7 +28,6 @@
 <string name="dialog_delete">Weet je zeker dat je de serie %s wilt verwijderen?</string>
 <string name="dialog_Cancel">Annuleren</string>
 <string name="dialog_search">Zoekterm:</string>
-<string name="dialog_title_update_all_series">Alle series bijwerken?</string>
 <string name="dialog_update_all_series">Weet je zeker dat je alle series nu wilt bijwerken?</string>
 <string name="dialog_update_speedup">\n\nDit kan sneller met de optie in Menu > Over.</string>
 <string name="dialog_last_season">Alleen laatste seizoenen bijwerken</string>
@@ -40,16 +39,11 @@
 \n&#187; Druk lang op poster voor IMDb
 \n&#187; Laat series regelmatig bijwerken</string>
 <string name="menu_toggle">Status […] veranderen</string>
-<string name="messages_title_loading_series">DroidSeries</string>
-<string name="messages_title_loading_seasons">Seizoenen worden geladen…</string>
-<string name="messages_loading_series">Series worden geladen…</string>
-<string name="messages_title_delete_serie">Verwijderen serie</string>
-<string name="messages_delete_serie">Bezig met verwijderen gegevens…</string>
 <string name="messages_title_updating_all_series">Alle series bijwerken</string>
 <string name="messages_title_updating_serie">Bijwerken van serie</string>
 <string name="messages_title_updating_db">Database bijwerken</string>
 <string name="messages_update_serie">Downloaden nieuwe gegevens…</string>
-<string name="messages_no_internet">Er is geen internetverbinding.</string>
+<string name="messages_no_internet">Er is geen internetverbinding</string>
 <string name="messages_title_update_all_series">Alle series bijwerken</string>
 <string name="messages_update_all_series">Bezig met downloaden van nieuwe gegevens. Even geduld…</string>
 <string name="messages_new_episodes">afleveringen</string>
@@ -61,10 +55,10 @@
 <string name="messages_next_episode">Volgende:</string>
 <string name="messages_completely_watched">Geen nieuwe afleveringen</string>
 <string name="messages_season_completely_watched">Seizoen volledig gezien\n</string>
-<string name="messages_delete_sucessful">Serie %s verwijderd.</string>
+<string name="messages_delete_sucessful">Serie %s verwijderd</string>
 <string name="messages_title_search_series">Serie zoeken</string>
 <string name="messages_search_series">Downloaden gegevens…</string>
-<string name="messages_series_success">%s toegevoegd.</string>
+<string name="messages_series_success">%s toegevoegd</string>
 <string name="messages_title_adding_serie">Serie toevoegen</string>
 <string name="messages_adding_serie">Bezig met downloaden gegevens…</string>
 <string name="messages_context_mark_seasonseen">Alle afleveringen gezien</string>
@@ -73,7 +67,7 @@
 <string name="messsages_view_ep_details">Informatie aflevering</string>
 <string name="messages_overview">Overzicht</string>
 <string name="messages_thetvdb_con_error">Kan geen verbinding maken met TheTVDB.com. Probeer het nog eens.</string>
-<string name="messages_show_exists">Serie %s bestaat al.</string>
+<string name="messages_marked_seen">gemarkeerd als gezien</string>
 <string name="messages_context_mark_seasonunseen">Nog geen afleveringen gezien</string>
 <string name="messages_context_mark_asseenuptothis">Seizoenen tot aan hier gezien</string>
 <string name="messages_aired">Uitgezonden:</string>
@@ -88,7 +82,6 @@
 <string name="series_air_day">Dag van de week:</string>
 <string name="series_air_time">Tijd:</string>
 <string name="series_runtime_minutes">Lengte: %s minuten</string>
-<string name="series_runtime">Lengte:</string>
 <string name="series_network">Kanaal:</string>
 <string name="series_genre">Genre:</string>
 <string name="series_status">Status:</string>

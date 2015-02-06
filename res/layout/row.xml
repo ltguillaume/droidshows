@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp">
 	<org.droidseries.ui.IconView android:id="@+id/serieicon" android:layout_width="wrap_content" android:layout_height="fill_parent" android:scaleType="fitEnd" android:layout_marginRight="6dp"/>
 	<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:layout_marginBottom="6dp">
-		<TextView android:id="@+id/seriename" android:layout_width="fill_parent" android:layout_height="wrap_content" android:textStyle="bold" android:textSize="18sp" android:singleLine="true" android:ellipsize="end"/>
-		<TextView android:id="@+id/serieinfo" android:layout_width="fill_parent" android:layout_height="wrap_content" android:fadingEdge="horizontal" android:singleLine="true" android:ellipsize="end"/>
-		<TextView android:id="@+id/serienextepisode" android:layout_width="fill_parent" android:layout_height="wrap_content" android:fadingEdge="horizontal" android:singleLine="true" android:ellipsize="marquee"/>
+		<TextView android:id="@+id/seriename" android:layout_width="fill_parent" android:layout_height="wrap_content" android:textStyle="bold" android:textSize="18sp" android:lines="1"/>
+		<TextView android:id="@+id/serieinfo" android:layout_width="fill_parent" android:layout_height="wrap_content" android:lines="1"/>
+		<TextView android:id="@+id/serienextepisode" android:layout_width="fill_parent" android:layout_height="wrap_content" android:lines="1"/>
 	</LinearLayout>
 </LinearLayout>

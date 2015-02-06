@@ -15,7 +15,6 @@
 <string name="menu_exit">Exit</string>
 <string name="menu_context_update">Update</string>
 <string name="menu_context_delete">Delete</string>
-<string name="menu_context_viewposter">View poster</string>
 <string name="menu_context_add_serie">Add show</string>
 <string name="menu_show_toggled">Show toggled</string>
 <string name="menu_hide_toggled">Hide toggled</string>
@@ -28,7 +27,6 @@
 <string name="dialog_delete">Are you sure you want to delete %s?</string>
 <string name="dialog_Cancel">Cancel</string>
 <string name="dialog_search">Search string:</string>
-<string name="dialog_title_update_all_series">Update all shows?</string>
 <string name="dialog_update_all_series">Are you sure you want to update all the shows now?</string>
 <string name="dialog_update_speedup">\n\nYou can speed up this process with the option in Menu > About.</string>
 <string name="dialog_last_season">Update shows\' last season only</string>
@@ -40,16 +38,11 @@
 \n&#187; Long-press poster for IMDb
 \n&#187; Update all shows for latest information</string>
 <string name="menu_toggle">Toggle status</string>
-<string name="messages_title_loading_series">DroidSeries</string>
-<string name="messages_title_loading_seasons">Loading seasons…</string>
-<string name="messages_loading_series">Loading shows…</string>
-<string name="messages_title_delete_serie">Deleting show</string>
-<string name="messages_delete_serie">Deleting the show data…</string>
 <string name="messages_title_updating_all_series">Updating all shows</string>
 <string name="messages_title_updating_serie">Updating show</string>
 <string name="messages_title_updating_db">Updating database</string>
 <string name="messages_update_serie">Gathering show information…</string>
-<string name="messages_no_internet">No Internet connection is available.</string>
+<string name="messages_no_internet">No Internet connection is available</string>
 <string name="messages_title_update_all_series">Update all shows</string>
 <string name="messages_update_all_series">Gathering shows information. This operation will take a while…</string>
 <string name="messages_new_episodes">new episodes</string>
@@ -61,10 +54,10 @@
 <string name="messages_next_episode">Next episode:</string>
 <string name="messages_completely_watched">No new episodes</string>
 <string name="messages_season_completely_watched">Season completely watched\n</string>
-<string name="messages_delete_sucessful">Show %s deleted.</string>
+<string name="messages_delete_sucessful">Show %s deleted</string>
 <string name="messages_title_search_series">Searching shows</string>
 <string name="messages_search_series">Retrieving data…</string>
-<string name="messages_series_success">Show %s added.</string>
+<string name="messages_series_success">Show %s added</string>
 <string name="messages_title_adding_serie">Adding show</string>
 <string name="messages_adding_serie">Gathering show information…</string>
 <string name="messages_context_mark_seasonseen">Mark all episodes as seen</string>
@@ -73,7 +66,7 @@
 <string name="messsages_view_ep_details">View episode details</string>
 <string name="messages_overview">Overview</string>
 <string name="messages_thetvdb_con_error">Error connecting to TheTVDB.com. Please try again.</string>
-<string name="messages_show_exists">TV show %s already exists.</string>
+<string name="messages_marked_seen">marked as seen</string>
 <string name="messages_context_mark_seasonunseen">Mark all episodes as unseen</string>
 <string name="messages_context_mark_asseenuptothis">Seasons up to here are seen</string>
 <string name="messages_aired">Aired:</string>
@@ -88,7 +81,6 @@
 <string name="series_air_day">Air Day:</string>
 <string name="series_air_time">Air Time:</string>
 <string name="series_runtime_minutes">Runtime: %s minutes</string>
-<string name="series_runtime">Runtime:</string>
 <string name="series_network">Network:</string>
 <string name="series_genre">Genre:</string>
 <string name="series_status">Status:</string>

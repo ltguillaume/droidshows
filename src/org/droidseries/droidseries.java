@@ -20,6 +20,7 @@ import org.droidseries.utils.SQLiteStore;
 import org.droidseries.utils.Utils;
 import org.droidseries.utils.Update;
 import org.droidseries.R;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -350,10 +351,9 @@ public class droidseries extends ListActivity
 						db.deleteSerie(series.get(spos).getSerieId());
 						series.remove(series.get(spos));
 						listView.post(updateListView);
-						Context context = getApplicationContext();
 						CharSequence text = String.format(getString(R.string.messages_delete_sucessful), sname);
 						Looper.prepare();
-						Toast toast = Toast.makeText(context, text, Toast.LENGTH_LONG);
+						Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
 						toast.show();
 						Looper.loop();
 					}
@@ -394,7 +394,7 @@ public class droidseries extends ListActivity
 		String serieid = serie.getSerieId();
 		String nextEpisode = db.getNextEpisodeId(serieid, -1);
 		if (!nextEpisode.equals("-1")) {
-			db.updateUnwatchedEpisode(serieid, nextEpisode);
+			String episodeMarked = db.updateUnwatchedEpisode(serieid, nextEpisode);
 			final TVShowItem newSerie = createTVShowItem(serieid);
 			series.set(oldListPosition, newSerie);
 			listView.post(updateListView);
@@ -411,6 +411,7 @@ public class droidseries extends ListActivity
 					}
 				});
 			}
+			Toast.makeText(getApplicationContext(), serie.getName() +" "+ episodeMarked +" "+ getString(R.string.messages_marked_seen), Toast.LENGTH_SHORT).show();
 			return true;
 		}
 		return false;

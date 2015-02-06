@@ -593,13 +593,17 @@ public class SQLiteStore extends SQLiteOpenHelper
 		updateShowStats(serieId);
 	}
 
-	public void updateUnwatchedEpisode(String serieId, String episodeId) {
+	public String updateUnwatchedEpisode(String serieId, String episodeId) {
 		Cursor c = null;
+		String episodeMarked = "";
 		try {
-			c = Query("SELECT seen FROM episodes WHERE serieId='"+ serieId +"' AND id='"+ episodeId +"'");
+			c = Query("SELECT seen, seasonNumber, episodeNumber FROM episodes WHERE serieId='"+ serieId +"' AND id='"+ episodeId +"'");
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				int seen = c.getInt(0);
+				int season = c.getInt(1);
+				int episode = c.getInt(2);
+				episodeMarked =  season +"x"+ (episode < 10 ? "0" : "") + episode;
 				c.close();
 				seen ^= 1;
 				db.execSQL("UPDATE episodes SET seen="+ seen +" WHERE serieId='"+ serieId +"' AND id='"+ episodeId +"'");
@@ -611,6 +615,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			Log.e(TAG, e.getMessage());
 		}
 		updateShowStats(serieId);
+		return episodeMarked;
 	}
 
 	public void updateSerieStatus(String serieId, int passiveStatus) {
