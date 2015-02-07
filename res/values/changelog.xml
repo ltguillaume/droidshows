@@ -4,7 +4,7 @@
 \n\nOverview:
 \n+ Showing \"[aired unwatched] of [total unwatched]\"
 \n+ Added icon ic_menu_view for show/hide toggled
-\n+ Status of show in details, and * in overview if show is not continuing
+\n+ Status of show in details, and † in overview if show is ended
 \n+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list
 \n+ Option in [About] to only update shows\' last season
 \n+ Context item to view show details on IMDb

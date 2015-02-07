@@ -52,7 +52,7 @@
 <string name="messages_seasons">Seasons</string>
 <string name="messages_season">Season</string>
 <string name="messages_next_episode">Next episode:</string>
-<string name="messages_completely_watched">No new episodes</string>
+<string name="messages_no_new_eps">No new episodes</string>
 <string name="messages_season_completely_watched">Season completely watched\n</string>
 <string name="messages_delete_sucessful">Show %s deleted</string>
 <string name="messages_title_search_series">Searching shows</string>

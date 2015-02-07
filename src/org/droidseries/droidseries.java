@@ -897,11 +897,12 @@ public class droidseries extends ListActivity
 			TVShowItem serie = items.get(position);
 			int nunwatched = serie.getUnwatched();
 			int nunwatchedAired = serie.getUnwatchedAired();
+			String ended = (serie.getShowStatus().equalsIgnoreCase("Ended") ? " †" : "");
 			if (holder.sn != null) {
 				if (serie.getPassiveStatus()) {
-					holder.sn.setText("[" + serie.getName() + "]");
+					holder.sn.setText("[" + serie.getName() + "]"+ ended);
 				} else {
-					holder.sn.setText(serie.getName());
+					holder.sn.setText(serie.getName() + ended);
 				}
 			}
 			if (holder.si != null) {
@@ -914,7 +915,7 @@ public class droidseries extends ListActivity
 				}
 				String unwatched = "";
 				if (nunwatched == 0) {
-					unwatched = getString(R.string.messages_completely_watched);
+					unwatched = getString(R.string.messages_no_new_eps) +" ("+ serie.getShowStatus().toLowerCase() +")";
 					holder.si.setEnabled(false);
 				} else {
 					unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes) : getString(R.string.messages_new_episode)) +" ";
@@ -926,8 +927,7 @@ public class droidseries extends ListActivity
 						holder.si.setEnabled(false);
 					}
 				}
-				String continuing = (serie.getShowStatus().equalsIgnoreCase("Continuing") ? "" : "*");	// Guillaume: gimme * if show's not continuing
-				holder.si.setText(siText +" | "+ unwatched + continuing);
+				holder.si.setText(siText +" | "+ unwatched);
 			}
 			if (holder.sne != null) {
 				if (nunwatched > 0) {
