@@ -869,6 +869,16 @@ public class droidseries extends ListActivity
 			m_ProgressDialog.dismiss();
 		super.onSaveInstanceState(outState);
 	}
+	
+	public String translateStatus(String statusValue) {
+		if (statusValue.equalsIgnoreCase("Continuing")) {
+			return getString(R.string.showstatus_continuing);
+		} else if (statusValue.equalsIgnoreCase("Ended")) {
+			return getString(R.string.showstatus_ended);
+		} else {
+			return statusValue;
+		}
+	}
 
 	public class SeriesAdapter extends ArrayAdapter<TVShowItem>
 	{
@@ -915,7 +925,7 @@ public class droidseries extends ListActivity
 				}
 				String unwatched = "";
 				if (nunwatched == 0) {
-					unwatched = getString(R.string.messages_no_new_eps) +" ("+ serie.getShowStatus().toLowerCase() +")";
+					unwatched = getString(R.string.messages_no_new_eps) +" ("+ translateStatus(serie.getShowStatus()).toLowerCase() +")";
 					holder.si.setEnabled(false);
 				} else {
 					unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes) : getString(R.string.messages_new_episode)) +" ";

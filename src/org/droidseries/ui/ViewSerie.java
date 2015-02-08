@@ -37,12 +37,7 @@ public class ViewSerie extends Activity
 		}
 		serieoverview.setText(getIntent().getStringExtra("serieoverview"));
 		TextView status = (TextView) findViewById(R.id.status);
-		String statusValue = getIntent().getStringExtra("status");
-		if (statusValue.equalsIgnoreCase("Continuing")) {
-			statusValue = getString(R.string.showstatus_continuing);
-		} else if (statusValue.equalsIgnoreCase("Ended")) {
-			statusValue = getString(R.string.showstatus_ended);
-		}
+		String statusValue = translateStatus(getIntent().getStringExtra("status"));
 		status.setText(getString(R.string.series_status) +" "+ statusValue);
 		TextView firstaired = (TextView) findViewById(R.id.firstaired);
 		String firstairedValue = getIntent().getStringExtra("firstaired");
@@ -90,5 +85,15 @@ public class ViewSerie extends Activity
 		rating.setText(getString(R.string.series_rating) + " " + getIntent().getStringExtra("rating"));
 		TextView serieactors = (TextView) findViewById(R.id.serieactors);
 		serieactors.setText(getString(R.string.series_actors) + " "+ getIntent().getStringExtra("serieactors"));
+	}
+	
+	private String translateStatus(String statusValue) {
+		if (statusValue.equalsIgnoreCase("Continuing")) {
+			return getString(R.string.showstatus_continuing);
+		} else if (statusValue.equalsIgnoreCase("Ended")) {
+			return getString(R.string.showstatus_ended);
+		} else {
+			return statusValue;
+		}
 	}
 }
