@@ -14,12 +14,12 @@ public class IconView extends ImageView {
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		Drawable d = getDrawable();
+		int width = widthMeasureSpec;
 		if (d != null) {
 			int height = MeasureSpec.getSize(heightMeasureSpec);
-			int width = (int) Math.ceil((float) height / d.getIntrinsicHeight() * d.getIntrinsicWidth());
+			width = (int) Math.ceil((float) height / d.getIntrinsicHeight() * d.getIntrinsicWidth());
 			setMeasuredDimension(width, height);
-		} else {
-			super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		}
+		super.onMeasure(width, heightMeasureSpec);
 	}
 }
