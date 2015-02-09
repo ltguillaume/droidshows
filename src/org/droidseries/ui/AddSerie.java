@@ -30,7 +30,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-//import android.view.Window;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -41,7 +40,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-//import org.droidseries.utils.JsonStore;
 import org.apache.commons.io.FileUtils;
 import org.droidseries.droidseries;
 import org.droidseries.thetvdb.TheTVDB;
@@ -215,9 +213,6 @@ public class AddSerie extends ListActivity
 	public void addSerie(final Serie s) {
 		Runnable addnewserie = new Runnable() {
 			public void run() {
-				// PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-				// PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "My Tag");
-				// wl.acquire();
 				// gathers the TV show and all of its data
 				Serie sToAdd = theTVDB.getSerie(s.getId(), getString(R.string.lang_code));
 				if (sToAdd == null) {
@@ -269,22 +264,12 @@ public class AddSerie extends ListActivity
 							File cacheImage = new File(getApplicationContext().getFilesDir().getAbsolutePath()
 								+ imageUrl.getFile().toString());
 							FileUtils.copyURLToFile(imageUrl, cacheImage);
-							// TODO: Find a way to stop using bitmaps
 							Bitmap posterThumb = BitmapFactory.decodeFile(getApplicationContext().getFilesDir().getAbsolutePath() + imageUrl.getFile().toString());
-							// TODO: check this for other resolutions int newWidth = 42; int newHeight = 64; int newWidth = 128; int newHeight = 180;
 							Display display = getWindowManager().getDefaultDisplay();
-							int Vwidth = display.getWidth();
-							int Vheight = display.getHeight();
-							int[] viewSize = utils.getViewSize(Vwidth, Vheight);
-							int newWidth = 0;
-							int newHeight = 0;
-							if (viewSize[0] <= 350) {
-								newWidth = (int) (viewSize[0] * 0.16);
-								newHeight = (int) (viewSize[1] * 0.156);
-							} else {
-								newWidth = (int) (viewSize[0] * 0.26);
-								newHeight = (int) (viewSize[1] * 0.211);
-							}
+							int width = display.getWidth();
+							int height = display.getHeight();
+							int newHeight = (int) ((height > width ? height : width) * 0.25);
+							int newWidth = (int) (newHeight * .75);
 							if (bAddShowTh) {
 								stopAddShowTh();
 								bAddShowTh = false;
@@ -302,7 +287,7 @@ public class AddSerie extends ListActivity
 							// fOut = openFileOutput(getApplicationContext().getFilesDir().getAbsolutePath() +
 							// "/thumbs" + imageUrl.getFile().toString(), Context.MODE_PRIVATE);
 							fOut = new FileOutputStream(thumFile);
-							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 							fOut.flush();
 							fOut.close();
 							// removes the bitmaps from memory

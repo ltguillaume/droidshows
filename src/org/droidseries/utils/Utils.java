@@ -33,13 +33,4 @@ public class Utils
 		}
 		return false;
 	}
-
-	// always returns the width (normally smaller than the height)
-	public int[] getViewSize(int a, int b) {
-		if (a < b) {
-			return new int[]{a, b};
-		} else {
-			return new int[]{b, a};
-		}
-	}
 }

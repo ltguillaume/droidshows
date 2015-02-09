@@ -16,7 +16,7 @@
 \n* Sorting shows by first unseen episode
 \n* Clarified toggle and sort options
 \n* Not showing \"null\" entries from DB
-\n* Posters now fill row height
+\n* Posters now fill row height, aspect ratio independent of screen\'s
 \n\nSeasons/Episodes list:
 \n+ Showing \"[aired] of [season episodes]\"
 \n+ Aired date in episodes list

@@ -10,14 +10,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.util.Log;
 import android.view.Display;
 
 public class Update
 {
-	private Utils utils = new Utils();
-
 	// TODO: change this method from void to boolean to check if all updates go well
 	public boolean updateDroidSeries(Context context, Display display) {
 		droidseries.db.execQuery("CREATE TABLE IF NOT EXISTS droidseries (version VARCHAR)");
@@ -78,28 +75,11 @@ public class Update
 							thumbImage.delete();
 							// create the new thumb
 							Bitmap posterThumb = BitmapFactory.decodeFile(c.getString(0));
-							int width = posterThumb.getWidth();
-							int height = posterThumb.getHeight();
-							// TODO: check this for other resolutions int newWidth = 42; int newHeight = 64; int newWidth = 128; int newHeight = 180;
-							// Display display = ((WindowManager)
-							// getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-							int Vwidth = display.getWidth();
-							int Vheight = display.getHeight();
-							int[] viewSize = utils.getViewSize(Vwidth, Vheight);
-							int newWidth = 0;
-							int newHeight = 0;
-							if (viewSize[0] <= 350) {
-								newWidth = (int) (viewSize[0] * 0.16);
-								newHeight = (int) (viewSize[1] * 0.156);
-							} else {
-								newWidth = (int) (viewSize[0] * 0.26);
-								newHeight = (int) (viewSize[1] * 0.211);
-							}
-							float scaleWidth = ((float) newWidth) / width;
-							float scaleHeight = ((float) newHeight) / height;
-							Matrix matrix = new Matrix();
-							matrix.postScale(scaleWidth, scaleHeight);
-							Bitmap resizedBitmap = Bitmap.createBitmap(posterThumb, 0, 0, width, height, matrix, true);
+							int width = display.getWidth();
+							int height = display.getHeight();
+							int newHeight = (int) ((height > width ? height : width) * 0.25);
+							int newWidth = (int) (newHeight * .75);
+							Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
 							File dirTmp = new File(context.getFilesDir().getAbsolutePath()
 								+ "/thumbs/banners/posters");
 							if (!dirTmp.isDirectory()) {
@@ -108,7 +88,7 @@ public class Update
 							OutputStream fOut = null;
 							File thumFile = new File(c.getString(1));
 							fOut = new FileOutputStream(thumFile);
-							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 							fOut.flush();
 							fOut.close();
 							posterThumb.recycle();
@@ -146,28 +126,11 @@ public class Update
 							thumbImage.delete();
 							// create the new thumb
 							Bitmap posterThumb = BitmapFactory.decodeFile(c.getString(0));
-							int width = posterThumb.getWidth();
-							int height = posterThumb.getHeight();
-							// TODO: check this for other resolutions int newWidth = 42; int newHeight = 64; int newWidth = 128; int newHeight = 180;
-							// Display display = ((WindowManager)
-							// getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-							int Vwidth = display.getWidth();
-							int Vheight = display.getHeight();
-							int[] viewSize = utils.getViewSize(Vwidth, Vheight);
-							int newWidth = 0;
-							int newHeight = 0;
-							if (viewSize[0] <= 350) {
-								newWidth = (int) (viewSize[0] * 0.16);
-								newHeight = (int) (viewSize[1] * 0.156);
-							} else {
-								newWidth = (int) (viewSize[0] * 0.26);
-								newHeight = (int) (viewSize[1] * 0.211);
-							}
-							float scaleWidth = ((float) newWidth) / width;
-							float scaleHeight = ((float) newHeight) / height;
-							Matrix matrix = new Matrix();
-							matrix.postScale(scaleWidth, scaleHeight);
-							Bitmap resizedBitmap = Bitmap.createBitmap(posterThumb, 0, 0, width, height, matrix, true);
+							int width = display.getWidth();
+							int height = display.getHeight();
+							int newHeight = (int) ((height > width ? height : width) * 0.25);
+							int newWidth = (int) (newHeight * .75);
+							Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
 							File dirTmp = new File(context.getFilesDir().getAbsolutePath()
 								+ "/thumbs/banners/posters");
 							if (!dirTmp.isDirectory()) {
