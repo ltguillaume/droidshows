@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<color name="bg">#c000</color>
+<style name="ds"><item name="android:colorBackgroundCacheHint">@null</item><item name="android:windowBackground">@color/bg</item><item name="android:windowShowWallpaper">true</item></style>
 <string name="changelog" translatable="false">DroidSeries v{v}
 \n\nOverview:
 \n+ Showing \"[aired unwatched] of [total unwatched]\"
@@ -35,6 +37,7 @@
 \n+ [Clean database] in About to remove double episodes post hoc
 \n+ Menu (overflow) button should show up in Android 3.0+
 \n+ Dutch translation
+\n+ Translucent background
 \n* Date/time format according to locale
 \n* Big performance improvement for Overview activity: is almost instant (values are kept up-to-date in series table)
 \n* Some progress dialogs cancelable

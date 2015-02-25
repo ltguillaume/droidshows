@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="org.droidseries" android:versionCode="13"
-    android:versionName="0.1.5-7_Guillaume-3.82">
+    android:versionName="0.1.5-7_Guillaume-3.83">
 	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.VIBRATE"/>
-	<application android:icon="@drawable/icon" android:label="@string/layout_app_name" android:allowBackup="true">
+	<application android:icon="@drawable/icon" android:label="@string/layout_app_name" android:allowBackup="true" android:theme="@style/ds">
 	<activity android:label="@string/layout_app_name" android:name=".droidseries" android:configChanges="orientation">
 		<intent-filter>
 			<action android:name="android.intent.action.MAIN"/>
