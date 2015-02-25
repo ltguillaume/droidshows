@@ -59,13 +59,14 @@ public class droidseries extends ListActivity
 {
 	public static String VERSION = "0.1.5-7G";
 	/* Menus */
-	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
+	private static final int UNDO_MENU_ITEM = Menu.FIRST; 
+	private static final int ADD_SERIE_MENU_ITEM = UNDO_MENU_ITEM + 1;
 	private static final int TOGGLE_FILTER_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
 	private static final int PREFERENCES_MENU_ITEM = TOGGLE_FILTER_MENU_ITEM + 1;
 	private static final int SORT_MENU_ITEM = PREFERENCES_MENU_ITEM + 1;
-	private static final int ABOUT_MENU_ITEM = SORT_MENU_ITEM + 1;
+	private static final int UPDATEALL_MENU_ITEM = SORT_MENU_ITEM + 1;
+	private static final int ABOUT_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
 	private static final int EXIT_MENU_ITEM = ABOUT_MENU_ITEM + 1;
-	private static final int UPDATEALL_MENU_ITEM = EXIT_MENU_ITEM + 1;
 	/* Context Menus */
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = Menu.FIRST;
 	private static final int TOGGLE_SERIE_STATUS_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
@@ -115,6 +116,7 @@ public class droidseries extends ListActivity
 	public static SQLiteStore db;
 	public static List<TVShowItem> series = null;
 	private static Thread statsTh;
+	private static List<String[]> undo = new ArrayList<String[]>();
 
 	/** Called when the activity is first created. */
 	@Override
@@ -188,6 +190,7 @@ public class droidseries extends ListActivity
 	/* Options Menu */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
 		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, TOGGLE_FILTER_MENU_ITEM, 0, getString(R.string.menu_show_toggled)).setIcon(android.R.drawable.ic_menu_view);
 		menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort_last_unseen)).setIcon(SORT_BY_LAST_UNSEEN_ICON);
@@ -199,6 +202,11 @@ public class droidseries extends ListActivity
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (undo.size() > 0) {
+			menu.findItem(UNDO_MENU_ITEM).setVisible(true);
+		} else {
+			menu.findItem(UNDO_MENU_ITEM).setVisible(false);
+		}
 		if (sortOption == SORT_BY_LAST_UNSEEN) {
 			menu.findItem(SORT_MENU_ITEM).setIcon(SORT_BY_NAME_ICON);
 			menu.findItem(SORT_MENU_ITEM).setTitle(getString(R.string.menu_sort_az));
@@ -210,7 +218,7 @@ public class droidseries extends ListActivity
 			menu.findItem(TOGGLE_FILTER_MENU_ITEM).setTitle(getString(R.string.menu_hide_toggled));
 		} else {
 			menu.findItem(TOGGLE_FILTER_MENU_ITEM).setTitle(getString(R.string.menu_show_toggled));
-		}		
+		}
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -279,6 +287,9 @@ public class droidseries extends ListActivity
 					})
 					.setCancelable(true)
 					.show();
+				break;
+			case UNDO_MENU_ITEM :
+				markLastEpUnseen();
 				break;
 			case EXIT_MENU_ITEM :
 				onPause();	// save options
@@ -412,11 +423,32 @@ public class droidseries extends ListActivity
 				});
 			}
 			Toast.makeText(getApplicationContext(), serie.getName() +" "+ episodeMarked +" "+ getString(R.string.messages_marked_seen), Toast.LENGTH_SHORT).show();
+			undo.add(new String[] {serieid, nextEpisode, serie.getName()});
 			return true;
 		}
 		return false;
 	}
-		
+	
+	private void markLastEpUnseen() {
+		String[] episodeInfo = undo.get(undo.size()-1);
+		String serieId = episodeInfo[0];
+		String episodeId = episodeInfo[1];
+		String serieName = episodeInfo[2];
+		String episodeMarked = db.updateUnwatchedEpisode(serieId, episodeId);
+		int oldListPosition = -1;
+		for (int i = 0; i < series.size(); i++) {
+			if (series.get(i).getSerieId().equals(serieId)) {
+				oldListPosition = i;
+				break;
+			}
+		}
+		final TVShowItem newSerie = createTVShowItem(serieId);
+		series.set(oldListPosition, newSerie);
+		listView.post(updateListView);
+		undo.remove(undo.size()-1);
+		Toast.makeText(getApplicationContext(), serieName +" "+ episodeMarked +" "+ getString(R.string.messages_marked_unseen), Toast.LENGTH_SHORT).show();
+	}
+	
 	private void showDetails(String serieId) {
 		Intent viewSerie = new Intent(droidseries.this, ViewSerie.class);
 		String query = "SELECT serieName, posterThumb, overview, status, firstAired, airsDayOfWeek, airsTime, runtime, network, rating "
@@ -944,10 +976,8 @@ public class droidseries extends ListActivity
 					holder.sne.setText(getString(R.string.messages_next_episode) +" "+ serie.getNextEpisode());
 					holder.sne.setVisibility(View.VISIBLE);
 					if (nunwatchedAired > 0) {
-						holder.sne.setTypeface(null, Typeface.BOLD);
 						holder.sne.setEnabled(true);
 					} else {
-						holder.sne.setTypeface(null, Typeface.NORMAL);
 						holder.sne.setEnabled(false);
 					}
 				} else {

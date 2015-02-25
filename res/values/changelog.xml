@@ -13,6 +13,7 @@
 \n+ Poster in show overview
 \n+ Option to include specials in unwatched count
 \n+ Mark next episode seen via swipe now vibrates
+\n+ Undo function (until exit)
 \n* Sorting shows by first unseen episode
 \n* Clarified toggle and sort options
 \n* Not showing \"null\" entries from DB

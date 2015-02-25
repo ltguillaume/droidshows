@@ -7,6 +7,7 @@
 <string name="layout_seasons_no_items">Geen seizoenen gevonden.</string>
 <string name="search_serie">Serie zoeken</string>
 <string name="search_hint">Zoekopdracht</string>
+<string name="menu_undo">Ongedaan maken</string>
 <string name="menu_add_serie">Serie toevoegen</string>
 <string name="menu_update_all">Alle series bijwerken</string>
 <string name="menu_sort_az">Sorteren op naam</string>
@@ -68,6 +69,7 @@
 <string name="messages_overview">Overzicht</string>
 <string name="messages_thetvdb_con_error">Kan geen verbinding maken met TheTVDB.com. Probeer het nog eens.</string>
 <string name="messages_marked_seen">gemarkeerd als gezien</string>
+<string name="messages_marked_unseen">gemarkeerd als niet gezien</string>
 <string name="messages_context_mark_seasonunseen">Nog geen afleveringen gezien</string>
 <string name="messages_context_mark_asseenuptothis">Seizoenen tot aan hier gezien</string>
 <string name="messages_aired">Uitgezonden:</string>
