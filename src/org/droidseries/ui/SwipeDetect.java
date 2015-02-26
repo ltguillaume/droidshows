@@ -4,7 +4,6 @@ import org.droidseries.droidseries;
 import android.app.Activity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
 
 public class SwipeDetect implements View.OnTouchListener {
 	private float downX;
@@ -16,11 +15,11 @@ public class SwipeDetect implements View.OnTouchListener {
 
 	public boolean onTouch(View v, MotionEvent event) {
 		switch (event.getAction()) {
-			case MotionEvent.ACTION_DOWN: {
+			case MotionEvent.ACTION_DOWN:
 				downX = event.getX();
 				swipeDetected = false;
-      }
-			case MotionEvent.ACTION_MOVE: {
+				break;
+			case MotionEvent.ACTION_MOVE:
 				float deltaX = downX - event.getX();
 				if (deltaX > v.getWidth() / 3) {	// > 0 = right-to-left, minimum delta might need some tweaking
 					if(v.getContext() instanceof droidseries) {
@@ -30,7 +29,7 @@ public class SwipeDetect implements View.OnTouchListener {
 						((Activity)v.getContext()).finish();	// go back
 					}
 				}
-			}
+			break;
 		}
 		return false;
 	}

@@ -10,7 +10,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.droidseries.R;
+
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -32,14 +34,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
+
 import org.apache.commons.io.FileUtils;
 import org.droidseries.droidseries;
 import org.droidseries.thetvdb.TheTVDB;
@@ -395,26 +396,26 @@ public class AddSerie extends ListActivity
 		}
 		lv = getListView();
 		lv.setOnTouchListener(new SwipeDetect());
-		lv.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				try {
-					Intent serieOverview = new Intent(AddSerie.this, SerieOverview.class);
-					if (!AddSerie.search_series.get(position).getOverview().equals("")) {
-						serieOverview.putExtra("serieid", AddSerie.search_series.get(position).getId());
-						serieOverview.putExtra("overview", AddSerie.search_series.get(position).getOverview());
-						serieOverview.putExtra("name", AddSerie.search_series.get(position).getSerieName());
-						startActivity(serieOverview);
-					}
-				} catch (Exception e) {
-					Log.e(TAG, "Error showing the serie's overview");
-				}
-			}
-		});
-		lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		// register context menu
 		registerForContextMenu(getListView());
 	}
 	// END Guillaume
+	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		try {
+			Intent serieOverview = new Intent(AddSerie.this, SerieOverview.class);
+			if (!AddSerie.search_series.get(position).getOverview().equals("")) {
+				serieOverview.putExtra("serieid", AddSerie.search_series.get(position).getId());
+				serieOverview.putExtra("overview", AddSerie.search_series.get(position).getOverview());
+				serieOverview.putExtra("name", AddSerie.search_series.get(position).getSerieName());
+				startActivity(serieOverview);
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "Error showing the serie's overview");
+		}
+	}
+	
 	private class SeriesSearchAdapter extends ArrayAdapter<Serie>
 	{
 		private List<Serie> items;

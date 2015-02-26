@@ -12,11 +12,10 @@
 <string name="menu_update_all">Alle series bijwerken</string>
 <string name="menu_sort_az">Sorteren op naam</string>
 <string name="menu_sort_last_unseen">Sorteren op datum</string>
-<string name="menu_about">Over</string>
+<string name="menu_about">Opties</string>
 <string name="menu_exit">Afsluiten</string>
 <string name="menu_context_update">Bijwerken</string>
 <string name="menu_context_delete">Verwijderen</string>
-<string name="menu_context_viewposter">Bekijk poster</string>
 <string name="menu_context_add_serie">Serie toevoegen</string>
 <string name="menu_show_toggled">[…] tonen</string>
 <string name="menu_hide_toggled">[…] verbergen</string>
@@ -30,7 +29,7 @@
 <string name="dialog_Cancel">Annuleren</string>
 <string name="dialog_search">Zoekterm:</string>
 <string name="dialog_update_all_series">Weet je zeker dat je alle series nu wilt bijwerken?</string>
-<string name="dialog_update_speedup">\n\nDit kan sneller met de optie in Menu > Over.</string>
+<string name="dialog_update_speedup">\n\nDit kan sneller met de optie in Menu > Opties.</string>
 <string name="dialog_last_season">Alleen laatste seizoenen bijwerken</string>
 <string name="dialog_include_specials">Specials meetellen in overzicht</string>
 <string name="dialog_full_line_check">Hele regel gebruiken voor aanvinken aflevering</string>

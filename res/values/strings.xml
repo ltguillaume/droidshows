@@ -1,5 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<string name="changelog" translatable="false">DroidSeries v{v}
+\n\nOverview:
+\n+ Showing \"[aired unwatched] of [total unwatched]\"
+\n+ Added icon ic_menu_view for show/hide toggled
+\n+ Status of show in details, and † in overview if show is ended
+\n+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list
+\n+ Option in [Options] to only update shows\' last season
+\n+ Context item to view show details on IMDb
+\n+ Tap cover for show info, long-press for IMDb details
+\n+ Swipe right-to-left to mark next episode as seen (shows confirmation toast), everywhere else in app swiping acts like back button
+\n+ Poster in show overview
+\n+ Option to include specials in unwatched count
+\n+ Mark next episode seen via swipe now vibrates
+\n+ Undo function (until exit)
+\n* Sorting shows by first unseen episode
+\n* Clarified toggle and sort options
+\n* Not showing \"null\" entries from DB
+\n* Posters now fill row height, aspect ratio independent of screen\'s
+\n\nSeasons/Episodes list:
+\n+ Showing \"[aired] of [season episodes]\"
+\n+ Aired date in episodes list
+\n+ Click on episode title for details, on checkmark to change seen state
+\n* Big performance improvement for entirely rewritten Seasons activity: is now almost instant
+\n\nAdd show:
+\n+ Icon resized rate_star_med_on_holo_dark for added shows
+\n+ Icon ic_menu_add for new shows
+\n* Fixed search not working after initial search
+\n* Centered icons vertically in search results
+\n- No large-size posters are saved to save space in /data/data/
+\n\nUpdate:
+\n* Prevent double episodes
+\n\nOther:
+\n+ [Clean database] in Options to remove double episodes post hoc
+\n+ Menu (overflow) button should show up in Android 3.0+
+\n+ Dutch translation
+\n+ Translucent background
+\n* Date/time format according to locale
+\n* Big performance improvement for Overview activity: is almost instant (values are kept up-to-date in series table)
+\n* Some progress dialogs cancelable
+\n* Update of all shows continues when navigating away from DroidSeries
+\n* Screen off/rotating screen/navigating away from app during update kinda OK now
+\n* [Exit] removes app from memory
+\n* Fixed UI glitches/styles
+\n* Code clean-up (all layouts revised)
+\n- Removed useless dependencies
+\n- Removed crappy features
+\n\n&#169;2010 Carlos Limpinho, Paulo Cabido under GPL:\ncode.google.com/p/droidseries
+\nModified by Mikael Berthe: gitorious.org/droidseries/mckaels-droidseries
+\n&#169;2014-2015 Guillaume: gitorious.org/droidseries/droidseries-guillaume
+\n\nNew icon file is a mix of iconeasy.com/icon/tv-shows-2-icon (Thrasos Varnava) and wallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)</string>
 <string name="lang_code">en</string>
 <string name="layout_app_name">DroidSeries</string>
 <string name="layout_main_no_items">No shows found. You can add a show via the menu.</string>
@@ -12,7 +62,7 @@
 <string name="menu_update_all">Update all shows</string>
 <string name="menu_sort_az">Sort by name</string>
 <string name="menu_sort_last_unseen">Sort by unseen</string>
-<string name="menu_about">About</string>
+<string name="menu_about">Options</string>
 <string name="menu_exit">Exit</string>
 <string name="menu_context_update">Update</string>
 <string name="menu_context_delete">Delete</string>
@@ -29,7 +79,7 @@
 <string name="dialog_Cancel">Cancel</string>
 <string name="dialog_search">Search string:</string>
 <string name="dialog_update_all_series">Are you sure you want to update all the shows now?</string>
-<string name="dialog_update_speedup">\n\nYou can speed up this process with the option in Menu > About.</string>
+<string name="dialog_update_speedup">\n\nYou can speed up this process with the option in Menu > Options.</string>
 <string name="dialog_last_season">Update shows\' last season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to check episode</string>

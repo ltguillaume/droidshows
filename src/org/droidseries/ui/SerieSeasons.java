@@ -21,12 +21,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class SerieSeasons extends ListActivity
 {
@@ -56,18 +54,6 @@ public class SerieSeasons extends ListActivity
 		infoTh = new Thread(null, getSeasonInfo, "info");
 		infoTh.start();
 		listView.setOnTouchListener(new SwipeDetect());
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				try {
-					Intent serieEpisode = new Intent(SerieSeasons.this, SerieEpisodes.class);
-					serieEpisode.putExtra("serieid", serieid);
-					serieEpisode.putExtra("nseason", iseasons.get(position));
-					startActivity(serieEpisode);
-				} catch (Exception e) {
-					Log.e(TAG, e.getMessage());
-				}
-			}
-		});
 		registerForContextMenu(getListView());
 	}
 	
@@ -102,6 +88,18 @@ public class SerieSeasons extends ListActivity
 				return true;
 			default :
 				return super.onContextItemSelected(item);
+		}
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		try {
+			Intent serieEpisode = new Intent(SerieSeasons.this, SerieEpisodes.class);
+			serieEpisode.putExtra("serieid", serieid);
+			serieEpisode.putExtra("nseason", iseasons.get(position));
+			startActivity(serieEpisode);
+		} catch (Exception e) {
+			Log.e(TAG, e.getMessage());
 		}
 	}
 

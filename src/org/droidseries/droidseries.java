@@ -14,7 +14,6 @@ import org.droidseries.thetvdb.model.TVShowItem;
 import org.droidseries.ui.IconView;
 import org.droidseries.ui.SerieSeasons;
 import org.droidseries.ui.SwipeDetect;
-//import org.droidseries.ui.SerieViewPoster; // Guillaume--
 import org.droidseries.ui.ViewSerie;
 import org.droidseries.utils.SQLiteStore;
 import org.droidseries.utils.Utils;
@@ -31,7 +30,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,16 +42,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class droidseries extends ListActivity
 {
@@ -117,7 +115,8 @@ public class droidseries extends ListActivity
 	public static List<TVShowItem> series = null;
 	private static Thread statsTh;
 	private static List<String[]> undo = new ArrayList<String[]>();
-
+	private static SwipeDetect swipeDetect = new SwipeDetect();
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -160,33 +159,10 @@ public class droidseries extends ListActivity
 		getUserSeries();
 		statsTh = new Thread(null, getShowInfo, "stats");
 		statsTh.start();
-		final SwipeDetect swipeDetect = new SwipeDetect();
 		listView.setOnTouchListener(swipeDetect);
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				if (swipeDetect.detected()) {
-					if (markNextEpSeen(position)) {
-						Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-						v.vibrate(150);
-					}
-				} else {
-					try {
-						String serieId = series.get(position).getSerieId();
-						backFromSeasonSerieId = serieId;
-						backFromSeasonPosition = position;
-						Intent serieSeasons = new Intent(droidseries.this, SerieSeasons.class);
-						serieSeasons.putExtra("serieid", serieId);
-						startActivity(serieSeasons);
-					} catch (Exception e) {
-						Log.e(TAG, e.getMessage());
-					}					
-				}
-			}
-		}); 
-		// register context menu
 		registerForContextMenu(listView);
 	}
-		
+
 	/* Options Menu */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -195,7 +171,7 @@ public class droidseries extends ListActivity
 		menu.add(0, TOGGLE_FILTER_MENU_ITEM, 0, getString(R.string.menu_show_toggled)).setIcon(android.R.drawable.ic_menu_view);
 		menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort_last_unseen)).setIcon(SORT_BY_LAST_UNSEEN_ICON);
 		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update_all)).setIcon(android.R.drawable.ic_menu_upload);
-		menu.add(0, ABOUT_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_info_details);
+		menu.add(0, ABOUT_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
 		menu.add(0, EXIT_MENU_ITEM, 0, getString(R.string.menu_exit)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -253,14 +229,14 @@ public class droidseries extends ListActivity
 					e.printStackTrace();
 				}
 				CheckBox lastSeasonCheckbox = (CheckBox) about.findViewById(R.id.last_season);
-				lastSeasonCheckbox.setOnClickListener(new View.OnClickListener() {
+				lastSeasonCheckbox.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
 						lastSeasonOption ^= 1;
 					}
 				});
 				lastSeasonCheckbox.setChecked(lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 				CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials);
-				includeSpecialsCheckbox.setOnClickListener(new View.OnClickListener() {
+				includeSpecialsCheckbox.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
 						includeSpecialsOption = !includeSpecialsOption;
 						db.updateShowStats();
@@ -271,7 +247,7 @@ public class droidseries extends ListActivity
 				});
 				includeSpecialsCheckbox.setChecked(includeSpecialsOption);
 				CheckBox fullLineCheckbox = (CheckBox) about.findViewById(R.id.full_line_check);
-				fullLineCheckbox.setOnClickListener(new View.OnClickListener() {
+				fullLineCheckbox.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
 						fullLineCheckOption = !fullLineCheckOption;
 					}
@@ -320,7 +296,6 @@ public class droidseries extends ListActivity
 		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
-		// menu.add(0, VIEW_POSTER_CONTEXT, 0, getString(R.string.menu_context_viewposter)); // Guillaume--
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -388,17 +363,31 @@ public class droidseries extends ListActivity
 				});
 				alertDialog.show();
 				return true;
-				/* case VIEW_POSTER_CONTEXT: String posterincache =
-				 * db.getSeriePoster(series.get(info.position).getSerieId()); if(!posterincache.equals(""))
-				 * { Intent viewPoster = new Intent(droidseries.this, SerieViewPoster.class);
-				 * viewPoster.putExtra("seriename",
-				 * db.getSerieName(series.get(info.position).getSerieId())); viewPoster.putExtra("poster",
-				 * posterincache); startActivity(viewPoster); } return true; // Guillaume-- */
 			default :
 				return super.onContextItemSelected(item);
 		}
 	}
 	
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		if (swipeDetect.detected()) {
+			if (markNextEpSeen(position)) {
+				Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+				vib.vibrate(150);
+			}
+		} else {
+			try {
+				String serieId = series.get(position).getSerieId();
+				backFromSeasonSerieId = serieId;
+				backFromSeasonPosition = position;
+				Intent serieSeasons = new Intent(droidseries.this, SerieSeasons.class);
+				serieSeasons.putExtra("serieid", serieId);
+				startActivity(serieSeasons);
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage());
+			}					
+		}		
+	}
 
 	private boolean markNextEpSeen(final int oldListPosition) {
 		TVShowItem serie = series.get(oldListPosition);
@@ -996,17 +985,8 @@ public class droidseries extends ListActivity
 					holder.icon.setImageResource(R.drawable.noposter);
 				}
 			}
-			holder.icon.setOnClickListener(new View.OnClickListener() {
-				public void onClick(View view) {
-						showDetails(items.get(position).getSerieId());
-				}
-			});
-			holder.icon.setOnLongClickListener(new View.OnLongClickListener() {
-				public boolean onLongClick(View view) {
-						IMDbDetails(items.get(position).getSerieId());
-						return true;
-				}
-			});
+			holder.icon.setOnClickListener(detailsListener);
+			holder.icon.setOnLongClickListener(IMDbListener);
 			return convertView;
 		}
 	}
@@ -1017,4 +997,21 @@ public class droidseries extends ListActivity
 		TextView sne;
 		IconView icon;
 	}
+	private OnClickListener detailsListener = new OnClickListener() {
+		public void onClick(View v) {
+	        final int position = getListView().getPositionForView(v);
+	        if (position != ListView.INVALID_POSITION) {
+				showDetails(series.get(position).getSerieId());
+			}
+		}
+	};
+	private OnLongClickListener IMDbListener = new OnLongClickListener() {
+		public boolean onLongClick(View v) {
+	        final int position = getListView().getPositionForView(v);
+	        if (position != ListView.INVALID_POSITION) {
+	        	IMDbDetails(series.get(position).getSerieId());
+	        }
+			return true;
+		}
+	};
 }

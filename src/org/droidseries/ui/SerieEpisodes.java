@@ -5,9 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.droidseries.droidseries;
 import org.droidseries.R;
-
 //import org.droidseries.utils.JsonStore;
 
 import android.app.ListActivity;
@@ -15,23 +15,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import java.text.ParseException;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,26 +64,6 @@ public class SerieEpisodes extends ListActivity {
 			episodes_adapter = new EpisodesAdapter(this, R.layout.row_serie_episodes, episodes);
 			listView.setOnTouchListener(new SwipeDetect());
 			listView.setAdapter(episodes_adapter);
-			listView.setOnItemClickListener(new OnItemClickListener() {
-				public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-					if (droidseries.fullLineCheckOption) {
-						try {
-							droidseries.db.updateUnwatchedEpisode(serieid, episodes.get(position));
-							CheckBox c = (CheckBox) view.findViewById(R.id.seen);
-							c.setChecked(!c.isChecked());
-						} catch (Exception e) {
-							Toast.makeText(getApplicationContext(), "Could not set episode seen state", Toast.LENGTH_LONG).show();
-							Log.e(TAG, e.getMessage());
-						}
-					} else {
-						try {
-							startViewEpisode(episodes.get(position));
-						} catch (Exception e) {
-							Log.e(TAG, e.getMessage());
-						}
-					}
-				}
-			});		
 			registerForContextMenu(getListView());
 	}
 
@@ -112,6 +90,26 @@ public class SerieEpisodes extends ListActivity {
 						return true;
 				default:
 						return super.onContextItemSelected(item);
+		}
+	}
+
+	@Override
+	protected void onListItemClick(ListView l, View v, int position, long id) {
+		if (droidseries.fullLineCheckOption) {
+			try {
+				droidseries.db.updateUnwatchedEpisode(serieid, episodes.get(position));
+				CheckBox c = (CheckBox) v.findViewById(R.id.seen);
+				c.setChecked(!c.isChecked());
+			} catch (Exception e) {
+				Toast.makeText(getApplicationContext(), "Could not set episode seen state", Toast.LENGTH_LONG).show();
+				Log.e(TAG, e.getMessage());
+			}
+		} else {
+			try {
+				startViewEpisode(episodes.get(position));
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage());
+			}
 		}
 	}
 
@@ -184,16 +182,7 @@ public class SerieEpisodes extends ListActivity {
 				}
 				
 				holder.seen.setChecked(c.getInt(seenCol) == 1);
-				holder.seen.setOnClickListener(new OnClickListener() {
-					public void onClick(View view) {
-						try {
-							droidseries.db.updateUnwatchedEpisode(serieid, episodes.get(position));
-						} catch (Exception e) {
-							Toast.makeText(getApplicationContext(), "Could not set episode seen state", Toast.LENGTH_LONG).show();
-							Log.e(TAG, e.getMessage());
-						}
-					}
-				});
+				holder.seen.setOnClickListener(checkListener);
 			}
 			c.close();
 			return convertView;
@@ -204,6 +193,16 @@ public class SerieEpisodes extends ListActivity {
 		TextView aired;
 		CheckBox seen;
 	}
+	private OnClickListener checkListener = new OnClickListener() {
+		public void onClick(View v) {
+			final int position = getListView().getPositionForView(v);
+			try {
+				droidseries.db.updateUnwatchedEpisode(serieid, episodes.get(position));
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage());
+			}
+		}
+	};
 	
 	private void startViewEpisode(String episode) {
 		Intent viewEpisode = new Intent(SerieEpisodes.this, ViewEpisode.class);
