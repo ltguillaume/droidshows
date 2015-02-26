@@ -958,7 +958,7 @@ public class droidseries extends ListActivity
 						holder.si.setEnabled(false);
 					}
 				}
-				holder.si.setText(siText +" | "+ unwatched);
+				holder.si.setText(siText +" | "+ unwatched + (nunwatchedAired == nunwatched ? " \u00b7" : ""));
 			}
 			if (holder.sne != null) {
 				if (nunwatched > 0) {
