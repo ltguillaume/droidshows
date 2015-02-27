@@ -951,14 +951,14 @@ public class droidseries extends ListActivity
 				} else {
 					unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes) : getString(R.string.messages_new_episode)) +" ";
 					if (nunwatchedAired > 0) {
-						unwatched = nunwatchedAired +" "+ getString(R.string.messages_of) +" "+ unwatched + getString(R.string.messages_ep_aired);
+						unwatched = nunwatchedAired +" "+ getString(R.string.messages_of) +" "+ unwatched + getString(R.string.messages_ep_aired) + (nunwatchedAired == nunwatched && ended.isEmpty() ? " \u00b7" : "");
 						holder.si.setEnabled(true);
 					} else {
 						unwatched += getString(R.string.messages_to_be_aired);
 						holder.si.setEnabled(false);
 					}
 				}
-				holder.si.setText(siText +" | "+ unwatched + (nunwatchedAired == nunwatched ? " \u00b7" : ""));
+				holder.si.setText(siText +" | "+ unwatched);
 			}
 			if (holder.sne != null) {
 				if (nunwatched > 0) {
