@@ -113,7 +113,7 @@ public class droidseries extends ListActivity
 	private String toastMessage;
 	public static SQLiteStore db;
 	public static List<TVShowItem> series = null;
-	private static Thread statsTh;
+	private static Thread statsTh = null;
 	private static List<String[]> undo = new ArrayList<String[]>();
 	private static SwipeDetect swipeDetect = new SwipeDetect();
 	
@@ -156,9 +156,8 @@ public class droidseries extends ListActivity
 		setListAdapter(series_adapter);
 		on = getString(R.string.messages_on);
 		listView = getListView();
-		getUserSeries();
 		statsTh = new Thread(null, getShowInfo, "stats");
-		statsTh.start();
+		reloadSeries();
 		listView.setOnTouchListener(swipeDetect);
 		registerForContextMenu(listView);
 	}
@@ -240,9 +239,7 @@ public class droidseries extends ListActivity
 					public void onClick(View v) {
 						includeSpecialsOption = !includeSpecialsOption;
 						db.updateShowStats();
-						series.clear();
-						getUserSeries();
-						statsTh.run();
+						reloadSeries();
 					}
 				});
 				includeSpecialsCheckbox.setChecked(includeSpecialsOption);
@@ -278,9 +275,7 @@ public class droidseries extends ListActivity
 
 	public void toggleFilter() {
 		filterOption ^= 1;
-		series.clear();
-		getUserSeries();
-		statsTh.run();
+		reloadSeries();
 	}
 
 	public void toggleSort() {
@@ -387,6 +382,12 @@ public class droidseries extends ListActivity
 				Log.e(TAG, e.getMessage());
 			}					
 		}		
+	}
+	
+	private void reloadSeries() {
+		series.clear();
+		getUserSeries();
+		statsTh.run();
 	}
 
 	private boolean markNextEpSeen(final int oldListPosition) {
@@ -612,6 +613,7 @@ public class droidseries extends ListActivity
 						}
 					}
 					if (!bUpdateAllShowsTh) {
+						reloadSeries();
 						updateAllSeriesPD.dismiss();
 						bUpdateAllShowsTh = false;
 					}
