@@ -113,9 +113,9 @@ public class droidseries extends ListActivity
 	private String toastMessage;
 	public static SQLiteStore db;
 	public static List<TVShowItem> series = null;
-	private static Thread statsTh = null;
+	private static Thread statsTh;
 	private static List<String[]> undo = new ArrayList<String[]>();
-	private static SwipeDetect swipeDetect = new SwipeDetect();
+	private static SwipeDetect swipeDetect;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -156,10 +156,12 @@ public class droidseries extends ListActivity
 		setListAdapter(series_adapter);
 		on = getString(R.string.messages_on);
 		listView = getListView();
+		getUserSeries();
 		statsTh = new Thread(null, getShowInfo, "stats");
-		reloadSeries();
-		listView.setOnTouchListener(swipeDetect);
+		statsTh.start();
 		registerForContextMenu(listView);
+		swipeDetect = new SwipeDetect();
+		listView.setOnTouchListener(swipeDetect);
 	}
 
 	/* Options Menu */
