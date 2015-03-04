@@ -45,7 +45,7 @@ public class SerieSeasons extends ListActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.serie_seasons);
 		serieid = getIntent().getStringExtra("serieid");
-		setTitle(droidseries.db.getSerieName(serieid) + " - " + getString(R.string.messages_seasons));
+		setTitle(droidseries.db.getSerieName(serieid));
 		seasons = new ArrayList<Season>();
 		seriesseasons_adapter = new SeriesSeasonsAdapter(this, R.layout.row_serie_seasons, seasons);
 		listView = getListView();

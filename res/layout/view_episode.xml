@@ -1,25 +1,29 @@
 <ScrollView android:id="@+id/viewEpisodes" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-	<TableLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
-		<TableRow android:layout_height="wrap_content" android:layout_width="fill_parent">
-			<TextView android:layout_height="wrap_content" android:id="@+id/episodename" android:padding="6dp" android:layout_width="fill_parent" android:textStyle="bold" android:textSize="16sp" android:layout_weight="1"/>
-		</TableRow>
-		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:id="@+id/episodeoverview" android:layout_weight="1"/>
-		</TableRow>
-		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:id="@+id/episodedirector" android:layout_weight="1"/>
-		</TableRow>
-		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/episodewriter" android:padding="6dp" android:layout_weight="1"/>
-		</TableRow>
-		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/episodegueststars" android:padding="6dp" android:layout_weight="1"/>
-		</TableRow>
-		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/episoderating" android:padding="6dp"/>
-		</TableRow>
-		<TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
-			<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/firstaired" android:padding="6dp"/>
-		</TableRow>
-	</TableLayout>
+<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
+	<TextView android:id="@+id/episodeName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:textStyle="bold" android:textSize="24sp"/>
+	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+	<TextView android:id="@+id/rating" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingLeft="6dp" android:paddingBottom="2dp" android:drawableLeft="@drawable/star" android:scaleType="centerInside" android:visibility="gone"/>
+	<TextView android:id="@+id/firstAired" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingLeft="6dp" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_today" android:scaleType="centerInside" android:visibility="gone"/>
+	<LinearLayout android:id="@+id/overviewField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_synopsis"/>
+		<TextView android:id="@+id/overview" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/writerField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/episode_writers"/>
+		<TextView android:id="@+id/writer" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/directorField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/episode_directors"/>
+		<TextView android:id="@+id/director" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/guestStarsField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/episode_guest_stars"/>
+		<TextView android:id="@+id/guestStars" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
+	</LinearLayout>
+	<View android:layout_width="fill_parent" android:layout_height="1px" android:layout_marginBottom="6dp" android:background="@drawable/div"/>
+</LinearLayout>
 </ScrollView>

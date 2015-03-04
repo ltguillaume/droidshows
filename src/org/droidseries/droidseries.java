@@ -443,7 +443,7 @@ public class droidseries extends ListActivity
 	
 	private void showDetails(String serieId) {
 		Intent viewSerie = new Intent(droidseries.this, ViewSerie.class);
-		String query = "SELECT serieName, posterThumb, overview, status, firstAired, airsDayOfWeek, airsTime, runtime, network, rating "
+		String query = "SELECT serieName, posterThumb, overview, status, firstAired, airsDayOfWeek, airsTime, runtime, network, rating, contentRating, imdbId "
 			+ "FROM series WHERE id = '" + serieId + "'";
 		Cursor c = db.Query(query);
 		c.moveToFirst();
@@ -458,16 +458,20 @@ public class droidseries extends ListActivity
 			int runtimeCol = c.getColumnIndex("runtime");
 			int networkCol = c.getColumnIndex("network");
 			int ratingCol = c.getColumnIndex("rating");
-			viewSerie.putExtra("seriename", c.getString(snameCol));
+			int contentRatingCol = c.getColumnIndex("contentRating");
+			int imdbIdCol = c.getColumnIndex("imdbId");
+			viewSerie.putExtra("serieName", c.getString(snameCol));
 			viewSerie.putExtra("poster", c.getString(posterCol));
-			viewSerie.putExtra("serieoverview", c.getString(overviewCol));
+			viewSerie.putExtra("serieOverview", c.getString(overviewCol));
 			viewSerie.putExtra("status", c.getString(statusCol));
-			viewSerie.putExtra("firstaired", c.getString(firstAiredCol));
+			viewSerie.putExtra("firstAired", c.getString(firstAiredCol));
 			viewSerie.putExtra("airday", c.getString(airsdayofweekCol));
 			viewSerie.putExtra("airtime", c.getString(airstimeCol));
 			viewSerie.putExtra("runtime", c.getString(runtimeCol));
 			viewSerie.putExtra("network", c.getString(networkCol));
 			viewSerie.putExtra("rating", c.getString(ratingCol));
+			viewSerie.putExtra("contentRating", c.getString(contentRatingCol));
+			viewSerie.putExtra("imdbId", c.getString(imdbIdCol));
 			c.close();
 			List<String> genres = new ArrayList<String>();
 			Cursor cgenres = db.Query("SELECT genre FROM genres WHERE serieId='"+ serieId + "'");
@@ -488,19 +492,25 @@ public class droidseries extends ListActivity
 				} while (cactors.moveToNext());
 			}
 			cactors.close();
-			viewSerie.putExtra("serieactors", actors.toString().replace("]", "").replace("[", ""));
+			viewSerie.putExtra("serieActors", actors.toString().replace("]", "").replace("[", ""));
 			startActivity(viewSerie);
 		}		
 	}
 
 	private void IMDbDetails(String serieId) {
-		String query = "SELECT imdbId FROM series WHERE id = '" + serieId + "'";
+		String query = "SELECT imdbId, serieName FROM series WHERE id = '" + serieId + "'";
 		Cursor c = db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			String imdbId = c.getString(0);
+			String serieName = c.getString(1);
 			c.close();
-			Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/title/"+ imdbId));
+			Intent imdb;
+			if (imdbId.equalsIgnoreCase("null") || imdbId.equals("")) {
+				imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/find?q=" + serieName));
+			} else {
+				imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/title/"+ imdbId));
+			}
 			startActivity(imdb);
 		}
 	}
