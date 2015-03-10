@@ -639,9 +639,8 @@ public class droidseries extends ListActivity
 				e.printStackTrace();
 			}
 		}
-		Drawable poster = Drawable.createFromPath(tmpPoster);
 		boolean status = (tmpStatus == 1);
-		TVShowItem tvsi = new TVShowItem(serieId, tmpPoster, poster, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, showStatus);
+		TVShowItem tvsi = new TVShowItem(serieId, tmpPoster, null, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, showStatus);
 		return tvsi;
 	}
 
@@ -878,16 +877,16 @@ public class droidseries extends ListActivity
 				}
 			}
 			if (holder.icon != null) {
-				if (!serie.getIcon().equals("") && serie.getDIcon() != null) {
+				Drawable icon = serie.getDIcon();
+				if (icon == null) {
 					try {
-						holder.icon.setImageDrawable(serie.getDIcon());
-					}
-					catch (Exception e) {
+						icon = Drawable.createFromPath(serie.getIcon());
+						serie.setDIcon(icon);
+					} catch (Exception e) {
 						holder.icon.setImageResource(R.drawable.noposter);
 					}
-				} else {
-					holder.icon.setImageResource(R.drawable.noposter);
 				}
+				holder.icon.setImageDrawable(icon);
 			}
 			holder.icon.setOnClickListener(detailsListener);
 			holder.icon.setOnLongClickListener(IMDbListener);
