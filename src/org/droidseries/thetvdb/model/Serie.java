@@ -263,17 +263,16 @@ public class Serie {
                                "VALUES ('"+ this.id  +"','"+ this.nseasons.get(n) +"');");
             }
 
-            String tmpOverview = "";
             if(TextUtils.isEmpty(this.overview))
-               this.overview = "";
+              this.overview = "";
             if(TextUtils.isEmpty(this.serieName))
-				this.serieName = "";
+            	this.serieName = "";
             SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, "+
                            "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, "+
                            "network, rating, runtime, status, fanart, lastUpdated, poster, "+
                            "posterInCache, posterThumb) VALUES ('"+ this.id +"','"+ this.serieId +"','"+ this.language
                            +"',"+ DatabaseUtils.sqlEscapeString(this.serieName) +",'"+ this.banner
-                           +"',"+ DatabaseUtils.sqlEscapeString(tmpOverview) +",'"+ this.firstAired
+                           +"',"+ DatabaseUtils.sqlEscapeString(this.overview) +",'"+ this.firstAired
                            +"','"+ this.imdbId +"','"+ this.zap2ItId +"','"+ this.airsDayOfWeek +"','"+ this.airsTime
                            +"','"+ this.contentRating +"','"+ this.network +"','"+ this.rating +"','"+ this.runtime
                            +"','"+ this.status +"','"+ this.fanart +"','"+ this.lastUpdated +"','"+ this.poster
