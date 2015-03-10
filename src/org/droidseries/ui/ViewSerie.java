@@ -2,108 +2,170 @@ package org.droidseries.ui;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-
+import java.util.List;
+import org.droidseries.droidseries;
 import org.droidseries.R;
-
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-
 import java.text.ParseException;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ViewSerie extends Activity
 {
+	private String serieId = null,
+		serieName = "",
+		posterURL = "#",
+		fanartURL = "#",
+		imdbId = "";
+	private WebView posterView = null;
+	private boolean posterLoaded = false;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.view_serie);
 		View view = findViewById(R.id.viewSerie);
 		view.setOnTouchListener(new SwipeDetect());
-		
-		TextView network = (TextView) findViewById(R.id.network);
-		String networkText = getIntent().getStringExtra("network");
-		if (!networkText.equalsIgnoreCase("null")) {
-			if (networkText.endsWith("db")) networkText = networkText.substring(0, networkText.length()-2);
-			network.setText(networkText);
-		}
-
-		TextView contentRating = (TextView) findViewById(R.id.contentRating);
-		String contentRatingText = getIntent().getStringExtra("contentRating");
-		if (!contentRatingText.equalsIgnoreCase("null"))
-			contentRating.setText(contentRatingText);
-		
-		TextView serieName = (TextView) findViewById(R.id.serieName);
-		serieName.setText(getIntent().getStringExtra("serieName"));
-
-		ImageView poster = (ImageView) findViewById(R.id.poster);
-		
-		try {
-			BitmapDrawable posterThumb = (BitmapDrawable) BitmapDrawable.createFromPath(getIntent().getStringExtra("poster"));
-			posterThumb.setTargetDensity(getResources().getDisplayMetrics().densityDpi);	// Don't auto-resize from mdpi to screen density
-			poster.setImageDrawable(posterThumb);
-		}
-		catch (Exception e) {
-		}
-		
-		TextView genre = (TextView) findViewById(R.id.genre);
-		genre.setText(getIntent().getStringExtra("genre"));
-		
-		TextView rating = (TextView) findViewById(R.id.rating);
-		rating.setText("IMDb: "+ getIntent().getStringExtra("rating"));
-				
-		TextView firstAired = (TextView) findViewById(R.id.firstAired);
-		String firstAiredValue = getIntent().getStringExtra("firstAired");
-		if (!firstAiredValue.equals("")) {
-			try {
-				SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
-				Date epDate = SDF.parse(firstAiredValue);
-				Format formatter = SimpleDateFormat.getDateInstance();
-				firstAiredValue = formatter.format(epDate);
-			} catch (ParseException e) {
-				Log.e("DroidSeries", e.getMessage());
+		serieId = getIntent().getStringExtra("serieId");
+	
+		String query = "SELECT serieName, posterThumb, poster, fanart, overview, status, firstAired, airsDayOfWeek, airsTime, runtime, network, rating, contentRating, imdbId "
+			+ "FROM series WHERE id = '" + serieId + "'";
+		Cursor c = droidseries.db.Query(query);
+		c.moveToFirst();
+		if (c != null && c.isFirst()) {
+			int snameCol = c.getColumnIndex("serieName");
+			int posterThumbCol = c.getColumnIndex("posterThumb");
+			int posterCol = c.getColumnIndex("poster");
+			int fanartCol = c.getColumnIndex("fanart");
+			int overviewCol = c.getColumnIndex("overview");
+			int statusCol = c.getColumnIndex("status");
+			int firstAiredCol = c.getColumnIndex("firstAired");
+			int airsdayofweekCol = c.getColumnIndex("airsDayOfWeek");
+			int airstimeCol = c.getColumnIndex("airsTime");
+			int runtimeCol = c.getColumnIndex("runtime");
+			int networkCol = c.getColumnIndex("network");
+			int ratingCol = c.getColumnIndex("rating");
+			int contentRatingCol = c.getColumnIndex("contentRating");
+			int imdbIdCol = c.getColumnIndex("imdbId");
+			serieName = c.getString(snameCol);
+			String posterThumb = c.getString(posterThumbCol);
+			posterURL = c.getString(posterCol);
+			fanartURL = c.getString(fanartCol);
+			String serieOverview = c.getString(overviewCol);
+			String status = c.getString(statusCol);
+			String firstAired = c.getString(firstAiredCol);
+			String airday = c.getString(airsdayofweekCol);
+			String airtime = c.getString(airstimeCol);
+			String runtime = c.getString(runtimeCol);
+			String network = c.getString(networkCol);
+			String rating = c.getString(ratingCol);
+			String contentRating = c.getString(contentRatingCol);
+			imdbId = c.getString(imdbIdCol);
+			c.close();
+					
+			TextView networkV = (TextView) findViewById(R.id.network);
+			if (!network.equalsIgnoreCase("null")) {
+				if (network.endsWith("db")) network = network.substring(0, network.length()-2);
+				networkV.setText(network);
 			}
-		}
-		String statusValue = translateStatus(getIntent().getStringExtra("status"));
-		if (!statusValue.isEmpty()) statusValue = " ("+ statusValue +")";
-		firstAired.setText(firstAiredValue + statusValue);
+	
+			TextView contentRatingV = (TextView) findViewById(R.id.contentRating);
+			if (!contentRating.equalsIgnoreCase("null"))
+				contentRatingV.setText(contentRating);
+			
+			TextView serieNameV = (TextView) findViewById(R.id.serieName);
+			serieNameV.setText(serieName);
+	
+			ImageView posterThumbV = (ImageView) findViewById(R.id.posterThumb);
+			
+			try {
+				BitmapDrawable posterThumbD = (BitmapDrawable) BitmapDrawable.createFromPath(posterThumb);
+				posterThumbD.setTargetDensity(getResources().getDisplayMetrics().densityDpi);	// Don't auto-resize from mdpi to screen density
+				posterThumbV.setImageDrawable(posterThumbD);
+			}
+			catch (Exception e) {
+			}
+					
+			List<String> genres = new ArrayList<String>();
+			Cursor cgenres = droidseries.db.Query("SELECT genre FROM genres WHERE serieId='"+ serieId + "'");
+			cgenres.moveToFirst();
+			if (cgenres != null && cgenres.isFirst()) {
+				do {
+					genres.add(cgenres.getString(0));
+				} while (cgenres.moveToNext());
+			}
+			cgenres.close();
+			TextView genreV = (TextView) findViewById(R.id.genre);
+			genreV.setText(genres.toString().replace("]", "").replace("[", ""));
 
-		TextView airtime = (TextView) findViewById(R.id.airtime);
-		String airdayValue = getIntent().getStringExtra("airday");
-		String airtimeValue = getIntent().getStringExtra("airtime");
-		if (!airdayValue.equalsIgnoreCase("null") && !airdayValue.equals("")) {
-			if (airdayValue.equalsIgnoreCase("Daily"))
-				airdayValue = getString(R.string.messages_daily);
-			if (!airtimeValue.equalsIgnoreCase("null") && !airtimeValue.equals("")) {
+			TextView ratingV = (TextView) findViewById(R.id.rating);
+			ratingV.setText("IMDb: "+ rating);
+					
+			TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
+			if (!firstAired.equals("")) {
 				try {
-					SimpleDateFormat SDF = new SimpleDateFormat("h:m a");
-					Date epDate = SDF.parse(airtimeValue);
-					Format formatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT);
-					airtimeValue = formatter.format(epDate);
+					SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
+					Date epDate = SDF.parse(firstAired);
+					Format formatter = SimpleDateFormat.getDateInstance();
+					firstAired = formatter.format(epDate);
 				} catch (ParseException e) {
 					Log.e("DroidSeries", e.getMessage());
 				}
-				airtime.setVisibility(View.VISIBLE);
-				airtime.setText(airdayValue +" "+ getString(R.string.messages_at) +" "+ airtimeValue);
 			}
+			if (!status.equalsIgnoreCase("null"))
+				status = " ("+ translateStatus(status) +")";
+			else
+				status = "";
+			firstAiredV.setText(firstAired + status);
+	
+			TextView airtimeV = (TextView) findViewById(R.id.airtime);
+			if (!airday.equalsIgnoreCase("null") && !airday.equals("")) {
+				if (airday.equalsIgnoreCase("Daily"))
+					airday = getString(R.string.messages_daily);
+				if (!airtime.equalsIgnoreCase("null") && !airtime.equals("")) {
+					try {
+						SimpleDateFormat SDF = new SimpleDateFormat("h:m a");
+						Date epDate = SDF.parse(airtime);
+						Format formatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT);
+						airtime = formatter.format(epDate);
+					} catch (ParseException e) {
+						Log.e("DroidSeries", e.getMessage());
+					}
+					airtimeV.setVisibility(View.VISIBLE);
+					airtimeV.setText(airday +" "+ getString(R.string.messages_at) +" "+ airtime);
+				}
+			}
+	
+			TextView runtimeV = (TextView) findViewById(R.id.runtime);
+			runtimeV.setText(runtime +" "+ getString(R.string.series_runtime_minutes));
+			
+			TextView serieOverviewV = (TextView) findViewById(R.id.serieOverview);
+			serieOverviewV.setText(serieOverview);
+
+			List<String> actors = new ArrayList<String>();
+			Cursor cactors = droidseries.db.Query("SELECT actor FROM actors WHERE serieId='"+ serieId + "'");
+			cactors.moveToFirst();
+			if (cactors != null && cactors.isFirst()) {
+				do {
+					actors.add(cactors.getString(0));
+				} while (cactors.moveToNext());
+			}
+			cactors.close();
+			TextView serieActorsV = (TextView) findViewById(R.id.serieActors);
+			serieActorsV.setText(actors.toString().replace("]", "").replace("[", ""));
 		}
-
-		TextView runtime = (TextView) findViewById(R.id.runtime);
-		runtime.setText(getIntent().getStringExtra("runtime") +" "+ getString(R.string.series_runtime_minutes));
-
-		TextView serieActors = (TextView) findViewById(R.id.serieActors);
-		serieActors.setText(getIntent().getStringExtra("serieActors"));
-		
-		TextView serieOverview = (TextView) findViewById(R.id.serieOverview);
-		serieOverview.setText(getIntent().getStringExtra("serieOverview"));
 	}
 	
 	private String translateStatus(String statusValue) {
@@ -117,8 +179,6 @@ public class ViewSerie extends Activity
 	}
 	
 	public void IMDbDetails(View v) {
-		String imdbId = getIntent().getStringExtra("imdbId");
-		String serieName = getIntent().getStringExtra("serieName");
 		Intent imdb;
 		if (imdbId.equalsIgnoreCase("null") || imdbId.equals("")) {
 			imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/find?q=" + serieName));
@@ -129,7 +189,59 @@ public class ViewSerie extends Activity
 	}
 	
 	public void posterView(View v) {
-		Toast.makeText(getApplicationContext(), "Not yet implemented", Toast.LENGTH_SHORT).show();
-	}
+		if (!posterLoaded) {
+			posterView = (WebView) findViewById(R.id.posterView);
+			if (posterURL.isEmpty() || posterURL.equalsIgnoreCase("null")) {
+				if (!fanartURL.isEmpty() && !fanartURL.equalsIgnoreCase("null")) {
+					posterURL = fanartURL;
+					fanartURL = "#";
+				} else {
+					return;
+				}
+			}
+			if (fanartURL.isEmpty() || fanartURL.equalsIgnoreCase("null"))
+				fanartURL = "#";
 
+			posterView.getSettings().setBuiltInZoomControls(true);
+			posterView.getSettings().setLoadWithOverviewMode(true);
+			posterView.getSettings().setUseWideViewPort(true);
+			posterView.loadDataWithBaseURL(null, getURL(posterURL, "fanart"), "text/html", "UTF-8", null);
+			posterView.setBackgroundColor(Color.BLACK);
+			posterView.setInitialScale(1);
+			posterView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+			posterView.setWebViewClient(new WebViewHandler());
+			posterLoaded = true;
+		}
+		posterView.setVisibility(View.VISIBLE);
+	}
+	
+	private class WebViewHandler extends WebViewClient {
+		@Override
+		public boolean shouldOverrideUrlLoading(WebView v, String url) {
+			if (url.equals("#")) {
+				return false;
+			} else {
+				String img = posterURL, a = "fanart";
+				if (url.equals("fanart")) {
+					img = fanartURL;
+					a = "poster";
+				}
+				v.loadDataWithBaseURL(null, getURL(img, a), "text/html", "UTF-8", null);
+				return true;
+			}
+		}
+	}
+	
+	private String getURL(String img, String a) {
+		return "<head><meta name=\"viewport\" content=\"width=device-width,user-scalable=1\">"
+			+ "<style>*{margin:0;padding:0}</style></head><a href=\""+ a +"\"><img src=\""+ img +"\"/></a>";
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if (posterView != null && posterView.getVisibility() == View.VISIBLE)
+			posterView.setVisibility(View.GONE);
+		else
+			super.onBackPressed();
+	}
 }

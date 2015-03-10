@@ -10,10 +10,11 @@
 \n+ Context item to view show details on IMDb
 \n+ Tap cover for show info, long-press for IMDb details
 \n+ Swipe right-to-left to mark next episode as seen (shows confirmation toast), everywhere else in app swiping acts like back button
-\n+ Poster in show overview
 \n+ Option to include specials in unwatched count
 \n+ Mark next episode seen via swipe now vibrates
 \n+ Undo function (until exit)
+\n+ New show &amp; episode details views
+\n+ View full size poster and fan art
 \n* Sorting shows by first unseen episode
 \n* Clarified toggle and sort options
 \n* Not showing \"null\" entries from DB
@@ -96,6 +97,7 @@
 <string name="messages_no_internet">No Internet connection is available</string>
 <string name="messages_title_update_all_series">Update all shows</string>
 <string name="messages_update_all_series">Gathering shows information. This operation will take a while…</string>
+<string name="messages_episodes">episodes</string>
 <string name="messages_new_episodes">new episodes</string>
 <string name="messages_new_episode">new episode</string>
 <string name="messages_ep_aired">aired</string>
@@ -104,8 +106,8 @@
 <string name="messages_season">Season</string>
 <string name="messages_next_episode">Next episode:</string>
 <string name="messages_no_new_eps">No new episodes</string>
-<string name="messages_season_completely_watched">Season completely watched\n</string>
-<string name="messages_delete_sucessful">Show %s deleted</string>
+<string name="messages_season_completely_watched">Season completely watched</string>
+<string name="messages_deleted">deleted</string>
 <string name="messages_title_search_series">Searching shows</string>
 <string name="messages_search_series">Retrieving data…</string>
 <string name="messages_series_success">Show %s added</string>
@@ -132,6 +134,6 @@
 <string name="series_runtime_minutes">minutes</string>
 <string name="series_synopsis">Synopsis:</string>
 <string name="series_actors">Actors:</string>
-<string name="showstatus_continuing">Continuing</string>
-<string name="showstatus_ended">Ended</string>
+<string name="showstatus_continuing">continuing</string>
+<string name="showstatus_ended">ended</string>
 </resources>

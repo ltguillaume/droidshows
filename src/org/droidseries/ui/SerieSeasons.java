@@ -2,16 +2,16 @@ package org.droidseries.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.droidseries.droidseries;
 import org.droidseries.thetvdb.model.Season;
 import org.droidseries.R;
-
+import android.annotation.TargetApi;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,32 +30,30 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 public class SerieSeasons extends ListActivity
 {
 	private final String TAG = "DroidSeries";
-	private static List<Integer> iseasons;
-	private static List<Season> seasons;
-	private String serieid;
+	private String serieId;
+	private List<Integer> seasonNumbers = new ArrayList<Integer>();
+	private List<Season> seasons = new ArrayList<Season>();
 	// Context Menus
 	private static final int ALLEPSEEN_CONTEXT = Menu.FIRST;
 	private static final int ALLUPTOTHIS_CONTEXT = ALLEPSEEN_CONTEXT + 1;
 	private static final int ALLEPUNSEEN_CONTEXT = ALLUPTOTHIS_CONTEXT + 1;
 	private static ListView listView;
-	public static SeriesSeasonsAdapter seriesseasons_adapter;
-	private static Thread infoTh;
-
+	public static SeriesSeasonsAdapter seasonsAdapter;
+	private static final Boolean pool = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB);
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.serie_seasons);
-		serieid = getIntent().getStringExtra("serieid");
-		setTitle(droidseries.db.getSerieName(serieid));
-		seasons = new ArrayList<Season>();
-		seriesseasons_adapter = new SeriesSeasonsAdapter(this, R.layout.row_serie_seasons, seasons);
-		listView = getListView();
-		setListAdapter(seriesseasons_adapter);
+		serieId = getIntent().getStringExtra("serieId");
+		setTitle(droidseries.db.getSerieName(serieId));
 		getSeasons();
-		infoTh = new Thread(null, getSeasonInfo, "info");
-		infoTh.start();
+		seasonsAdapter = new SeriesSeasonsAdapter(this, R.layout.row_serie_seasons, seasons);
+		setListAdapter(seasonsAdapter);
+		listView = getListView();
+		listView.getViewTreeObserver().addOnGlobalLayoutListener(listDone);
+		registerForContextMenu(listView);
 		listView.setOnTouchListener(new SwipeDetect());
-		registerForContextMenu(getListView());
 	}
 	
 	/* context menu */
@@ -67,24 +66,20 @@ public class SerieSeasons extends ListActivity
 
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		int nseason = 0;
 		switch (item.getItemId()) {
 			case ALLEPSEEN_CONTEXT :
-				nseason = iseasons.get(info.position);
-				droidseries.db.updateUnwatchedSeason(serieid, nseason);
-				infoTh.run();
+				droidseries.db.updateUnwatchedSeason(serieId, seasonNumbers.get(info.position));
+				getInfo();
 				return true;
 			case ALLEPUNSEEN_CONTEXT :
-				nseason = iseasons.get(info.position);
-				droidseries.db.updateWatchedSeason(serieid, nseason);
-				infoTh.run();
+				droidseries.db.updateWatchedSeason(serieId, seasonNumbers.get(info.position));
+				getInfo();
 				return true;
 			case ALLUPTOTHIS_CONTEXT :
-				nseason = iseasons.get(info.position);
-				for (int i = 1; i <= nseason; i++) {
-					droidseries.db.updateUnwatchedSeason(serieid, i);
+				for (int i = 1; i <= seasonNumbers.get(info.position); i++) {
+					droidseries.db.updateUnwatchedSeason(serieId, i);
 				}
-				infoTh.run();
+				getInfo();
 				return true;
 			default :
 				return super.onContextItemSelected(item);
@@ -95,8 +90,8 @@ public class SerieSeasons extends ListActivity
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		try {
 			Intent serieEpisode = new Intent(SerieSeasons.this, SerieEpisodes.class);
-			serieEpisode.putExtra("serieid", serieid);
-			serieEpisode.putExtra("nseason", iseasons.get(position));
+			serieEpisode.putExtra("serieId", serieId);
+			serieEpisode.putExtra("seasonNumber", seasonNumbers.get(position));
 			startActivity(serieEpisode);
 		} catch (Exception e) {
 			Log.e(TAG, e.getMessage());
@@ -104,61 +99,70 @@ public class SerieSeasons extends ListActivity
 	}
 
 	private void getSeasons() {
-		seasons = new ArrayList<Season>();
 		try {
-			iseasons = new ArrayList<Integer>();
-			Cursor cseasons = droidseries.db.Query("SELECT season FROM serie_seasons WHERE serieId = '"+ serieid + "'");
+			Cursor cseasons = droidseries.db.Query("SELECT season FROM serie_seasons WHERE serieId = '"+ serieId +"'");
 			cseasons.moveToFirst();
 			if (cseasons.getCount() != 0) {
 				do {
-					iseasons.add(cseasons.getInt(0));
+					seasonNumbers.add(cseasons.getInt(0));
 				} while (cseasons.moveToNext());
 			}
 			cseasons.close();
 		} catch (Exception e) {
-			Log.e(TAG, "Error getting seasons");
+			Log.e(TAG, "Error getting seasons: "+ e.getMessage());
 		}
-		for (int tmpS = 0; tmpS < iseasons.size(); tmpS++) {
-			String tmpSeason = "";
-			if (iseasons.get(tmpS) == 0) {
-				tmpSeason = getString(R.string.messages_specials);
+		for (int i = 0; i < seasonNumbers.size(); i++) {
+			String season = "";
+			if (seasonNumbers.get(i) == 0) {
+				season = getString(R.string.messages_specials);
 			} else {
-				tmpSeason = getString(R.string.messages_season) + " " + iseasons.get(tmpS);
+				season = getString(R.string.messages_season) + " " + seasonNumbers.get(i);
 			}
-			Season season = new Season(serieid, iseasons.get(tmpS), tmpSeason, -1, -1, "");
-			seasons.add(season);
-		}
-		for (int s = 0; s < iseasons.size(); s++) {
-			seriesseasons_adapter.add(seasons.get(s));
+			Season newSeason = new Season(serieId, seasonNumbers.get(i), season, -1, -1, "");
+			seasons.add(newSeason);
 		}
 	}	
 	
-	public static Runnable getSeasonInfo = new Runnable() {
-		public void run() {
-			for (int i = 0; i < seasons.size(); i++) {
-				String serieId = seasons.get(i).getSerieId();
-				int sNumber = seasons.get(i).getSNumber();
-				int unwatched = droidseries.db.getSeasonEPUnwatched(serieId, seasons.get(i).getSNumber());
-				//if (seasons.get(i).getUnwatched() != unwatched) {	// Only update in adapter when something's changed
-					int unwatchedAired = droidseries.db.getSeasonEPUnwatchedAired(serieId, sNumber);
-					seasons.get(i).setUnwatchedAired(unwatchedAired);
-					if (unwatched > 0) {
-						seasons.get(i).setNextEpisode(droidseries.db.getNextEpisode(serieId, sNumber));
-					}
-					seasons.get(i).setUnwatched(unwatched);
-				//}
-				listView.post(new Runnable() {
-					public void run() {
-						seriesseasons_adapter.notifyDataSetChanged();
-					}
-				});
+	@TargetApi(android.os.Build.VERSION_CODES.HONEYCOMB)
+	private void getInfo() {
+		for (int i = 0; i < seasons.size(); i++) {
+			if (pool) {	// Otherwise executions won't be parallel >= HoneyComb
+				new AsyncInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, i);
+			} else {
+				new AsyncInfo().execute(i);
 			}
 		}
+	}
+	
+	private final OnGlobalLayoutListener listDone = new OnGlobalLayoutListener() {
+		public void onGlobalLayout() {
+			listView.getViewTreeObserver().removeGlobalOnLayoutListener(listDone);
+			getInfo();
+		}
 	};
+	
+	private class AsyncInfo extends AsyncTask<Integer, Void, Void> {
+		@Override
+		protected Void doInBackground(Integer... params) {
+			int i = params[0];
+			String serieId = seasons.get(i).getSerieId();
+			int seasonNumber = seasons.get(i).getSNumber();
+			int unwatchedAired = droidseries.db.getSeasonEPUnwatchedAired(serieId, seasonNumber);
+			int unwatched = droidseries.db.getSeasonEPUnwatched(serieId, seasonNumber);
+			seasons.get(i).setUnwatchedAired(unwatchedAired);
+			seasons.get(i).setUnwatched(unwatched);
+			if (unwatched > 0) {
+				seasons.get(i).setNextEpisode(droidseries.db.getNextEpisode(serieId, seasonNumber));
+			}
+			listView.post(new Runnable() { public void run() { seasonsAdapter.notifyDataSetChanged(); }});
+			return null;
+		}
+	}
 
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
+	public void onRestart() {
+		super.onRestart();
+		getInfo();
 	}
 	
 	private class SeriesSeasonsAdapter extends ArrayAdapter<Season>
@@ -193,31 +197,29 @@ public class SerieSeasons extends ListActivity
 				holder.season.setText(s.getSeason());
 			}
 			if (holder.unwatched != null) {
-				if (nunwatched != -1) {
-					if (nunwatched == 0) {
-						holder.unwatched.setText(getString(R.string.messages_season_completely_watched));
-					} else {
-						String unwatched = "";
-						unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes) : getString(R.string.messages_new_episode)) +" ";
-						if (nunwatchedAired > 0) {
-							unwatched = nunwatchedAired +" "+ getString(R.string.messages_of) +" "+ unwatched + getString(R.string.messages_ep_aired);
-						} else {
-							unwatched += getString(R.string.messages_to_be_aired);
-						}
-						holder.unwatched.setText(unwatched);
-					}
+				String unwatchedText = droidseries.db.getSeasonEpisodeCount(serieId, s.getSNumber())
+						+" "+ getString(R.string.messages_episodes);
+				if (nunwatched > 0) {
+					String unwatched = "";
+					unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes)
+							: getString(R.string.messages_new_episode)) +" ";
+					if (nunwatchedAired > 0) unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired 
+							+" "+ getString(R.string.messages_of) +" ") + unwatched + getString(R.string.messages_ep_aired);
+					else unwatched += getString(R.string.messages_to_be_aired);
+					unwatchedText += " | "+ unwatched;
 				}
+				holder.unwatched.setText(unwatchedText);
 			}
 			if (holder.nextEpisode != null) {
-				if (nunwatched > 0) {
-					holder.nextEpisode.setText(getString(R.string.messages_next_episode) + " "+ s.getNextEpisode().replace("[on]", getString(R.string.messages_on)));
-					holder.nextEpisode.setVisibility(View.VISIBLE);
-					if (nunwatchedAired > 0) {
-						holder.nextEpisode.setTypeface(null, Typeface.BOLD);
-					}
-				} else {
-					holder.nextEpisode.setVisibility(View.GONE);
+				String nextEpisodeText = "";
+				if (nunwatched == 0) {
+					nextEpisodeText = getString(R.string.messages_season_completely_watched);
+				} else if (nunwatched > 0) {
+					nextEpisodeText = getString(R.string.messages_next_episode) + " "
+						+ s.getNextEpisode().replace("[on]", getString(R.string.messages_on));
+					if (nunwatchedAired > 0) holder.nextEpisode.setTypeface(null, Typeface.BOLD);
 				}
+				holder.nextEpisode.setText(nextEpisodeText);				
 			}
 			return convertView;
 		}

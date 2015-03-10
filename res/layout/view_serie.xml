@@ -1,27 +1,30 @@
-<ScrollView android:id="@+id/viewSerie" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
-   	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp">
-		<TextView android:id="@+id/network" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
-		<TextView android:id="@+id/contentRating" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="right"/>
-	</LinearLayout>
-	<View android:layout_width="fill_parent" android:layout_height="1px" android:layout_marginTop="-6dp" android:layout_marginBottom="-6dp" android:background="@drawable/div"/>
-	<TextView android:id="@+id/serieName" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:textStyle="bold" android:textSize="24sp" android:singleLine="false"/>
-	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
-		<ImageView android:id="@+id/poster" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="6dp" android:layout_gravity="center_vertical" android:clickable="true" android:onClick="posterView"/>
-		<LinearLayout android:id="@+id/details" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="6dp">
-			<TextView android:id="@+id/genre" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_compass" android:scaleType="centerInside"/>
-			<TextView android:id="@+id/rating" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@drawable/star" android:scaleType="centerInside" android:clickable="true" android:onClick="IMDbDetails"/>
-			<TextView android:id="@+id/firstAired" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_today" android:scaleType="centerInside"/>
-			<TextView android:id="@+id/airtime" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_rotate" android:scaleType="centerInside" android:visibility="gone"/>
-			<TextView android:id="@+id/runtime" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:drawableLeft="@android:drawable/ic_menu_recent_history" android:scaleType="centerInside"/>
+<FrameLayout android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+	<ScrollView android:id="@+id/viewSerie" android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
+	   	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp">
+			<TextView android:id="@+id/network" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
+			<TextView android:id="@+id/contentRating" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="right"/>
 		</LinearLayout>
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:layout_marginTop="-6dp" android:layout_marginBottom="-3dp" android:background="@drawable/div"/>
+		<TextView android:id="@+id/serieName" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:textStyle="bold" android:textSize="24sp" android:singleLine="false"/>
+		<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
+			<ImageView android:id="@+id/posterThumb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="6dp" android:layout_gravity="center_vertical" android:clickable="true" android:onClick="posterView"/>
+			<LinearLayout android:id="@+id/details" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="6dp">
+				<TextView android:id="@+id/genre" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_compass" android:scaleType="centerInside"/>
+				<TextView android:id="@+id/rating" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@drawable/star" android:scaleType="centerInside" android:clickable="true" android:onClick="IMDbDetails"/>
+				<TextView android:id="@+id/firstAired" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_today" android:scaleType="centerInside"/>
+				<TextView android:id="@+id/airtime" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_rotate" android:scaleType="centerInside" android:visibility="gone"/>
+				<TextView android:id="@+id/runtime" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:drawableLeft="@android:drawable/ic_menu_recent_history" android:scaleType="centerInside"/>
+			</LinearLayout>
+		</LinearLayout>
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_synopsis"/>
+		<TextView android:id="@+id/serieOverview" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_actors"/>
+		<TextView android:id="@+id/serieActors" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:layout_marginBottom="6dp" android:background="@drawable/div"/>
 	</LinearLayout>
-	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
-	<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_synopsis"/>
-	<TextView android:id="@+id/serieOverview" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
-	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
-	<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_actors"/>
-	<TextView android:id="@+id/serieActors" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
-	<View android:layout_width="fill_parent" android:layout_height="1px" android:layout_marginBottom="6dp" android:background="@drawable/div"/>
-</LinearLayout>
-</ScrollView>
+	</ScrollView>
+	<WebView android:id="@+id/posterView" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_margin="6dp" android:layout_gravity="center" android:scrollbars="none" android:visibility="gone"/>
+</FrameLayout>

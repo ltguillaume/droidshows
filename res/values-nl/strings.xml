@@ -46,6 +46,7 @@
 <string name="messages_no_internet">Er is geen internetverbinding</string>
 <string name="messages_title_update_all_series">Alle series bijwerken</string>
 <string name="messages_update_all_series">Bezig met downloaden van nieuwe gegevens. Even geduld…</string>
+<string name="messages_episodes">afleveringen</string>
 <string name="messages_new_episodes">afleveringen</string>
 <string name="messages_new_episode">aflevering</string>
 <string name="messages_ep_aired">uitgezonden</string>
@@ -55,7 +56,7 @@
 <string name="messages_next_episode">Volgende:</string>
 <string name="messages_no_new_eps">Alles gezien</string>
 <string name="messages_season_completely_watched">Seizoen volledig gezien\n</string>
-<string name="messages_delete_sucessful">Serie %s verwijderd</string>
+<string name="messages_deleted">verwijderd</string>
 <string name="messages_title_search_series">Serie zoeken</string>
 <string name="messages_search_series">Downloaden gegevens…</string>
 <string name="messages_series_success">%s toegevoegd</string>
@@ -82,6 +83,6 @@
 <string name="series_runtime_minutes">minuten</string>
 <string name="series_synopsis">Synopsis:</string>
 <string name="series_actors">Acteurs:</string>
-<string name="showstatus_continuing">Loopt</string>
-<string name="showstatus_ended">Afgelopen</string>
+<string name="showstatus_continuing">loopt</string>
+<string name="showstatus_ended">afgelopen</string>
 </resources>

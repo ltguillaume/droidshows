@@ -240,7 +240,7 @@ public class AddSerie extends ListActivity
 							imageUrl = new URL(sToAdd.getPoster());
 							uc = imageUrl.openConnection();
 							// timetout, 20s for slow connections
-							uc.setConnectTimeout(20000);
+							uc.setConnectTimeout(10000);
 							contentType = uc.getContentType();
 						} catch (MalformedURLException e) {
 							Log.e(TAG, e.getMessage());
@@ -406,7 +406,7 @@ public class AddSerie extends ListActivity
 		try {
 			Intent serieOverview = new Intent(AddSerie.this, SerieOverview.class);
 			if (!AddSerie.search_series.get(position).getOverview().equals("")) {
-				serieOverview.putExtra("serieid", AddSerie.search_series.get(position).getId());
+				serieOverview.putExtra("serieId", AddSerie.search_series.get(position).getId());
 				serieOverview.putExtra("overview", AddSerie.search_series.get(position).getOverview());
 				serieOverview.putExtra("name", AddSerie.search_series.get(position).getSerieName());
 				startActivity(serieOverview);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.droidseries.droidseries;
 import org.droidseries.utils.SQLiteStore;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
 import android.util.Log;
@@ -248,40 +249,35 @@ public class Serie {
     public boolean saveToDB(SQLiteStore SQLS) {
         try{
             for(int a=0; a < this.actors.size(); a++){
-                SQLS.execQuery("INSERT INTO actors (serieId, actor) " +
-                               "VALUES ('" + this.id  + "', \"" + this.actors.get(a) + "\");");
+                SQLS.execQuery("INSERT INTO actors (serieId, actor) "+
+                               "VALUES ('"+ this.id  +"','"+ this.actors.get(a) +"');");
             }
 
             for(int g=0; g < this.genres.size(); g++){
-                SQLS.execQuery("INSERT INTO genres (serieId, genre) " +
-                               "VALUES ('" + this.id  + "', '" + this.genres.get(g) + "');");
+                SQLS.execQuery("INSERT INTO genres (serieId, genre) "+
+                               "VALUES ('"+ this.id  +"','"+ this.genres.get(g) +"');");
             }
 
             for(int n=0; n < this.nseasons.size(); n++){
-                SQLS.execQuery("INSERT INTO serie_seasons (serieId, season) " +
-                               "VALUES ('" + this.id  + "', '" + this.nseasons.get(n) + "');");
+                SQLS.execQuery("INSERT INTO serie_seasons (serieId, season) "+
+                               "VALUES ('"+ this.id  +"','"+ this.nseasons.get(n) +"');");
             }
 
             String tmpOverview = "";
-            if(!TextUtils.isEmpty(this.overview)) {
-                tmpOverview = this.overview.replace("\"", "'");
-            }
-
-            String tmpSName = "";
-            if(!TextUtils.isEmpty(this.serieName)) {
-                tmpSName = this.serieName.replace("\"", "'");
-            }
-
-            SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, " +
-                           "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, " +
-                           "network, rating, runtime, status, fanart, lastUpdated, poster, " +
-                           "posterInCache, posterThumb) VALUES ('"+ this.id +"', '"+ this.serieId +"', '"+ this.language + "', " +
-                           "\"" + tmpSName + "\", " + "'" + this.banner + "', " + "\"" + tmpOverview + "\", " +
-                           "'" + this.firstAired +"', '"+ this.imdbId +"', '"+ this.zap2ItId + "', " +
-                           "'" + this.airsDayOfWeek +"', '"+ this.airsTime +"', '"+ this.contentRating + "', " +
-                           "'" + this.network +"', '"+ this.rating +"', '"+ this.runtime + "', " +
-                           "'" + this.status +"', '"+ this.fanart +"', '"+ this.lastUpdated + "', " +
-                           "'" + this.poster +"', '"+ this.posterInCache +"', '"+ this.posterThumb + "');");
+            if(TextUtils.isEmpty(this.overview))
+               this.overview = "";
+            if(TextUtils.isEmpty(this.serieName))
+				this.serieName = "";
+            SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, "+
+                           "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, "+
+                           "network, rating, runtime, status, fanart, lastUpdated, poster, "+
+                           "posterInCache, posterThumb) VALUES ('"+ this.id +"','"+ this.serieId +"','"+ this.language
+                           +"',"+ DatabaseUtils.sqlEscapeString(this.serieName) +",'"+ this.banner
+                           +"',"+ DatabaseUtils.sqlEscapeString(tmpOverview) +",'"+ this.firstAired
+                           +"','"+ this.imdbId +"','"+ this.zap2ItId +"','"+ this.airsDayOfWeek +"','"+ this.airsTime
+                           +"','"+ this.contentRating +"','"+ this.network +"','"+ this.rating +"','"+ this.runtime
+                           +"','"+ this.status +"','"+ this.fanart +"','"+ this.lastUpdated +"','"+ this.poster
+                           +"','"+ this.posterInCache +"','"+ this.posterThumb +"');");
 
             for(int e=0; e < this.episodes.size(); e++) {
                 this.episodes.get(e).setSeriesId(this.id);
