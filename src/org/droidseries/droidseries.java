@@ -55,7 +55,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class droidseries extends ListActivity
 {
-	public static String VERSION = "0.1.5-7G";
+	public static String VERSION = "0.1.5-7G2";
 	/* Menus */
 	private static final int UNDO_MENU_ITEM = Menu.FIRST; 
 	private static final int ADD_SERIE_MENU_ITEM = UNDO_MENU_ITEM + 1;
@@ -138,9 +138,10 @@ public class droidseries extends ListActivity
 			}
 		}
 		Display display = getWindowManager().getDefaultDisplay();
-		if(updateDS.updateDroidSeries(getApplicationContext(), display)) {
+		if(updateDS.updateDroidSeries(getApplicationContext(), display))
 			db.updateShowStats();
-		}
+		else
+			Log.e(TAG, "Error updating database or thumbnails");
 
 		// Preferences
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
@@ -478,7 +479,9 @@ public class droidseries extends ListActivity
 						db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 						// Log.d(TAG, "Done running db.updateserie");
 					} else {
-						Log.d(TAG, "theTVDB.getMirror() failed");
+						Looper.prepare();
+						Toast.makeText(getApplicationContext(), "Could not connect to TheTVDb", Toast.LENGTH_LONG).show();
+						Looper.loop();
 					}
 					if (!bUpdateShowTh) {
 						m_ProgressDialog.dismiss();

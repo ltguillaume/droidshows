@@ -10,9 +10,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.droidseries.R;
-
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -40,7 +38,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-
 import org.apache.commons.io.FileUtils;
 import org.droidseries.droidseries;
 import org.droidseries.thetvdb.TheTVDB;
@@ -269,8 +266,8 @@ public class AddSerie extends ListActivity
 							Display display = getWindowManager().getDefaultDisplay();
 							int width = display.getWidth();
 							int height = display.getHeight();
-							int newHeight = (int) ((height > width ? height : width) * 0.25);
-							int newWidth = (int) (newHeight * .75);
+							int newHeight = (int) ((height > width ? height : width) * 0.265);
+							int newWidth = (int) (1.0 * posterThumb.getWidth() / posterThumb.getHeight() * newHeight);
 							if (bAddShowTh) {
 								stopAddShowTh();
 								bAddShowTh = false;
