@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 import org.droidseries.droidseries;
 import android.content.Context;
 import android.database.Cursor;
@@ -126,7 +127,7 @@ public class Update
 							OutputStream fOut = null;
 							File thumFile = new File(c.getString(1));
 							fOut = new FileOutputStream(thumFile);
-							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 							fOut.flush();
 							fOut.close();
 							posterThumb.recycle();
@@ -254,7 +255,8 @@ public class Update
 						c.moveToFirst();
 						if (c != null && c.isFirst()) {
 							File posterThumbFile = new File(c.getString(0));
-							Bitmap posterThumb = BitmapFactory.decodeStream(new URL(c.getString(1)).openStream());
+							FileUtils.copyURLToFile(new URL(c.getString(1)), posterThumbFile);
+							Bitmap posterThumb = BitmapFactory.decodeFile(c.getString(0));
 							int width = display.getWidth();
 							int height = display.getHeight();
 							int newHeight = (int) ((height > width ? height : width) * 0.265);
@@ -262,7 +264,7 @@ public class Update
 							Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
 							posterThumbFile.delete();
 							OutputStream fOut = new FileOutputStream(posterThumbFile);
-							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 							fOut.flush();
 							fOut.close();
 							posterThumb.recycle();
@@ -277,9 +279,7 @@ public class Update
 					}
 				}
 				return true;
-			} catch (Exception e) {
-				Log.e(TAG, e.getMessage());
-			}
+			} catch (Exception e) {}
 		}
 		return false;
 	}
