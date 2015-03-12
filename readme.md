@@ -1,5 +1,5 @@
 # DroidSeries<img src="https://github.com/ltGuillaume/DroidSeries/raw/master/icon/icon5a.png" align="right"/>
-**DroidSeries-Guillaume: 2015 Reboot of DroidSeries TV Show Tracker**  
+DroidSeries-Guillaume: 2015 Reboot of DroidSeries TV Show Tracker  
 This fork adds a quite a bunch of features, including more show information, a menu overflow button, swiping gestures, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
 * Swipe right-to-left to mark as seen
 * Long-press items for more options
@@ -8,22 +8,23 @@ This fork adds a quite a bunch of features, including more show information, a m
 * Update all shows for latest information
 
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
-[XDA Forum post](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755) (in original DroidSeries thread)  
-[Download APK here](https://github.com/ltGuillaume/DroidSeries/tree/master/apk) or from XDA forum post
+[XDA Forum post (in original DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
+__Download APK__: from XDA forum post or [here](https://github.com/ltGuillaume/DroidSeries/tree/master/apk)
 
 __Overview__:  
 \+ Showing "[aired unwatched] of [total unwatched]"  
 \+ Added icon ic_menu_view for show/hide toggled  
-\+ Status of show in details, and â€  in overview if show is not continuing  
+\+ Status of show in details, and † in overview if show is not continuing  
 \+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list  
 \+ Option in [About] to only update shows' last season  
 \+ Context item to view show details on IMDb  
 \+ Tap cover for show info, long-press for IMDb details  
-\+ Swipe right-to-left to mark next episode as seen (shows toast), everywhere else in app swiping acts like back button  
+\+ Swipe right-to-left to mark next episode as seen (shows confirmation toast)  
+	everywhere else in app swiping acts like back button  
 \+ Option to include specials in unwatched count  
 \+ Mark next episode seen via swipe now vibrates  
 \+ Undo function (until exit)  
-\+ Showing middot Â· when all new episodes are aired  
+\+ Showing middot · when all new episodes are aired  
 \+ New show & episode details views  
 \+ View full size poster and fan art  
 \* Sorting shows by first unseen episode  
@@ -63,7 +64,7 @@ __Other__:
 \- Removed useless dependencies  
 \- Removed crappy features  
   
-Â©2010 [Carlos Limpinho, Paulo Cabido](code.google.com/p/droidseries) under GPL  
-Modified by [Mikael Berthe](gitorious.org/droidseries/mckaels-droidseries)  
-Â©2014-2015 Guillaume [previously on Gitorious](gitorious.org/droidseries/droidseries-guillaume)  
-New icon file is a mix of work by [Thrasos Varnava](iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)
+©2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPL  
+Modified by [Mikael Berthe](http://gitorious.org/droidseries/mckaels-droidseries)  
+©2014-2015 Guillaume [previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume)  
+New icon file is a mix of work by [Thrasos Varnava](http://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)
