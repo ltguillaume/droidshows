@@ -296,10 +296,8 @@ public class AddSerie extends ListActivity
 							resizedBitmap = null;
 							sToAdd.setPosterThumb(getApplicationContext().getFilesDir().getAbsolutePath()
 								+ "/thumbs" + imageUrl.getFile().toString());
-							// sToAdd.setPosterInCache(getApplicationContext().getFilesDir().getAbsolutePath() +
-							// imageUrl.getFile().toString()); // Guillaume--
 							cacheImage.delete();
-							sToAdd.setPosterInCache(""); // Guillaume
+							sToAdd.setPosterInCache("true");
 						} catch (Exception e) {
 							sToAdd.setPosterInCache("");
 							Log.e(TAG, "Error copying the poster to cache.");

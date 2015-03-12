@@ -1,12 +1,19 @@
 package org.droidseries;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.io.FileUtils;
 import org.droidseries.thetvdb.TheTVDB;
 import org.droidseries.thetvdb.model.Serie;
 import org.droidseries.thetvdb.model.TVShowItem;
@@ -28,6 +35,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.SQLException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -36,7 +45,6 @@ import android.os.Looper;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,7 +63,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class droidseries extends ListActivity
 {
-	public static String VERSION = "0.1.5-7G2";
+	public static String VERSION = "0.1.5-7G";
 	/* Menus */
 	private static final int UNDO_MENU_ITEM = Menu.FIRST; 
 	private static final int ADD_SERIE_MENU_ITEM = UNDO_MENU_ITEM + 1;
@@ -137,11 +145,9 @@ public class droidseries extends ListActivity
 				Log.e(TAG, "Unable to create database");
 			}
 		}
-		Display display = getWindowManager().getDefaultDisplay();
-		if(updateDS.updateDroidSeries(getApplicationContext(), display))
+
+		if(updateDS.updateDroidSeries())
 			db.updateShowStats();
-		else
-			Log.e(TAG, "Error updating database or thumbnails");
 
 		// Preferences
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
@@ -274,6 +280,7 @@ public class droidseries extends ListActivity
 				onPause();	// save options
 				asyncInfo.cancel(true);
 				this.finish();
+				System.gc();
 				System.exit(0);	// kill process
 		}
 		return super.onOptionsItemSelected(item);
@@ -477,7 +484,7 @@ public class droidseries extends ListActivity
 						toastMessage = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
 						runOnUiThread(changeMessage);
 						db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
-						// Log.d(TAG, "Done running db.updateserie");
+						updatePosterThumb(id, sToUpdate);
 					} else {
 						Looper.prepare();
 						Toast.makeText(getApplicationContext(), "Could not connect to TheTVDb", Toast.LENGTH_LONG).show();
@@ -514,6 +521,68 @@ public class droidseries extends ListActivity
 			Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
 			toast.show();
 		}
+	}
+	
+	public void updatePosterThumb(String serieId, Serie sToUpdate) {
+		Cursor c = droidseries.db.Query("SELECT posterInCache, poster, posterThumb FROM series WHERE id='"+ serieId +"'");
+		c.moveToFirst();
+		if (c != null && c.isFirst()) {
+			String posterInCache = c.getString(0);
+			String poster = c.getString(1);
+			String posterThumbPath = c.getString(2);
+			URL posterURL = null;
+			if (!posterInCache.equals("true") || !(new File(posterThumbPath).exists())) {
+				poster = sToUpdate.getPoster();
+				try {
+					posterURL = new URL(poster);
+					new File(posterThumbPath).delete();
+					posterThumbPath = getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs"+ posterURL.getFile().toString();
+				} catch (MalformedURLException e) {
+					Log.e(TAG, "Show "+ serieId +" doesn't have poster URL");
+					e.printStackTrace();
+					return;
+				}
+				File posterThumbFile = new File(posterThumbPath);
+				try {
+					FileUtils.copyURLToFile(posterURL, posterThumbFile);
+				} catch (IOException e) {
+					Log.e(TAG, "Could not download poster: "+ posterURL);
+					e.printStackTrace();
+					return;
+				}
+				Bitmap posterThumb = BitmapFactory.decodeFile(posterThumbPath);
+				if (posterThumb == null) {
+					Log.e(TAG, "Corrupt or unknown poster file type:"+ posterThumbPath);
+					return;
+				}
+				int width = getWindowManager().getDefaultDisplay().getWidth();
+				int height = getWindowManager().getDefaultDisplay().getHeight();
+				int newHeight = (int) ((height > width ? height : width) * 0.265);
+				int newWidth = (int) (1.0 * posterThumb.getWidth() / posterThumb.getHeight() * newHeight);
+				Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
+				OutputStream fOut = null;
+				try {
+					fOut = new FileOutputStream(posterThumbFile, false);
+					resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+					fOut.flush();
+					fOut.close();
+					db.execQuery("UPDATE series SET posterInCache='true', poster='"+ poster
+						+"', posterThumb='"+ posterThumbPath +"' WHERE id='"+ serieId +"'");
+					Log.d(TAG, "Updated poster thumb for "+ sToUpdate.getSerieName());
+				} catch (FileNotFoundException e) {
+					Log.e(TAG, "File not found:"+ posterThumbFile);
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				posterThumb.recycle();
+				resizedBitmap.recycle();
+				System.gc();
+				posterThumb = null;
+				resizedBitmap = null;
+			}
+		}
+		c.close();
 	}
 
 	private Runnable changeMessage = new Runnable() {
@@ -568,6 +637,7 @@ public class droidseries extends ListActivity
 						Log.d(TAG, "Updating the database");
 						try {
 							db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+							updatePosterThumb(series.get(i).getSerieId(), sToUpdate);
 						} catch (Exception e) {
 						}
 						if (!bUpdateAllShowsTh) {
@@ -881,18 +951,17 @@ public class droidseries extends ListActivity
 			}
 			if (holder.icon != null) {
 				Drawable icon = serie.getDIcon();
+				if (icon == null)
+					icon = Drawable.createFromPath(serie.getIcon());
 				if (icon == null) {
-					try {
-						icon = Drawable.createFromPath(serie.getIcon());
-						serie.setDIcon(icon);
-					} catch (Exception e) {
-						holder.icon.setImageResource(R.drawable.noposter);
-					}
+					holder.icon.setImageResource(R.drawable.noposter);
+				} else {
+					holder.icon.setImageDrawable(icon);
+					serie.setDIcon(icon);
 				}
-				holder.icon.setImageDrawable(icon);
+				holder.icon.setOnClickListener(detailsListener);
+				holder.icon.setOnLongClickListener(IMDbListener);
 			}
-			holder.icon.setOnClickListener(detailsListener);
-			holder.icon.setOnLongClickListener(IMDbListener);
 			return convertView;
 		}
 	}
