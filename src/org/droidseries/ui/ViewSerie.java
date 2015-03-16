@@ -205,7 +205,7 @@ public class ViewSerie extends Activity
 			posterView.getSettings().setBuiltInZoomControls(true);
 			posterView.getSettings().setLoadWithOverviewMode(true);
 			posterView.getSettings().setUseWideViewPort(true);
-			posterView.loadDataWithBaseURL(null, getURL(posterURL, "fanart"), "text/html", "UTF-8", null);
+			posterView.loadData(getURL(posterURL, "fanart"), "text/html", "UTF-8");
 			posterView.setBackgroundColor(Color.BLACK);
 			posterView.setInitialScale(1);
 			posterView.setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -226,15 +226,15 @@ public class ViewSerie extends Activity
 					img = fanartURL;
 					a = "poster";
 				}
-				v.loadDataWithBaseURL(null, getURL(img, a), "text/html", "UTF-8", null);
+				v.loadData(getURL(img, a), "text/html", "UTF-8");
 				return true;
 			}
 		}
 	}
 	
 	private String getURL(String img, String a) {
-		return "<head><meta name=\"viewport\" content=\"width=device-width,user-scalable=1\">"
-			+ "<style>*{margin:0;padding:0}</style></head><a href=\""+ a +"\"><img src=\""+ img +"\"/></a>";
+		return "<html><head><meta name=\"viewport\" content=\"width=device-width,user-scalable=1\">"
+			+ "<style>*{margin:0;padding:0}</style></head><body><a href=\""+ a +"\"><img src=\""+ img +"\"/></a></body></html>";
 	}
 	
 	@Override
