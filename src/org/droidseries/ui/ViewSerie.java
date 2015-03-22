@@ -40,8 +40,8 @@ public class ViewSerie extends Activity
 		view.setOnTouchListener(new SwipeDetect());
 		serieId = getIntent().getStringExtra("serieId");
 	
-		String query = "SELECT serieName, posterThumb, poster, fanart, overview, status, firstAired, airsDayOfWeek, airsTime, runtime, network, rating, contentRating, imdbId "
-			+ "FROM series WHERE id = '" + serieId + "'";
+		String query = "SELECT serieName, posterThumb, poster, fanart, overview, status, firstAired, airsDayOfWeek, "
+			+ "airsTime, runtime, network, rating, contentRating, imdbId FROM series WHERE id = '" + serieId + "'";
 		Cursor c = droidseries.db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
@@ -92,11 +92,10 @@ public class ViewSerie extends Activity
 			
 			try {
 				BitmapDrawable posterThumbD = (BitmapDrawable) BitmapDrawable.createFromPath(posterThumb);
-				posterThumbD.setTargetDensity(getResources().getDisplayMetrics().densityDpi);	// Don't auto-resize from mdpi to screen density
+				posterThumbD.setTargetDensity(getResources().getDisplayMetrics().densityDpi);	// Don't auto-resize to screen density
 				posterThumbV.setImageDrawable(posterThumbD);
 			}
-			catch (Exception e) {
-			}
+			catch (Exception e) {}
 					
 			List<String> genres = new ArrayList<String>();
 			Cursor cgenres = droidseries.db.Query("SELECT genre FROM genres WHERE serieId='"+ serieId + "'");
@@ -205,7 +204,7 @@ public class ViewSerie extends Activity
 			posterView.getSettings().setBuiltInZoomControls(true);
 			posterView.getSettings().setLoadWithOverviewMode(true);
 			posterView.getSettings().setUseWideViewPort(true);
-			posterView.loadData(getURL(posterURL, "fanart"), "text/html", "UTF-8");
+			posterView.loadData(getURL(posterURL, "ds:fanart"), "text/html", "UTF-8");
 			posterView.setBackgroundColor(Color.BLACK);
 			posterView.setInitialScale(1);
 			posterView.setOverScrollMode(View.OVER_SCROLL_NEVER);
@@ -221,10 +220,10 @@ public class ViewSerie extends Activity
 			if (url.equals("#")) {
 				return false;
 			} else {
-				String img = posterURL, a = "fanart";
-				if (url.equals("fanart")) {
+				String img = posterURL, a = "ds:fanart";
+				if (url.equals("ds:fanart")) {
 					img = fanartURL;
-					a = "poster";
+					a = "ds:poster";
 				}
 				v.loadData(getURL(img, a), "text/html", "UTF-8");
 				return true;
