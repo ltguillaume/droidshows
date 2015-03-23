@@ -162,8 +162,11 @@ public class ViewSerie extends Activity
 				} while (cactors.moveToNext());
 			}
 			cactors.close();
-			TextView serieActorsV = (TextView) findViewById(R.id.serieActors);
-			serieActorsV.setText(actors.toString().replace("]", "").replace("[", ""));
+			if (!actors.isEmpty()) {
+				TextView serieActorsV = (TextView) findViewById(R.id.serieActors);
+				serieActorsV.setText(actors.toString().replace("]", "").replace("[", ""));
+				findViewById(R.id.actorsField).setVisibility(View.VISIBLE);
+			}
 		}
 	}
 	

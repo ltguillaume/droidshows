@@ -13,7 +13,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class ViewEpisode extends Activity
@@ -65,22 +64,22 @@ public class ViewEpisode extends Activity
 			TextView episodeNameV = (TextView) findViewById(R.id.episodeName);
 			episodeNameV.setText(episodeName);
 			
-			TextView ratingV = (TextView) findViewById(R.id.rating);
 			if (!rating.equalsIgnoreCase("null") && !rating.equals("")) {
+				TextView ratingV = (TextView) findViewById(R.id.rating);
 				ratingV.setText("IMDb: "+ rating);
 				ratingV.setVisibility(View.VISIBLE);
 			}
 			
-			TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
 			if (!firstAired.equalsIgnoreCase("null") && !firstAired.equals("")) {
+				TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
 				firstAiredV.setText(firstAired);
 				firstAiredV.setVisibility(View.VISIBLE);
 			}
 	
-			TextView overviewV = (TextView) findViewById(R.id.overview);
 			if (!overview.equalsIgnoreCase("null") && !overview.equals("")) {
+				TextView overviewV = (TextView) findViewById(R.id.overview);
 				overviewV.setText(overview);
-				findViewById(R.id.overviewField).setVisibility(LinearLayout.VISIBLE);
+				findViewById(R.id.overviewField).setVisibility(View.VISIBLE);
 			}
 
 			List<String> writers = new ArrayList<String>();
@@ -93,12 +92,12 @@ public class ViewEpisode extends Activity
 				} while (cwriters.moveToNext());
 			}
 			cwriters.close();
-			TextView writer = (TextView) findViewById(R.id.writer);
-			String writerText = writers.toString().replace("]", "").replace("[", "");
-			if (!writerText.equalsIgnoreCase("null") && !writerText.equals("")) {
-				writer.setText(writerText);
-				findViewById(R.id.writerField).setVisibility(LinearLayout.VISIBLE);
+			if (!writers.isEmpty()) {
+				TextView writer = (TextView) findViewById(R.id.writer);
+				writer.setText(writers.toString().replace("]", "").replace("[", ""));
+				findViewById(R.id.writerField).setVisibility(View.VISIBLE);
 			}
+			
 			List<String> directors = new ArrayList<String>();
 			Cursor cdirectors = droidseries.db.Query("SELECT director FROM directors WHERE episodeId='"+ episodeId
 				+"' AND serieId='"+ serieId +"'");
@@ -109,11 +108,10 @@ public class ViewEpisode extends Activity
 				} while (cdirectors.moveToNext());
 			}
 			cdirectors.close();
-			TextView director = (TextView) findViewById(R.id.director);
-			String directorText = directors.toString().replace("]", "").replace("[", "");
-			if (!directorText.equalsIgnoreCase("null") && !directorText.equals("")) {
-				director.setText(directorText);
-				findViewById(R.id.directorField).setVisibility(LinearLayout.VISIBLE);
+			if (!directors.isEmpty()) {
+				TextView director = (TextView) findViewById(R.id.director);
+				director.setText(directors.toString().replace("]", "").replace("[", ""));
+				findViewById(R.id.directorField).setVisibility(View.VISIBLE);
 			}
 	
 			List<String> guestStars = new ArrayList<String>();
@@ -126,11 +124,10 @@ public class ViewEpisode extends Activity
 				} while (cgs.moveToNext());
 			}
 			cgs.close();
-			TextView guestStarsV = (TextView) findViewById(R.id.guestStars);
-			String guestStarsText = guestStars.toString().replace("]", "").replace("[", "");
-			if (!guestStarsText.equalsIgnoreCase("null") && !guestStarsText.equals("")) {
-				guestStarsV.setText(guestStarsText);
-				findViewById(R.id.guestStarsField).setVisibility(LinearLayout.VISIBLE);
+			if (!guestStars.isEmpty()) {
+				TextView guestStarsV = (TextView) findViewById(R.id.guestStars);
+				guestStarsV.setText(guestStars.toString().replace("]", "").replace("[", ""));
+				findViewById(R.id.guestStarsField).setVisibility(View.VISIBLE);
 			}
 		}
 	}

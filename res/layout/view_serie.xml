@@ -20,9 +20,11 @@
 		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
 		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_synopsis"/>
 		<TextView android:id="@+id/serieOverview" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
-		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
-		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_actors"/>
-		<TextView android:id="@+id/serieActors" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
+		<LinearLayout android:id="@+id/actorsField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+			<View android:layout_width="fill_parent" android:layout_height="1px" android:layout_marginBottom="6dp" android:background="@drawable/div"/>
+			<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_actors"/>
+			<TextView android:id="@+id/serieActors" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
+		</LinearLayout>
 		<View android:layout_width="fill_parent" android:layout_height="1px" android:layout_marginBottom="6dp" android:background="@drawable/div"/>
 	</LinearLayout>
 	</ScrollView>
