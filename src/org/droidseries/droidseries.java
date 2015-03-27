@@ -270,8 +270,8 @@ public class droidseries extends ListActivity
 							cleanUp();
 						}
 					})
-					.setCancelable(true)
 					.show();
+				m_AlertDlg.setCanceledOnTouchOutside(true);
 				break;
 			case UNDO_MENU_ITEM :
 				markLastEpUnseen();

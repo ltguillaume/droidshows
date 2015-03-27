@@ -11,10 +11,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.droidseries.R;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -53,8 +55,6 @@ public class AddSerie extends ListActivity
 	private SeriesSearchAdapter seriessearch_adapter;
 	/* DIALOGS */
 	private ProgressDialog m_ProgressDialog = null;
-	// private final static int ID_DIALOG_SEARCHING = 1;
-	// private final static int ID_DIALOG_ADD = 2;
 	/* Option Menus */
 	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
 	/* Context Menus */
@@ -62,14 +62,13 @@ public class AddSerie extends ListActivity
 	private ListView lv;
 	private Utils utils = new Utils();
 	static String searchQuery = "";
-	// public static Thread threadAddShow = null;
 	private volatile Thread threadAddShow;
 	private static boolean bAddShowTh = false;
-
+	private static List<String> series = droidseries.db.getSeriesByName();
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// requestWindowFeature(Window.FEATURE_NO_TITLE); // Guillaume--
 		setContentView(R.layout.add_serie);
 		List<Serie> search_series = new ArrayList<Serie>();
 		this.seriessearch_adapter = new SeriesSearchAdapter(this, R.layout.row_search_series, search_series);
@@ -131,13 +130,11 @@ public class AddSerie extends ListActivity
 			search_series = new ArrayList<Serie>();
 			search_series = theTVDB.searchSeries(searchQuery, getString(R.string.lang_code));
 			if (search_series == null) {
-				// dismissDialog(AddSerie.ID_DIALOG_SEARCHING);
 				m_ProgressDialog.dismiss();
 				CharSequence text = getText(R.string.messages_thetvdb_con_error);
 				int duration = Toast.LENGTH_LONG;
 				Looper.prepare();
-				Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-				toast.show();
+				Toast.makeText(getApplicationContext(), text, duration).show();
 				Looper.loop();
 			} else {
 				runOnUiThread(reloadSearchSeries);
@@ -147,21 +144,7 @@ public class AddSerie extends ListActivity
 		}
 	}
 
-	/* This methods handle the progress dialogs */
-	/* @Override protected Dialog onCreateDialog(int id) { if(id == ID_DIALOG_SEARCHING){
-	 * ProgressDialog m_ProgressDialog = new ProgressDialog(this);
-	 * m_ProgressDialog.setMessage(getString(R.string.messages_search_series));
-	 * m_ProgressDialog.setIndeterminate(true); m_ProgressDialog.setCancelable(true); return
-	 * m_ProgressDialog; } else if(id == ID_DIALOG_ADD) { ProgressDialog m_ProgressDialog = new
-	 * ProgressDialog(this); m_ProgressDialog.setMessage(getString(R.string.messages_adding_serie));
-	 * m_ProgressDialog.setIndeterminate(true); m_ProgressDialog.setCancelable(true); return
-	 * m_ProgressDialog; } return super.onCreateDialog(id); } protected void removeDialogs() { try {
-	 * dismissDialog(ID_DIALOG_SEARCHING); removeDialog(ID_DIALOG_SEARCHING); } catch (Exception e) {
-	 * //Log.d(TAG, "ID_DIALOG_SEARCHING - Remove Failed", e); } try { dismissDialog(ID_DIALOG_ADD);
-	 * removeDialog(ID_DIALOG_ADD); } catch (Exception e) { //Log.d(TAG,
-	 * "ID_DIALOG_SEARCHING - Remove Failed", e); } } */
 	private void Search() {
-		// showDialog(ID_DIALOG_SEARCHING);
 		m_ProgressDialog = ProgressDialog.show(AddSerie.this, getString(R.string.messages_title_search_series), getString(R.string.messages_search_series), true, true);
 		new Thread(new Runnable() {
 			public void run() {
@@ -215,7 +198,6 @@ public class AddSerie extends ListActivity
 				Serie sToAdd = theTVDB.getSerie(s.getId(), getString(R.string.lang_code));
 				if (sToAdd == null) {
 					m_ProgressDialog.dismiss();
-					// dismissDialog(AddSerie.ID_DIALOG_ADD);
 					CharSequence text = getText(R.string.messages_thetvdb_con_error);
 					int duration = Toast.LENGTH_LONG;
 					Looper.prepare();
@@ -236,7 +218,7 @@ public class AddSerie extends ListActivity
 						try {
 							imageUrl = new URL(sToAdd.getPoster());
 							uc = imageUrl.openConnection();
-							// timetout, 20s for slow connections
+							// timetout, 10s for slow connections
 							uc.setConnectTimeout(10000);
 							contentType = uc.getContentType();
 						} catch (MalformedURLException e) {
@@ -282,8 +264,6 @@ public class AddSerie extends ListActivity
 							OutputStream fOut = null;
 							File thumFile = new File(getApplicationContext().getFilesDir().getAbsolutePath(), "thumbs"
 								+ imageUrl.getFile().toString());
-							// fOut = openFileOutput(getApplicationContext().getFilesDir().getAbsolutePath() +
-							// "/thumbs" + imageUrl.getFile().toString(), Context.MODE_PRIVATE);
 							fOut = new FileOutputStream(thumFile);
 							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
 							fOut.flush();
@@ -313,9 +293,6 @@ public class AddSerie extends ListActivity
 							return;
 						}
 						Log.d(TAG, "Adding TV show: saving TV show to database");
-						// if(sToAdd.getSerieId() == null) {
-						// Log.d(TAG, "NULL SERIE ID! HAVE TO CHANGE THIS!");
-						// }
 						sToAdd.saveToDB(droidseries.db);
 						Log.d(TAG, "Adding TV show: creating the TV show item");
 						int nseasons = droidseries.db.getSeasonCount(sToAdd.getId());
@@ -334,7 +311,6 @@ public class AddSerie extends ListActivity
 					}
 					// m_ProgressDialog.dismiss();
 					if (!bAddShowTh) {
-						// dismissDialog(AddSerie.ID_DIALOG_ADD);
 						m_ProgressDialog.dismiss();
 						bAddShowTh = false;
 					}
@@ -345,37 +321,31 @@ public class AddSerie extends ListActivity
 						Toast toast = Toast.makeText(getApplicationContext(), text, duration);
 						toast.show();
 						Looper.loop();
-						// TODO: automatically close the intent
-						/* handler.post(new Runnable() { public void run() { AddSerie.this.dispatchKeyEvent(new
-						 * KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_BACK)); AddSerie.this.finish(); } }); */
 					}
 				}
 			}
 		};
 		boolean alreadyExists = false;
-		for (int i = 0; i < droidseries.series.size(); i++) {
-			if (droidseries.series.get(i).getSerieId().equals(s.getSerieId())) {
+		for (String serieId : series) {
+			if (serieId.equals(s.getId())) {
 				alreadyExists = true;
 				break;
 			}
 		}
 		if (!alreadyExists) {
-			// showDialog(ID_DIALOG_ADD);
 			threadAddShow = new Thread(null, addnewserie, "MagentoBackground");
 			threadAddShow.start();
 			m_ProgressDialog = ProgressDialog.show(AddSerie.this, getString(R.string.messages_title_adding_serie), getString(R.string.messages_adding_serie), true, false);
 		}
 	}
 
-	/* @Override protected void onResume(){ if (threadAddShow != null) { if (threadAddShow.isAlive())
-	 * { showDialog(ID_DIALOG_ADD); } } super.onResume(); } */
 	// Guillaume: searches from within this activity were discarded
 	@Override
 	protected void onNewIntent(Intent intent) {
 		getSearchResults(intent);
 	}
 
-	private void getSearchResults(Intent intent) { // Guillaume: was in onCreate() before
+	private void getSearchResults(Intent intent) {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			searchQuery = intent.getStringExtra(SearchManager.QUERY);
 			TextView title = (TextView) findViewById(R.id.add_serie_title);
@@ -391,24 +361,34 @@ public class AddSerie extends ListActivity
 		}
 		lv = getListView();
 		lv.setOnTouchListener(new SwipeDetect());
-		// register context menu
 		registerForContextMenu(getListView());
 	}
-	// END Guillaume
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		try {
-			Intent serieOverview = new Intent(AddSerie.this, SerieOverview.class);
-			if (!AddSerie.search_series.get(position).getOverview().equals("")) {
-				serieOverview.putExtra("serieId", AddSerie.search_series.get(position).getId());
-				serieOverview.putExtra("overview", AddSerie.search_series.get(position).getOverview());
-				serieOverview.putExtra("name", AddSerie.search_series.get(position).getSerieName());
-				startActivity(serieOverview);
+		final Serie sToAdd = AddSerie.search_series.get(position);
+		AlertDialog sOverview = new AlertDialog.Builder(this)
+		.setIcon(R.drawable.icon)
+		.setTitle(sToAdd.getSerieName())
+		.setMessage(sToAdd.getOverview())
+		.setPositiveButton(getString(R.string.menu_context_add_serie), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				addSerie(sToAdd);
 			}
-		} catch (Exception e) {
-			Log.e(TAG, "Error showing the serie's overview");
-		}
+		})
+		.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		})
+		.show();
+		sOverview.setCanceledOnTouchOutside(true);
+		
+		for (String serieId : series)
+			if (serieId.equals(sToAdd.getId())) {
+				sOverview.getButton(AlertDialog.BUTTON_POSITIVE).setEnabled(false);
+				break;
+			}
 	}
 	
 	private class SeriesSearchAdapter extends ArrayAdapter<Serie>
@@ -435,8 +415,8 @@ public class AddSerie extends ListActivity
 				}
 				if (ctv != null) {
 					boolean alreadyExists = false;
-					for (int i = 0; i < droidseries.series.size(); i++) {
-						if (droidseries.series.get(i).getSerieId().equals(o.getId())) {
+					for (String serieId : series) {
+						if (serieId.equals(o.getId())) {
 							alreadyExists = true;
 							break;
 						}

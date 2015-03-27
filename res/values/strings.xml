@@ -116,7 +116,6 @@
 <string name="messages_context_mark_seasonseen">Mark all episodes as seen</string>
 <string name="messages_specials">Specials</string>
 <string name="messsages_view_ep_details">View episode details</string>
-<string name="messages_overview">Overview</string>
 <string name="messages_thetvdb_con_error">Error connecting to TheTVDB.com. Please try again.</string>
 <string name="messages_marked_seen">marked as seen</string>
 <string name="messages_marked_unseen">marked as unseen</string>
