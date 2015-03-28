@@ -64,7 +64,7 @@ public class AddSerie extends ListActivity
 	static String searchQuery = "";
 	private volatile Thread threadAddShow;
 	private static boolean bAddShowTh = false;
-	private static List<String> series = droidseries.db.getSeriesByName();
+	private List<String> series = droidseries.db.getSeriesByName();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -303,6 +303,7 @@ public class AddSerie extends ListActivity
 						Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
 						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatchedAired, unwatched, false, sToAdd.getStatus());
 						droidseries.series.add(tvsi);
+						series.add(sToAdd.getId());
 						runOnUiThread(droidseries.updateListView);
 						runOnUiThread(reloadSearchSeries);
 						sucesso = true;

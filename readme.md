@@ -4,6 +4,7 @@ This fork adds a quite a bunch of features, including more show information, a m
 * Swipe right-to-left to mark as seen
 * Long-press items for more options
 * Tap poster for show info
+* In show info, tap poster for full-screen views of poster and (click on image) fan art
 * Long-press poster for IMDb
 * Update all shows for latest information
 
