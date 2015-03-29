@@ -43,6 +43,7 @@ public class SerieSeasons extends ListActivity
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		this.overridePendingTransition(R.anim.right_enter, R.anim.right_exit);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.serie_seasons);
 		serieId = getIntent().getStringExtra("serieId");
@@ -229,5 +230,11 @@ public class SerieSeasons extends ListActivity
 		TextView season;
 		TextView unwatched;
 		TextView nextEpisode;
+	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(R.anim.left_enter, R.anim.left_exit);
 	}
 }

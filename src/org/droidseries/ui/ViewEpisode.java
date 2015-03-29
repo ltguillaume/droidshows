@@ -19,6 +19,7 @@ public class ViewEpisode extends Activity
 {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		this.overridePendingTransition(R.anim.right_enter, R.anim.right_exit);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.view_episode);
 		View view = findViewById(R.id.viewEpisodes);
@@ -130,5 +131,11 @@ public class ViewEpisode extends Activity
 				findViewById(R.id.guestStarsField).setVisibility(View.VISIBLE);
 			}
 		}
+	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(R.anim.left_enter, R.anim.left_exit);
 	}
 }

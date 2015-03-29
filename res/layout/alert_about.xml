@@ -4,7 +4,7 @@
 		<CheckBox android:id="@+id/last_season" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_last_season"/>
 		<CheckBox android:id="@+id/include_specials" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_include_specials"/>
 		<CheckBox android:id="@+id/full_line_check" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_full_line_check"/>
-		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:textAppearance="?android:attr/textAppearance" android:text="@string/dialog_help"/>
-		<TextView android:id="@+id/changelog" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:textSize="12sp" android:typeface="monospace" android:autoLink="web"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:text="@string/dialog_help" android:lineSpacingExtra="0.5dp"/>
+		<TextView android:id="@+id/copyright" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:autoLink="web" android:lineSpacingExtra="1dp"/>
 	</LinearLayout>
 </ScrollView>

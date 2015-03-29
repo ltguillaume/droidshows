@@ -34,6 +34,7 @@ public class ViewSerie extends Activity
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		this.overridePendingTransition(R.anim.left_enter, R.anim.left_exit);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.view_serie);
 		View view = findViewById(R.id.viewSerie);
@@ -243,7 +244,9 @@ public class ViewSerie extends Activity
 	public void onBackPressed() {
 		if (posterView != null && posterView.getVisibility() == View.VISIBLE)
 			posterView.setVisibility(View.GONE);
-		else
+		else {
 			super.onBackPressed();
+			overridePendingTransition(R.anim.right_enter, R.anim.right_exit);
+		}
 	}
 }

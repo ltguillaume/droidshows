@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <color name="bg">#c000</color>
+<style name="ani" parent="@android:style/Animation.Activity"/>
 <style name="ds">
 	<item name="android:listViewStyle">@style/lst</item>
 	<item name="android:colorBackgroundCacheHint">@null</item>
 	<item name="android:windowBackground">@color/bg</item>
 	<item name="android:windowShowWallpaper">true</item>
+	<item name="android:windowAnimationStyle">@style/ani</item>
 </style>
 <style name="lst" parent="@android:style/Widget.ListView">
 	<item name="android:divider">@drawable/div</item>

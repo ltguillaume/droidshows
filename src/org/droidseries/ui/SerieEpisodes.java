@@ -3,16 +3,13 @@ package org.droidseries.ui;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
 import org.droidseries.droidseries;
 import org.droidseries.R;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import java.text.ParseException;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -44,6 +41,7 @@ public class SerieEpisodes extends ListActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		this.overridePendingTransition(R.anim.right_enter, R.anim.right_exit);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.serie_episodes);
 		serieId = getIntent().getStringExtra("serieId");
@@ -195,5 +193,11 @@ public class SerieEpisodes extends ListActivity {
 		viewEpisode.putExtra("seasonNumber", seasonNumber);
 		viewEpisode.putExtra("episodeId", episode);
 		startActivity(viewEpisode);
+	}
+	
+	@Override
+	public void onBackPressed() {
+		super.onBackPressed();
+		overridePendingTransition(R.anim.left_enter, R.anim.left_exit);
 	}
 }

@@ -212,6 +212,7 @@ public class droidseries extends ListActivity
 		return super.onPrepareOptionsMenu(menu);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -232,9 +233,11 @@ public class droidseries extends ListActivity
 					m_AlertDlg.cancel();
 				}
 				View about = View.inflate(this, R.layout.alert_about, null);
-				TextView changelog = (TextView) about.findViewById(R.id.changelog);
+				TextView changelog = (TextView) about.findViewById(R.id.copyright);
 				try {
-					changelog.setText(getString(R.string.changelog).replace("{v}", getPackageManager().getPackageInfo(getPackageName(), 0).versionName));
+					changelog.setText(getString(R.string.copyright)
+						.replace("{v}", getPackageManager().getPackageInfo(getPackageName(), 0).versionName)
+						.replace("{y}", new Date().getYear()+1900 +""));
 					changelog.setTextColor(changelog.getTextColors().getDefaultColor());
 				} catch (NameNotFoundException e) {
 					e.printStackTrace();

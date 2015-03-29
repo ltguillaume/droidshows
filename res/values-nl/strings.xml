@@ -33,11 +33,17 @@
 <string name="dialog_last_season">Alleen laatste seizoenen bijwerken</string>
 <string name="dialog_include_specials">Specials meetellen in overzicht</string>
 <string name="dialog_full_line_check">Hele regel gebruiken voor aanvinken aflevering</string>
-<string name="dialog_help">&#187; Veeg rechts-links om de aflevering als gezien te markeren
-\n&#187; Druk lang op aflevering voor opties
-\n&#187; Tik op poster voor informatie
+<string name="dialog_help">Vergeet niet regelmatig de series bij te werken.\n
+\n&#187; Druk lang op items voor opties
+\n&#187; Veeg links-rechts om terug te gaan
+\nOverzicht Series:
+\n&#187; Klik op poster voor informatie
 \n&#187; Druk lang op poster voor IMDb
-\n&#187; Laat series regelmatig bijwerken</string>
+\n&#187; Veeg rechts-links om volgende aflevering als gezien te markeren
+\nInformatiescherm van een serie:
+\n&#187; Klik op poster voor volledig scherm
+\n&#187; Klik op grote poster voor fan art
+</string>
 <string name="menu_toggle">Status […] veranderen</string>
 <string name="messages_title_updating_all_series">Alle series bijwerken</string>
 <string name="messages_title_updating_serie">Bijwerken van serie</string>
