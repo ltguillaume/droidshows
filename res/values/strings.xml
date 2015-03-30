@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="copyright" translatable="false">&#169;2010 Carlos Limpinho, Paulo Cabido (GPL):\ncode.google.com/p/droidseries
+<string name="copyright" translatable="false">DroidSeries v{v}
+\n&#169;2010 Carlos Limpinho, Paulo Cabido (GPL):\ncode.google.com/p/droidseries
 \nModified by Mikael Berthe:\ngitorious.org/droidseries/mckaels-droidseries
 \n&#169;2014-{y} Guillaume:\ngithub.com/ltGuillaume/droidseries
 \n\nNew icon file is a mix of\niconeasy.com/icon/tv-shows-2-icon (Thrasos Varnava) and\nwallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)</string>
@@ -37,15 +38,15 @@
 <string name="dialog_last_season">Update shows\' last season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to check episode</string>
-<string name="dialog_help">Don\'t forget to update all shows regularly.\n 
+<string name="dialog_help">&#187; Don\'t forget to update all shows regularly
 \n&#187; Long-press items for more options
 \n&#187; Swipe left-to-right to go back
-\nIn Shows List:
+\n\nIn Shows Overview:
 \n&#187; Tap poster for show info
 \n&#187; Long-press poster for IMDb
 \n&#187; Swipe right-to-left to mark next as seen
-\nIn Show Details:
-\n&#187; Tap poster for full-screen poster
+\n\nIn Show Details:
+\n&#187; Tap poster for full-screen view
 \n&#187; Click full-screen poster image for fan art
 </string>
 <string name="menu_toggle">Toggle status</string>

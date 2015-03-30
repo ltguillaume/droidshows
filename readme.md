@@ -1,18 +1,22 @@
 # DroidSeries<img src="https://github.com/ltGuillaume/DroidSeries/raw/master/icon/icon5a.png" align="right"/>
 DroidSeries-Guillaume: 2015 Reboot of DroidSeries TV Show Tracker  
 This fork adds a quite a bunch of features, including more show information, a menu overflow button, swiping gestures, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
-* Swipe right-to-left to mark as seen
+* Don't forget to update all shows regularly
 * Long-press items for more options
+* Swipe left-to-right to go back  
+_In Shows Overview_:
 * Tap poster for show info
-* In show info, tap poster for full-screen views of poster and (click on image) fan art
 * Long-press poster for IMDb
-* Update all shows for latest information
+* Swipe right-to-left to mark next as seen  
+_In Show Details_:
+* Tap poster for full-screen view
+* Click full-screen poster image for fan art
 
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
 [XDA Forum post (in original DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
 __Download APK__: from XDA forum post or [here](https://github.com/ltGuillaume/DroidSeries/tree/master/apk)
 
-__Overview__:  
+__Shows Overview__:  
 \+ Showing "[aired unwatched] of [total unwatched]"  
 \+ Added icon ic_menu_view for show/hide toggled  
 \+ Status of show in details, and † in overview if show is not continuing  
@@ -21,7 +25,6 @@ __Overview__:
 \+ Context item to view show details on IMDb  
 \+ Tap cover for show info, long-press for IMDb details  
 \+ Swipe right-to-left to mark next episode as seen (shows confirmation toast)  
-	everywhere else in app swiping acts like back button  
 \+ Option to include specials in unwatched count  
 \+ Mark next episode seen via swipe now vibrates  
 \+ Undo function (until exit)  
@@ -54,6 +57,8 @@ __Other__:
 \+ Menu (overflow) button should show up in Android 3.0+  
 \+ Dutch translation  
 \+ Translucent background  
+\+ Swipe left-to-right acts as back button  
+\+ Animations that help understand the app's structure  
 \* Date/time format according to locale  
 \* Big performance improvement for Overview activity: is almost instant (values are kept up-to-date in series table)  
 \* Some progress dialogs cancelable  

@@ -19,7 +19,7 @@
 <string name="menu_context_add_serie">Serie toevoegen</string>
 <string name="menu_show_toggled">[…] tonen</string>
 <string name="menu_hide_toggled">[…] verbergen</string>
-<string name="menu_context_view_serie_details">Informatie</string>
+<string name="menu_context_view_serie_details">Details</string>
 <string name="menu_context_view_imdb">Bekijken op IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
 <string name="dialog_OK">OK</string>
@@ -32,15 +32,15 @@
 <string name="dialog_update_speedup">\n\nDit kan sneller met de optie in Menu > Opties.</string>
 <string name="dialog_last_season">Alleen laatste seizoenen bijwerken</string>
 <string name="dialog_include_specials">Specials meetellen in overzicht</string>
-<string name="dialog_full_line_check">Hele regel gebruiken voor aanvinken aflevering</string>
-<string name="dialog_help">Vergeet niet regelmatig de series bij te werken.\n
+<string name="dialog_full_line_check">Hele regel gebruiken voor afvinken</string>
+<string name="dialog_help">&#187; Werk regelmatig de series bij
 \n&#187; Druk lang op items voor opties
 \n&#187; Veeg links-rechts om terug te gaan
-\nOverzicht Series:
-\n&#187; Klik op poster voor informatie
+\n\nIn Overzicht Series:
+\n&#187; Klik op poster voor details
 \n&#187; Druk lang op poster voor IMDb
 \n&#187; Veeg rechts-links om volgende aflevering als gezien te markeren
-\nInformatiescherm van een serie:
+\n\nIn Details van Serie:
 \n&#187; Klik op poster voor volledig scherm
 \n&#187; Klik op grote poster voor fan art
 </string>
@@ -78,7 +78,7 @@
 <string name="messages_context_mark_asseenuptothis">Seizoenen tot aan hier gezien</string>
 <string name="messages_aired">Uitgezonden:</string>
 <string name="messages_at">om</string>
-<string name="messages_of">of</string>
+<string name="messages_of">van</string>
 <string name="messages_on">op</string>
 <string name="messages_daily">Dagelijks</string>
 <string name="messages_ep"></string>
