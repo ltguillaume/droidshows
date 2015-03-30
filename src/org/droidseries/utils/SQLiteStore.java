@@ -578,8 +578,9 @@ public class SQLiteStore extends SQLiteOpenHelper
 	/* Update Methods */
 	public void updateUnwatchedSeason(String serieId, int nseason) {
 		try {
-			db.execSQL("UPDATE episodes SET seen=1 WHERE serieId='"+ serieId +"' AND seasonNumber="
-				+ nseason);
+			String today = dateFormat.format(new Date());	// Get today's date
+			db.execSQL("UPDATE episodes SET seen=1 WHERE serieId='"+ serieId +"' AND seasonNumber="+ nseason
+			+" AND firstAired < '"+ today +"' AND firstAired <> ''");
 		} catch (SQLiteException e) {
 			Log.e(TAG, e.getMessage());
 		}
