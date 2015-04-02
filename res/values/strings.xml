@@ -48,7 +48,8 @@
 \n\nIn Show Details:
 \n&#187; Tap poster for full-screen view
 \n&#187; Click full-screen poster image for fan art
-</string>
+\n\nIn Show/Episode Details:
+\n&#187; Tap IMDb rating to view in IMDb</string>
 <string name="menu_toggle">Toggle status</string>
 <string name="messages_title_updating_all_series">Updating all shows</string>
 <string name="messages_title_updating_serie">Updating show</string>

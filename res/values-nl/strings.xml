@@ -43,7 +43,8 @@
 \n\nIn Details van Serie:
 \n&#187; Klik op poster voor volledig scherm
 \n&#187; Klik op grote poster voor fan art
-</string>
+\n\nIn Details van Serie/Aflevering:
+\n&#187; Klik op IMDb-score voor IMDb-pagina</string>
 <string name="menu_toggle">Status […] veranderen</string>
 <string name="messages_title_updating_all_series">Alle series bijwerken</string>
 <string name="messages_title_updating_serie">Bijwerken van serie</string>

@@ -9,11 +9,15 @@ import java.util.List;
 import org.droidseries.R;
 import org.droidseries.droidseries;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ViewEpisode extends Activity
 {
@@ -25,11 +29,11 @@ public class ViewEpisode extends Activity
 		View view = findViewById(R.id.viewEpisodes);
 		view.setOnTouchListener(new SwipeDetect());
 		String serieId = getIntent().getStringExtra("serieId");
-		String serieName = getIntent().getStringExtra("serieName");
+		final String serieName = getIntent().getStringExtra("serieName");
 		int seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
 		String episodeId = getIntent().getStringExtra("episodeId");
 		
-		String query = "SELECT episodeNumber, episodeName, overview, rating, firstAired FROM episodes "
+		String query = "SELECT episodeNumber, episodeName, overview, rating, firstAired, imdbId FROM episodes "
 			+ "WHERE id = '"+ episodeId +"' AND serieId='"+ serieId +"'";
 		Cursor c = droidseries.db.Query(query);
 		c.moveToFirst();
@@ -39,6 +43,7 @@ public class ViewEpisode extends Activity
 			int overviewCol = c.getColumnIndex("overview");
 			int ratingCol = c.getColumnIndex("rating");
 			int airedCol = c.getColumnIndex("firstAired");
+			int imdbIdCol = c.getColumnIndex("imdbId");
 	
 			String firstAired = c.getString(airedCol);
 			if (!firstAired.equals("") && !firstAired.equals("null")) {
@@ -55,9 +60,10 @@ public class ViewEpisode extends Activity
 			}
 	
 			int episodeNumber = c.getInt(episodeNumberCol);
-			String episodeName = c.getString(enameCol);
+			final String episodeName = c.getString(enameCol);
 			String overview = c.getString(overviewCol);
 			String rating = c.getString(ratingCol);
+			final String imdbId = c.getString(imdbIdCol);
 			c.close();
 	
 			setTitle(serieName +" "+ seasonNumber +"x"+ episodeNumber);				
@@ -69,6 +75,18 @@ public class ViewEpisode extends Activity
 				TextView ratingV = (TextView) findViewById(R.id.rating);
 				ratingV.setText("IMDb: "+ rating);
 				ratingV.setVisibility(View.VISIBLE);
+				ratingV.setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {
+						Intent imdb;
+						if (imdbId.indexOf("tt") != 0) {
+							imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/find?q="+ 
+								serieName +" "+ episodeName));
+						} else {
+							imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/title/"+ imdbId));
+						}
+						startActivity(imdb);
+					}
+				});
 			}
 			
 			if (!firstAired.equalsIgnoreCase("null") && !firstAired.equals("")) {

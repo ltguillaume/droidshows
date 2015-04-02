@@ -11,6 +11,8 @@ _In Shows Overview_:
 _In Show Details_:
 * Tap poster for full-screen view
 * Click full-screen poster image for fan art
+_In Show/Episode Details_:
+* Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage
 
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
 [XDA Forum post (in original DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
