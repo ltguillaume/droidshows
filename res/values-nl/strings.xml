@@ -20,7 +20,8 @@
 <string name="menu_show_toggled">[…] tonen</string>
 <string name="menu_hide_toggled">[…] verbergen</string>
 <string name="menu_context_view_serie_details">Details</string>
-<string name="menu_context_view_imdb">Bekijken op IMDb</string>
+<string name="menu_context_view_imdb">Serie bekijken op IMDb</string>
+<string name="menu_context_view_ep_imdb">Aflevering bekijken op IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_clean_db">Database opschonen</string>
@@ -38,7 +39,7 @@
 \n&#187; Veeg links-rechts om terug te gaan
 \n\nIn Overzicht Series:
 \n&#187; Klik op poster voor details
-\n&#187; Druk lang op poster voor IMDb
+\n&#187; Druk lang op poster voor IMDb van aflevering
 \n&#187; Veeg rechts-links om volgende aflevering als gezien te markeren
 \n\nIn Details van Serie:
 \n&#187; Klik op poster voor volledig scherm

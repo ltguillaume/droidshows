@@ -71,23 +71,26 @@ public class ViewEpisode extends Activity
 			TextView episodeNameV = (TextView) findViewById(R.id.episodeName);
 			episodeNameV.setText(episodeName);
 			
-			if (!rating.equalsIgnoreCase("null") && !rating.equals("")) {
-				TextView ratingV = (TextView) findViewById(R.id.rating);
+			TextView ratingV = (TextView) findViewById(R.id.rating);
+			if (!rating.equalsIgnoreCase("null") && !rating.equals(""))
 				ratingV.setText("IMDb: "+ rating);
-				ratingV.setVisibility(View.VISIBLE);
-				ratingV.setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {
-						Intent imdb;
-						if (imdbId.indexOf("tt") != 0) {
-							imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/find?q="+ 
-								serieName +" "+ episodeName));
-						} else {
-							imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/title/"+ imdbId));
-						}
-						startActivity(imdb);
+			else
+				ratingV.setText("IMDb Info");
+			ratingV.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					String uri = "imdb:///";
+					Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
+			    if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
+			    	uri = "http://m.imdb.com/";
+					if (imdbId.indexOf("tt") == 0) {
+						uri += "title/"+ imdbId;
+					} else {
+						uri += "find?q="+ serieName.replaceAll(" \\(....\\)", "") +" "+ episodeName;
 					}
-				});
-			}
+					Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+					startActivity(imdb);
+				}
+			});
 			
 			if (!firstAired.equalsIgnoreCase("null") && !firstAired.equals("")) {
 				TextView firstAiredV = (TextView) findViewById(R.id.firstAired);

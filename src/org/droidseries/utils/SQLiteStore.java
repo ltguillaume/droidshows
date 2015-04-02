@@ -463,7 +463,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return na;
 	}
 
-	public String getNextEpisodeId(String serieId, int snumber) {
+	public String getNextEpisodeId(String serieId, int snumber, boolean noFutureEp) {
 		int id = -1;
 		Cursor c = null;
 		try {
@@ -471,8 +471,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 			if (snumber == -1) {
 				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' AND seen=0"
 						+ (droidseries.includeSpecialsOption ? "" : " AND seasonNumber <> 0")
-						+" AND firstAired < '"+ today
-						+"' AND firstAired <> '' ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+						+ (noFutureEp ? " AND firstAired < '"+ today +"'": "")
+						+" AND firstAired <> '' ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			} else {
 				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="+ snumber
 						+"AND seen=0 AND firstAired < '"+ today

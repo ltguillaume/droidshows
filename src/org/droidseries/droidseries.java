@@ -78,7 +78,8 @@ public class droidseries extends ListActivity
 	private static final int TOGGLE_SERIE_STATUS_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
 	private static final int VIEW_SERIEDETAILS_CONTEXT = TOGGLE_SERIE_STATUS_CONTEXT + 1;
 	private static final int VIEW_IMDB_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
-	private static final int UPDATE_CONTEXT = VIEW_IMDB_CONTEXT + 1;
+	private static final int VIEW_EP_IMDB_CONTEXT = VIEW_IMDB_CONTEXT + 1;
+	private static final int UPDATE_CONTEXT = VIEW_EP_IMDB_CONTEXT + 1;
 	private static final int DELETE_CONTEXT = UPDATE_CONTEXT + 1;
 	public static String on;
 	private static AlertDialog m_AlertDlg;
@@ -307,8 +308,13 @@ public class droidseries extends ListActivity
 		menu.add(0, TOGGLE_SERIE_STATUS_CONTEXT, 0, getString(R.string.menu_toggle));
 		menu.add(0, VIEW_SERIEDETAILS_CONTEXT, 0, getString(R.string.menu_context_view_serie_details));
 		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
+		menu.add(0, VIEW_EP_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_ep_imdb));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+    int position = info.position;
+    if (series.get(position).getUnwatched() == 0)
+    	menu.findItem(VIEW_EP_IMDB_CONTEXT).setVisible(false);
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -336,7 +342,10 @@ public class droidseries extends ListActivity
 				showDetails(series.get(info.position).getSerieId());
 				return true;
 			case VIEW_IMDB_CONTEXT :
-				IMDbDetails(series.get(info.position).getSerieId());
+				IMDbDetails(series.get(info.position).getSerieId(), series.get(info.position).getName(), false);
+				return true;
+			case VIEW_EP_IMDB_CONTEXT :
+				IMDbDetails(series.get(info.position).getSerieId(), series.get(info.position).getName(), true);
 				return true;
 			case UPDATE_CONTEXT :
 				updateSerie(series.get(info.position).getSerieId(), info.position);
@@ -403,7 +412,7 @@ public class droidseries extends ListActivity
 	private boolean markNextEpSeen(final int oldListPosition) {
 		TVShowItem serie = series.get(oldListPosition);
 		String serieId = serie.getSerieId();
-		String nextEpisode = db.getNextEpisodeId(serieId, -1);
+		String nextEpisode = db.getNextEpisodeId(serieId, -1, true);
 		if (!nextEpisode.equals("-1")) {
 			String episodeMarked = db.updateUnwatchedEpisode(serieId, nextEpisode);
 			final TVShowItem newSerie = createTVShowItem(serieId);
@@ -454,25 +463,46 @@ public class droidseries extends ListActivity
 		viewSerie.putExtra("serieId", serieId);
 		startActivity(viewSerie);
 	}
-
-	private void IMDbDetails(String serieId) {
-		String query = "SELECT imdbId, serieName FROM series WHERE id = '" + serieId + "'";
+	
+	private void IMDbDetails(String serieId, String serieName, boolean viewNextEpisode) {
+		String nextEpisode = (viewNextEpisode ? db.getNextEpisodeId(serieId, -1, false) : "-1");
+		String query;
+		if (!nextEpisode.equals("-1"))
+			query = "SELECT imdbId, episodeName FROM episodes WHERE id = '"+ nextEpisode +"' AND serieId='"+ serieId +"'";
+		else
+			query = "SELECT imdbId, serieName FROM series WHERE id = '" + serieId + "'";
 		Cursor c = db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			String imdbId = c.getString(0);
-			String serieName = c.getString(1);
+	    if (!nextEpisode.equals("-1") && imdbId.equals(serieIMDbId(serieId)))	// Sometimes the given episode's IMDb id is that of the show's
+	    	imdbId = "-1";	// So we want to search for the episode instead of go to the show's page 
+	    String name = c.getString(1);
 			c.close();
-			Intent imdb;
-			if (imdbId.equalsIgnoreCase("null") || imdbId.equals("")) {
-				imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/find?q=" + serieName));
-			} else {
-				imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/title/"+ imdbId));
-			}
+			String uri = "imdb:///";
+			Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
+	    if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
+	    	uri = "http://m.imdb.com/";
+			if (imdbId.indexOf("tt") == 0)
+				uri += "title/"+ imdbId;
+			else
+				uri += "find?q="+ (!nextEpisode.equals("-1") ? serieName.replaceAll(" \\(....\\)", "") +" " : "") + name;
+			Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 			startActivity(imdb);
 		}
 	}
 	
+	private String serieIMDbId(String serieId) {
+		String imdbId = "";
+		Cursor c = db.Query("SELECT imdbId, serieName FROM series WHERE id = '" + serieId + "'");
+		c.moveToFirst();
+		if (c != null && c.isFirst()) {
+			imdbId = c.getString(0);
+			c.close();
+		}
+		return imdbId;
+	}
+
 	private void updateSerie(String serieId, int pos) {
 		final String id = serieId;
 		final int oldListPosition = pos;
@@ -987,7 +1017,7 @@ public class droidseries extends ListActivity
 		public boolean onLongClick(View v) {
 	        final int position = getListView().getPositionForView(v);
 	        if (position != ListView.INVALID_POSITION) {
-	        	IMDbDetails(series.get(position).getSerieId());
+	        	IMDbDetails(series.get(position).getSerieId(), series.get(position).getName(), true);
 	        }
 			return true;
 		}

@@ -6,11 +6,11 @@ This fork adds a quite a bunch of features, including more show information, a m
 * Swipe left-to-right to go back  
 _In Shows Overview_:
 * Tap poster for show info
-* Long-press poster for IMDb
+* Long-press poster for next episode's IMDb
 * Swipe right-to-left to mark next as seen  
 _In Show Details_:
 * Tap poster for full-screen view
-* Click full-screen poster image for fan art
+* Click full-screen poster image for fan art  
 _In Show/Episode Details_:
 * Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage
 

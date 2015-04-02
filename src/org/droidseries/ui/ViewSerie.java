@@ -182,12 +182,16 @@ public class ViewSerie extends Activity
 	}
 	
 	public void IMDbDetails(View v) {
-		Intent imdb;
-		if (imdbId.equalsIgnoreCase("null") || imdbId.equals("")) {
-			imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/find?q=" + serieName));
+		String uri = "imdb:///";
+		Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
+    if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
+    	uri = "http://m.imdb.com/";
+		if (imdbId.indexOf("tt") == 0) {
+			uri += "title/"+ imdbId;
 		} else {
-			imdb = new Intent(Intent.ACTION_VIEW, Uri.parse("http://m.imdb.com/title/"+ imdbId));
+			uri += "find?q="+ serieName;
 		}
+		Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 		startActivity(imdb);
 	}
 	

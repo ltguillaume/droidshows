@@ -25,7 +25,8 @@
 <string name="menu_show_toggled">Show toggled</string>
 <string name="menu_hide_toggled">Hide toggled</string>
 <string name="menu_context_view_serie_details">Details</string>
-<string name="menu_context_view_imdb">View on IMDb</string>
+<string name="menu_context_view_imdb">View show on IMDb</string>
+<string name="menu_context_view_ep_imdb">View next episode on IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_clean_db">Clean database</string>
@@ -43,7 +44,7 @@
 \n&#187; Swipe left-to-right to go back
 \n\nIn Shows Overview:
 \n&#187; Tap poster for show info
-\n&#187; Long-press poster for IMDb
+\n&#187; Long-press poster for next episode\'s IMDb
 \n&#187; Swipe right-to-left to mark next as seen
 \n\nIn Show Details:
 \n&#187; Tap poster for full-screen view
