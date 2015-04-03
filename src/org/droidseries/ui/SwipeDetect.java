@@ -22,12 +22,12 @@ public class SwipeDetect implements View.OnTouchListener {
 			case MotionEvent.ACTION_MOVE:
 				float deltaX = onDownX - event.getX();
 				if (deltaX > v.getWidth() / 3) {	// > 0 = right-to-left
-					if (v.getContext() instanceof ViewSerie)
-						((Activity)v.getContext()).onBackPressed();
-					else
+					if (v.getContext() instanceof droidseries)
 						swipeDetected = true;	// mark next episode seen
+					else if (droidseries.switchSwipeDirection || v.getContext() instanceof ViewSerie)
+						((Activity)v.getContext()).onBackPressed();
 					return true;
-				} else if (-deltaX > v.getWidth() / 3) {
+				} else if (!droidseries.switchSwipeDirection && -deltaX > v.getWidth() / 3) {
 						((Activity)v.getContext()).onBackPressed();	// left-to-right: go back
 				}
 				break;

@@ -39,6 +39,7 @@
 <string name="dialog_last_season">Update shows\' last season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to check episode</string>
+<string name="dialog_switch_swipe_direction">Switch swipe direction for back</string>
 <string name="dialog_help">&#187; Don\'t forget to update all shows regularly
 \n&#187; Long-press items for more options
 \n&#187; Swipe left-to-right to go back

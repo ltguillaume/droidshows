@@ -34,6 +34,7 @@
 <string name="dialog_last_season">Alleen laatste seizoenen bijwerken</string>
 <string name="dialog_include_specials">Specials meetellen in overzicht</string>
 <string name="dialog_full_line_check">Hele regel gebruiken voor afvinken</string>
+<string name="dialog_switch_swipe_direction">Veegrichting voor terug omdraaien</string>
 <string name="dialog_help">&#187; Werk regelmatig de series bij
 \n&#187; Druk lang op items voor opties
 \n&#187; Veeg links-rechts om terug te gaan

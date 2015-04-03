@@ -113,6 +113,8 @@ public class droidseries extends ListActivity
 	public static boolean includeSpecialsOption;
 	private static final String FULL_LINE_CHECK_NAME = "full_line";
 	public static boolean fullLineCheckOption;
+	private static final String SWITCH_SWIPE_DIRECTION = "switch_swipe_direction";
+	public static boolean switchSwipeDirection;
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
 	private static boolean bUpdateShowTh = false;
@@ -157,6 +159,7 @@ public class droidseries extends ListActivity
 		lastSeasonOption = sharedPrefs.getInt(LAST_SEASON_PREF_NAME, UPDATE_ALL_SEASONS);
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
+		switchSwipeDirection = sharedPrefs.getBoolean(SWITCH_SWIPE_DIRECTION, false);
 
 		series = new ArrayList<TVShowItem>();
 		seriesAdapter = new SeriesAdapter(this, R.layout.row, series);
@@ -253,7 +256,7 @@ public class droidseries extends ListActivity
 				CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials);
 				includeSpecialsCheckbox.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
-						includeSpecialsOption = !includeSpecialsOption;
+						includeSpecialsOption ^= true;
 						db.updateShowStats();
 						getSeries();
 					}
@@ -262,10 +265,17 @@ public class droidseries extends ListActivity
 				CheckBox fullLineCheckbox = (CheckBox) about.findViewById(R.id.full_line_check);
 				fullLineCheckbox.setOnClickListener(new OnClickListener() {
 					public void onClick(View v) {
-						fullLineCheckOption = !fullLineCheckOption;
+						fullLineCheckOption ^= true;
 					}
 				});
 				fullLineCheckbox.setChecked(fullLineCheckOption);
+				CheckBox switchSwipeDirectionBox = (CheckBox) about.findViewById(R.id.switch_swipe_direction);
+				switchSwipeDirectionBox.setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {
+						switchSwipeDirection ^= true;
+					}
+				});
+				switchSwipeDirectionBox.setChecked(switchSwipeDirection);
 				m_AlertDlg = new AlertDialog.Builder(this)
 					.setView(about)
 					.setTitle(getString(R.string.layout_app_name)).setIcon(R.drawable.icon)
@@ -827,6 +837,7 @@ public class droidseries extends ListActivity
 		ed.putInt(LAST_SEASON_PREF_NAME, lastSeasonOption);
 		ed.putBoolean(INCLUDE_SPECIALS_NAME, includeSpecialsOption);
 		ed.putBoolean(FULL_LINE_CHECK_NAME, fullLineCheckOption);
+		ed.putBoolean(SWITCH_SWIPE_DIRECTION, switchSwipeDirection);
 		ed.commit();
 		if (updateShowTh != null) {
 			if (updateShowTh.isAlive()) {
