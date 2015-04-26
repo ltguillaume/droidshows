@@ -111,7 +111,10 @@ public class ViewSerie extends Activity
 			genreV.setText(genres.toString().replace("]", "").replace("[", ""));
 
 			TextView ratingV = (TextView) findViewById(R.id.rating);
-			ratingV.setText("IMDb: "+ rating);
+			if (!rating.equalsIgnoreCase("null") && !rating.equals(""))
+				ratingV.setText("IMDb: "+ rating);
+			else
+				ratingV.setText("IMDb Info");
 					
 			TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
 			if (!firstAired.equals("")) {
