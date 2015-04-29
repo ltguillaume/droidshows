@@ -204,13 +204,12 @@ public class ViewSerie extends Activity
 			if (posterURL.isEmpty() || posterURL.equalsIgnoreCase("null")) {
 				if (!fanartURL.isEmpty() && !fanartURL.equalsIgnoreCase("null")) {
 					posterURL = fanartURL;
-					fanartURL = "#";
 				} else {
 					return;
 				}
 			}
 			if (fanartURL.isEmpty() || fanartURL.equalsIgnoreCase("null"))
-				fanartURL = "#";
+				fanartURL = posterURL;
 
 			posterView.getSettings().setBuiltInZoomControls(true);
 			posterView.getSettings().setLoadWithOverviewMode(true);
@@ -228,17 +227,13 @@ public class ViewSerie extends Activity
 	private class WebViewHandler extends WebViewClient {
 		@Override
 		public boolean shouldOverrideUrlLoading(WebView v, String url) {
-			if (url.equals("#")) {
-				return false;
-			} else {
-				String img = posterURL, a = "ds:fanart";
-				if (url.equals("ds:fanart")) {
-					img = fanartURL;
-					a = "ds:poster";
-				}
-				v.loadData(getURL(img, a), "text/html", "UTF-8");
-				return true;
+			String img = posterURL, a = "ds:fanart";
+			if (url.equals("ds:fanart")) {
+				img = fanartURL;
+				a = "ds:poster";
 			}
+			v.loadData(getURL(img, a), "text/html", "UTF-8");
+			return true;
 		}
 	}
 	
