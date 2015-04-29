@@ -228,11 +228,9 @@ public class TheTVDB {
                 try{
                     Episode episode = parseEpisode( (List<String>)xml_episodes.get(i) );
                     if (episode != null) {
-                        if(episode.getEpisodeName() != null) {
-                            if(!episode.getEpisodeName().equals("")) {
-                                episodes.add(episode);
-                            }
-                        }
+                        if(episode.getEpisodeName() == null || episode.getEpisodeName().equals(""))
+                        	episode.setEpisodeName(" ");
+                        episodes.add(episode);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error gathering the episodes info from the XML file");
