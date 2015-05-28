@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.droidseries.thetvdb.TheTVDB;
 import org.droidseries.thetvdb.model.Serie;
@@ -25,6 +26,7 @@ import org.droidseries.utils.SQLiteStore;
 import org.droidseries.utils.Utils;
 import org.droidseries.utils.Update;
 import org.droidseries.R;
+
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -301,9 +303,12 @@ public class droidseries extends ListActivity
 	}
 
 	public void toggleFilter() {
+		asyncInfo.cancel(true);
 		filterOption ^= 1;
 		getSeries();
 		listView.post(updateListView);
+		asyncInfo = new AsyncInfo();
+		asyncInfo.execute();
 	}
 
 	public void toggleSort() {
