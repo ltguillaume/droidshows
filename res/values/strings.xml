@@ -29,7 +29,15 @@
 <string name="menu_context_view_ep_imdb">View next episode on IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>
 <string name="dialog_OK">OK</string>
-<string name="dialog_clean_db">Clean database</string>
+<string name="dialog_clean_db">Clean</string>
+<string name="dialog_backup">Backup</string>
+<string name="dialog_backup_done">Database backup completed</string>
+<string name="dialog_backup_failed">Unable to perform backup!</string>
+<string name="dialog_restore">Restore</string>
+<string name="dialog_restore_now">Restoring a backup will remove all information currently in DroidSeries. Continue?</string>
+<string name="dialog_restore_done">Database restored successfully</string>
+<string name="dialog_restore_failed">Unable to restore database!</string>
+<string name="dialog_restore_notfound">Could not find backup on external storage!</string>
 <string name="dialog_title_delete">Delete show?</string>
 <string name="dialog_delete">Are you sure you want to delete %s?</string>
 <string name="dialog_Cancel">Cancel</string>
@@ -54,7 +62,6 @@
 \n&#187; Tap IMDb rating to view in IMDb</string>
 <string name="menu_toggle">Toggle status</string>
 <string name="messages_title_updating_all_series">Updating all shows</string>
-<string name="messages_title_updating_serie">Updating show</string>
 <string name="messages_title_updating_db">Updating database</string>
 <string name="messages_update_serie">Gathering show information…</string>
 <string name="messages_no_internet">No Internet connection is available</string>

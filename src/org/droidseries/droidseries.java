@@ -1,12 +1,14 @@
 package org.droidseries;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.util.Log;
@@ -119,9 +122,7 @@ public class droidseries extends ListActivity
 	public static boolean switchSwipeDirection;
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
-	private static boolean bUpdateShowTh = false;
 	public static Thread updateAllShowsTh = null;
-	private static boolean bUpdateAllShowsTh = false;
 	private String toastMessage;
 	public static SQLiteStore db;
 	public static List<TVShowItem> series = null;
@@ -205,20 +206,19 @@ public class droidseries extends ListActivity
 		}
 		if (sortOption == SORT_BY_LAST_UNSEEN) {
 			menu.findItem(SORT_MENU_ITEM).setIcon(SORT_BY_NAME_ICON);
-			menu.findItem(SORT_MENU_ITEM).setTitle(getString(R.string.menu_sort_az));
+			menu.findItem(SORT_MENU_ITEM).setTitle(R.string.menu_sort_az);
 		} else {
 			menu.findItem(SORT_MENU_ITEM).setIcon(SORT_BY_LAST_UNSEEN_ICON);
-			menu.findItem(SORT_MENU_ITEM).setTitle(getString(R.string.menu_sort_last_unseen));
+			menu.findItem(SORT_MENU_ITEM).setTitle(R.string.menu_sort_last_unseen);
 		}
 		if (filterOption == FILTER_DISABLED) {
-			menu.findItem(TOGGLE_FILTER_MENU_ITEM).setTitle(getString(R.string.menu_hide_toggled));
+			menu.findItem(TOGGLE_FILTER_MENU_ITEM).setTitle(R.string.menu_hide_toggled);
 		} else {
-			menu.findItem(TOGGLE_FILTER_MENU_ITEM).setTitle(getString(R.string.menu_show_toggled));
+			menu.findItem(TOGGLE_FILTER_MENU_ITEM).setTitle(R.string.menu_show_toggled);
 		}
 		return super.onPrepareOptionsMenu(menu);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -235,59 +235,7 @@ public class droidseries extends ListActivity
 				if (!db.unsetCleanUp()) updateAllSeries();
 				break;
 			case ABOUT_MENU_ITEM :
-				if (m_AlertDlg != null) {
-					m_AlertDlg.cancel();
-				}
-				View about = View.inflate(this, R.layout.alert_about, null);
-				TextView changelog = (TextView) about.findViewById(R.id.copyright);
-				try {
-					changelog.setText(getString(R.string.copyright)
-						.replace("{v}", getPackageManager().getPackageInfo(getPackageName(), 0).versionName)
-						.replace("{y}", new Date().getYear()+1900 +""));
-					changelog.setTextColor(changelog.getTextColors().getDefaultColor());
-				} catch (NameNotFoundException e) {
-					e.printStackTrace();
-				}
-				CheckBox lastSeasonCheckbox = (CheckBox) about.findViewById(R.id.last_season);
-				lastSeasonCheckbox.setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {
-						lastSeasonOption ^= 1;
-					}
-				});
-				lastSeasonCheckbox.setChecked(lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
-				CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials);
-				includeSpecialsCheckbox.setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {
-						includeSpecialsOption ^= true;
-						db.updateShowStats();
-						getSeries();
-					}
-				});
-				includeSpecialsCheckbox.setChecked(includeSpecialsOption);
-				CheckBox fullLineCheckbox = (CheckBox) about.findViewById(R.id.full_line_check);
-				fullLineCheckbox.setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {
-						fullLineCheckOption ^= true;
-					}
-				});
-				fullLineCheckbox.setChecked(fullLineCheckOption);
-				CheckBox switchSwipeDirectionBox = (CheckBox) about.findViewById(R.id.switch_swipe_direction);
-				switchSwipeDirectionBox.setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {
-						switchSwipeDirection ^= true;
-					}
-				});
-				switchSwipeDirectionBox.setChecked(switchSwipeDirection);
-				m_AlertDlg = new AlertDialog.Builder(this)
-					.setView(about)
-					.setTitle(getString(R.string.layout_app_name)).setIcon(R.drawable.icon)
-					.setNeutralButton(getString(R.string.dialog_clean_db), new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							cleanUp();
-						}
-					})
-					.show();
-				m_AlertDlg.setCanceledOnTouchOutside(true);
+				aboutDialog();
 				break;
 			case UNDO_MENU_ITEM :
 				markLastEpUnseen();
@@ -301,8 +249,140 @@ public class droidseries extends ListActivity
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
+	private void aboutDialog() {
+		if (m_AlertDlg != null) {
+			m_AlertDlg.cancel();
+		}
+		View about = View.inflate(this, R.layout.alert_about, null);
+		TextView changelog = (TextView) about.findViewById(R.id.copyright);
+		try {
+			changelog.setText(getString(R.string.copyright)
+				.replace("{v}", getPackageManager().getPackageInfo(getPackageName(), 0).versionName)
+				.replace("{y}", new Date().getYear()+1900 +""));
+			changelog.setTextColor(changelog.getTextColors().getDefaultColor());
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		CheckBox lastSeasonCheckbox = (CheckBox) about.findViewById(R.id.last_season);
+		lastSeasonCheckbox.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				lastSeasonOption ^= 1;
+			}
+		});
+		lastSeasonCheckbox.setChecked(lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+		CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials);
+		includeSpecialsCheckbox.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				includeSpecialsOption ^= true;
+				db.updateShowStats();
+				getSeries();
+			}
+		});
+		includeSpecialsCheckbox.setChecked(includeSpecialsOption);
+		CheckBox fullLineCheckbox = (CheckBox) about.findViewById(R.id.full_line_check);
+		fullLineCheckbox.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				fullLineCheckOption ^= true;
+			}
+		});
+		fullLineCheckbox.setChecked(fullLineCheckOption);
+		CheckBox switchSwipeDirectionBox = (CheckBox) about.findViewById(R.id.switch_swipe_direction);
+		switchSwipeDirectionBox.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				switchSwipeDirection ^= true;
+			}
+		});
+		switchSwipeDirectionBox.setChecked(switchSwipeDirection);
+		m_AlertDlg = new AlertDialog.Builder(this)
+			.setView(about)
+			.setTitle(R.string.layout_app_name).setIcon(R.drawable.icon)
+			.setPositiveButton(getString(R.string.dialog_clean_db), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					cleanUp();
+				}
+			})
+			.setNeutralButton(getString(R.string.dialog_backup), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					asyncInfo.cancel(true);
+					int toastTxt = R.string.dialog_backup_done;
+					File source = new File(getApplicationInfo().dataDir +"/databases/droidseries.db");
+					File destination = new File(Environment.getExternalStorageDirectory(), "droidseries.db");
+					if (destination.exists()) {
+						try {
+							backupRestore(destination, new File(Environment.getExternalStorageDirectory(), "droidseries.db.previous"));
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					try {
+						backupRestore(source, destination);
+					} catch (IOException e) {
+						toastTxt = R.string.dialog_backup_failed;
+						e.printStackTrace();
+					}
+					Toast.makeText(getApplicationContext(), toastTxt, Toast.LENGTH_LONG).show();
+				}
+			})
+			.setNegativeButton(getString(R.string.dialog_restore), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					new AlertDialog.Builder(droidseries.this)
+					.setTitle(R.string.dialog_restore)
+					.setMessage(R.string.dialog_restore_now)
+					.setPositiveButton(R.string.dialog_OK, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							asyncInfo.cancel(true);
+							int toastTxt = R.string.dialog_restore_done;
+							File source = new File(Environment.getExternalStorageDirectory(), "droidseries.db");
+							if (source.exists()) {
+								File destination = new File(getApplicationInfo().dataDir +"/databases/droidseries.db");
+								try {
+									backupRestore(source, destination);
+									updateDS.updateDroidSeries();
+									getSeries();
+									updateAllSeries();
+								} catch (IOException e) {
+									toastTxt = R.string.dialog_restore_failed;
+									e.printStackTrace();
+								}
+							} else {
+								toastTxt = R.string.dialog_restore_notfound;
+							}
+							Toast.makeText(getApplicationContext(), toastTxt, Toast.LENGTH_LONG).show();
+						}
+					})
+					.setNegativeButton(R.string.dialog_Cancel, null)
+					.show();
+				}
+			})
+			.show();
+		m_AlertDlg.setCanceledOnTouchOutside(true);
+	}
+		
+	private void backupRestore(File source, File destination) throws IOException {
+		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+			
+			db.close();
+			FileChannel sourceCh = null, destinationCh = null;
+			try {
+				sourceCh = new FileInputStream(source).getChannel();
+				if (destination.exists()) destination.delete();
+				destination.createNewFile();
+				destinationCh = new FileOutputStream(destination).getChannel();
+				destinationCh.transferFrom(sourceCh, 0, sourceCh.size());
+			} finally {
+				if (sourceCh != null) {
+					sourceCh.close();
+				}
+				if (destinationCh != null) {
+					destinationCh.close();
+				}
+			}
+			db.openDataBase();
+		}
+	}
 
-	public void toggleFilter() {
+	private void toggleFilter() {
 		asyncInfo.cancel(true);
 		filterOption ^= 1;
 		getSeries();
@@ -380,13 +460,13 @@ public class droidseries extends ListActivity
 					}
 				};
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-				alertDialog.setTitle(getString(R.string.dialog_title_delete));
-				alertDialog.setMessage(String.format(getString(R.string.dialog_delete), db.getSerieName(series.get(info.position).getSerieId())));
+				alertDialog.setTitle(R.string.dialog_title_delete);
+				alertDialog.setMessage(String.format(getString(R.string.dialog_delete), series.get(info.position).getName()));
 				alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
 				alertDialog.setCancelable(false);
 				alertDialog.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						deleteTh = new Thread(null, deleteserie, "MagentoBackground");
+						deleteTh = new Thread(deleteserie);
 						deleteTh.start();
 						return;
 					}
@@ -419,7 +499,7 @@ public class droidseries extends ListActivity
 				serieSeasons.putExtra("serieId", serieId);
 				startActivity(serieSeasons);
 			} catch (Exception e) {
-				Log.e(TAG, e.getMessage());
+				e.printStackTrace();
 			}
 		}
 	}
@@ -538,10 +618,7 @@ public class droidseries extends ListActivity
 						Toast.makeText(getApplicationContext(), "Could not connect to TheTVDb", Toast.LENGTH_LONG).show();
 						Looper.loop();
 					}
-					if (!bUpdateShowTh) {
-						m_ProgressDialog.dismiss();
-						bUpdateShowTh = false;
-					}
+					m_ProgressDialog.dismiss();
 					theTVDB = null;
 					final TVShowItem newSerie = createTVShowItem(id);
 					series.set(oldListPosition, newSerie);
@@ -561,13 +638,11 @@ public class droidseries extends ListActivity
 					}
 				}
 			};
-			updateShowTh = new Thread(null, updateserierun, "MagentoBackground");
+			m_ProgressDialog = ProgressDialog.show(droidseries.this, series.get(pos).getName(), getString(R.string.messages_update_serie), true);
+			updateShowTh = new Thread(updateserierun);
 			updateShowTh.start();
-			m_ProgressDialog = ProgressDialog.show(droidseries.this, getString(R.string.messages_title_updating_serie), getString(R.string.messages_update_serie), true);
 		} else {
-			CharSequence text = getString(R.string.messages_no_internet);
-			Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
-			toast.show();
+			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 		}
 	}
 	
@@ -639,30 +714,13 @@ public class droidseries extends ListActivity
 		}
 	};
 	
-	public synchronized void startUpdateAllShowsTh() {
-		if (updateAllShowsTh == null) {
-			updateAllShowsTh = new Thread();
-			updateAllShowsTh.start();
-		}
-	}
-
-	public synchronized void stopUpdateAllShowsTh() {
-		if (updateAllShowsTh != null) {
-			Thread moribund = updateAllShowsTh;
-			updateAllShowsTh = null;
-			moribund.interrupt();
-		}
-	}
-
 	private void cleanUp() {
 		if (db.setCleanUp()) updateAllSeries();
 	}
 
 	private void updateAllSeries() {
 		if (!utils.isNetworkAvailable(droidseries.this)) {
-			CharSequence text = getString(R.string.messages_no_internet);
-			Toast toast = Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG);
-			toast.show();
+			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 		} else {
 			final Runnable updateMessage = new Runnable() {
 				public void run() {
@@ -673,37 +731,32 @@ public class droidseries extends ListActivity
 				public void run() {
 					theTVDB = new TheTVDB("8AC675886350B3C3");
 					for (int i = 0; i < series.size(); i++) {
-						if (bUpdateAllShowsTh) {
-							stopUpdateAllShowsTh();
-							bUpdateAllShowsTh = false;
-							return;
-						}
-						Log.d(TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName() +" ["+ i +"/"+ series.size() +"]");
-						toastMessage = getString(R.string.messages_title_updating_serie) + ":\n" + series.get(i).getName() + "…";
+						Log.d(TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName() +" ["+ i +"/"+ (series.size()-1) +"]");
+						toastMessage = series.get(i).getName() + "…";
 						runOnUiThread(updateMessage);
 						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), getString(R.string.lang_code));
-						Log.d(TAG, "Updating the database");
-						try {
-							db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
-							updatePosterThumb(series.get(i).getSerieId(), sToUpdate);
-						} catch (Exception e) {
-						}
-						if (!bUpdateAllShowsTh) {
+						if (sToUpdate != null) {
+							Log.d(TAG, "Updating the database");
+							try {
+								db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+								updatePosterThumb(series.get(i).getSerieId(), sToUpdate);
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 							updateAllSeriesPD.incrementProgressBy(1);
+						} else {
+							Log.e(TAG, "Skipped this show (no data received)");
 						}
 					}
-					if (!bUpdateAllShowsTh) {
-						getSeries();
-						updateAllSeriesPD.dismiss();
-						bUpdateAllShowsTh = false;
-					}
+					getSeries();
+					updateAllSeriesPD.dismiss();
 					theTVDB = null;
 					listView.post(updateListView);
 				}
 			};
 			updateAllSeriesPD = new ProgressDialog(this);
 			AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-			alertDialog.setTitle(getString(R.string.messages_title_update_all_series));
+			alertDialog.setTitle(R.string.messages_title_update_all_series);
 			String updateMessageAD = getString(R.string.dialog_update_all_series) + (lastSeasonOption == UPDATE_ALL_SEASONS ? getString(R.string.dialog_update_speedup) : "");
 			alertDialog.setMessage(updateMessageAD);
 			alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
@@ -711,13 +764,13 @@ public class droidseries extends ListActivity
 			alertDialog.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					updateAllSeriesPD.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-					updateAllSeriesPD.setTitle(getString(R.string.messages_title_updating_all_series));
+					updateAllSeriesPD.setTitle(R.string.messages_title_updating_all_series);
 					updateAllSeriesPD.setMessage(getString(R.string.messages_update_all_series));
 					updateAllSeriesPD.setCancelable(false);
 					updateAllSeriesPD.setMax(series.size());
 					updateAllSeriesPD.setProgress(0);
 					updateAllSeriesPD.show();
-					updateAllShowsTh = new Thread(null, updateallseries, "MagentoBackground");
+					updateAllShowsTh = new Thread(updateallseries);
 					updateAllShowsTh.start();
 					return;
 				}
@@ -844,11 +897,6 @@ public class droidseries extends ListActivity
 		ed.putBoolean(FULL_LINE_CHECK_NAME, fullLineCheckOption);
 		ed.putBoolean(SWITCH_SWIPE_DIRECTION, switchSwipeDirection);
 		ed.commit();
-		if (updateShowTh != null) {
-			if (updateShowTh.isAlive()) {
-				bUpdateShowTh = true;
-			}
-		}
 	}
 	
 	@Override

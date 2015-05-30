@@ -131,10 +131,8 @@ public class AddSerie extends ListActivity
 			search_series = theTVDB.searchSeries(searchQuery, getString(R.string.lang_code));
 			if (search_series == null) {
 				m_ProgressDialog.dismiss();
-				CharSequence text = getText(R.string.messages_thetvdb_con_error);
-				int duration = Toast.LENGTH_LONG;
 				Looper.prepare();
-				Toast.makeText(getApplicationContext(), text, duration).show();
+				Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
 				Looper.loop();
 			} else {
 				runOnUiThread(reloadSearchSeries);
@@ -198,10 +196,8 @@ public class AddSerie extends ListActivity
 				Serie sToAdd = theTVDB.getSerie(s.getId(), getString(R.string.lang_code));
 				if (sToAdd == null) {
 					m_ProgressDialog.dismiss();
-					CharSequence text = getText(R.string.messages_thetvdb_con_error);
-					int duration = Toast.LENGTH_LONG;
 					Looper.prepare();
-					Toast.makeText(getApplicationContext(), text, duration).show();
+					Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
 					Looper.loop();
 				} else {
 					Log.d(TAG, "Adding TV show: getting the poster");
@@ -317,10 +313,8 @@ public class AddSerie extends ListActivity
 					}
 					if (sucesso) {
 						CharSequence text = String.format(getString(R.string.messages_series_success), sToAdd.getSerieName());
-						int duration = Toast.LENGTH_LONG;
 						Looper.prepare();
-						Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-						toast.show();
+						Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
 						Looper.loop();
 					}
 				}
@@ -354,10 +348,7 @@ public class AddSerie extends ListActivity
 			if (utils.isNetworkAvailable(AddSerie.this)) {
 				Search();
 			} else {
-				CharSequence text = getString(R.string.messages_no_internet);
-				int duration = Toast.LENGTH_LONG;
-				Toast toast = Toast.makeText(getApplicationContext(), text, duration);
-				toast.show();
+				Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 			}
 		}
 		lv = getListView();

@@ -35,10 +35,10 @@ public class XMLParser {
                     int retry = 0;
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
                     con.setRequestMethod("GET");
-                    while(retry < 2) {
+                    while(retry < 5) {
                         if(con.getResponseCode() == HttpURLConnection.HTTP_OK) {
                             InputStream inputStream = new BufferedInputStream(url.openStream());
-                            InputSource inputSourceURL =  new InputSource(inputStream);
+                            InputSource inputSourceURL = new InputSource(inputStream);
                             xr.parse(inputSourceURL);
                             break;
                         }

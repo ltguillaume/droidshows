@@ -24,7 +24,15 @@
 <string name="menu_context_view_ep_imdb">Aflevering bekijken op IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
 <string name="dialog_OK">OK</string>
-<string name="dialog_clean_db">Database opschonen</string>
+<string name="dialog_clean_db">Opschonen</string>
+<string name="dialog_backup">Backup maken</string>
+<string name="dialog_backup_done">Backup voltooid</string>
+<string name="dialog_backup_failed">Kon backup niet voltooien!</string>
+<string name="dialog_restore">Herstellen</string>
+<string name="dialog_restore_now">Het herstellen van een database zal de huidige informatie in DroidSeries verwijderen. Doorgaan?</string>
+<string name="dialog_restore_done">Database hersteld</string>
+<string name="dialog_restore_failed">Kon herstel niet voltooien!</string>
+<string name="dialog_restore_notfound">Geen backup gevonden op externe opslag!</string>
 <string name="dialog_title_delete">Serie verwijderen?</string>
 <string name="dialog_delete">Weet je zeker dat je de serie %s wilt verwijderen?</string>
 <string name="dialog_Cancel">Annuleren</string>
@@ -49,7 +57,6 @@
 \n&#187; Klik op IMDb-score voor IMDb-pagina</string>
 <string name="menu_toggle">Status […] veranderen</string>
 <string name="messages_title_updating_all_series">Alle series bijwerken</string>
-<string name="messages_title_updating_serie">Bijwerken van serie</string>
 <string name="messages_title_updating_db">Database bijwerken</string>
 <string name="messages_update_serie">Downloaden nieuwe gegevens…</string>
 <string name="messages_no_internet">Er is geen internetverbinding</string>
