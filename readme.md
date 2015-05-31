@@ -14,7 +14,8 @@ __In Show Details__:
 __In Show/Episode Details__:
 * Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage
 
-[DroidShows Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
+[Homepage](ltguillaume.github.io/DroidShows)
+[Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
 [XDA Forum post (in original DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
 __Download APK__: from XDA forum post or [here](https://github.com/ltGuillaume/DroidShows/tree/master/apk)
@@ -64,7 +65,7 @@ __Other__:
 \+ Animations that help understand the app's structure  
 \+ Backup/restore database  
 \* Date/time format according to locale  
-\* Big performance improvement for Overview activity: is almost instant (values are kept up-to-date in series table)  
+\* Big performance improvement for Overview activity (values are kept up-to-date in series table)  
 \* Some progress dialogs cancelable  
 \* Update of all shows continues when navigating away from DroidShows  
 \* Screen off/rotating screen/navigating away from app during update kinda OK now  
