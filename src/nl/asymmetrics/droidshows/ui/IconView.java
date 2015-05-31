@@ -1,4 +1,4 @@
-package org.droidseries.ui;
+package nl.asymmetrics.droidshows.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;

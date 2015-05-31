@@ -1,15 +1,18 @@
-package org.droidseries.ui;
+package nl.asymmetrics.droidshows.ui;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import org.droidseries.droidseries;
-import org.droidseries.R;
+
+import nl.asymmetrics.droidshows.DroidShows;
+import nl.asymmetrics.droidshows.R;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+
 import java.text.ParseException;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -26,8 +29,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.TextView;
 
 public class SerieEpisodes extends ListActivity {
-
-	private final String TAG = "DroidSeries";
 	private EpisodesAdapter episodesAdapter;
 	private String serieName;
 	private String serieId;
@@ -45,10 +46,10 @@ public class SerieEpisodes extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.serie_episodes);
 		serieId = getIntent().getStringExtra("serieId");
-		serieName = droidseries.db.getSerieName(serieId);
+		serieName = DroidShows.db.getSerieName(serieId);
 		seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
 		setTitle(serieName +" - "+ (seasonNumber == 0 ? getString(R.string.messages_specials) : getString(R.string.messages_season) +" "+ seasonNumber));
-		episodes = droidseries.db.getEpisodes(serieId, seasonNumber);
+		episodes = DroidShows.db.getEpisodes(serieId, seasonNumber);
 		episodesAdapter = new EpisodesAdapter(this, R.layout.row_serie_episodes, episodes);
 		setListAdapter(episodesAdapter);
 		listView = getListView();
@@ -73,8 +74,8 @@ public class SerieEpisodes extends ListActivity {
 			String query;
 			query = "DELETE FROM episodes WHERE serieId='" + serieId + "' "
 				+ "AND id = '" + episodes.get(info.position) + "'";
-			Log.d(TAG, query);
-			droidseries.db.execQuery(query);
+			Log.d(DroidShows.TAG, query);
+			DroidShows.db.execQuery(query);
 			episodes.remove(info.position);
 			episodesAdapter.notifyDataSetChanged();
 			return true;
@@ -85,19 +86,19 @@ public class SerieEpisodes extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		if (droidseries.fullLineCheckOption) {
+		if (DroidShows.fullLineCheckOption) {
 			try {
-				droidseries.db.updateUnwatchedEpisode(serieId, episodes.get(position));
+				DroidShows.db.updateUnwatchedEpisode(serieId, episodes.get(position));
 				CheckBox c = (CheckBox) v.findViewById(R.id.seen);
 				c.setChecked(!c.isChecked());
 			} catch (Exception e) {
-				Log.e(TAG, "Could not set episode seen state: "+ e.getMessage());
+				Log.e(DroidShows.TAG, "Could not set episode seen state: "+ e.getMessage());
 			}
 		} else {
 			try {
 				startViewEpisode(episodes.get(position));
 			} catch (Exception e) {
-				Log.e(TAG, e.getMessage());
+				Log.e(DroidShows.TAG, e.getMessage());
 			}
 		}
 	}
@@ -132,7 +133,7 @@ public class SerieEpisodes extends ListActivity {
 			String episodeId = items.get(position);
 			String query = "SELECT episodeName, episodeNumber, seen, firstAired FROM episodes WHERE id='"
 					+ episodeId + "' AND serieId='" + serieId + "'";
-			Cursor c = droidseries.db.Query(query);
+			Cursor c = DroidShows.db.Query(query);
 			c.moveToFirst();
 
 			if (c != null) {
@@ -148,7 +149,7 @@ public class SerieEpisodes extends ListActivity {
 						Format formatter = SimpleDateFormat.getDateInstance();
 						aired = formatter.format(sdf.parse(aired));
 					} catch (ParseException e) {
-						Log.e(TAG, e.getMessage());
+						Log.e(DroidShows.TAG, e.getMessage());
 					}
 				} else {
 					aired = "";
@@ -180,9 +181,9 @@ public class SerieEpisodes extends ListActivity {
 	public void check(View v) {
 		int position = getListView().getPositionForView(v);
 		try {
-			droidseries.db.updateUnwatchedEpisode(serieId, episodes.get(position));
+			DroidShows.db.updateUnwatchedEpisode(serieId, episodes.get(position));
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
+			Log.e(DroidShows.TAG, e.getMessage());
 		}
 	}
 

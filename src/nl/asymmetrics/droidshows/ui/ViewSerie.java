@@ -1,18 +1,21 @@
-package org.droidseries.ui;
+package nl.asymmetrics.droidshows.ui;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.droidseries.droidseries;
-import org.droidseries.R;
+
+import nl.asymmetrics.droidshows.DroidShows;
+import nl.asymmetrics.droidshows.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+
 import java.text.ParseException;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,7 +46,7 @@ public class ViewSerie extends Activity
 	
 		String query = "SELECT serieName, posterThumb, poster, fanart, overview, status, firstAired, airsDayOfWeek, "
 			+ "airsTime, runtime, network, rating, contentRating, imdbId FROM series WHERE id = '" + serieId + "'";
-		Cursor c = droidseries.db.Query(query);
+		Cursor c = DroidShows.db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			int snameCol = c.getColumnIndex("serieName");
@@ -99,7 +102,7 @@ public class ViewSerie extends Activity
 			catch (Exception e) {}
 					
 			List<String> genres = new ArrayList<String>();
-			Cursor cgenres = droidseries.db.Query("SELECT genre FROM genres WHERE serieId='"+ serieId + "'");
+			Cursor cgenres = DroidShows.db.Query("SELECT genre FROM genres WHERE serieId='"+ serieId + "'");
 			cgenres.moveToFirst();
 			if (cgenres != null && cgenres.isFirst()) {
 				do {
@@ -124,7 +127,7 @@ public class ViewSerie extends Activity
 					Format formatter = SimpleDateFormat.getDateInstance();
 					firstAired = formatter.format(epDate);
 				} catch (ParseException e) {
-					Log.e("DroidSeries", e.getMessage());
+					Log.e(DroidShows.TAG, e.getMessage());
 				}
 			}
 			if (!status.equalsIgnoreCase("null"))
@@ -144,7 +147,7 @@ public class ViewSerie extends Activity
 						Format formatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT);
 						airtime = formatter.format(epDate);
 					} catch (ParseException e) {
-						Log.e("DroidSeries", e.getMessage());
+						Log.e(DroidShows.TAG, e.getMessage());
 					}
 					airtimeV.setVisibility(View.VISIBLE);
 					airtimeV.setText(airday +" "+ getString(R.string.messages_at) +" "+ airtime);
@@ -158,7 +161,7 @@ public class ViewSerie extends Activity
 			serieOverviewV.setText(serieOverview);
 
 			List<String> actors = new ArrayList<String>();
-			Cursor cactors = droidseries.db.Query("SELECT actor FROM actors WHERE serieId='"+ serieId + "'");
+			Cursor cactors = DroidShows.db.Query("SELECT actor FROM actors WHERE serieId='"+ serieId + "'");
 			cactors.moveToFirst();
 			if (cactors != null && cactors.isFirst()) {
 				do {

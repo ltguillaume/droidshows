@@ -1,8 +1,9 @@
-package org.droidseries.thetvdb.model;
+package nl.asymmetrics.droidshows.thetvdb.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.droidseries.utils.SQLiteStore;
+
+import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
@@ -292,7 +293,7 @@ public class Episode
 			+"', "+ this.seasonNumber +", '"+ this.absoluteNumber +"', '"+ this.filename +"', '"+ this.lastUpdated
 			+"', '"+ this.seasonId +"', "+ iseen +");");
 		} catch (SQLiteException e) {
-			Log.e("DroidSeries", e.getMessage());
+			Log.e("DroidShows", e.getMessage());
 			return false;
 		}
 		return true;

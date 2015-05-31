@@ -1,5 +1,5 @@
-# DroidSeries<img src="https://github.com/ltGuillaume/DroidSeries/raw/master/icon/icon5a.png" align="right"/>
-DroidSeries-Guillaume: 2015 Reboot of DroidSeries TV Show Tracker  
+# DroidShows<img src="https://github.com/ltGuillaume/DroidShows/raw/master/icon/icon5a.png" align="right"/>
+DroidShows-Guillaume: 2015 Reboot of DroidSeries TV Show Tracker  
 This fork adds a quite a bunch of features, among which a menu overflow button, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
 * Don't forget to update all shows regularly
 * Long-press items for more options
@@ -16,7 +16,7 @@ _In Show/Episode Details_:
 
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
 [XDA Forum post (in original DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
-__Download APK__: from XDA forum post or [here](https://github.com/ltGuillaume/DroidSeries/tree/master/apk)
+__Download APK__: from XDA forum post or [here](https://github.com/ltGuillaume/DroidShows/tree/master/apk)
 
 __Shows Overview__:  
 \+ Showing "[aired unwatched] of [total unwatched]"  
@@ -65,7 +65,7 @@ __Other__:
 \* Date/time format according to locale  
 \* Big performance improvement for Overview activity: is almost instant (values are kept up-to-date in series table)  
 \* Some progress dialogs cancelable  
-\* Update of all shows continues when navigating away from DroidSeries  
+\* Update of all shows continues when navigating away from DroidShows  
 \* Screen off/rotating screen/navigating away from app during update kinda OK now  
 \* [Exit] removes app from memory  
 \* Fixed UI glitches/styles  

@@ -1,9 +1,10 @@
-package org.droidseries.thetvdb.model;
+package nl.asymmetrics.droidshows.thetvdb.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.droidseries.droidseries;
-import org.droidseries.utils.SQLiteStore;
+
+import nl.asymmetrics.droidshows.DroidShows;
+import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteException;
 import android.text.TextUtils;
@@ -283,10 +284,10 @@ public class Serie {
                 this.episodes.get(e).saveToDB(SQLS);
             }
             
-            droidseries.db.updateShowStats(this.id);
+            DroidShows.db.updateShowStats(this.id);
 
         } catch(SQLiteException e){
-            Log.e("DroidSeries", e.getMessage());
+            Log.e("DroidShows", e.getMessage());
             return false;
         }
 

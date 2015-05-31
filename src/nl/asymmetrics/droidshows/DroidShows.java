@@ -1,4 +1,4 @@
-package org.droidseries;
+package nl.asymmetrics.droidshows;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -17,18 +17,18 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.droidseries.thetvdb.TheTVDB;
-import org.droidseries.thetvdb.model.Serie;
-import org.droidseries.thetvdb.model.TVShowItem;
-import org.droidseries.ui.IconView;
-import org.droidseries.ui.SerieSeasons;
-import org.droidseries.ui.SwipeDetect;
-import org.droidseries.ui.ViewSerie;
-import org.droidseries.utils.SQLiteStore;
-import org.droidseries.utils.Utils;
-import org.droidseries.utils.Update;
-import org.droidseries.R;
 
+import nl.asymmetrics.droidshows.R;
+import nl.asymmetrics.droidshows.thetvdb.TheTVDB;
+import nl.asymmetrics.droidshows.thetvdb.model.Serie;
+import nl.asymmetrics.droidshows.thetvdb.model.TVShowItem;
+import nl.asymmetrics.droidshows.ui.IconView;
+import nl.asymmetrics.droidshows.ui.SerieSeasons;
+import nl.asymmetrics.droidshows.ui.SwipeDetect;
+import nl.asymmetrics.droidshows.ui.ViewSerie;
+import nl.asymmetrics.droidshows.utils.SQLiteStore;
+import nl.asymmetrics.droidshows.utils.Update;
+import nl.asymmetrics.droidshows.utils.Utils;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -66,7 +66,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 
-public class droidseries extends ListActivity
+public class DroidShows extends ListActivity
 {
 	public static String VERSION = "0.1.5-7G";
 	/* Menus */
@@ -88,7 +88,7 @@ public class droidseries extends ListActivity
 	private static final int DELETE_CONTEXT = UPDATE_CONTEXT + 1;
 	public static String on;
 	private static AlertDialog m_AlertDlg;
-	private final static String TAG = "DroidSeries";
+	public final static String TAG = "DroidShows";
 	private static ProgressDialog m_ProgressDialog = null;
 	private static ProgressDialog updateAllSeriesPD = null;
 	public static SeriesAdapter seriesAdapter;
@@ -98,7 +98,7 @@ public class droidseries extends ListActivity
 	private static TheTVDB theTVDB;
 	private Utils utils = new Utils();
 	private Update updateDS = new Update();
-	private static final String PREF_NAME = "DroidSeriesPref";
+	private static final String PREF_NAME = "DroidShowsPref";
 	private SharedPreferences sharedPrefs;
 	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
@@ -152,7 +152,7 @@ public class droidseries extends ListActivity
 			}
 		}
 
-		if(updateDS.updateDroidSeries())
+		if(updateDS.updateDroidShows())
 			db.updateShowStats();
 
 		// Preferences
@@ -306,11 +306,11 @@ public class droidseries extends ListActivity
 				public void onClick(DialogInterface dialog, int id) {
 					asyncInfo.cancel(true);
 					int toastTxt = R.string.dialog_backup_done;
-					File source = new File(getApplicationInfo().dataDir +"/databases/droidseries.db");
-					File destination = new File(Environment.getExternalStorageDirectory(), "droidseries.db");
+					File source = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
+					File destination = new File(Environment.getExternalStorageDirectory(), "DroidShows.db");
 					if (destination.exists()) {
 						try {
-							backupRestore(destination, new File(Environment.getExternalStorageDirectory(), "droidseries.db.previous"));
+							backupRestore(destination, new File(Environment.getExternalStorageDirectory(), "DroidShows.db.previous"));
 						} catch (IOException e) {
 							e.printStackTrace();
 						}
@@ -326,19 +326,20 @@ public class droidseries extends ListActivity
 			})
 			.setNegativeButton(getString(R.string.dialog_restore), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					new AlertDialog.Builder(droidseries.this)
+					new AlertDialog.Builder(DroidShows.this)
 					.setTitle(R.string.dialog_restore)
 					.setMessage(R.string.dialog_restore_now)
 					.setPositiveButton(R.string.dialog_OK, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int id) {
 							asyncInfo.cancel(true);
 							int toastTxt = R.string.dialog_restore_done;
-							File source = new File(Environment.getExternalStorageDirectory(), "droidseries.db");
+							File source = new File(Environment.getExternalStorageDirectory(), "DroidShows.db");
+							if (!source.exists()) source = new File(Environment.getExternalStorageDirectory(), "droidseries.db");
 							if (source.exists()) {
-								File destination = new File(getApplicationInfo().dataDir +"/databases/droidseries.db");
+								File destination = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
 								try {
 									backupRestore(source, destination);
-									updateDS.updateDroidSeries();
+									updateDS.updateDroidShows();
 									getSeries();
 									updateAllSeries();
 								} catch (IOException e) {
@@ -400,11 +401,11 @@ public class droidseries extends ListActivity
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, 0, getString(R.string.menu_context_mark_next_episode_as_seen));
-		menu.add(0, TOGGLE_SERIE_STATUS_CONTEXT, 0, getString(R.string.menu_toggle));
 		menu.add(0, VIEW_SERIEDETAILS_CONTEXT, 0, getString(R.string.menu_context_view_serie_details));
 		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
 		menu.add(0, VIEW_EP_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_ep_imdb));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
+		menu.add(0, TOGGLE_SERIE_STATUS_CONTEXT, 0, getString(R.string.menu_toggle));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
     int position = info.position;
@@ -420,6 +421,18 @@ public class droidseries extends ListActivity
 			case MARK_NEXT_EPISODE_AS_SEEN_CONTEXT :
 				markNextEpSeen(info.position);
 				return true;
+			case VIEW_SERIEDETAILS_CONTEXT :
+				showDetails(series.get(info.position).getSerieId());
+				return true;
+			case VIEW_IMDB_CONTEXT :
+				IMDbDetails(series.get(info.position).getSerieId(), series.get(info.position).getName(), false);
+				return true;
+			case VIEW_EP_IMDB_CONTEXT :
+				IMDbDetails(series.get(info.position).getSerieId(), series.get(info.position).getName(), true);
+				return true;
+			case UPDATE_CONTEXT :
+				updateSerie(series.get(info.position).getSerieId(), info.position);
+				return true;
 			case TOGGLE_SERIE_STATUS_CONTEXT :
 				serie = series.get(info.position);
 				serieId = serie.getSerieId();
@@ -432,18 +445,6 @@ public class droidseries extends ListActivity
 					series.get(info.position).setPassiveStatus(st == 1);
 				}
 				listView.post(updateListView);
-				return true;
-			case VIEW_SERIEDETAILS_CONTEXT :
-				showDetails(series.get(info.position).getSerieId());
-				return true;
-			case VIEW_IMDB_CONTEXT :
-				IMDbDetails(series.get(info.position).getSerieId(), series.get(info.position).getName(), false);
-				return true;
-			case VIEW_EP_IMDB_CONTEXT :
-				IMDbDetails(series.get(info.position).getSerieId(), series.get(info.position).getName(), true);
-				return true;
-			case UPDATE_CONTEXT :
-				updateSerie(series.get(info.position).getSerieId(), info.position);
 				return true;
 			case DELETE_CONTEXT :
 				// TODO (1): add a verification to be sure that the TV show was well eliminated
@@ -495,7 +496,7 @@ public class droidseries extends ListActivity
 				String serieId = series.get(position).getSerieId();
 				backFromSeasonSerieId = serieId;
 				backFromSeasonPosition = position;
-				Intent serieSeasons = new Intent(droidseries.this, SerieSeasons.class);
+				Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
 				serieSeasons.putExtra("serieId", serieId);
 				startActivity(serieSeasons);
 			} catch (Exception e) {
@@ -554,7 +555,7 @@ public class droidseries extends ListActivity
 	}
 	
 	private void showDetails(String serieId) {
-		Intent viewSerie = new Intent(droidseries.this, ViewSerie.class);
+		Intent viewSerie = new Intent(DroidShows.this, ViewSerie.class);
 		viewSerie.putExtra("serieId", serieId);
 		startActivity(viewSerie);
 	}
@@ -601,7 +602,7 @@ public class droidseries extends ListActivity
 	private void updateSerie(String serieId, int pos) {
 		final String id = serieId;
 		final int oldListPosition = pos;
-		if (utils.isNetworkAvailable(droidseries.this)) {
+		if (utils.isNetworkAvailable(DroidShows.this)) {
 			Runnable updateserierun = new Runnable() {
 				public void run() {
 					theTVDB = new TheTVDB("8AC675886350B3C3");
@@ -638,7 +639,7 @@ public class droidseries extends ListActivity
 					}
 				}
 			};
-			m_ProgressDialog = ProgressDialog.show(droidseries.this, series.get(pos).getName(), getString(R.string.messages_update_serie), true);
+			m_ProgressDialog = ProgressDialog.show(DroidShows.this, series.get(pos).getName(), getString(R.string.messages_update_serie), true);
 			updateShowTh = new Thread(updateserierun);
 			updateShowTh.start();
 		} else {
@@ -647,7 +648,7 @@ public class droidseries extends ListActivity
 	}
 	
 	public void updatePosterThumb(String serieId, Serie sToUpdate) {
-		Cursor c = droidseries.db.Query("SELECT posterInCache, poster, posterThumb FROM series WHERE id='"+ serieId +"'");
+		Cursor c = DroidShows.db.Query("SELECT posterInCache, poster, posterThumb FROM series WHERE id='"+ serieId +"'");
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			String posterInCache = c.getString(0);
@@ -719,7 +720,7 @@ public class droidseries extends ListActivity
 	}
 
 	private void updateAllSeries() {
-		if (!utils.isNetworkAvailable(droidseries.this)) {
+		if (!utils.isNetworkAvailable(DroidShows.this)) {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 		} else {
 			final Runnable updateMessage = new Runnable() {

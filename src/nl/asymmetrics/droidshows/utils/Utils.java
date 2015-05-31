@@ -1,4 +1,4 @@
-package org.droidseries.utils;
+package nl.asymmetrics.droidshows.utils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,7 +8,7 @@ import android.net.NetworkInfo;
 //import android.util.Log;
 public class Utils
 {
-	// private String TAG = "DroidSeries";
+	// private String TAG = getString(R.string.layout_app_name);
 	public boolean isNetworkAvailable(Activity mActivity) {
 		Context context = mActivity.getApplicationContext();
 		ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

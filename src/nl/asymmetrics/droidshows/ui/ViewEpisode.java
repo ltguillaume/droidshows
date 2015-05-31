@@ -1,4 +1,4 @@
-package org.droidseries.ui;
+package nl.asymmetrics.droidshows.ui;
 
 import java.text.Format;
 import java.text.ParseException;
@@ -6,8 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.droidseries.R;
-import org.droidseries.droidseries;
+
+import nl.asymmetrics.droidshows.R;
+import nl.asymmetrics.droidshows.DroidShows;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
@@ -34,7 +35,7 @@ public class ViewEpisode extends Activity
 		
 		String query = "SELECT episodeNumber, episodeName, overview, rating, firstAired, imdbId FROM episodes "
 			+ "WHERE id = '"+ episodeId +"' AND serieId='"+ serieId +"'";
-		Cursor c = droidseries.db.Query(query);
+		Cursor c = DroidShows.db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			int episodeNumberCol = c.getColumnIndex("episodeNumber");
@@ -52,7 +53,7 @@ public class ViewEpisode extends Activity
 					Format formatter = SimpleDateFormat.getDateInstance();
 					firstAired = formatter.format(epDate);
 				} catch (ParseException e) {
-					Log.e("DroidSeries", e.getMessage());
+					Log.e(DroidShows.TAG, e.getMessage());
 				}
 			} else {
 				firstAired = "";
@@ -104,7 +105,7 @@ public class ViewEpisode extends Activity
 			}
 
 			List<String> writers = new ArrayList<String>();
-			Cursor cwriters = droidseries.db.Query("SELECT writer FROM writers WHERE episodeId='" + episodeId
+			Cursor cwriters = DroidShows.db.Query("SELECT writer FROM writers WHERE episodeId='" + episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cwriters.moveToFirst();
 			if (cwriters != null && cwriters.isFirst()) {
@@ -120,7 +121,7 @@ public class ViewEpisode extends Activity
 			}
 			
 			List<String> directors = new ArrayList<String>();
-			Cursor cdirectors = droidseries.db.Query("SELECT director FROM directors WHERE episodeId='"+ episodeId
+			Cursor cdirectors = DroidShows.db.Query("SELECT director FROM directors WHERE episodeId='"+ episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cdirectors.moveToFirst();
 			if (cdirectors != null && cdirectors.isFirst()) {
@@ -136,7 +137,7 @@ public class ViewEpisode extends Activity
 			}
 	
 			List<String> guestStars = new ArrayList<String>();
-			Cursor cgs = droidseries.db.Query("SELECT guestStar FROM guestStars WHERE episodeId='"+ episodeId
+			Cursor cgs = DroidShows.db.Query("SELECT guestStar FROM guestStars WHERE episodeId='"+ episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cgs.moveToFirst();
 			if (cgs != null && cgs.isFirst()) {

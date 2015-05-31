@@ -1,4 +1,4 @@
-package org.droidseries.thetvdb.model;
+package nl.asymmetrics.droidshows.thetvdb.model;
 
 public class Season {
 	private String serieId;

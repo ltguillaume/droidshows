@@ -1,4 +1,4 @@
-package org.droidseries.thetvdb.model;
+package nl.asymmetrics.droidshows.thetvdb.model;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,7 @@
-package org.droidseries.thetvdb.utils;
+package nl.asymmetrics.droidshows.thetvdb.utils;
 
-import org.droidseries.thetvdb.utils.XMLHandler;
+import nl.asymmetrics.droidshows.thetvdb.utils.XMLHandler;
+
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 
@@ -17,9 +18,7 @@ import java.net.URL;
 import java.util.List;
 
 public class XMLParser {
-
-        private final String TAG = "DroidSeries";
-
+		private String TAG = "DroidShows";
         public List<String> parse(String urlstr) {
             try {
                     URL url = new URL(urlstr);
