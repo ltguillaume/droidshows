@@ -1,19 +1,20 @@
 # DroidShows<img src="https://github.com/ltGuillaume/DroidShows/raw/master/icon/icon5a.png" align="right"/>
-DroidShows-Guillaume: 2015 Reboot of DroidSeries TV Show Tracker  
+DroidShows: a 2015 reboot of DroidSeries TV Show Tracker  
 This fork adds a quite a bunch of features, among which a menu overflow button, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
 * Don't forget to update all shows regularly
 * Long-press items for more options
 * Swipe left-to-right to go back  
-_In Shows Overview_:
+__In Shows Overview__:
 * Tap poster for show info
 * Long-press poster for next episode's IMDb
 * Swipe right-to-left to mark next as seen  
-_In Show Details_:
+__In Show Details__:
 * Tap poster for full-screen view
 * Click full-screen poster image for fan art  
-_In Show/Episode Details_:
+__In Show/Episode Details__:
 * Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage
 
+[DroidShows Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
 [XDA Forum post (in original DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
 __Download APK__: from XDA forum post or [here](https://github.com/ltGuillaume/DroidShows/tree/master/apk)
@@ -21,7 +22,7 @@ __Download APK__: from XDA forum post or [here](https://github.com/ltGuillaume/D
 __Shows Overview__:  
 \+ Showing "[aired unwatched] of [total unwatched]"  
 \+ Added icon ic_menu_view for show/hide toggled  
-\+ Status of show in details, and † in overview if show is not continuing  
+\+ Status of show in details, and â€  in overview if show is not continuing  
 \+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list  
 \+ Option in [About] to only update shows' last season  
 \+ Context item to view show details on IMDb  
@@ -30,7 +31,7 @@ __Shows Overview__:
 \+ Option to include specials in unwatched count  
 \+ Mark next episode seen via swipe now vibrates  
 \+ Undo function (until exit)  
-\+ Showing middot · when all new episodes are aired  
+\+ Showing middot Â· when all new episodes are aired  
 \+ New show & episode details views  
 \+ View full size poster and fan art  
 \* Sorting shows by first unseen episode  
@@ -49,7 +50,7 @@ __Add show__:
 \+ Icon ic_menu_add for new shows  
 \* Fixed search not working after initial search  
 \* Centered icons vertically in search results  
-\- No large-size posters are saved to save space in /data/data/  
+\* Large-size posters aren't cached, to save space in /data/data/  
   
 __Update__:  
 \* Prevent double episodes  
@@ -70,10 +71,8 @@ __Other__:
 \* [Exit] removes app from memory  
 \* Fixed UI glitches/styles  
 \* Code clean-up (all layouts revised)  
-\- Removed useless dependencies  
-\- Removed crappy features  
   
-©2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPL  
+Â©2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPLv3  
 Modified by [Mikael Berthe](http://gitorious.org/droidseries/mckaels-droidseries)  
-©2014-2015 Guillaume [previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume)  
+Â©2014-2015 Guillaume [previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume)  
 New icon file is a mix of work by [Thrasos Varnava](http://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)
