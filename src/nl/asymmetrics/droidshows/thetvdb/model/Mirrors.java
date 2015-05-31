@@ -1,11 +1,10 @@
-package org.droidseries.thetvdb.model;
+package nl.asymmetrics.droidshows.thetvdb.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.droidseries.thetvdb.utils.*;
-//import java.net.URL;
+import nl.asymmetrics.droidshows.thetvdb.utils.*;
 
 /**
  * TODO: review this model

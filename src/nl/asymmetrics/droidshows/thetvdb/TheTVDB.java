@@ -1,4 +1,4 @@
-package org.droidseries.thetvdb;
+package nl.asymmetrics.droidshows.thetvdb;
 
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
@@ -9,22 +9,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.droidseries.thetvdb.model.*;
-import org.droidseries.thetvdb.utils.*;
-
-
-
+import nl.asymmetrics.droidshows.thetvdb.model.*;
+import nl.asymmetrics.droidshows.thetvdb.utils.*;
 import android.text.TextUtils;
 import android.util.Log;
 
-
 public class TheTVDB {
-
+	private String TAG = "DroidShows";
     private String apiKey;
     private String xmlMirror;
     private String bannerMirror;
-    //private String zipMirror;
-    private final String TAG = "DroidSeries";
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 

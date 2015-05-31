@@ -1,6 +1,6 @@
-package org.droidseries.ui;
+package nl.asymmetrics.droidshows.ui;
 
-import org.droidseries.droidseries;
+import nl.asymmetrics.droidshows.DroidShows;
 import android.app.Activity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -25,13 +25,13 @@ public class SwipeDetect implements View.OnTouchListener {
 				float deltaY = onDownY - event.getY();
 				if (Math.abs(deltaX / 3) > Math.abs(deltaY)) {
 					if (deltaX > v.getWidth() / 3) {	// > 0 = right-to-left
-						if (v.getContext() instanceof droidseries) {
+						if (v.getContext() instanceof DroidShows) {
 							swipeDetected = true;	// mark next episode seen
 							return true;
 						}
-						else if (droidseries.switchSwipeDirection || v.getContext() instanceof ViewSerie)
+						else if (DroidShows.switchSwipeDirection || v.getContext() instanceof ViewSerie)
 							((Activity)v.getContext()).onBackPressed();
-					} else if (!droidseries.switchSwipeDirection && -deltaX > v.getWidth() / 3) {
+					} else if (!DroidShows.switchSwipeDirection && -deltaX > v.getWidth() / 3) {
 							((Activity)v.getContext()).onBackPressed();	// left-to-right: go back
 					}
 				}

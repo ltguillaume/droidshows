@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="copyright" translatable="false">DroidSeries v{v}
+<string name="copyright" translatable="false">DroidShows v{v}
 \n&#169;2010 Carlos Limpinho, Paulo Cabido (GPL):\ncode.google.com/p/droidseries
 \nModified by Mikael Berthe:\ngitorious.org/droidseries/mckaels-droidseries
-\n&#169;2014-{y} Guillaume:\ngithub.com/ltGuillaume/droidseries
+\n&#169;2014-{y} Guillaume:\ngithub.com/ltGuillaume/DroidShows
 \n\nNew icon file is a mix of\niconeasy.com/icon/tv-shows-2-icon (Thrasos Varnava) and\nwallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)</string>
 <string name="lang_code">en</string>
-<string name="layout_app_name">DroidSeries</string>
+<string name="layout_app_name">DroidShows</string>
 <string name="layout_main_no_items">No shows found. You can add a show via the menu.</string>
 <string name="layout_search_no_items">No shows found.</string>
 <string name="layout_seasons_no_items">No seasons to display.</string>
@@ -22,11 +22,11 @@
 <string name="menu_context_update">Update</string>
 <string name="menu_context_delete">Delete</string>
 <string name="menu_context_add_serie">Add show</string>
-<string name="menu_show_toggled">Show toggled</string>
-<string name="menu_hide_toggled">Hide toggled</string>
-<string name="menu_context_view_serie_details">Details</string>
-<string name="menu_context_view_imdb">View show on IMDb</string>
-<string name="menu_context_view_ep_imdb">View next episode on IMDb</string>
+<string name="menu_show_toggled">Show hidden</string>
+<string name="menu_hide_toggled">Hide hidden</string>
+<string name="menu_context_view_serie_details">Show details</string>
+<string name="menu_context_view_imdb">Show on IMDb</string>
+<string name="menu_context_view_ep_imdb">Next episode on IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_clean_db">Clean</string>
@@ -34,7 +34,7 @@
 <string name="dialog_backup_done">Database backup completed</string>
 <string name="dialog_backup_failed">Unable to perform backup!</string>
 <string name="dialog_restore">Restore</string>
-<string name="dialog_restore_now">Restoring a backup will remove all information currently in DroidSeries. Continue?</string>
+<string name="dialog_restore_now">Restoring a backup will remove all information currently in DroidShows. Continue?</string>
 <string name="dialog_restore_done">Database restored successfully</string>
 <string name="dialog_restore_failed">Unable to restore database!</string>
 <string name="dialog_restore_notfound">Could not find backup on external storage!</string>
@@ -47,7 +47,7 @@
 <string name="dialog_last_season">Update shows\' last season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to check episode</string>
-<string name="dialog_switch_swipe_direction">Switch swipe direction for back</string>
+<string name="dialog_switch_swipe_direction">Swipe right-to-left to go back</string>
 <string name="dialog_help">&#187; Don\'t forget to update all shows regularly
 \n&#187; Long-press items for more options
 \n&#187; Swipe left-to-right to go back
@@ -60,7 +60,7 @@
 \n&#187; Click full-screen poster image for fan art
 \n\nIn Show/Episode Details:
 \n&#187; Tap IMDb rating to view in IMDb</string>
-<string name="menu_toggle">Toggle status</string>
+<string name="menu_toggle">Toggle hidden status</string>
 <string name="messages_title_updating_all_series">Updating all shows</string>
 <string name="messages_title_updating_db">Updating database</string>
 <string name="messages_update_serie">Gathering show information…</string>

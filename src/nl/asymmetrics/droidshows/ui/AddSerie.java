@@ -1,4 +1,4 @@
-package org.droidseries.ui;
+package nl.asymmetrics.droidshows.ui;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -10,7 +10,13 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.droidseries.R;
+
+import nl.asymmetrics.droidshows.DroidShows;
+import nl.asymmetrics.droidshows.R;
+import nl.asymmetrics.droidshows.thetvdb.TheTVDB;
+import nl.asymmetrics.droidshows.thetvdb.model.Serie;
+import nl.asymmetrics.droidshows.thetvdb.model.TVShowItem;
+import nl.asymmetrics.droidshows.utils.Utils;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -40,16 +46,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+
 import org.apache.commons.io.FileUtils;
-import org.droidseries.droidseries;
-import org.droidseries.thetvdb.TheTVDB;
-import org.droidseries.thetvdb.model.Serie;
-import org.droidseries.thetvdb.model.TVShowItem;
-import org.droidseries.utils.Utils;
 
 public class AddSerie extends ListActivity
 {
-	private final String TAG = "DroidSeries";
 	private static List<Serie> search_series = null;
 	private TheTVDB theTVDB;
 	private SeriesSearchAdapter seriessearch_adapter;
@@ -64,7 +65,7 @@ public class AddSerie extends ListActivity
 	static String searchQuery = "";
 	private volatile Thread threadAddShow;
 	private static boolean bAddShowTh = false;
-	private List<String> series = droidseries.db.getSeriesByName();
+	private List<String> series = DroidShows.db.getSeriesByName();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -138,7 +139,7 @@ public class AddSerie extends ListActivity
 				runOnUiThread(reloadSearchSeries);
 			}
 		} catch (Exception e) {
-			Log.e(TAG, e.getMessage());
+			Log.e(DroidShows.TAG, e.getMessage());
 		}
 	}
 
@@ -150,7 +151,7 @@ public class AddSerie extends ListActivity
 				if (theTVDB.getMirror() != null) {
 					searchSeries(searchQuery);
 				} else {
-					Log.e(TAG, "Error searching for TV shows");
+					Log.e(DroidShows.TAG, "Error searching for TV shows");
 				}
 			}
 		}).start();
@@ -168,7 +169,7 @@ public class AddSerie extends ListActivity
 			Thread moribund = threadAddShow;
 			threadAddShow = null;
 			moribund.interrupt();
-			Log.d(TAG, "addShow Thread stopped");
+			Log.d(DroidShows.TAG, "addShow Thread stopped");
 		}
 	}
 
@@ -182,7 +183,7 @@ public class AddSerie extends ListActivity
 	protected void onPause() {
 		if (threadAddShow != null) {
 			if (threadAddShow.isAlive()) {
-				Log.i(TAG, "!!! Thread is running!");
+				Log.i(DroidShows.TAG, "!!! Thread is running!");
 				bAddShowTh = true;
 			}
 		}
@@ -200,7 +201,7 @@ public class AddSerie extends ListActivity
 					Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
 					Looper.loop();
 				} else {
-					Log.d(TAG, "Adding TV show: getting the poster");
+					Log.d(DroidShows.TAG, "Adding TV show: getting the poster");
 					// get the poster and save it in cache
 					URL imageUrl = null;
 					URLConnection uc = null;
@@ -218,17 +219,17 @@ public class AddSerie extends ListActivity
 							uc.setConnectTimeout(10000);
 							contentType = uc.getContentType();
 						} catch (MalformedURLException e) {
-							Log.e(TAG, e.getMessage());
+							Log.e(DroidShows.TAG, e.getMessage());
 						} catch (IOException e) {
-							Log.e(TAG, e.getMessage());
+							Log.e(DroidShows.TAG, e.getMessage());
 						} catch (Exception e) {
-							Log.d(TAG, e.getMessage());
+							Log.d(DroidShows.TAG, e.getMessage());
 						}
 						int contentLength = uc.getContentLength();
 						if (!TextUtils.isEmpty(contentType)) {
 							if (!contentType.startsWith("image/") || contentLength == -1) {
 								// throw new IOException("This is not a binary file.");
-								Log.e(TAG, "This is not a image.");
+								Log.e(DroidShows.TAG, "This is not a image.");
 							}
 						}
 						try {
@@ -251,7 +252,7 @@ public class AddSerie extends ListActivity
 								bAddShowTh = false;
 								return;
 							}
-							Log.d(TAG, "Adding TV show: resizing the poster and creating the thumbnail");
+							Log.d(DroidShows.TAG, "Adding TV show: resizing the poster and creating the thumbnail");
 							Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
 							File dirTmp = new File(getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs/banners/posters");
 							if (!dirTmp.isDirectory()) {
@@ -276,10 +277,10 @@ public class AddSerie extends ListActivity
 							sToAdd.setPosterInCache("true");
 						} catch (Exception e) {
 							sToAdd.setPosterInCache("");
-							Log.e(TAG, "Error copying the poster to cache.");
+							Log.e(DroidShows.TAG, "Error copying the poster to cache.");
 						}
 					} catch (Exception e) {
-						Log.e(TAG, e.getMessage());
+						Log.e(DroidShows.TAG, e.getMessage());
 					}
 					boolean sucesso = false;
 					try {
@@ -288,23 +289,23 @@ public class AddSerie extends ListActivity
 							bAddShowTh = false;
 							return;
 						}
-						Log.d(TAG, "Adding TV show: saving TV show to database");
-						sToAdd.saveToDB(droidseries.db);
-						Log.d(TAG, "Adding TV show: creating the TV show item");
-						int nseasons = droidseries.db.getSeasonCount(sToAdd.getId());
-						String nextEpisode = droidseries.db.getNextEpisode(sToAdd.getId(), -1).replace("[on]", droidseries.on);
-						Date nextAir = droidseries.db.getNextAir(sToAdd.getId(), -1);
-						int unwatchedAired = droidseries.db.getEPUnwatchedAired(sToAdd.getId());
-						int unwatched = droidseries.db.getEPUnwatched(sToAdd.getId());
+						Log.d(DroidShows.TAG, "Adding TV show: saving TV show to database");
+						sToAdd.saveToDB(DroidShows.db);
+						Log.d(DroidShows.TAG, "Adding TV show: creating the TV show item");
+						int nseasons = DroidShows.db.getSeasonCount(sToAdd.getId());
+						String nextEpisode = DroidShows.db.getNextEpisode(sToAdd.getId(), -1).replace("[on]", DroidShows.on);
+						Date nextAir = DroidShows.db.getNextAir(sToAdd.getId(), -1);
+						int unwatchedAired = DroidShows.db.getEPUnwatchedAired(sToAdd.getId());
+						int unwatched = DroidShows.db.getEPUnwatched(sToAdd.getId());
 						Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
 						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatchedAired, unwatched, false, sToAdd.getStatus());
-						droidseries.series.add(tvsi);
+						DroidShows.series.add(tvsi);
 						series.add(sToAdd.getId());
-						runOnUiThread(droidseries.updateListView);
+						runOnUiThread(DroidShows.updateListView);
 						runOnUiThread(reloadSearchSeries);
 						sucesso = true;
 					} catch (Exception e) {
-						Log.e(TAG, "Error adding TV show");
+						Log.e(DroidShows.TAG, "Error adding TV show");
 					}
 					// m_ProgressDialog.dismiss();
 					if (!bAddShowTh) {

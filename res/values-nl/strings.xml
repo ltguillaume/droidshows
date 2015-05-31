@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="lang_code">nl</string>
-<string name="layout_app_name">DroidSeries</string>
+<string name="layout_app_name">DroidShows</string>
 <string name="layout_main_no_items">Geen series gevonden. Je kunt een serie toevoegen via het menu.</string>
 <string name="layout_search_no_items">Geen series gevonden.</string>
 <string name="layout_seasons_no_items">Geen seizoenen gevonden.</string>
@@ -17,11 +17,11 @@
 <string name="menu_context_update">Bijwerken</string>
 <string name="menu_context_delete">Verwijderen</string>
 <string name="menu_context_add_serie">Serie toevoegen</string>
-<string name="menu_show_toggled">[…] tonen</string>
-<string name="menu_hide_toggled">[…] verbergen</string>
+<string name="menu_show_toggled">Verborgen tonen</string>
+<string name="menu_hide_toggled">Verborgen niet tonen</string>
 <string name="menu_context_view_serie_details">Details</string>
-<string name="menu_context_view_imdb">Serie bekijken op IMDb</string>
-<string name="menu_context_view_ep_imdb">Aflevering bekijken op IMDb</string>
+<string name="menu_context_view_imdb">Serie op IMDb</string>
+<string name="menu_context_view_ep_imdb">Aflevering op IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_clean_db">Opschonen</string>
@@ -29,7 +29,7 @@
 <string name="dialog_backup_done">Backup voltooid</string>
 <string name="dialog_backup_failed">Kon backup niet voltooien!</string>
 <string name="dialog_restore">Herstellen</string>
-<string name="dialog_restore_now">Het herstellen van een database zal de huidige informatie in DroidSeries verwijderen. Doorgaan?</string>
+<string name="dialog_restore_now">Het herstellen van een database zal de huidige informatie in DroidShows verwijderen. Doorgaan?</string>
 <string name="dialog_restore_done">Database hersteld</string>
 <string name="dialog_restore_failed">Kon herstel niet voltooien!</string>
 <string name="dialog_restore_notfound">Geen backup gevonden op externe opslag!</string>
@@ -55,7 +55,7 @@
 \n&#187; Klik op grote poster voor fan art
 \n\nIn Details van Serie/Aflevering:
 \n&#187; Klik op IMDb-score voor IMDb-pagina</string>
-<string name="menu_toggle">Status […] veranderen</string>
+<string name="menu_toggle">Verborgen status</string>
 <string name="messages_title_updating_all_series">Alle series bijwerken</string>
 <string name="messages_title_updating_db">Database bijwerken</string>
 <string name="messages_update_serie">Downloaden nieuwe gegevens…</string>

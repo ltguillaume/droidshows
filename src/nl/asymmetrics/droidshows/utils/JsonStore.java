@@ -1,10 +1,10 @@
-package org.droidseries.utils;
+package nl.asymmetrics.droidshows.utils;
 
 import android.content.Context;
 import android.util.Log;
-import org.droidseries.thetvdb.model.Episode;
-import org.droidseries.thetvdb.model.Serie;
-import org.json.*;
+import nl.asymmetrics.droidshows.thetvdb.model.Episode;
+import nl.asymmetrics.droidshows.thetvdb.model.Serie;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.FileInputStream;
@@ -14,10 +14,13 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class JsonStore
 {
+	private String TAG = "DroidShows";
 	private String storagedb;
-	private final String TAG = "DroidSeries";
 
 	public JsonStore(String storagedb) {
 		this.storagedb = storagedb;
