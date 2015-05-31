@@ -1,6 +1,6 @@
 # DroidSeries<img src="https://github.com/ltGuillaume/DroidSeries/raw/master/icon/icon5a.png" align="right"/>
 DroidSeries-Guillaume: 2015 Reboot of DroidSeries TV Show Tracker  
-This fork adds a quite a bunch of features, including more show information, a menu overflow button, swiping gestures, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
+This fork adds a quite a bunch of features, among which a menu overflow button, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
 * Don't forget to update all shows regularly
 * Long-press items for more options
 * Swipe left-to-right to go back  
@@ -61,6 +61,7 @@ __Other__:
 \+ Translucent background  
 \+ Swipe left-to-right acts as back button  
 \+ Animations that help understand the app's structure  
+\+ Backup/restore database  
 \* Date/time format according to locale  
 \* Big performance improvement for Overview activity: is almost instant (values are kept up-to-date in series table)  
 \* Some progress dialogs cancelable  
