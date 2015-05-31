@@ -14,7 +14,7 @@ __In Show Details__:
 __In Show/Episode Details__:
 * Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage
 
-[Homepage](ltguillaume.github.io/DroidShows)  
+[Homepage](http://ltguillaume.github.io/DroidShows)  
 [Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
 [XDA Forum post (in original DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
