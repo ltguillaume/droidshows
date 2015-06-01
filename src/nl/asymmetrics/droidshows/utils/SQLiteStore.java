@@ -966,7 +966,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		// tabela das seasons
 		dbase.execSQL("CREATE TABLE IF NOT EXISTS serie_seasons ("+"serieId VARCHAR, "
 			+"season VARCHAR"+");");
-		// criar as tabelas
+		// create tables
 		dbase.execSQL("CREATE TABLE IF NOT EXISTS series ("+"id VARCHAR PRIMARY KEY, "
 			+"serieId VARCHAR, "+"language VARCHAR, "+"serieName VARCHAR, "+"banner VARCHAR, "
 			+"overview TEXT, "+"firstAired VARCHAR, "+"imdbId VARCHAR, "+"zap2ItId VARCHAR, "
@@ -976,8 +976,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 			+"posterInCache VARCHAR, "+"posterThumb VARCHAR, "
 			+"seasonCount INTEGER, "+"unwatchedAired INTEGER, "+"unwatched INTEGER, "+"nextEpisode VARCHAR, "+"nextAir VARCHAR" 
 			+");");
-		dbase.execSQL("CREATE TABLE IF NOT EXISTS DroidShows (version VARCHAR)");
-		dbase.execSQL("INSERT INTO DroidShows (version) VALUES ('"+ DroidShows.VERSION +"')");
 	}
 
 	@Override
