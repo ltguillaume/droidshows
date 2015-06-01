@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 <string name="copyright" translatable="false">DroidShows v{v}
-\n&#169;2010 Carlos Limpinho, Paulo Cabido (GPL):\ncode.google.com/p/droidseries
-\nModified by Mikael Berthe:\ngitorious.org/droidseries/mckaels-droidseries
-\n&#169;2014-{y} Guillaume:\ngithub.com/ltGuillaume/DroidShows
+\nltGuillaume.github.io/DroidShows
+\n&#169;2010 Carlos Limpinho, Paulo Cabido:\ncode.google.com/p/droidseries
+\nForked by Mikael Berthe
+\n&#169;2014-{y} Guillaume (GPLv3):\ngithub.com/ltGuillaume/DroidShows
 \n\nNew icon file is a mix of\niconeasy.com/icon/tv-shows-2-icon (Thrasos Varnava) and\nwallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)</string>
 <string name="lang_code">en</string>
 <string name="layout_app_name">DroidShows</string>
