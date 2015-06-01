@@ -18,7 +18,7 @@ __In Show/Episode Details__:
 [Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
 [XDA Forum post (in original DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
-__Download APK__: from XDA forum post or [here](https://github.com/ltGuillaume/DroidShows/tree/master/apk)
+__Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows) or [here](https://github.com/ltGuillaume/DroidShows/tree/master/apk)
 
 __Shows Overview__:  
 \+ Showing "[aired unwatched] of [total unwatched]"  
