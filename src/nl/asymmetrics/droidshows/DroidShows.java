@@ -1000,7 +1000,7 @@ public class DroidShows extends ListActivity
 			TVShowItem serie = items.get(position);
 			int nunwatched = serie.getUnwatched();
 			int nunwatchedAired = serie.getUnwatchedAired();
-			String ended = (serie.getShowStatus().equalsIgnoreCase("Ended") ? " †" : "");
+			String ended = (serie.getShowStatus().equalsIgnoreCase("Ended") ? " \u2020" : "");
 			if (holder.sn != null) {
 				if (serie.getPassiveStatus()) {
 					holder.sn.setText("[" + serie.getName() + "]"+ ended);
