@@ -733,7 +733,7 @@ public class DroidShows extends ListActivity
 					theTVDB = new TheTVDB("8AC675886350B3C3");
 					for (int i = 0; i < series.size(); i++) {
 						Log.d(TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName() +" ["+ i +"/"+ (series.size()-1) +"]");
-						toastMessage = series.get(i).getName() + "…";
+						toastMessage = series.get(i).getName() + "\u2026";
 						runOnUiThread(updateMessage);
 						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), getString(R.string.lang_code));
 						if (sToUpdate != null) {
