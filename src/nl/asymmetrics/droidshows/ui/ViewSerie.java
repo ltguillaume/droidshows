@@ -111,7 +111,10 @@ public class ViewSerie extends Activity
 			}
 			cgenres.close();
 			TextView genreV = (TextView) findViewById(R.id.genre);
-			genreV.setText(genres.toString().replace("]", "").replace("[", ""));
+			if (!genres.isEmpty())
+				genreV.setText(genres.toString().replace("]", "").replace("[", ""));
+			else
+				genreV.setVisibility(View.GONE);
 
 			TextView ratingV = (TextView) findViewById(R.id.rating);
 			if (!rating.equalsIgnoreCase("null") && !rating.equals(""))
@@ -129,12 +132,14 @@ public class ViewSerie extends Activity
 				} catch (ParseException e) {
 					Log.e(DroidShows.TAG, e.getMessage());
 				}
+				if (!status.equalsIgnoreCase("null") && !status.equalsIgnoreCase(""))
+					status = " ("+ translateStatus(status) +")";
+				else
+					status = "";
+				firstAiredV.setText(firstAired + status);
+			} else {
+				firstAiredV.setVisibility(View.GONE);
 			}
-			if (!status.equalsIgnoreCase("null"))
-				status = " ("+ translateStatus(status) +")";
-			else
-				status = "";
-			firstAiredV.setText(firstAired + status);
 	
 			TextView airtimeV = (TextView) findViewById(R.id.airtime);
 			if (!airday.equalsIgnoreCase("null") && !airday.equals("")) {
