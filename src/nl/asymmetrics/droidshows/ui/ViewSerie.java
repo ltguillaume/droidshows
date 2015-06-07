@@ -120,7 +120,7 @@ public class ViewSerie extends Activity
 				ratingV.setText("IMDb Info");
 					
 			TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
-			if (!firstAired.equals("")) {
+			if (!firstAired.equals("null") && !firstAired.equals("")) {
 				try {
 					SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 					Date epDate = SDF.parse(firstAired);
