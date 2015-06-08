@@ -79,21 +79,21 @@ public class ViewSerie extends Activity
 			imdbId = c.getString(imdbIdCol);
 			c.close();
 					
-			TextView networkV = (TextView) findViewById(R.id.network);
 			if (!network.equalsIgnoreCase("null")) {
+				TextView networkV = (TextView) findViewById(R.id.network);
 				if (network.endsWith("db")) network = network.substring(0, network.length()-2);
 				networkV.setText(network);
 			}
 	
-			TextView contentRatingV = (TextView) findViewById(R.id.contentRating);
-			if (!contentRating.equalsIgnoreCase("null"))
+			if (!contentRating.equalsIgnoreCase("null")) {
+				TextView contentRatingV = (TextView) findViewById(R.id.contentRating);
 				contentRatingV.setText(contentRating);
+			}
 			
 			TextView serieNameV = (TextView) findViewById(R.id.serieName);
 			serieNameV.setText(serieName);
 	
 			ImageView posterThumbV = (ImageView) findViewById(R.id.posterThumb);
-			
 			try {
 				BitmapDrawable posterThumbD = (BitmapDrawable) BitmapDrawable.createFromPath(posterThumb);
 				posterThumbD.setTargetDensity(getResources().getDisplayMetrics().densityDpi);	// Don't auto-resize to screen density
@@ -110,11 +110,11 @@ public class ViewSerie extends Activity
 				} while (cgenres.moveToNext());
 			}
 			cgenres.close();
-			TextView genreV = (TextView) findViewById(R.id.genre);
-			if (!genres.isEmpty())
+			if (!genres.isEmpty()) {
+				TextView genreV = (TextView) findViewById(R.id.genre);
 				genreV.setText(genres.toString().replace("]", "").replace("[", ""));
-			else
-				genreV.setVisibility(View.GONE);
+				genreV.setVisibility(View.VISIBLE);
+			}
 
 			TextView ratingV = (TextView) findViewById(R.id.rating);
 			if (!rating.equalsIgnoreCase("null") && !rating.equals(""))
@@ -122,8 +122,8 @@ public class ViewSerie extends Activity
 			else
 				ratingV.setText("IMDb Info");
 					
-			TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
 			if (!firstAired.equals("null") && !firstAired.equals("")) {
+				TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
 				try {
 					SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 					Date epDate = SDF.parse(firstAired);
@@ -137,12 +137,11 @@ public class ViewSerie extends Activity
 				else
 					status = "";
 				firstAiredV.setText(firstAired + status);
-			} else {
-				firstAiredV.setVisibility(View.GONE);
+				firstAiredV.setVisibility(View.VISIBLE);
 			}
 	
-			TextView airtimeV = (TextView) findViewById(R.id.airtime);
 			if (!airday.equalsIgnoreCase("null") && !airday.equals("")) {
+				TextView airtimeV = (TextView) findViewById(R.id.airtime);
 				if (airday.equalsIgnoreCase("Daily"))
 					airday = getString(R.string.messages_daily);
 				if (!airtime.equalsIgnoreCase("null") && !airtime.equals("")) {
@@ -154,13 +153,16 @@ public class ViewSerie extends Activity
 					} catch (ParseException e) {
 						Log.e(DroidShows.TAG, e.getMessage());
 					}
-					airtimeV.setVisibility(View.VISIBLE);
 					airtimeV.setText(airday +" "+ getString(R.string.messages_at) +" "+ airtime);
+					airtimeV.setVisibility(View.VISIBLE);
 				}
 			}
 	
-			TextView runtimeV = (TextView) findViewById(R.id.runtime);
-			runtimeV.setText(runtime +" "+ getString(R.string.series_runtime_minutes));
+			if (!runtime.equalsIgnoreCase("null") && !runtime.equals("")) {
+				TextView runtimeV = (TextView) findViewById(R.id.runtime);
+				runtimeV.setText(runtime +" "+ getString(R.string.series_runtime_minutes));
+				runtimeV.setVisibility(View.VISIBLE);
+			}
 			
 			TextView serieOverviewV = (TextView) findViewById(R.id.serieOverview);
 			serieOverviewV.setText(serieOverview);
@@ -195,8 +197,8 @@ public class ViewSerie extends Activity
 	public void IMDbDetails(View v) {
 		String uri = "imdb:///";
 		Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
-    if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
-    	uri = "http://m.imdb.com/";
+		if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
+			uri = "http://m.imdb.com/";
 		if (imdbId.indexOf("tt") == 0) {
 			uri += "title/"+ imdbId;
 		} else {

@@ -340,6 +340,10 @@ public class DroidShows extends ListActivity
 								try {
 									backupRestore(source, destination);
 									updateDS.updateDroidShows();
+									for (File thumb : new File(getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs/banners/posters").listFiles())
+									    thumb.delete();
+									for (File file : new File(getApplicationInfo().dataDir +"/databases/").listFiles())
+									    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
 									getSeries();
 									updateAllSeries();
 								} catch (IOException e) {

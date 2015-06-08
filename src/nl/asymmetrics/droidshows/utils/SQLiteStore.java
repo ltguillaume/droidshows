@@ -915,12 +915,10 @@ public class SQLiteStore extends SQLiteOpenHelper
 			db.execSQL("DELETE FROM actors WHERE serieId='"+ serieId +"'");
 			db.execSQL("DELETE FROM genres WHERE serieId='"+ serieId +"'");
 			db.execSQL("DELETE FROM serie_seasons WHERE serieId='"+ serieId +"'");
-			Cursor c = Query("SELECT posterInCache, posterThumb FROM series WHERE id='"+ serieId +"'");
+			Cursor c = Query("SELECT posterThumb FROM series WHERE id='"+ serieId +"'");
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
-				File cacheImage = new File(c.getString(0));
-				cacheImage.delete();
-				File thumbImage = new File(c.getString(1));
+				File thumbImage = new File(c.getString(0));
 				thumbImage.delete();
 			}
 			c.close();

@@ -10,11 +10,11 @@
 		<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content">
 			<ImageView android:id="@+id/posterThumb" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="3dp" android:layout_marginLeft="6dp" android:layout_marginBottom="3dp" android:layout_gravity="center_vertical" android:clickable="true" android:onClick="posterView"/>
 			<LinearLayout android:id="@+id/details" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="6dp">
-				<TextView android:id="@+id/genre" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_compass" android:scaleType="centerInside"/>
+				<TextView android:id="@+id/genre" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_compass" android:scaleType="centerInside" android:visibility="gone"/>
 				<TextView android:id="@+id/rating" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@drawable/star" android:scaleType="centerInside" android:clickable="true" android:onClick="IMDbDetails"/>
-				<TextView android:id="@+id/firstAired" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_today" android:scaleType="centerInside"/>
+				<TextView android:id="@+id/firstAired" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_today" android:scaleType="centerInside" android:visibility="gone"/>
 				<TextView android:id="@+id/airtime" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_rotate" android:scaleType="centerInside" android:visibility="gone"/>
-				<TextView android:id="@+id/runtime" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:drawableLeft="@android:drawable/ic_menu_recent_history" android:scaleType="centerInside"/>
+				<TextView android:id="@+id/runtime" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:drawableLeft="@android:drawable/ic_menu_recent_history" android:scaleType="centerInside" android:visibility="gone"/>
 			</LinearLayout>
 		</LinearLayout>
 		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>

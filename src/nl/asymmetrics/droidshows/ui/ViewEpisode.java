@@ -80,8 +80,8 @@ public class ViewEpisode extends Activity
 				public void onClick(View v) {
 					String uri = "imdb:///";
 					Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
-			    if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
-			    	uri = "http://m.imdb.com/";
+					if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
+						uri = "http://m.imdb.com/";
 					if (imdbId.indexOf("tt") == 0) {
 						uri += "title/"+ imdbId;
 					} else {
