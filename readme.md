@@ -17,7 +17,7 @@ __In Show/Episode Details__:
 [Homepage](http://ltguillaume.github.io/DroidShows)  
 [Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
-[XDA Forum post (in original DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
+[XDA Forum post / Changelog (in DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
 __Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows) or [here](/apk)
 
 __Shows Overview__:  

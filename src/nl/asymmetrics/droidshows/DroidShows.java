@@ -104,7 +104,7 @@ public class DroidShows extends ListActivity
 	private static final int SORT_BY_NAME = 0;
 	private static final int SORT_BY_LAST_UNSEEN = 1;
 	private static final int SORT_BY_NAME_ICON = android.R.drawable.ic_menu_sort_alphabetically;
-	private static final int SORT_BY_LAST_UNSEEN_ICON = android.R.drawable.ic_menu_agenda;
+	private static final int SORT_BY_LAST_UNSEEN_ICON = android.R.drawable.ic_menu_sort_by_size;
 	private static int sortOption = SORT_BY_LAST_UNSEEN;
 	private static final String FILTER_PREF_NAME = "filter_passive";
 	private static final int FILTER_DISABLED = 0;
@@ -829,21 +829,16 @@ public class DroidShows extends ListActivity
 		if (series != null) series.clear();
 		try {
 			List<String> serieIds;
-			if (sortOption == SORT_BY_LAST_UNSEEN) {
-				serieIds = db.getSeriesByNextEpisode();
-			} else {
-				serieIds = db.getSeriesByName();
-			}
+			serieIds = db.getSeries();
 			for (int i = 0; i < serieIds.size(); i++) {
 				String serieId = serieIds.get(i);
-				int status = 0;
 				if (filterOption == FILTER_ENABLED) {
-					status = db.getSerieStatus(serieId);
+					int status = db.getSerieStatus(serieId);
+					if (status == 1)
+						continue;
 				}
-				if (status == 0) {
-					TVShowItem tvsi = createTVShowItem(serieId);
-					series.add(tvsi);
-				}
+				TVShowItem tvsi = createTVShowItem(serieId);
+				series.add(tvsi);
 			}
 			listView.post(updateListView);
 		} catch (Exception e) {
@@ -871,18 +866,24 @@ public class DroidShows extends ListActivity
 			Comparator<TVShowItem> comperator = new Comparator<TVShowItem>() {
 				public int compare(TVShowItem object1, TVShowItem object2) {
 					if (sortOption == SORT_BY_LAST_UNSEEN) {
-						Date nextAir1 = object1.getNextAir();
-						Date nextAir2 = object2.getNextAir();
-						if (nextAir1 == null && nextAir2 == null) {
-							return object1.getName().compareToIgnoreCase(object2.getName());
+						int unwatchedAired1 = object1.getUnwatchedAired();
+						int unwatchedAired2 = object2.getUnwatchedAired();
+						if (unwatchedAired1 == unwatchedAired2) {
+							Date nextAir1 = object1.getNextAir();
+							Date nextAir2 = object2.getNextAir();
+							if (nextAir1 == null && nextAir2 == null)
+								return object1.getName().compareToIgnoreCase(object2.getName());
+							if (nextAir1 == null)
+								return 1;
+							if (nextAir2 == null)
+								return -1;
+							return nextAir1.compareTo(nextAir2);
 						}
-						if (nextAir1 == null) {
+						if (unwatchedAired1 == 0)
 							return 1;
-						}
-						if (nextAir2 == null) {
+						if (unwatchedAired2 == 0)
 							return -1;
-						}
-						return nextAir1.compareTo(nextAir2);
+						return ((Integer) unwatchedAired2).compareTo(unwatchedAired1);
 					} else {
 						return object1.getName().compareToIgnoreCase(object2.getName());
 					}

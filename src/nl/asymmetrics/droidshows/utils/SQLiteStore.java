@@ -39,13 +39,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 	public void createDataBase() throws IOException {
 		boolean dbExist = checkDataBase();
 		if (!dbExist) {
-			// this.getReadableDatabase();
 			this.getWritableDatabase();
-			// try {
-			// copyDataBase();
-			// } catch (IOException e) {
-			// throw new Error("Error copying database");
-			// }
 		}
 	}
 
@@ -55,7 +49,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			String myPath = DB_PATH + DB_NAME;
 			checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
 		} catch (SQLiteException e) {
-			// database does't exist yet.
+			Log.d(DroidShows.TAG, "Database does't exist yet.");
 		}
 		if (checkDB != null) {
 			checkDB.close();
@@ -198,9 +192,9 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return episodes;
 	}
 
-	private List<String> getSeries(String orderBy) {
+	public List<String> getSeries() {
 		List<String> series = new ArrayList<String>();
-		Cursor cseries = Query("SELECT id FROM series ORDER BY "+ orderBy +" ASC");
+		Cursor cseries = Query("SELECT id FROM series");
 		try {
 			cseries.moveToFirst();
 			if (cseries != null && cseries.isFirst()) {
@@ -212,50 +206,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 		} catch (SQLiteException e) {
 			Log.e(DroidShows.TAG, e.getMessage());
 			cseries.close();
-		}
-		return series;
-	}
-
-	public List<String> getSeriesByName() {
-		return getSeries("serieName");
-	}
-
-	public List<String> getSeriesByNextEpisode() {
-		List<String> series = new ArrayList<String>();
-		Cursor cseries = null;
-		try {
-			// Note: completely seen series won't be returned by this query
-			//cseries = Query("SELECT s.id, min(e.firstAired) AS nextAir FROM series AS s LEFT JOIN episodes AS e ON e.serieId = s.id WHERE e.firstAired <> '' AND seen = 0 AND seasonNumber <> 0 GROUP BY s.id ORDER BY nextAir ASC"); // Guillaume: added "e.firstAired <> '' AND"
-			cseries = Query("SELECT id, nextAir FROM series WHERE nextAir <> '' ORDER BY nextAir ASC");
-			cseries.moveToFirst();
-			if (cseries != null && cseries.isFirst()) {
-				do {
-					series.add(cseries.getString(0));
-					// Log.d(DroidShows.TAG, "Adding serie ["+ cseries.getString(0) +"] next air ["+ cseries.getShort(1) +"]");
-				} while (cseries.moveToNext());
-			}
-			cseries.close();
-			// This completes the method by adding the completely seen series
-			StringBuilder sb = new StringBuilder();
-			for (String sid : series) {
-				sb.append("'").append(sid).append("',");
-			}
-			// remove the extra comma
-			sb.delete(sb.length() - 1, sb.length());
-			cseries = Query("SELECT id FROM series WHERE id NOT IN ("+ sb.toString() +") ORDER BY serieName ASC");
-			cseries.moveToFirst();
-			if (cseries != null && cseries.isFirst()) {
-				do {
-					series.add(cseries.getString(0));
-					// Log.d(DroidShows.TAG, "Adding completely seen serie ["+ cseries.getString(0) +"]");
-				} while (cseries.moveToNext());
-			}
-			cseries.close();
-		} catch (SQLiteException e) {
-			if (cseries != null) {
-				cseries.close();
-			}
-			Log.e(DroidShows.TAG, e.getMessage());
 		}
 		return series;
 	}
@@ -279,7 +229,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return episodes;
 	}
 
-	// Guillaume
 	private int[] cleanUp(String serieId, String serieName, int seasonNumber, int episodeNumber, String episodeId) {
 		// Log.d(DroidShows.TAG, "This is cleanUp");
 		Cursor c = Query("SELECT id, seen FROM episodes WHERE serieId='"+ serieId
@@ -316,7 +265,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return new int[]{inDB, seen};
 	}
 
-	// Guillaume: END
 	public String getSerieName(String serieId) {
 		String sname = "";
 		Cursor c = Query("SELECT serieName FROM series WHERE id='"+ serieId +"'");
@@ -351,11 +299,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return sstatus;
 	}
 
-	/** public String getSeriePoster(String serieId) { String sposter = ""; Cursor c =
-	 * Query("SELECT posterInCache FROM series WHERE id='"+ serieId +"'"); try { c.moveToFirst(); if
-	 * (c != null && c.isFirst()) { sposter = c.getString(0); } c.close(); } catch(SQLiteException e){
-	 * c.close(); Log.e(DroidShows.TAG, e.getMessage()); return null; } return sposter; } // Guillaume-- **/
-	// Guillaume: get new episodes that are unwatched
 	public int getEPUnwatchedAired(String serieId) {
 		int unwatchedAired = 0;
 		String today = dateFormat.format(new Date());	// Get today's date
@@ -982,7 +925,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 	}
 	
 	public void updateShowStats() {
-		List<String> series = getSeriesByName();
+		List<String> series = getSeries();
 		for (int i = 0; i < series.size(); i += 1) {
 			updateShowStats(series.get(i));
 		}

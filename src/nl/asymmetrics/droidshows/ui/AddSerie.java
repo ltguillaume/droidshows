@@ -65,7 +65,7 @@ public class AddSerie extends ListActivity
 	static String searchQuery = "";
 	private volatile Thread threadAddShow;
 	private static boolean bAddShowTh = false;
-	private List<String> series = DroidShows.db.getSeriesByName();
+	private List<String> series = DroidShows.db.getSeries();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
