@@ -1,6 +1,6 @@
 # DroidShows<img src="/icon/icon5a.png" align="right"/>
 DroidShows: a 2015 reboot of DroidSeries TV Show Tracker  
-This fork adds a quite a bunch of features, among which a menu overflow button, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
+This fork adds quite a bunch of features, among which a menu overflow button, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
 * Don't forget to update all shows regularly
 * Long-press items for more options
 * Swipe left-to-right to go back  
@@ -17,7 +17,7 @@ __In Show/Episode Details__:
 [Homepage](http://ltguillaume.github.io/DroidShows)  
 [Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
-[XDA Forum post / Changelog (in DroidSeries thread)](http://forum.xda-developers.com/showthread.php?p=58437755#post58437755)  
+[XDA Forum post / Changelog (in DroidSeries thread)](http://forum.xda-developers.com/showthread.php?t=3136787)  
 __Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows) or [here](/apk)
 
 __Shows Overview__:  
@@ -68,12 +68,12 @@ __Other__:
 \* Big performance improvement for Overview activity (values are kept up-to-date in series table)  
 \* Some progress dialogs cancelable  
 \* Update of all shows continues when navigating away from DroidShows  
-\* Screen off/rotating screen/navigating away from app during update kinda OK now  
+\* Screen off/rotating screen/navigating away from app during update poses no problems anymore  
 \* [Exit] removes app from memory  
 \* Fixed UI glitches/styles  
 \* Code clean-up (all layouts revised)  
   
 ©2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPLv3  
 Modified by [Mikael Berthe](http://gitorious.org/droidseries/mckaels-droidseries)  
-©2014-2015 Guillaume [previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume)  
+©2014-2015 Guillaume under GPLv3 ([previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume))  
 New icon file is a mix of work by [Thrasos Varnava](http://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)
