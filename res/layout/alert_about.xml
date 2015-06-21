@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
-		<CheckBox android:id="@+id/last_season" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_last_season"/>
-		<CheckBox android:id="@+id/include_specials" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_include_specials"/>
-		<CheckBox android:id="@+id/full_line_check" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_full_line_check"/>
-		<CheckBox android:id="@+id/switch_swipe_direction" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_switch_swipe_direction"/>
+		<CheckBox android:id="@+id/last_season" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_last_season" android:onClick="dialogOptions"/>
+		<CheckBox android:id="@+id/include_specials" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_include_specials" android:onClick="dialogOptions"/>
+		<CheckBox android:id="@+id/full_line_check" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_full_line_check" android:onClick="dialogOptions"/>
+		<CheckBox android:id="@+id/switch_swipe_direction" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_switch_swipe_direction" android:onClick="dialogOptions"/>
 		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:text="@string/dialog_help" android:lineSpacingExtra="0.5dp"/>
 		<TextView android:id="@+id/copyright" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp" android:autoLink="web" android:lineSpacingExtra="1dp"/>
 	</LinearLayout>

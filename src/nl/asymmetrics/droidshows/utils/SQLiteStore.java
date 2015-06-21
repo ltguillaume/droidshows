@@ -576,14 +576,14 @@ public class SQLiteStore extends SQLiteOpenHelper
 		statemnt.bindString(index, s);
 	}
 
-	public boolean setCleanUp() {
+	public boolean enableCleanUp() {
 		clean = true;
 		return clean;
 	}
 
-	public boolean unsetCleanUp() {
+	public boolean disableCleanUp() {
 		clean = false;
-		return clean;
+		return !clean;
 	}
 	
 	public void updateSerie(Serie s, boolean last_season) {

@@ -1,6 +1,6 @@
 # DroidShows<img src="/icon/icon5a.png" align="right"/>
 DroidShows: a 2015 reboot of DroidSeries TV Show Tracker  
-This fork adds quite a bunch of features, among which a menu overflow button, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
+This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
 * Don't forget to update all shows regularly
 * Long-press items for more options
 * Swipe left-to-right to go back  

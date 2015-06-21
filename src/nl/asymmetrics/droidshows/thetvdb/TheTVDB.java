@@ -4,7 +4,6 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -35,37 +34,6 @@ public class TheTVDB {
         return xmlMirror;
     }
 
-    /*public Serie updateSerie(Serie serie) {
-        Serie updated_serie = null;
-
-        try {
-                //fazer update da serie
-                XMLParser xmlparser = new XMLParser();
-                List<String> XMLData = xmlparser.parse(xmlMirror + apiKey + "/series/" + serie.getId() + "/" + serie.getLanguage() + ".xml");
-                updated_serie = parseSeries(XMLData);
-
-                //fazer update dos episodios
-                List<Episode> updated_episodes = new ArrayList<Episode>();
-                List<Episode> episodes = serie.getEpisodes();
-                for(int i = 0; i < episodes.size(); i++) {
-                        Episode ep = getEpisode(episodes.get(i).getId(), episodes.get(i).getSeasonNumber(), episodes.get(i).getEpisodeNumber(), episodes.get(i).getLanguage());
-                        ep.setSeen(episodes.get(i).getSeen());
-                        updated_episodes.add( ep );
-                }
-
-                updated_serie.setEpisodes(updated_episodes);
-
-                updated_serie.setNSeasons(parseNSeasons(episodes));
-
-                updated_serie.setUnwatched(parseUnwatchedEpisodes(episodes));
-
-        } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-        }
-
-        return updated_serie;
-    }*/
-
     public Episode getEpisode(String id, int seasonNbr, int episodeNbr, String language) {
         Episode episode = null;
 
@@ -82,23 +50,6 @@ public class TheTVDB {
         return episode;
     }
 
-    /*public Episode getDVDEpisode(String id, int seasonNbr, int episodeNbr, String language) {
-        Episode episode = null;
-
-        XMLEventReader xmlReader = null;
-        try {
-            xmlReader = XMLHelper.getEventReader(xmlMirror + apiKey + "/series/" + id + "/dvd/" + seasonNbr + "/" + episodeNbr + "/" + (language!=null?language+".xml":""));
-
-            episode = parseNextEpisode(xmlReader);
-        } catch (Exception error) {
-            logger.warning("DVDEpisode error: " + error.getMessage());
-        } finally {
-            XMLHelper.closeEventReader(xmlReader);
-        }
-
-        return episode;
-    }*/
-
     public String getSeasonYear(String id, int seasonNbr, String language) {
         String year = null;
 
@@ -108,9 +59,7 @@ public class TheTVDB {
                 try {
                     Date date = dateFormat.parse(episode.getFirstAired());
                     if (date != null) {
-                        Calendar cal = Calendar.getInstance();
-                        cal.setTime(date);
-                        year = ""+cal.get(Calendar.YEAR);
+                        year = date.getYear()+1900 +"";
                     }
                 } catch (Exception e) {
                     Log.e(TAG, e.getMessage());
@@ -120,53 +69,6 @@ public class TheTVDB {
 
         return year;
     }
-
-    /*@SuppressWarnings("unchecked")
-        public Banners getBanners(String id) {
-        Banners banners = new Banners();
-
-        try {
-                XMLParser xmlparser = new XMLParser();
-                List<String> XMLData = xmlparser.parse(xmlMirror + apiKey + "/series/" + id + "/banners.xml");
-
-                Vector<Object> xml_banners = parseMultiple(XMLData, "<Banner>", "</Banner>");
-
-                for (int i = 0; i < xml_banners.size(); i++) {
-                        Banner banner = parseBanner( (List<String>)xml_banners.get(i) );
-                        if (banner != null) {
-                                banners.addBanner(banner);
-                }
-                }
-        } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-        }
-
-        return banners;
-    }*/
-
-    /*@SuppressWarnings("unchecked")
-        public List<Actor> getActors(String id) {
-        List<Actor> results = new ArrayList<Actor>();
-
-        try {
-                XMLParser xmlparser = new XMLParser();
-                List<String> XMLData = xmlparser.parse(xmlMirror + apiKey + "/series/" + id + "/actors.xml");
-
-                Vector<Object> xml_actors = parseMultiple(XMLData, "<Actor>", "</Actor>");
-
-                for (int i = 0; i < xml_actors.size(); i++) {
-                        Actor actor = parseActor( (List<String>)xml_actors.get(i) );
-                        if (actor != null) {
-                                results.add(actor);
-                }
-                }
-        } catch (Exception e) {
-                Log.e(TAG, e.getMessage());
-        }
-
-        Collections.sort(results);
-        return results;
-    }*/
 
     @SuppressWarnings("unchecked")
     public List<Serie> searchSeries(String title, String language) {
@@ -179,9 +81,6 @@ public class TheTVDB {
             if (XMLData == null) {
                 return null;
             }
-
-            //cria um array de listas de strings com as series através de um Vector<Object>
-            //<Serie> e </Serie>
 
             Vector<Object> xml_series = parseMultiple(XMLData, "<Series>", "</Series>");
 
@@ -201,7 +100,6 @@ public class TheTVDB {
     @SuppressWarnings("unchecked")
     public Serie getSerie(String id, String language) {
         Serie serie = null;
-        //fazer download do zip em:
         //<mirrorpath_zip>/api/<apikey>/series/<seriesid>/all/<language>.zip
         //http://thetvdb.com/api/8AC675886350B3C3/series/79349/all/en.xml
 
@@ -246,9 +144,6 @@ public class TheTVDB {
      * Private functions that help do stuff
      */
 
-    /*
-     * TODO: refactor the xml parse code
-     */
     private Serie parseSeries(List<String> xmldata) {
         Serie series = null;
 
@@ -360,90 +255,7 @@ public class TheTVDB {
         return series;
     }
 
-    /*private Banner parseBanner(List<String> xmldata) {
-        Banner banner = null;
-
-        boolean bannertag = false;
-        for (int i = 0; i < xmldata.size(); i++) {
-                if (xmldata.get(i).contentEquals("<Banner>")) {
-                        bannertag = true;
-                        banner = new Banner();
-                }
-                if (bannertag) {
-                        if ( xmldata.get(i).contentEquals("<BannerPath>") && !xmldata.get(i+1).contentEquals("</BannerPath>") ) {
-                                String s = xmldata.get(i+1).trim();
-                    if (!TextUtils.isEmpty(s)) {
-                        banner.setUrl(bannerMirror + s);
-                    }
-                        }
-                        else if ( xmldata.get(i).contentEquals("<VignettePath>") && !xmldata.get(i+1).contentEquals("</VignettePath>") ) {
-                                String s = xmldata.get(i+1).trim();
-                    if (!TextUtils.isEmpty(s)) {
-                        banner.setVignette(bannerMirror + s);
-                    }
-                        }
-                        else if ( xmldata.get(i).contentEquals("<ThumbnailPath>") && !xmldata.get(i+1).contentEquals("</ThumbnailPath>") ) {
-                                String s = xmldata.get(i+1).trim();
-                    if (!TextUtils.isEmpty(s)) {
-                        banner.setThumb(bannerMirror + s);
-                    }
-                        }
-                        else if ( xmldata.get(i).contentEquals("<BannerType>") && !xmldata.get(i+1).contentEquals("</BannerType>") ) {
-                                banner.setBannerType(xmldata.get(i+1).trim());
-                        }
-                        else if ( xmldata.get(i).contentEquals("<BannerType2>") && !xmldata.get(i+1).contentEquals("</BannerType2>") ) {
-                                banner.setBannerType2(xmldata.get(i+1).trim());
-                        }
-                        else if ( xmldata.get(i).contentEquals("<Language>") && !xmldata.get(i+1).contentEquals("</Language>") ) {
-                                banner.setLanguage(xmldata.get(i+1).trim());
-                        }
-                        else if ( xmldata.get(i).contentEquals("<Season>") && !xmldata.get(i+1).contentEquals("</Season>") ) {
-                                banner.setSeason(Integer.parseInt(xmldata.get(i+1).trim()));
-                        }
-                }
-
-                if (xmldata.get(i).contentEquals("</Banner>")) {
-                        break;
-                }
-        }
-        return banner;
-    }*/
-
-    /*private Actor parseActor(List<String> xmldata) {
-      Actor actor = null;
-
-      boolean actortag = false;
-      for (int i = 0; i < xmldata.size(); i++) {
-      if (xmldata.get(i).contentEquals("<Actor>")) {
-      actortag = true;
-      actor = new Actor();
-      }
-      if (actortag) {
-      if ( xmldata.get(i).contentEquals("<Image>") && !xmldata.get(i+1).contentEquals("</Image>") ) {
-      String s = xmldata.get(i+1).trim();
-      if (!TextUtils.isEmpty(s)) {
-      actor.setImage(bannerMirror + s);
-      }
-      }
-      else if ( xmldata.get(i).contentEquals("<Name>") && !xmldata.get(i+1).contentEquals("</Name>") ) {
-      actor.setName(xmldata.get(i+1).trim());
-      }
-      else if ( xmldata.get(i).contentEquals("<Role>") && !xmldata.get(i+1).contentEquals("</Role>") ) {
-      actor.setRole(xmldata.get(i+1).trim());
-      }
-      else if ( xmldata.get(i).contentEquals("<SortOrder>") && !xmldata.get(i+1).contentEquals("</SortOrder>") ) {
-      actor.setSortOrder(Integer.parseInt(xmldata.get(i+1).trim()));
-      }
-      }
-
-      if (xmldata.get(i).contentEquals("</Actor>")) {
-      break;
-      }
-      }
-      return actor;
-      }*/
-
-    private Episode parseEpisode(List<String> xmldata) {
+   private Episode parseEpisode(List<String> xmldata) {
         Episode episode = null;
 
         boolean episodetag = false;
