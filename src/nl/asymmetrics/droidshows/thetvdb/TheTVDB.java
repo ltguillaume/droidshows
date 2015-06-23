@@ -193,7 +193,12 @@ public class TheTVDB {
                                 series.setOverview( tmpOverview );
                         }
                         else if ( xmldata.get(i).contentEquals("<FirstAired>") && !xmldata.get(i+1).contentEquals("</FirstAired>") ) {
-                                series.setFirstAired(xmldata.get(i+1).trim());
+                        	String tmpFirstAired = "";
+                        	do {
+                        		i++;
+                        		tmpFirstAired += xmldata.get(i).trim();
+                        	} while(!xmldata.get(i+1).contentEquals("</FirstAired>"));
+                            series.setFirstAired(tmpFirstAired);
                         }
                         else if ( xmldata.get(i).contentEquals("<IMDB_ID>") && !xmldata.get(i+1).contentEquals("</IMDB_ID>") ) {
                                 series.setImdbId(xmldata.get(i+1).trim());
@@ -300,7 +305,12 @@ public class TheTVDB {
                                 episode.setEpisodeNumber(Integer.parseInt(xmldata.get(i+1).trim()));
                         }
                         else if ( xmldata.get(i).contentEquals("<FirstAired>") && !xmldata.get(i+1).contentEquals("</FirstAired>") ) {
-                                episode.setFirstAired(xmldata.get(i+1).trim());
+                        	String tmpFirstAired = "";
+                        	do {
+                        		i++;
+                        		tmpFirstAired += xmldata.get(i).trim();
+                        	} while (!xmldata.get(i+1).contentEquals("</FirstAired>"));
+                            episode.setFirstAired(tmpFirstAired);
                         }
                         else if ( xmldata.get(i).contentEquals("<GuestStars>") && !xmldata.get(i+1).contentEquals("</GuestStars>") ) {
                                 episode.setGuestStars( parseList(xmldata.get(i+1).trim(), "|,") );
@@ -312,17 +322,12 @@ public class TheTVDB {
                                 episode.setLanguage(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<Overview>") && !xmldata.get(i+1).contentEquals("</Overview>") ) {
-                                String tmpOverview = xmldata.get(i+1).trim();
-                                int count = 1;
-
-                                while(!xmldata.get(i+count).contentEquals("</Overview>")) {
-                                        count++;
-                                        if(!xmldata.get(i+count).contentEquals("</Overview>")) {
-                                                tmpOverview += xmldata.get(i+count).trim();
-                                        }
-                                }
-
-                                episode.setOverview( tmpOverview );
+                        	String tmpOverview = "";
+                        	do {
+                        		i++;
+                        		tmpOverview += xmldata.get(i).trim();
+                        	} while (!xmldata.get(i+1).contentEquals("</Overview>"));
+                            episode.setOverview( tmpOverview );
                         }
                         else if ( xmldata.get(i).contentEquals("<ProductionCode>") && !xmldata.get(i+1).contentEquals("</ProductionCode>") ) {
                                 episode.setProductionCode(xmldata.get(i+1).trim());

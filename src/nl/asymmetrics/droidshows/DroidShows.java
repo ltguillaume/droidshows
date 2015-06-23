@@ -298,6 +298,8 @@ public class DroidShows extends ListActivity
 				break;
 			case EXIT_MENU_ITEM :
 				onPause();	// save options
+				asyncInfo.cancel(true);
+				db.close();
 				this.finish();
 				System.gc();
 				System.exit(0);	// kill process
@@ -977,13 +979,6 @@ public class DroidShows extends ListActivity
 		ed.commit();
 	}
 	
-	@Override
-	protected void onDestroy() {
-		asyncInfo.cancel(true);
-		db.close();
-		super.onDestroy();
-	}
-
 	@Override
 	public void onRestart() {
 		super.onRestart();
