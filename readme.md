@@ -18,8 +18,8 @@ __In Show/Episode Details__:
 [Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
 [Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ)  
 [XDA Forum post / Changelog](http://forum.xda-developers.com/showthread.php?t=3136787)  
-__Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows) or [here](https://github.com/ltGuillaume/DroidShows/releases)
-
+__Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows) or [here](https://github.com/ltGuillaume/DroidShows/releases)  
+![DroidShows Screenshot](/icon/screenshot.png)  
 __Shows Overview__:  
 \+ Showing "[aired unwatched] of [total unwatched]"  
 \+ Added icon ic_menu_view for show/hide toggled  
