@@ -60,7 +60,7 @@ public class AddSerie extends ListActivity
 	private static final int ADD_SERIE_MENU_ITEM = Menu.FIRST;
 	/* Context Menus */
 	private static final int ADD_CONTEXT = Menu.FIRST;
-	private ListView lv;
+	private ListView listView;
 	private Utils utils = new Utils();
 	static String searchQuery = "";
 	private volatile Thread threadAddShow;
@@ -352,8 +352,8 @@ public class AddSerie extends ListActivity
 				Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 			}
 		}
-		lv = getListView();
-		lv.setOnTouchListener(new SwipeDetect());
+		listView = getListView();
+		listView.setOnTouchListener(new SwipeDetect());
 		registerForContextMenu(getListView());
 	}
 	

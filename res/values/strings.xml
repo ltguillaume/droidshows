@@ -23,8 +23,8 @@
 <string name="menu_context_update">Update</string>
 <string name="menu_context_delete">Delete</string>
 <string name="menu_context_add_serie">Add show</string>
-<string name="menu_show_toggled">Show hidden</string>
-<string name="menu_hide_toggled">Hide hidden</string>
+<string name="menu_show_toggled">Show disabled</string>
+<string name="menu_hide_toggled">Hide disabled</string>
 <string name="menu_context_view_serie_details">Show details</string>
 <string name="menu_context_view_imdb">Show on IMDb</string>
 <string name="menu_context_view_ep_imdb">Next episode on IMDb</string>
@@ -47,7 +47,7 @@
 <string name="dialog_update_speedup">\n\nYou can speed up this process with the option in Menu > Options.</string>
 <string name="dialog_last_season">Update shows\' last season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
-<string name="dialog_full_line_check">Use entire line to check episode</string>
+<string name="dialog_full_line_check">Use entire line to mark episode</string>
 <string name="dialog_switch_swipe_direction">Swipe right-to-left to go back</string>
 <string name="dialog_help">&#187; Don\'t forget to update all shows regularly
 \n&#187; Long-press items for more options
@@ -61,7 +61,7 @@
 \n&#187; Click full-screen poster image for fan art
 \n\nIn Show/Episode Details:
 \n&#187; Tap IMDb rating to view in IMDb</string>
-<string name="menu_toggle">Toggle hidden status</string>
+<string name="menu_toggle">Toggle enabled/disabled</string>
 <string name="messages_title_updating_all_series">Updating all shows</string>
 <string name="messages_title_updating_db">Updating database</string>
 <string name="messages_update_serie">Gathering show information…</string>

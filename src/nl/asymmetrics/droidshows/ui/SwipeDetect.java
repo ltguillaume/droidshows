@@ -7,39 +7,33 @@ import nl.asymmetrics.droidshows.DroidShows;
 
 public class SwipeDetect implements View.OnTouchListener {
 	private int onDownX, onDownY;
-	private boolean swipeDetected = false;
+	public int value = 0;
 	
 	public boolean onTouch(View v, MotionEvent event) {
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
 				onDownX = (int) event.getX();
 				onDownY = (int) event.getY();
-				swipeDetected = false;
+				value = 0;
 				break;
 			case MotionEvent.ACTION_MOVE:
 				int deltaX = onDownX - (int) event.getX();
 				int deltaY = onDownY - (int) event.getY();
 				if ((((deltaX < 0) ? -deltaX : deltaX) / 3) > ((deltaY < 0) ? -deltaY : deltaY)) {
-					if (deltaX > v.getWidth() / 3) {	// > 0 = right-to-left
+					if (deltaX > v.getWidth() / 3) {	// > 0 = RTL
 						if (v.getContext() instanceof DroidShows) {
-							swipeDetected = true;	// mark next episode seen
+							value = 1;	// mark next episode seen
+							return true;
 						} else if (DroidShows.switchSwipeDirection || v.getContext() instanceof ViewSerie) {
+							value = -1;	// no ListItemClick
 							((Activity)v.getContext()).onBackPressed();
 						}
-						return true;
-					} else if (!DroidShows.switchSwipeDirection && -deltaX > v.getWidth() / 3) {
-						((Activity)v.getContext()).onBackPressed();	// left-to-right: go back
-						return true;
-					} else {
-						v.performClick();
-						return true;
+					} else if (!DroidShows.switchSwipeDirection && -deltaX > v.getWidth() / 3) {	// < 0 = LTR
+						value = -1;	// no ListItemClick
+						((Activity)v.getContext()).onBackPressed();
 					}
 				}
 		}
 		return false;
-	}
-	
-	public boolean detected() {
-		return swipeDetected;
 	}
 }

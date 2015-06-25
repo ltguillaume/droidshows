@@ -35,6 +35,7 @@ public class SerieEpisodes extends ListActivity {
 	private int seasonNumber;
 	private List<String> episodes = null;
 	private ListView listView;
+	private SwipeDetect swipeDetect = new SwipeDetect();
 
 	/* Context Menus */
 	private static final int VIEWEP_CONTEXT = Menu.FIRST;
@@ -53,7 +54,7 @@ public class SerieEpisodes extends ListActivity {
 		episodesAdapter = new EpisodesAdapter(this, R.layout.row_serie_episodes, episodes);
 		setListAdapter(episodesAdapter);
 		listView = getListView();
-		listView.setOnTouchListener(new SwipeDetect());
+		listView.setOnTouchListener(swipeDetect);
 		registerForContextMenu(getListView());
 	}
 
@@ -86,19 +87,21 @@ public class SerieEpisodes extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		if (DroidShows.fullLineCheckOption) {
-			try {
-				DroidShows.db.updateUnwatchedEpisode(serieId, episodes.get(position));
-				CheckBox c = (CheckBox) v.findViewById(R.id.seen);
-				c.setChecked(!c.isChecked());
-			} catch (Exception e) {
-				Log.e(DroidShows.TAG, "Could not set episode seen state: "+ e.getMessage());
-			}
-		} else {
-			try {
-				startViewEpisode(episodes.get(position));
-			} catch (Exception e) {
-				Log.e(DroidShows.TAG, e.getMessage());
+		if (swipeDetect.value == 0) {
+			if (DroidShows.fullLineCheckOption) {
+				try {
+					DroidShows.db.updateUnwatchedEpisode(serieId, episodes.get(position));
+					CheckBox c = (CheckBox) v.findViewById(R.id.seen);
+					c.setChecked(!c.isChecked());
+				} catch (Exception e) {
+					Log.e(DroidShows.TAG, "Could not set episode seen state: "+ e.getMessage());
+				}
+			} else {
+				try {
+					startViewEpisode(episodes.get(position));
+				} catch (Exception e) {
+					Log.e(DroidShows.TAG, e.getMessage());
+				}
 			}
 		}
 	}

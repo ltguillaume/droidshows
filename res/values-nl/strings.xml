@@ -17,8 +17,8 @@
 <string name="menu_context_update">Bijwerken</string>
 <string name="menu_context_delete">Verwijderen</string>
 <string name="menu_context_add_serie">Serie toevoegen</string>
-<string name="menu_show_toggled">Verborgen tonen</string>
-<string name="menu_hide_toggled">Verborgen niet tonen</string>
+<string name="menu_show_toggled">Achtergehouden tonen</string>
+<string name="menu_hide_toggled">Achtergehouden verbergen</string>
 <string name="menu_context_view_serie_details">Details</string>
 <string name="menu_context_view_imdb">Serie op IMDb</string>
 <string name="menu_context_view_ep_imdb">Aflevering op IMDb</string>
@@ -55,7 +55,7 @@
 \n&#187; Klik op grote poster voor fan art
 \n\nIn Details van Serie/Aflevering:
 \n&#187; Klik op IMDb-score voor IMDb-pagina</string>
-<string name="menu_toggle">Verborgen status</string>
+<string name="menu_toggle">Achterhouden</string>
 <string name="messages_title_updating_all_series">Alle series bijwerken</string>
 <string name="messages_title_updating_db">Database bijwerken</string>
 <string name="messages_update_serie">Downloaden nieuwe gegevens…</string>

@@ -56,7 +56,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
-import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AbsListView;
@@ -90,7 +89,7 @@ public class DroidShows extends ListActivity
 	private static final int DELETE_CONTEXT = UPDATE_CONTEXT + 1;
 	public static String on;
 	private static AlertDialog m_AlertDlg;
-	public final static String TAG = "DroidShows";
+	public static final String TAG = "DroidShows";
 	private static ProgressDialog m_ProgressDialog = null;
 	private static ProgressDialog updateAllSeriesPD = null;
 	public static SeriesAdapter seriesAdapter;
@@ -123,7 +122,7 @@ public class DroidShows extends ListActivity
 	private static final String SWITCH_SWIPE_DIRECTION = "switch_swipe_direction";
 	public static boolean switchSwipeDirection;
 	private static final String LAST_STATS_UPDATE = "last_stats_update";
-	public static String lastStatsUpdate; 
+	private static String lastStatsUpdate; 
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
 	public static Thread updateAllShowsTh = null;
@@ -131,9 +130,9 @@ public class DroidShows extends ListActivity
 	public static SQLiteStore db;
 	public static List<TVShowItem> series = null;
 	private static List<String[]> undo = new ArrayList<String[]>();
-	private static SwipeDetect swipeDetect;
+	private SwipeDetect swipeDetect = new SwipeDetect();
 	private static AsyncInfo asyncInfo;
-	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -176,15 +175,13 @@ public class DroidShows extends ListActivity
 		on = getString(R.string.messages_on);
 		listView = getListView();
 		getSeries();
-		listView.getViewTreeObserver().addOnGlobalLayoutListener(listDone);
 		registerForContextMenu(listView);
-		swipeDetect = new SwipeDetect();
 		listView.setOnTouchListener(swipeDetect);
 		setFastScroll();
 	}
 	
 	private void setFastScroll() {
-		if (series.size() > 25) {
+		if (series.size() > 20) {
 			try {	// http://stackoverflow.com/a/26447004
 				Drawable thumb = getResources().getDrawable(R.drawable.thumb);
 				String fieldName = "mFastScroller";
@@ -232,14 +229,6 @@ public class DroidShows extends ListActivity
 		}
 	}
 	
-	private final OnGlobalLayoutListener listDone = new OnGlobalLayoutListener() {
-		public void onGlobalLayout() {
-			listView.getViewTreeObserver().removeGlobalOnLayoutListener(listDone);
-			asyncInfo = new AsyncInfo();
-			asyncInfo.execute();
-		}
-	};
-
 	/* Options Menu */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -311,7 +300,6 @@ public class DroidShows extends ListActivity
 		asyncInfo.cancel(true);
 		filterOption ^= 1;
 		getSeries();
-		listView.post(updateListView);
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
 	}
@@ -564,12 +552,12 @@ public class DroidShows extends ListActivity
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		if (swipeDetect.detected()) {
+		if (swipeDetect.value == 1) {
 			if (markNextEpSeen(position)) {
 				Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 				vib.vibrate(150);
 			}
-		} else {
+		} else if (swipeDetect.value == 0) {
 			try {
 				String serieId = series.get(position).getSerieId();
 				backFromSeasonSerieId = serieId;
@@ -830,7 +818,6 @@ public class DroidShows extends ListActivity
 					getSeries();
 					updateAllSeriesPD.dismiss();
 					theTVDB = null;
-					listView.post(updateListView);
 				}
 			};
 			updateAllSeriesPD = new ProgressDialog(this);
@@ -1023,13 +1010,16 @@ public class DroidShows extends ListActivity
 			String newAsync = dateFormat.format(new Date());
 			if (!lastStatsUpdate.equals(newAsync)) {
 				for (TVShowItem serie : series) {
+					if (isCancelled()) return null;
 					String serieId = serie.getSerieId();
 					int unwatched = db.getEPUnwatched(serieId);
 					int unwatchedAired = db.getEPUnwatchedAired(serieId);
 					if (unwatched != serie.getUnwatched() || unwatchedAired != serie.getUnwatchedAired()) {
+						if (isCancelled()) return null;
 						serie.setUnwatched(unwatched);
 						serie.setUnwatchedAired(unwatchedAired);
 						listView.post(updateListView);
+						if (isCancelled()) return null;
 						db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +" WHERE id="+ serieId);
 					}
 				}
