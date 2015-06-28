@@ -81,7 +81,7 @@ public class AddSerie extends ListActivity
 	/* Options Menu */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.search_serie)).setIcon(android.R.drawable.ic_menu_search);
+		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
 		return super.onCreateOptionsMenu(menu);
 	}
 

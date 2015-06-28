@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="nl.asymmetrics.droidshows"
-	android:versionCode="50" android:versionName="5.0">
+	android:versionCode="51" android:versionName="5.1">
 	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -19,7 +19,7 @@
 			<action android:name="android.intent.action.SEARCH"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
-		<meta-data android:name="android.app.searchable" android:resource="@layout/search_serie"/>
+		<meta-data android:name="android.app.searchable" android:resource="@layout/add_serie_search"/>
 	</activity>
 	<activity android:name=".ui.SerieSeasons" android:configChanges="orientation"/>
 	<activity android:name=".ui.SerieEpisodes" android:configChanges="orientation"/>

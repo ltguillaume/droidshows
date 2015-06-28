@@ -48,6 +48,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
 import android.os.Vibrator;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -58,9 +60,12 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -71,14 +76,14 @@ public class DroidShows extends ListActivity
 {
 	public static String VERSION = "0.1.5-7G";
 	/* Menus */
-	private static final int UNDO_MENU_ITEM = Menu.FIRST; 
+	private static final int UNDO_MENU_ITEM = Menu.FIRST;
 	private static final int ADD_SERIE_MENU_ITEM = UNDO_MENU_ITEM + 1;
-	private static final int TOGGLE_FILTER_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
-	private static final int PREFERENCES_MENU_ITEM = TOGGLE_FILTER_MENU_ITEM + 1;
-	private static final int SORT_MENU_ITEM = PREFERENCES_MENU_ITEM + 1;
+	private static final int SEARCH_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
+	private static final int TOGGLE_FILTER_MENU_ITEM = SEARCH_MENU_ITEM + 1;
+	private static final int SORT_MENU_ITEM = TOGGLE_FILTER_MENU_ITEM + 1;
 	private static final int UPDATEALL_MENU_ITEM = SORT_MENU_ITEM + 1;
-	private static final int ABOUT_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
-	private static final int EXIT_MENU_ITEM = ABOUT_MENU_ITEM + 1;
+	private static final int OPTIONS_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
+	private static final int EXIT_MENU_ITEM = OPTIONS_MENU_ITEM + 1;
 	/* Context Menus */
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = Menu.FIRST;
 	private static final int TOGGLE_SERIE_STATUS_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
@@ -122,7 +127,7 @@ public class DroidShows extends ListActivity
 	private static final String SWITCH_SWIPE_DIRECTION = "switch_swipe_direction";
 	public static boolean switchSwipeDirection;
 	private static final String LAST_STATS_UPDATE = "last_stats_update";
-	private static String lastStatsUpdate; 
+	private static String lastStatsUpdate;
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
 	public static Thread updateAllShowsTh = null;
@@ -133,6 +138,8 @@ public class DroidShows extends ListActivity
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private static AsyncInfo asyncInfo;
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private EditText searchV;
+	private InputMethodManager keyboard;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -178,10 +185,19 @@ public class DroidShows extends ListActivity
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
 		setFastScroll();
+		searchV = (EditText) findViewById(R.id.search_text);
+		searchV.addTextChangedListener(new TextWatcher() {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				seriesAdapter.getFilter().filter(s);
+			}
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			public void afterTextChanged(Editable s) {}
+		});
+		keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 	}
 	
 	private void setFastScroll() {
-		if (series.size() > 20) {
+		if (seriesAdapter.getCount() > 20) {
 			try {	// http://stackoverflow.com/a/26447004
 				Drawable thumb = getResources().getDrawable(R.drawable.thumb);
 				String fieldName = "mFastScroller";
@@ -199,7 +215,7 @@ public class DroidShows extends ListActivity
 					fieldToChange.setAccessible(true);
 					ImageView iv = (ImageView) fieldToChange.get(thisFastScroller);
 					fieldToChange.set(thisFastScroller, iv);
-					iv.setMinimumWidth(thumb.getIntrinsicWidth()); //IS//THIS//NECESSARY//?//
+					iv.setMinimumWidth(thumb.getIntrinsicWidth());	//IS//THIS//NECESSARY//?//
 					iv.setMaxWidth(thumb.getIntrinsicWidth());	//IS//THIS//NECESSARY//?//
 					iv.setImageDrawable(thumb);
 
@@ -234,10 +250,11 @@ public class DroidShows extends ListActivity
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
 		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
 		menu.add(0, TOGGLE_FILTER_MENU_ITEM, 0, getString(R.string.menu_show_toggled)).setIcon(android.R.drawable.ic_menu_view);
 		menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort_last_unseen)).setIcon(SORT_BY_LAST_UNSEEN_ICON);
 		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update_all)).setIcon(android.R.drawable.ic_menu_upload);
-		menu.add(0, ABOUT_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
+		menu.add(0, OPTIONS_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
 		menu.add(0, EXIT_MENU_ITEM, 0, getString(R.string.menu_exit)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		return super.onCreateOptionsMenu(menu);
 	}
@@ -268,6 +285,9 @@ public class DroidShows extends ListActivity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case ADD_SERIE_MENU_ITEM :
+				super.onSearchRequested();
+				break;
+			case SEARCH_MENU_ITEM :
 				onSearchRequested();
 				break;
 			case TOGGLE_FILTER_MENU_ITEM :
@@ -279,7 +299,7 @@ public class DroidShows extends ListActivity
 			case UPDATEALL_MENU_ITEM :
 				if (db.disableCleanUp()) updateAllSeries();
 				break;
-			case ABOUT_MENU_ITEM :
+			case OPTIONS_MENU_ITEM :
 				aboutDialog();
 				break;
 			case UNDO_MENU_ITEM :
@@ -420,6 +440,7 @@ public class DroidShows extends ListActivity
 					filterOption ^= 1;
 				getSeries();
 				updateAllSeries();
+				undo.clear();
 			} catch (IOException e) {
 				toastTxt = R.string.dialog_restore_failed;
 				e.printStackTrace();
@@ -432,7 +453,7 @@ public class DroidShows extends ListActivity
 		
 	private void copy(File source, File destination) throws IOException {
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			boolean rerunAsync = false; 
+			boolean rerunAsync = false;
 			if (asyncInfo.getStatus() != AsyncTask.Status.FINISHED) {
 				asyncInfo.cancel(true);
 				rerunAsync = true;
@@ -471,12 +492,13 @@ public class DroidShows extends ListActivity
 		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
 		menu.add(0, VIEW_EP_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_ep_imdb));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
-		menu.add(0, TOGGLE_SERIE_STATUS_CONTEXT, 0, getString(R.string.menu_toggle));
+		menu.add(0, TOGGLE_SERIE_STATUS_CONTEXT, 0, getString(R.string.menu_disable));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-    int position = info.position;
-    if (series.get(position).getUnwatched() == 0)
-    	menu.findItem(VIEW_EP_IMDB_CONTEXT).setVisible(false);
+	    if (seriesAdapter.getItem(info.position).getUnwatchedAired() == 0)
+	    	menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
+	    if (seriesAdapter.getItem(info.position).getPassiveStatus())
+	    	menu.findItem(TOGGLE_SERIE_STATUS_CONTEXT).setTitle(R.string.menu_enable);
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -488,38 +510,39 @@ public class DroidShows extends ListActivity
 				markNextEpSeen(info.position);
 				return true;
 			case VIEW_SERIEDETAILS_CONTEXT :
-				showDetails(series.get(info.position).getSerieId());
+				showDetails(seriesAdapter.getItem(info.position).getSerieId());
 				return true;
 			case VIEW_IMDB_CONTEXT :
-				IMDbDetails(series.get(info.position).getSerieId(), series.get(info.position).getName(), false);
+				IMDbDetails(seriesAdapter.getItem(info.position).getSerieId(), seriesAdapter.getItem(info.position).getName(), false);
 				return true;
 			case VIEW_EP_IMDB_CONTEXT :
-				IMDbDetails(series.get(info.position).getSerieId(), series.get(info.position).getName(), true);
+				IMDbDetails(seriesAdapter.getItem(info.position).getSerieId(), seriesAdapter.getItem(info.position).getName(), true);
 				return true;
 			case UPDATE_CONTEXT :
-				updateSerie(series.get(info.position).getSerieId(), info.position);
+				updateSerie(seriesAdapter.getItem(info.position).getSerieId(), info.position);
 				return true;
 			case TOGGLE_SERIE_STATUS_CONTEXT :
-				serie = series.get(info.position);
+				serie = seriesAdapter.getItem(info.position);
 				serieId = serie.getSerieId();
 				Integer st = db.getSerieStatus(serieId);
 				st ^= 1;
 				db.updateSerieStatus(serieId, st);
 				if (filterOption == FILTER_ENABLED && st == 1) {	// Remove show from list if passive and filter is enabled
-					series.remove(series.get(info.position));
+					series.remove(seriesAdapter.getItem(info.position));
 				} else {	// Update data to change the show's title on refresh
-					series.get(info.position).setPassiveStatus(st == 1);
+					seriesAdapter.getItem(info.position).setPassiveStatus(st == 1);
 				}
 				listView.post(updateListView);
 				return true;
 			case DELETE_CONTEXT :
 				// TODO (1): add a verification to be sure that the TV show was well eliminated
-				final int spos = info.position;
+				final int position = info.position;
 				final Runnable deleteserie = new Runnable() {
 					public void run() {
-						String sname = db.getSerieName(series.get(spos).getSerieId());
-						db.deleteSerie(series.get(spos).getSerieId());
-						series.remove(series.get(spos));
+						TVShowItem serie = seriesAdapter.getItem(position);
+						String sname = serie.getName();
+						db.deleteSerie(serie.getSerieId());
+						series.remove(series.indexOf(serie));
 						listView.post(updateListView);
 						Looper.prepare();	// Threads don't have a message loop
 						Toast.makeText(getApplicationContext(), sname +" "+ getString(R.string.messages_deleted), Toast.LENGTH_LONG).show();
@@ -528,13 +551,14 @@ public class DroidShows extends ListActivity
 				};
 				AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 				alertDialog.setTitle(R.string.dialog_title_delete);
-				alertDialog.setMessage(String.format(getString(R.string.dialog_delete), series.get(info.position).getName()));
+				alertDialog.setMessage(String.format(getString(R.string.dialog_delete), seriesAdapter.getItem(info.position).getName()));
 				alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
 				alertDialog.setCancelable(false);
 				alertDialog.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						deleteTh = new Thread(deleteserie);
 						deleteTh.start();
+						clearFilter(null);
 						return;
 					}
 				});
@@ -552,6 +576,7 @@ public class DroidShows extends ListActivity
 	
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
+		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 		if (swipeDetect.value == 1) {
 			if (markNextEpSeen(position)) {
 				Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
@@ -559,7 +584,7 @@ public class DroidShows extends ListActivity
 			}
 		} else if (swipeDetect.value == 0) {
 			try {
-				String serieId = series.get(position).getSerieId();
+				String serieId = seriesAdapter.getItem(position).getSerieId();
 				backFromSeasonSerieId = serieId;
 				backFromSeasonPosition = position;
 				Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
@@ -572,15 +597,15 @@ public class DroidShows extends ListActivity
 	}
 	
 	private boolean markNextEpSeen(final int oldListPosition) {
-		TVShowItem serie = series.get(oldListPosition);
+		TVShowItem serie = seriesAdapter.getItem(oldListPosition);
 		String serieId = serie.getSerieId();
 		String nextEpisode = db.getNextEpisodeId(serieId, -1, true);
 		if (!nextEpisode.equals("-1")) {
 			String episodeMarked = db.updateUnwatchedEpisode(serieId, nextEpisode);
 			final TVShowItem newSerie = createTVShowItem(serieId);
-			series.set(oldListPosition, newSerie);
+			series.set(series.indexOf(serie), newSerie);
 			listView.post(updateListView);
-			if (sortOption == SORT_BY_LAST_UNSEEN) {
+			if (!seriesAdapter.isFiltered && sortOption == SORT_BY_LAST_UNSEEN) {
 				final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
 				listView.post(new Runnable() {
 					public void run() {
@@ -606,15 +631,15 @@ public class DroidShows extends ListActivity
 		String episodeId = episodeInfo[1];
 		String serieName = episodeInfo[2];
 		String episodeMarked = db.updateUnwatchedEpisode(serieId, episodeId);
-		int oldListPosition = -1;
+		int position = -1;
 		for (int i = 0; i < series.size(); i++) {
 			if (series.get(i).getSerieId().equals(serieId)) {
-				oldListPosition = i;
+				position = i;
 				break;
 			}
 		}
 		final TVShowItem newSerie = createTVShowItem(serieId);
-		series.set(oldListPosition, newSerie);
+		series.set(position, newSerie);
 		listView.post(updateListView);
 		undo.remove(undo.size()-1);
 		Toast.makeText(getApplicationContext(), serieName +" "+ episodeMarked +" "+ getString(R.string.messages_marked_unseen), Toast.LENGTH_SHORT).show();
@@ -665,9 +690,9 @@ public class DroidShows extends ListActivity
 		return imdbId;
 	}
 
-	private void updateSerie(String serieId, int pos) {
+	private void updateSerie(String serieId, int position) {
 		final String id = serieId;
-		final int oldListPosition = pos;
+		final TVShowItem serie = seriesAdapter.getItem(position);
 		if (utils.isNetworkAvailable(DroidShows.this)) {
 			Runnable updateserierun = new Runnable() {
 				public void run() {
@@ -688,14 +713,14 @@ public class DroidShows extends ListActivity
 					m_ProgressDialog.dismiss();
 					theTVDB = null;
 					final TVShowItem newSerie = createTVShowItem(id);
-					series.set(oldListPosition, newSerie);
+					series.set(series.indexOf(serie), newSerie);
 					listView.post(updateListView);
-					if (sortOption == SORT_BY_LAST_UNSEEN) {
+					if (!seriesAdapter.isFiltered && sortOption == SORT_BY_LAST_UNSEEN) {
 						final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
 						listView.post(new Runnable() {
 							public void run() {
 								int pos = seriesAdapter.getPosition(newSerie);
-								if (pos != oldListPosition) {
+								if (pos != series.indexOf(serie)) {
 									listView.setSelection(pos);
 									if (0 < pos && pos < listView.getCount() - 5)
 										listView.smoothScrollBy(-padding, 500);
@@ -705,7 +730,7 @@ public class DroidShows extends ListActivity
 					}
 				}
 			};
-			m_ProgressDialog = ProgressDialog.show(DroidShows.this, series.get(pos).getName(), getString(R.string.messages_update_serie), true);
+			m_ProgressDialog = ProgressDialog.show(DroidShows.this, serie.getName(), getString(R.string.messages_update_serie), true);
 			updateShowTh = new Thread(updateserierun);
 			updateShowTh.start();
 		} else {
@@ -783,6 +808,13 @@ public class DroidShows extends ListActivity
 	
 	private void cleanUp() {
 		if (db.enableCleanUp()) updateAllSeries();
+	}
+	
+	public void clearFilter(View v) {
+		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
+		searchV.setText("");
+		searchV.clearFocus();
+		findViewById(R.id.search).setVisibility(View.GONE);		
 	}
 
 	private void updateAllSeries() {
@@ -909,18 +941,23 @@ public class DroidShows extends ListActivity
 		public void run() {
 			seriesAdapter.notifyDataSetChanged();
 			if (series != null && series.size() > 0) {
-				for (int i = 0; i < series.size(); i++) {
-					if (!series.get(i).equals(seriesAdapter.getItem(i))) {
-						seriesAdapter.add(series.get(i));
-					} else {
-						TVShowItem tmpTVSI = seriesAdapter.getItem(i);
-						tmpTVSI.setUnwatched(series.get(i).getUnwatched());
-						tmpTVSI.setUnwatchedAired(series.get(i).getUnwatchedAired());
-						tmpTVSI.setNextEpisode(series.get(i).getNextEpisode());
-						tmpTVSI.setNextAir(series.get(i).getNextAir());
+				if (seriesAdapter.isFiltered) {
+					for (int i = 0; i < seriesAdapter.getCount(); i++) {
+						String adapterSerie = seriesAdapter.getItem(i).getSerieId();
+						for (TVShowItem serie : series)
+							if (serie.getSerieId().equals(adapterSerie))
+								seriesAdapter.setItem(i, serie);
+					}
+				} else {
+					for (int i = 0; i < series.size(); i++) {
+						if (series.get(i).equals(seriesAdapter.getItem(i)))
+							seriesAdapter.setItem(i, series.get(i));
+						else
+							seriesAdapter.add(series.get(i));
 					}
 				}
 			}
+			
 			Comparator<TVShowItem> comperator = new Comparator<TVShowItem>() {
 				public int compare(TVShowItem object1, TVShowItem object2) {
 					if (sortOption == SORT_BY_LAST_UNSEEN) {
@@ -947,6 +984,7 @@ public class DroidShows extends ListActivity
 					}
 				}
 			};
+			
 			seriesAdapter.sort(comperator);
 			seriesAdapter.notifyDataSetChanged();
 		}
@@ -978,7 +1016,7 @@ public class DroidShows extends ListActivity
 			}
 		}
 		listView.post(updateListView);
-		if (sortOption == SORT_BY_LAST_UNSEEN) {
+		if (!seriesAdapter.isFiltered && sortOption == SORT_BY_LAST_UNSEEN) {
 			final int padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
 			final int lastPosition = backFromSeasonPosition;
 			listView.post(new Runnable() {
@@ -1032,7 +1070,20 @@ public class DroidShows extends ListActivity
 
 	@Override
 	public boolean onSearchRequested() {
-		return super.onSearchRequested();
+		findViewById(R.id.search).setVisibility(View.VISIBLE);
+		if (searchV.requestFocus()) {
+			searchV.selectAll();
+			keyboard.showSoftInput(searchV, InputMethodManager.SHOW_IMPLICIT);
+		}
+		return true;
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (findViewById(R.id.search).getVisibility() == View.GONE)
+			super.onBackPressed();
+		else
+			clearFilter(null);
 	}
 
 	@Override
@@ -1052,13 +1103,65 @@ public class DroidShows extends ListActivity
 		}
 	}
 
-	public class SeriesAdapter extends ArrayAdapter<TVShowItem>
-	{
+	public class SeriesAdapter extends ArrayAdapter<TVShowItem> {
 		private List<TVShowItem> items;
+		private ShowsFilter filter;
+		public boolean isFiltered = false;
 
 		public SeriesAdapter(Context context, int textViewResourceId, List<TVShowItem> series) {
 			super(context, textViewResourceId, series);
-			this.items = series;
+			items = series;
+		}
+		
+		@Override
+		public int getCount() {
+			return items.size();
+		}
+		
+		@Override
+		public Filter getFilter() {
+			if (filter == null)
+				filter = new ShowsFilter();
+			return filter;
+		}
+		
+		@Override
+		public TVShowItem getItem(int position) {
+			return items.get(position);
+		}
+		
+		public void setItem(int location, TVShowItem serie) {
+			items.set(location, serie);
+			notifyDataSetChanged();
+		}
+		
+		private class ShowsFilter extends Filter {
+			@Override
+			protected FilterResults performFiltering(CharSequence constraint) {
+				FilterResults results = new FilterResults();
+				if (constraint == null || constraint.length() == 0) {
+					results.count = series.size();
+					results.values = series;
+					isFiltered = false;
+				} else {
+					constraint = constraint.toString().toLowerCase();
+					ArrayList<TVShowItem> filteredSeries = new ArrayList<TVShowItem>();
+					for (TVShowItem serie : series) {
+						if (serie.getName().toLowerCase().contains(constraint))
+							filteredSeries.add(serie);
+					}
+					results.count = filteredSeries.size();
+					results.values = filteredSeries;
+					isFiltered = true;
+				}
+				return results;
+			}
+
+			@Override
+			protected void publishResults(CharSequence constraint, FilterResults results) {
+				items = (List<TVShowItem>) results.values;
+				notifyDataSetChanged();
+			}
 		}
 
 		public View getView(final int position, View convertView, ViewGroup parent) {
@@ -1129,7 +1232,8 @@ public class DroidShows extends ListActivity
 			if (holder.icon != null) {
 				Drawable icon = serie.getDIcon();
 				if (icon == null)
-					icon = Drawable.createFromPath(serie.getIcon());
+					if (!serie.getIcon().equals(""))
+						icon = Drawable.createFromPath(serie.getIcon());
 				if (icon == null) {
 					holder.icon.setImageResource(R.drawable.noposter);
 				} else {
@@ -1151,17 +1255,20 @@ public class DroidShows extends ListActivity
 	}
 	private OnClickListener detailsListener = new OnClickListener() {
 		public void onClick(View v) {
-	        final int position = getListView().getPositionForView(v);
+	        final int position = listView.getPositionForView(v);
 	        if (position != ListView.INVALID_POSITION) {
-				showDetails(series.get(position).getSerieId());
+	        	keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
+				showDetails(seriesAdapter.getItem(position).getSerieId());
 			}
 		}
 	};
 	private OnLongClickListener IMDbListener = new OnLongClickListener() {
 		public boolean onLongClick(View v) {
-	        final int position = getListView().getPositionForView(v);
+	        final int position = listView.getPositionForView(v);
 	        if (position != ListView.INVALID_POSITION) {
-	        	IMDbDetails(series.get(position).getSerieId(), series.get(position).getName(), true);
+	        	keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
+	        	IMDbDetails(seriesAdapter.getItem(position).getSerieId(),
+	        			seriesAdapter.getItem(position).getName(), true);
 	        }
 			return true;
 		}

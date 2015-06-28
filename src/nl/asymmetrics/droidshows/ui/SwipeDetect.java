@@ -19,7 +19,7 @@ public class SwipeDetect implements View.OnTouchListener {
 			case MotionEvent.ACTION_MOVE:
 				int deltaX = onDownX - (int) event.getX();
 				int deltaY = onDownY - (int) event.getY();
-				if ((((deltaX < 0) ? -deltaX : deltaX) / 3) > ((deltaY < 0) ? -deltaY : deltaY)) {
+				if (value < 99 && (((deltaX < 0) ? -deltaX : deltaX) / 3) > ((deltaY < 0) ? -deltaY : deltaY)) {
 					if (deltaX > v.getWidth() / 3) {	// > 0 = RTL
 						if (v.getContext() instanceof DroidShows) {
 							value = 1;	// mark next episode seen
@@ -28,9 +28,11 @@ public class SwipeDetect implements View.OnTouchListener {
 							value = -1;	// no ListItemClick
 							((Activity)v.getContext()).onBackPressed();
 						}
+						value = 99;	// Don't fire more than once
 					} else if (!DroidShows.switchSwipeDirection && -deltaX > v.getWidth() / 3) {	// < 0 = LTR
 						value = -1;	// no ListItemClick
 						((Activity)v.getContext()).onBackPressed();
+						value = 99;
 					}
 				}
 		}

@@ -2,14 +2,15 @@
 <resources>
 <string name="lang_code">nl</string>
 <string name="layout_app_name">DroidShows</string>
-<string name="layout_main_no_items">Geen series gevonden. Je kunt een serie toevoegen via het menu.</string>
+<string name="layout_main_no_items">Geen series gevonden.</string>
 <string name="layout_search_no_items">Geen series gevonden.</string>
 <string name="layout_seasons_no_items">Geen seizoenen gevonden.</string>
-<string name="search_serie">Serie zoeken</string>
-<string name="search_hint">Zoekopdracht</string>
+<string name="addserie_hint">Nieuwe serie zoeken...</string>
+<string name="search_hint">Zoeken...</string>
 <string name="menu_undo">Ongedaan maken</string>
 <string name="menu_add_serie">Serie toevoegen</string>
 <string name="menu_update_all">Alle series bijwerken</string>
+<string name="menu_search">Serie zoeken</string>
 <string name="menu_sort_az">Sorteren op naam</string>
 <string name="menu_sort_last_unseen">Sorteren op datum</string>
 <string name="menu_about">Opties</string>
@@ -17,8 +18,8 @@
 <string name="menu_context_update">Bijwerken</string>
 <string name="menu_context_delete">Verwijderen</string>
 <string name="menu_context_add_serie">Serie toevoegen</string>
-<string name="menu_show_toggled">Achtergehouden tonen</string>
-<string name="menu_hide_toggled">Achtergehouden verbergen</string>
+<string name="menu_show_toggled">Achtergehouden series tonen</string>
+<string name="menu_hide_toggled">Achtergehouden series verbergen</string>
 <string name="menu_context_view_serie_details">Details</string>
 <string name="menu_context_view_imdb">Serie op IMDb</string>
 <string name="menu_context_view_ep_imdb">Aflevering op IMDb</string>
@@ -55,7 +56,8 @@
 \n&#187; Klik op grote poster voor fan art
 \n\nIn Details van Serie/Aflevering:
 \n&#187; Klik op IMDb-score voor IMDb-pagina</string>
-<string name="menu_toggle">Achterhouden</string>
+<string name="menu_enable">Altijd tonen</string>
+<string name="menu_disable">Achterhouden</string>
 <string name="messages_title_updating_all_series">Alle series bijwerken</string>
 <string name="messages_title_updating_db">Database bijwerken</string>
 <string name="messages_update_serie">Downloaden nieuwe gegevens…</string>
