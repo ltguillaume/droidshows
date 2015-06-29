@@ -9,6 +9,7 @@ import java.util.List;
 
 import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.DroidShows;
+import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;

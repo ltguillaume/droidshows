@@ -6,6 +6,7 @@ import java.util.List;
 
 import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.R;
+import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;

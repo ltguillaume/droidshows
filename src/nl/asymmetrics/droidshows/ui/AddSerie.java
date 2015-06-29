@@ -16,6 +16,7 @@ import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.thetvdb.TheTVDB;
 import nl.asymmetrics.droidshows.thetvdb.model.Serie;
 import nl.asymmetrics.droidshows.thetvdb.model.TVShowItem;
+import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import nl.asymmetrics.droidshows.utils.Utils;
 import android.app.AlertDialog;
 import android.app.ListActivity;
