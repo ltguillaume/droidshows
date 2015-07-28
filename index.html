@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Droidshows by ltGuillaume</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Droidshows</h1>
+      <h2 class="project-tagline">DroidShows: 2015 Reboot of DroidSeries TV Show Tracker</h2>
+      <a href="https://github.com/ltGuillaume/DroidShows" class="btn">View on GitHub</a>
+      <a href="https://github.com/ltGuillaume/DroidShows/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/ltGuillaume/DroidShows/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="droidshows" class="anchor" href="#droidshows" aria-hidden="true"><span class="octicon octicon-link"></span></a>DroidShows<img src="https://github.com/ltGuillaume/DroidShows/raw/master/icon/icon5a.png" align="right">
+</h1>
+
+<p>This fork adds quite a bunch of features, among which a menu overflow button, quick search, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. 
+DroidShows can now be found in the <a href="https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows">F-Droid Repository</a>.</p>
+
+<p>Some pointers:</p>
+
+<ul>
+<li>Don't forget to update all shows regularly</li>
+<li>Long-press items for more options</li>
+<li>Swipe left-to-right to go back<br>
+<strong>In Shows Overview</strong>:</li>
+<li>Tap poster for show info</li>
+<li>Long-press poster for next episode's IMDb</li>
+<li>Swipe right-to-left to mark next as seen<br>
+<strong>In Show Details</strong>:</li>
+<li>Tap poster for full-screen view</li>
+<li>Click full-screen poster image for fan art<br>
+<strong>In Show/Episode Details</strong>:</li>
+<li>Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage</li>
+</ul>
+
+<p><a href="https://github.com/ltGuillaume/DroidShows/wiki">DroidShows Wiki (FAQ)</a><br>
+<a href="http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKioxZTNiOGI1MjAwYzk0ZTE4OTVmZTRmYWIxOTBjNDAyYQ">Screenshots &amp; comparison with original DroidSeries</a><br>
+<a href="http://forum.xda-developers.com/showthread.php?t=3136787">XDA Forum post / Changelog</a><br>
+<strong>Download APK</strong>: from XDA forum post, <a href="https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows">F-Droid Repository</a> or <a href="https://github.com/ltGuillaume/DroidShows/tree/master/apk">here</a></p>
+
+<p><img src="https://github.com/ltGuillaume/DroidShows/raw/master/icon/screenshot.png" alt="DroidShows Screenshot"><br>
+<strong>Shows Overview</strong>:<br>
++ Showing "[aired unwatched] of [total unwatched]"<br>
++ Added icon ic_menu_view for show/hide toggled<br>
++ Status of show in details, and † in overview if show is not continuing<br>
++ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list<br>
++ Option in [About] to only update shows' last season<br>
++ Context item to view show details on IMDb<br>
++ Tap cover for show info, long-press for IMDb details<br>
++ Swipe right-to-left to mark next episode as seen (shows confirmation toast)<br>
++ Option to include specials in unwatched count<br>
++ Mark next episode seen via swipe now vibrates<br>
++ Undo function (until exit)<br>
++ Showing middot · when all new episodes are aired<br>
++ New show &amp; episode details views<br>
++ View full size poster and fan art<br>
++ Quick search (filter)<br>
+* Sorting shows by first unseen episode<br>
+* Clarified toggle and sort options<br>
+* Not showing "null" entries from DB<br>
+* Posters now fill row height, aspect ratios independent of screen's  </p>
+
+<p><strong>Seasons/Episodes list</strong>:<br>
++ Showing "[aired] of [season episodes]"<br>
++ Aired date in episodes list<br>
++ Click on episode title for details, on checkmark to change seen state<br>
+* Big performance improvement for entirely rewritten Seasons activity: is now almost instant  </p>
+
+<p><strong>Add show</strong>:<br>
++ Icon resized rate_star_med_on_holo_dark for added shows<br>
++ Icon ic_menu_add for new shows<br>
+* Fixed search not working after initial search<br>
+* Centered icons vertically in search results<br>
+* Large-size posters aren't cached, to save space in /data/data/  </p>
+
+<p><strong>Update</strong>:<br>
+* Prevent double episodes  </p>
+
+<p><strong>Other</strong>:<br>
++ [Clean database] in About to remove double episodes post hoc<br>
++ Menu (overflow) button should show up in Android 3.0+<br>
++ Dutch translation<br>
++ Translucent background<br>
++ Swipe left-to-right acts as back button<br>
++ Animations that help understand the app's structure<br>
++ Backup/restore database<br>
+* Date/time format according to locale<br>
+* Big performance improvement for Overview activity: is almost instant (values are kept up-to-date in series table)<br>
+* Some progress dialogs cancelable<br>
+* Update of all shows continues when navigating away from DroidShows<br>
+* Screen off/rotating screen/navigating away from app during update poses no problems anymore<br>
+* [Exit] removes app from memory<br>
+* Fixed UI glitches/styles<br>
+* Code clean-up (all layouts revised)  </p>
+
+<p>©2010 <a href="http://code.google.com/p/droidseries">Carlos Limpinho, Paulo Cabido</a> under GPLv3<br>
+Modified by <a href="http://gitorious.org/droidseries/mckaels-droidseries">Mikael Berthe</a><br>
+©2014-2015 Guillaume under GPLv3 (<a href="http://gitorious.org/droidseries/droidseries-guillaume">previously on Gitorious</a>)<br>
+New icon file is a mix of work by <a href="http://iconeasy.com/icon/tv-shows-2-icon">Thrasos Varnava</a> and <a href="http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html">Taenggo</a></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/ltGuillaume/DroidShows">Droidshows</a> is maintained by <a href="https://github.com/ltGuillaume">ltGuillaume</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
