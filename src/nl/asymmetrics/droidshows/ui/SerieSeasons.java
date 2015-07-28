@@ -92,14 +92,10 @@ public class SerieSeasons extends ListActivity
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		if (swipeDetect.value == 0) {
-			try {
-				Intent serieEpisode = new Intent(SerieSeasons.this, SerieEpisodes.class);
-				serieEpisode.putExtra("serieId", serieId);
-				serieEpisode.putExtra("seasonNumber", seasonNumbers.get(position));
-				startActivity(serieEpisode);
-			} catch (Exception e) {
-				Log.e(DroidShows.TAG, e.getMessage());
-			}
+			Intent serieEpisode = new Intent(SerieSeasons.this, SerieEpisodes.class);
+			serieEpisode.putExtra("serieId", serieId);
+			serieEpisode.putExtra("seasonNumber", seasonNumbers.get(position));
+			startActivity(serieEpisode);
 		}
 	}
 

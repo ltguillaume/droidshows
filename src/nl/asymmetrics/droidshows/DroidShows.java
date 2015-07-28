@@ -15,15 +15,14 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-
 import org.apache.commons.io.FileUtils;
-
 import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.thetvdb.TheTVDB;
 import nl.asymmetrics.droidshows.thetvdb.model.Serie;
 import nl.asymmetrics.droidshows.thetvdb.model.TVShowItem;
 import nl.asymmetrics.droidshows.ui.IconView;
 import nl.asymmetrics.droidshows.ui.SerieSeasons;
+import nl.asymmetrics.droidshows.ui.ViewEpisode;
 import nl.asymmetrics.droidshows.ui.ViewSerie;
 import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
@@ -583,16 +582,12 @@ public class DroidShows extends ListActivity
 				vib.vibrate(150);
 			}
 		} else if (swipeDetect.value == 0) {
-			try {
-				String serieId = seriesAdapter.getItem(position).getSerieId();
-				backFromSeasonSerieId = serieId;
-				backFromSeasonPosition = position;
-				Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
-				serieSeasons.putExtra("serieId", serieId);
-				startActivity(serieSeasons);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			String serieId = seriesAdapter.getItem(position).getSerieId();
+			backFromSeasonSerieId = serieId;
+			backFromSeasonPosition = position;
+			Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
+			serieSeasons.putExtra("serieId", serieId);
+			startActivity(serieSeasons);
 		}
 	}
 	
@@ -1032,7 +1027,7 @@ public class DroidShows extends ListActivity
 		}
 		backFromSeasonSerieId = null;
 		backFromSeasonPosition = -1;
-		if (searchV.getText().length() > 0) {
+		if (searchV.length() > 0) {
 			findViewById(R.id.search).setVisibility(View.VISIBLE);
 			listView.requestFocus();
 		}
@@ -1244,7 +1239,7 @@ public class DroidShows extends ListActivity
 					serie.setDIcon(icon);
 				}
 				holder.icon.setOnClickListener(detailsListener);
-				holder.icon.setOnLongClickListener(IMDbListener);
+				holder.icon.setOnLongClickListener(episodeListener);
 			}
 			return convertView;
 		}
@@ -1265,15 +1260,18 @@ public class DroidShows extends ListActivity
 			}
 		}
 	};
-	private OnLongClickListener IMDbListener = new OnLongClickListener() {
+	private OnLongClickListener episodeListener = new OnLongClickListener() {
 		public boolean onLongClick(View v) {
-	        final int position = listView.getPositionForView(v);
-	        if (position != ListView.INVALID_POSITION) {
-	        	keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
-	        	IMDbDetails(seriesAdapter.getItem(position).getSerieId(),
-	        			seriesAdapter.getItem(position).getName(), true);
-	        }
-			return true;
+      final int position = listView.getPositionForView(v);
+      if (position != ListView.INVALID_POSITION) {
+      	keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
+    		Intent viewEpisode = new Intent(DroidShows.this, ViewEpisode.class);
+    		viewEpisode.putExtra("serieId", seriesAdapter.getItem(position).getSerieId());
+    		viewEpisode.putExtra("serieName", seriesAdapter.getItem(position).getName());
+    		viewEpisode.putExtra("episodeId", db.getNextEpisodeId(seriesAdapter.getItem(position).getSerieId(), -1, false));
+    		startActivity(viewEpisode);
+      }
+      return true;
 		}
 	};
 }

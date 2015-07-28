@@ -195,7 +195,6 @@ public class SerieEpisodes extends ListActivity {
 		Intent viewEpisode = new Intent(SerieEpisodes.this, ViewEpisode.class);
 		viewEpisode.putExtra("serieId", serieId);
 		viewEpisode.putExtra("serieName", serieName);
-		viewEpisode.putExtra("seasonNumber", seasonNumber);
 		viewEpisode.putExtra("episodeId", episode);
 		startActivity(viewEpisode);
 	}

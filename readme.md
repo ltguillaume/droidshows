@@ -6,7 +6,7 @@ This fork adds quite a bunch of features, among which an improved interface, a m
 * Swipe left-to-right to go back  
 __In Shows Overview__:
 * Tap poster for show info
-* Long-press poster for next episode's IMDb
+* Long-press poster for next episode's info
 * Swipe right-to-left to mark next as seen  
 __In Show Details__:
 * Tap poster for full-screen view
@@ -28,7 +28,7 @@ __Shows Overview__:
 \+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list  
 \+ Option in [About] to only update shows' last season  
 \+ Context item to view show details on IMDb  
-\+ Tap cover for show info, long-press for IMDb details  
+\+ Tap cover for show info, long-press for next episode's info  
 \+ Swipe right-to-left to mark next episode as seen (shows confirmation toast)  
 \+ Option to include specials in unwatched count  
 \+ Mark next episode seen via swipe now vibrates  

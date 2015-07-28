@@ -31,14 +31,14 @@ public class ViewEpisode extends Activity
 		view.setOnTouchListener(new SwipeDetect());
 		String serieId = getIntent().getStringExtra("serieId");
 		final String serieName = getIntent().getStringExtra("serieName");
-		int seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
 		String episodeId = getIntent().getStringExtra("episodeId");
 		
-		String query = "SELECT episodeNumber, episodeName, overview, rating, firstAired, imdbId FROM episodes "
+		String query = "SELECT seasonNumber, episodeNumber, episodeName, overview, rating, firstAired, imdbId FROM episodes "
 			+ "WHERE id = '"+ episodeId +"' AND serieId='"+ serieId +"'";
 		Cursor c = DroidShows.db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
+			int seasonNumberCol = c.getColumnIndex("seasonNumber");
 			int episodeNumberCol = c.getColumnIndex("episodeNumber");
 			int enameCol = c.getColumnIndex("episodeName");
 			int overviewCol = c.getColumnIndex("overview");
@@ -60,6 +60,7 @@ public class ViewEpisode extends Activity
 				firstAired = "";
 			}
 	
+			int seasonNumber = c.getInt(seasonNumberCol);
 			int episodeNumber = c.getInt(episodeNumberCol);
 			final String episodeName = c.getString(enameCol);
 			String overview = c.getString(overviewCol);

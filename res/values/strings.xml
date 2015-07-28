@@ -2,6 +2,7 @@
 <resources>
 <string name="copyright" translatable="false">DroidShows v{v}
 \nltGuillaume.github.io/DroidShows
+\nXDA/Changelog: tiny.cc/DroidShows
 \n&#169;2010 Carlos Limpinho, Paulo Cabido:\ncode.google.com/p/droidseries
 \nForked by Mikael Berthe
 \n&#169;2014-{y} Guillaume (GPLv3):\ngithub.com/ltGuillaume/DroidShows
@@ -55,7 +56,7 @@
 \n&#187; Swipe left-to-right to go back
 \n\nIn Shows Overview:
 \n&#187; Tap poster for show info
-\n&#187; Long-press poster for next episode\'s IMDb
+\n&#187; Long-press poster for next episode\'s info
 \n&#187; Swipe right-to-left to mark next as seen
 \n\nIn Show Details:
 \n&#187; Tap poster for full-screen view
