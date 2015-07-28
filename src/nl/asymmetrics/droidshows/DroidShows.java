@@ -813,7 +813,6 @@ public class DroidShows extends ListActivity
 	public void clearFilter(View v) {
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 		searchV.setText("");
-		searchV.clearFocus();
 		findViewById(R.id.search).setVisibility(View.GONE);		
 	}
 
@@ -1033,6 +1032,10 @@ public class DroidShows extends ListActivity
 		}
 		backFromSeasonSerieId = null;
 		backFromSeasonPosition = -1;
+		if (searchV.getText().length() > 0) {
+			findViewById(R.id.search).setVisibility(View.VISIBLE);
+			listView.requestFocus();
+		}
 	}
 	
 	@Override
