@@ -11,10 +11,12 @@ public class Update
 		DroidShows.db.execQuery("CREATE TABLE IF NOT EXISTS droidseries (version VARCHAR)");
 		String version = getVersion();
 		boolean done = false;
+		if (version.equals("0.1.5-6")) {
+			done = u0156To0157();
+			version = getVersion();
+		}
 		if (version.equals("0.1.5-7")) {
 			done = u0157To0157G();
-			if (done)
-				DroidShows.db.execQuery("UPDATE droidseries SET version='"+ DroidShows.VERSION +"'");
 		}
 		return done;
 	}
@@ -38,14 +40,28 @@ public class Update
 		return version;
 	}
 
+	private boolean u0156To0157() {
+		Log.d(DroidShows.TAG, "UPDATING TO VERSION 0.1.5-7");
+		try {
+			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN passiveStatus INTEGER DEFAULT 0");
+			DroidShows.db.execQuery("UPDATE droidseries SET version='0.1.5-7'");
+			return true;
+		} catch (Exception e) {
+			Log.e(DroidShows.TAG, "Error updating database");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	private boolean u0157To0157G() {
 		Log.d(DroidShows.TAG, "UPDATING TO VERSION 0.1.5-7G");
 		try {
-			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN seasonCount INTEGER");
-			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN unwatchedAired INTEGER");
-			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN unwatched INTEGER");
-			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN nextEpisode VARCHAR");
-			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN nextAir VARCHAR");
+			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN seasonCount INTEGER DEFAULT -1");
+			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN unwatchedAired INTEGER DEFAULT -1");
+			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN unwatched INTEGER DEFAULT -1");
+			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN nextEpisode VARCHAR DEFAULT '-1'");
+			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN nextAir VARCHAR DEFAULT '-1'");
+			DroidShows.db.execQuery("UPDATE droidseries SET version='0.1.5-7G'");
 			return true;
 		} catch (Exception e) {
 			Log.e(DroidShows.TAG, "Error updating database");
