@@ -10,6 +10,8 @@ import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
@@ -35,6 +37,8 @@ public class ViewSerie extends Activity
 		imdbId = "";
 	private WebView posterView = null;
 	private boolean posterLoaded = false;
+	private String uri = "imdb:///";
+	private List<String> actors = new ArrayList<String>();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -168,7 +172,6 @@ public class ViewSerie extends Activity
 			TextView serieOverviewV = (TextView) findViewById(R.id.serieOverview);
 			serieOverviewV.setText(serieOverview);
 
-			List<String> actors = new ArrayList<String>();
 			Cursor cactors = DroidShows.db.Query("SELECT actor FROM actors WHERE serieId='"+ serieId + "'");
 			cactors.moveToFirst();
 			if (cactors != null && cactors.isFirst()) {
@@ -178,11 +181,16 @@ public class ViewSerie extends Activity
 			}
 			cactors.close();
 			if (!actors.isEmpty()) {
-				TextView serieActorsV = (TextView) findViewById(R.id.serieActors);
+				TextView serieActorsV = (TextView) findViewById(R.id.actors);
 				serieActorsV.setText(actors.toString().replace("]", "").replace("[", ""));
 				findViewById(R.id.actorsField).setVisibility(View.VISIBLE);
 			}
 		}
+		
+		Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
+		if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
+			uri = "http://m.imdb.com/";
+
 	}
 	
 	private String translateStatus(String statusValue) {
@@ -196,10 +204,6 @@ public class ViewSerie extends Activity
 	}
 	
 	public void IMDbDetails(View v) {
-		String uri = "imdb:///";
-		Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
-		if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
-			uri = "http://m.imdb.com/";
 		if (imdbId.indexOf("tt") == 0) {
 			uri += "title/"+ imdbId;
 		} else {
@@ -207,6 +211,17 @@ public class ViewSerie extends Activity
 		}
 		Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 		startActivity(imdb);
+	}
+	
+	public void IMDbNames(View v) {
+		AlertDialog.Builder namesList = new AlertDialog.Builder(this);
+		namesList.setItems(actors.toArray(new CharSequence[actors.size()]), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int item) {
+				Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri +"find?q="+ actors.get(item)));
+				startActivity(imdb);
+			}
+		});
+		namesList.show();
 	}
 	
 	public void posterView(View v) {

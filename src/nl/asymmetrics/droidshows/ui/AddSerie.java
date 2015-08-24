@@ -130,7 +130,7 @@ public class AddSerie extends ListActivity
 	private void searchSeries(String searchQuery) {
 		try {
 			search_series = new ArrayList<Serie>();
-			search_series = theTVDB.searchSeries(searchQuery, getString(R.string.lang_code));
+			search_series = theTVDB.searchSeries(searchQuery, DroidShows.langCode);
 			if (search_series == null) {
 				m_ProgressDialog.dismiss();
 				Looper.prepare();
@@ -195,7 +195,7 @@ public class AddSerie extends ListActivity
 		Runnable addnewserie = new Runnable() {
 			public void run() {
 				// gathers the TV show and all of its data
-				Serie sToAdd = theTVDB.getSerie(s.getId(), getString(R.string.lang_code));
+				Serie sToAdd = theTVDB.getSerie(s.getId(), DroidShows.langCode);
 				if (sToAdd == null) {
 					m_ProgressDialog.dismiss();
 					Looper.prepare();

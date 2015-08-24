@@ -125,8 +125,10 @@ public class DroidShows extends ListActivity
 	public static boolean fullLineCheckOption;
 	private static final String SWITCH_SWIPE_DIRECTION = "switch_swipe_direction";
 	public static boolean switchSwipeDirection;
-	private static final String LAST_STATS_UPDATE = "last_stats_update";
+	private static final String LAST_STATS_UPDATE_NAME = "last_stats_update";
 	private static String lastStatsUpdate;
+	private static final String LANGUAGE_CODE_NAME = "language";
+	public static String langCode;
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
 	public static Thread updateAllShowsTh = null;
@@ -173,7 +175,8 @@ public class DroidShows extends ListActivity
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
 		switchSwipeDirection = sharedPrefs.getBoolean(SWITCH_SWIPE_DIRECTION, false);
-		lastStatsUpdate = sharedPrefs.getString(LAST_STATS_UPDATE, "");
+		lastStatsUpdate = sharedPrefs.getString(LAST_STATS_UPDATE_NAME, "");
+		langCode = sharedPrefs.getString(LANGUAGE_CODE_NAME, getString(R.string.lang_code));
 
 		series = new ArrayList<TVShowItem>();
 		seriesAdapter = new SeriesAdapter(this, R.layout.row, series);
@@ -342,6 +345,8 @@ public class DroidShows extends ListActivity
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
+		TextView changeLangB = (TextView) about.findViewById(R.id.change_language);
+		changeLangB.setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
 		CheckBox lastSeasonCheckbox = (CheckBox) about.findViewById(R.id.last_season);
 		lastSeasonCheckbox.setChecked(lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 		CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials);
@@ -397,6 +402,17 @@ public class DroidShows extends ListActivity
 			case R.id.switch_swipe_direction:
 				switchSwipeDirection ^= true;
 				break;
+			case R.id.change_language:
+				AlertDialog.Builder changeLang = new AlertDialog.Builder(this);
+				changeLang.setItems(R.array.languages, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int item) {
+						langCode = getResources().getStringArray(R.array.langcodes)[item];
+						TextView changeLangB = (TextView) m_AlertDlg.findViewById(R.id.change_language);
+						changeLangB.setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
+					}
+				});
+				changeLang.show();
+			break;
 		}
 	}
 	
@@ -694,7 +710,7 @@ public class DroidShows extends ListActivity
 					theTVDB = new TheTVDB("8AC675886350B3C3");
 					if (theTVDB.getMirror() != null) {
 						// Log.d(TAG, "Running getSerie - " + id);
-						Serie sToUpdate = theTVDB.getSerie(id, getString(R.string.lang_code));
+						Serie sToUpdate = theTVDB.getSerie(id, langCode);
 						// Log.d(TAG, "Running db.updateserie");
 						toastMessage = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
 						runOnUiThread(changeMessage);
@@ -827,7 +843,7 @@ public class DroidShows extends ListActivity
 						Log.d(TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName() +" ["+ i +"/"+ (series.size()-1) +"]");
 						toastMessage = series.get(i).getName() + "\u2026";
 						runOnUiThread(updateMessage);
-						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), getString(R.string.lang_code));
+						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), langCode);
 						if (sToUpdate != null) {
 							Log.d(TAG, "Updating the database");
 							try {
@@ -994,7 +1010,8 @@ public class DroidShows extends ListActivity
 		ed.putBoolean(INCLUDE_SPECIALS_NAME, includeSpecialsOption);
 		ed.putBoolean(FULL_LINE_CHECK_NAME, fullLineCheckOption);
 		ed.putBoolean(SWITCH_SWIPE_DIRECTION, switchSwipeDirection);
-		ed.putString(LAST_STATS_UPDATE, lastStatsUpdate);
+		ed.putString(LAST_STATS_UPDATE_NAME, lastStatsUpdate);
+		ed.putString(LANGUAGE_CODE_NAME, langCode);
 		ed.commit();
 	}
 	
