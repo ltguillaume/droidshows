@@ -16,6 +16,7 @@
 <string name="menu_about">Opties</string>
 <string name="menu_exit">Afsluiten</string>
 <string name="menu_context_update">Bijwerken</string>
+<string name="menu_context_updated">bijgewerkt</string>
 <string name="menu_context_delete">Verwijderen</string>
 <string name="menu_context_add_serie">Serie toevoegen</string>
 <string name="menu_show_toggled">Achtergehouden series tonen</string>

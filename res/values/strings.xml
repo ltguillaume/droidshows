@@ -23,6 +23,7 @@
 <string name="menu_about">Options</string>
 <string name="menu_exit">Exit</string>
 <string name="menu_context_update">Update</string>
+<string name="menu_context_updated">updated</string>
 <string name="menu_context_delete">Delete</string>
 <string name="menu_context_add_serie">Add show</string>
 <string name="menu_show_toggled">Show disabled</string>

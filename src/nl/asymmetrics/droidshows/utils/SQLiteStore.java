@@ -656,6 +656,14 @@ public class SQLiteStore extends SQLiteOpenHelper
 				execQuery("INSERT INTO genres (serieId, genre) "+"VALUES ('"+ s.getId()
 				+"',"+ DatabaseUtils.sqlEscapeString(s.getGenres().get(g)) +");");
 			}
+			
+			// directors
+			db.execSQL("DELETE FROM directors WHERE serieId='"+ s.getId() +"'");
+			// guestStars
+			db.execSQL("DELETE FROM guestStars WHERE serieId='"+ s.getId() +"'");
+			// writers
+			db.execSQL("DELETE FROM writers WHERE serieId='"+ s.getId() +"'");
+
 			SQLiteStatement updateEpisodeStatmnt = db.compileStatement("UPDATE episodes SET combinedEpisodeNumber=?, combinedSeason=?, "
 				+"dvdChapter=?, dvdDiscId=?, dvdEpisodeNumber=?, "
 				+"dvdSeason=?, epImgFlag=?, episodeName=?, "
@@ -733,19 +741,16 @@ public class SQLiteStore extends SQLiteOpenHelper
 						updateEpisodeStatmnt.bindString(21, s.getId());
 						if (clean) updateEpisodeStatmnt.bindLong(22, iseen); // Guillaume
 						updateEpisodeStatmnt.execute();
-						db.execSQL("DELETE FROM directors WHERE serieId='"+ s.getId() +"'");
 						for (int d = 0; d < s.getEpisodes().get(e).getDirectors().size(); d++) {
 							execQuery("INSERT INTO directors (serieId, episodeId, director) "+"VALUES ('"
 								+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()
 								+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getDirectors().get(d)) +");");
 						}
-						db.execSQL("DELETE FROM guestStars WHERE serieId='"+ s.getId() +"'");
 						for (int g = 0; g < s.getEpisodes().get(e).getGuestStars().size(); g++) {
 							execQuery("INSERT INTO guestStars (serieId, episodeId, guestStar) "+"VALUES ('"
 								+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()
 								+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getGuestStars().get(g)) +");");
 						}
-						db.execSQL("DELETE FROM writers WHERE serieId='"+ s.getId() +"'");
 						for (int w = 0; w < s.getEpisodes().get(e).getWriters().size(); w++) {
 							execQuery("INSERT INTO writers (serieId, episodeId, writer) "+"VALUES ('"
 								+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()

@@ -214,14 +214,16 @@ public class ViewSerie extends Activity
 	}
 	
 	public void IMDbNames(View v) {
-		AlertDialog.Builder namesList = new AlertDialog.Builder(this);
-		namesList.setItems(actors.toArray(new CharSequence[actors.size()]), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int item) {
-				Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri +"find?q="+ actors.get(item)));
-				startActivity(imdb);
-			}
-		});
-		namesList.show();
+		AlertDialog namesList = new AlertDialog.Builder(this)
+			.setTitle(R.string.menu_context_view_imdb)
+			.setItems(actors.toArray(new CharSequence[actors.size()]), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri +"find?q="+ actors.get(item)));
+					startActivity(imdb);
+				}
+			})
+			.show();
+		namesList.setCanceledOnTouchOutside(true);
 	}
 	
 	public void posterView(View v) {

@@ -11,6 +11,8 @@ import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -22,6 +24,11 @@ import android.widget.TextView;
 
 public class ViewEpisode extends Activity
 {
+	private String uri = "imdb:///";
+	private List<String> writers = new ArrayList<String>();
+	private List<String> directors = new ArrayList<String>();
+	private List<String> guestStars = new ArrayList<String>();
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		this.overridePendingTransition(R.anim.right_enter, R.anim.right_exit);
@@ -106,7 +113,6 @@ public class ViewEpisode extends Activity
 				findViewById(R.id.overviewField).setVisibility(View.VISIBLE);
 			}
 
-			List<String> writers = new ArrayList<String>();
 			Cursor cwriters = DroidShows.db.Query("SELECT writer FROM writers WHERE episodeId='" + episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cwriters.moveToFirst();
@@ -122,7 +128,6 @@ public class ViewEpisode extends Activity
 				findViewById(R.id.writerField).setVisibility(View.VISIBLE);
 			}
 			
-			List<String> directors = new ArrayList<String>();
 			Cursor cdirectors = DroidShows.db.Query("SELECT director FROM directors WHERE episodeId='"+ episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cdirectors.moveToFirst();
@@ -138,7 +143,6 @@ public class ViewEpisode extends Activity
 				findViewById(R.id.directorField).setVisibility(View.VISIBLE);
 			}
 	
-			List<String> guestStars = new ArrayList<String>();
 			Cursor cgs = DroidShows.db.Query("SELECT guestStar FROM guestStars WHERE episodeId='"+ episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cgs.moveToFirst();
@@ -156,6 +160,30 @@ public class ViewEpisode extends Activity
 		}
 	}
 	
+	public void IMDbNames(View v) {
+		final List<String> names;
+		int id = v.getId();
+		if (id == R.id.writer || id == R.id.writerField)
+			names = writers;
+		else if (id == R.id.director || id == R.id.directorField)
+			names = directors;
+		else if (id == R.id.guestStars || id == R.id.guestStarsField)
+			names = guestStars;
+		else
+			return;
+
+		AlertDialog namesList = new AlertDialog.Builder(this)
+			.setTitle(R.string.menu_context_view_imdb)
+			.setItems(names.toArray(new CharSequence[names.size()]), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri +"find?q="+ names.get(item)));
+					startActivity(imdb);
+				}
+			})
+			.show();
+		namesList.setCanceledOnTouchOutside(true);
+	}
+
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();

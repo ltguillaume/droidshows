@@ -722,6 +722,9 @@ public class DroidShows extends ListActivity
 						Looper.loop();
 					}
 					m_ProgressDialog.dismiss();
+					Looper.prepare();
+					Toast.makeText(getApplicationContext(), serie.getName() +" "+ getString(R.string.menu_context_updated), Toast.LENGTH_SHORT).show();
+					Looper.loop();
 					theTVDB = null;
 					final TVShowItem newSerie = createTVShowItem(id);
 					series.set(series.indexOf(serie), newSerie);
