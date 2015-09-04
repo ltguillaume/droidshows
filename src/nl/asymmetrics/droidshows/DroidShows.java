@@ -1284,12 +1284,15 @@ public class DroidShows extends ListActivity
 		public boolean onLongClick(View v) {
       final int position = listView.getPositionForView(v);
       if (position != ListView.INVALID_POSITION) {
-      	keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
-    		Intent viewEpisode = new Intent(DroidShows.this, ViewEpisode.class);
-    		viewEpisode.putExtra("serieId", seriesAdapter.getItem(position).getSerieId());
-    		viewEpisode.putExtra("serieName", seriesAdapter.getItem(position).getName());
-    		viewEpisode.putExtra("episodeId", db.getNextEpisodeId(seriesAdapter.getItem(position).getSerieId(), -1, false));
-    		startActivity(viewEpisode);
+    	String episodeId = db.getNextEpisodeId(seriesAdapter.getItem(position).getSerieId(), -1, false);
+    	if (!episodeId.equals("-1")) {
+	      	keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
+	    		Intent viewEpisode = new Intent(DroidShows.this, ViewEpisode.class);
+	    		viewEpisode.putExtra("serieId", seriesAdapter.getItem(position).getSerieId());
+	    		viewEpisode.putExtra("serieName", seriesAdapter.getItem(position).getName());
+	    		viewEpisode.putExtra("episodeId", episodeId);
+	    		startActivity(viewEpisode);
+    	}
       }
       return true;
 		}

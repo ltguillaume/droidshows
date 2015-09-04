@@ -180,17 +180,12 @@ public class TheTVDB {
                                 }
                         }
                         else if ( xmldata.get(i).contentEquals("<Overview>") && !xmldata.get(i+1).contentEquals("</Overview>") ) {
-                                String tmpOverview = xmldata.get(i+1).trim();
-                                int count = 1;
-
-                                while(!xmldata.get(i+count).contentEquals("</Overview>")) {
-                                        count++;
-                                        if(!xmldata.get(i+count).contentEquals("</Overview>")) {
-                                                tmpOverview += xmldata.get(i+count).trim();
-                                        }
-                                }
-
-                                series.setOverview( tmpOverview );
+                        	String tmpOverview = "";
+                        	do {
+                        		i++;
+                        		tmpOverview += xmldata.get(i);
+                        	} while (!xmldata.get(i+1).contentEquals("</Overview>"));
+                            series.setOverview( tmpOverview );
                         }
                         else if ( xmldata.get(i).contentEquals("<FirstAired>") && !xmldata.get(i+1).contentEquals("</FirstAired>") ) {
                         	String tmpFirstAired = "";
@@ -325,9 +320,9 @@ public class TheTVDB {
                         	String tmpOverview = "";
                         	do {
                         		i++;
-                        		tmpOverview += xmldata.get(i).trim();
+                        		tmpOverview += xmldata.get(i);
                         	} while (!xmldata.get(i+1).contentEquals("</Overview>"));
-                            episode.setOverview( tmpOverview );
+                        	episode.setOverview( tmpOverview );
                         }
                         else if ( xmldata.get(i).contentEquals("<ProductionCode>") && !xmldata.get(i+1).contentEquals("</ProductionCode>") ) {
                                 episode.setProductionCode(xmldata.get(i+1).trim());

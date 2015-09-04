@@ -414,8 +414,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 			if (snumber == -1) {
 				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' AND seen=0"
 						+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0")
-						+ (noFutureEp ? " AND firstAired < '"+ today +"'": "")
-						+" AND firstAired <> '' ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
+						+ (noFutureEp ? " AND firstAired < '"+ today +"' AND firstAired <> ''": "")
+						+" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			} else {
 				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="+ snumber
 						+"AND seen=0 AND firstAired < '"+ today
