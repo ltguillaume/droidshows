@@ -26,7 +26,6 @@
 <string name="menu_context_view_ep_imdb">Aflevering op IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
 <string name="dialog_OK">OK</string>
-<string name="dialog_clean_db">Opschonen</string>
 <string name="dialog_backup">Backup maken</string>
 <string name="dialog_backup_done">Backup voltooid</string>
 <string name="dialog_backup_failed">Kon backup niet voltooien!</string>

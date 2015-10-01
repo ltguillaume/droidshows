@@ -16,7 +16,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.database.sqlite.SQLiteStatement;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
@@ -28,7 +27,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 	private static String DB_PATH = "";
 	private static String DB_NAME = "DroidShows.db";
 	private SQLiteDatabase db;
-	private static boolean clean = false;
   private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 	public SQLiteStore(Context context) {
@@ -229,32 +227,16 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return episodes;
 	}
 
-	private int[] cleanUp(String serieId, String serieName, int seasonNumber, int episodeNumber, String episodeId) {
-		// Log.d(DroidShows.TAG, "This is cleanUp");
-		Cursor c = Query("SELECT id, seen FROM episodes WHERE serieId='"+ serieId
-			+"' AND seasonNumber="+ seasonNumber +" AND episodeNumber="+ episodeNumber);
-		int inDB = 0;
-		int seen = 0;
+	private List<String> getSeen(String serieId, int max_season) {
+		List<String> episodesSeen = new ArrayList<String>();
+		Cursor c = Query("SELECT seasonNumber, episodeNumber FROM episodes WHERE serieId='"+ serieId +"'"
+			+ (max_season != -1 ? " AND (seasonNumber="+ max_season +" OR seasonNumber=0)": "")
+			+" AND seen=1");
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				do {
-					String dbEpisode = c.getString(0);
-					if (c.getInt(1) == 1) seen = 1;
-					if (dbEpisode.equals(episodeId)) {
-						inDB = 1;
-					} else {
-						Log.d(DroidShows.TAG, "Removing db episode "+ dbEpisode +" <> new id "+ episodeId +" | "
-							+ serieName +" "+ seasonNumber +"x"+ episodeNumber);
-						db.execSQL("DELETE FROM episodes WHERE serieId='"+ serieId +"' AND id='"+ dbEpisode
-							+"'");
-						db.execSQL("DELETE FROM directors WHERE serieId='"+ serieId +"' AND episodeId='"
-							+ dbEpisode +"'");
-						db.execSQL("DELETE FROM guestStars WHERE serieId='"+ serieId +"' AND episodeId='"
-							+ dbEpisode +"'");
-						db.execSQL("DELETE FROM writers WHERE serieId='"+ serieId +"' AND episodeId='"
-							+ dbEpisode +"'");
-					}
+					episodesSeen.add(c.getInt(0) +"x"+ c.getInt(1));
 				} while (c.moveToNext());
 			}
 			c.close();
@@ -262,7 +244,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 			Log.e(DroidShows.TAG, e.getMessage());
 		}
-		return new int[]{inDB, seen};
+		Log.d(DroidShows.TAG, episodesSeen.toString());
+		return episodesSeen;
 	}
 
 	public String getSerieName(String serieId) {
@@ -571,21 +554,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 		}
 	}
 
-	private void bindStringOrNull(SQLiteStatement statemnt, Integer index, String s) {
-		if (s == null) s = "";
-		statemnt.bindString(index, s);
-	}
-
-	public boolean enableCleanUp() {
-		clean = true;
-		return clean;
-	}
-
-	public boolean disableCleanUp() {
-		clean = false;
-		return !clean;
-	}
-	
 	public void updateSerie(Serie s, boolean last_season) {
 		if (s == null) {
 			Log.e(DroidShows.TAG, "Error: Serie is null");
@@ -602,7 +570,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 			if (!TextUtils.isEmpty(s.getSerieName())) {
 				tmpSName = s.getSerieName();
 			}
-			// get the last season
 			Cursor cms = null;
 			int max_season = -1;
 			if (last_season) {
@@ -617,7 +584,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 						} while (cms.moveToNext());
 					}
 					cms.close();
-					Log.d(DroidShows.TAG, "Updating only last season "+ max_season +" and specials of "+ tmpSName +" with"+ (clean ? "" : "out") +" cleanup");
+					Log.d(DroidShows.TAG, "Updating only last season "+ max_season +" and specials of "+ tmpSName);
 				} catch (SQLiteException e) {
 					if (cms != null) {
 						cms.close();
@@ -625,7 +592,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 					Log.e(DroidShows.TAG, e.getMessage());
 				}
 			} else {
-				Log.d(DroidShows.TAG, "Updating all seasons of "+ tmpSName +" with"+ (clean ? "" : "out") +" cleanup");
+				Log.d(DroidShows.TAG, "Updating all seasons of "+ tmpSName);
 			}
 			// Log.d(DroidShows.TAG, "MAX SEASON: "+ max_season);
 			db.beginTransaction();
@@ -657,33 +624,44 @@ public class SQLiteStore extends SQLiteOpenHelper
 				+"',"+ DatabaseUtils.sqlEscapeString(s.getGenres().get(g)) +");");
 			}
 			
-			// directors
-			db.execSQL("DELETE FROM directors WHERE serieId='"+ s.getId() +"'");
-			// guestStars
-			db.execSQL("DELETE FROM guestStars WHERE serieId='"+ s.getId() +"'");
-			// writers
-			db.execSQL("DELETE FROM writers WHERE serieId='"+ s.getId() +"'");
-
-			SQLiteStatement updateEpisodeStatmnt = db.compileStatement("UPDATE episodes SET combinedEpisodeNumber=?, combinedSeason=?, "
-				+"dvdChapter=?, dvdDiscId=?, dvdEpisodeNumber=?, "
-				+"dvdSeason=?, epImgFlag=?, episodeName=?, "
-				+"episodeNumber=?, firstAired=?, imdbId=?, "
-				+"language=?, overview=?, productionCode=?, "
-				+"rating=?, seasonNumber=?, absoluteNumber=?, "
-				+"lastUpdated=?, seasonId=?"
-				+ (clean ? ", seen=? " : " ") +"WHERE id=? AND serieId=?"); // Guillaume
-			// Create an ArrayList with episodes found in the DB. Let's do a single database query to speed things up
-			ArrayList<String> episodesIdList = new ArrayList<String>();
-			if (!clean) {
-				// Log.d(DroidShows.TAG, "IF NOT clean");
-				Cursor cur = Query("SELECT id FROM episodes WHERE serieId='"+ s.getId() +"'");
-				if (cur.moveToFirst()) {
-					do {
-						episodesIdList.add(cur.getString(0));
-					} while (cur.moveToNext());
+			if (max_season != -1) {
+				String episodes = "";
+				try {
+					cms = Query("SELECT id FROM episodes WHERE serieId='"+ s.getId() +"'"
+					+" AND (seasonNumber="+ max_season +" OR seasonNumber=0)");
+					cms.moveToFirst();
+					if (cms != null && cms.isFirst()) {
+						do {
+							episodes += "'"+ cms.getString(0) +"', ";
+						} while (cms.moveToNext());
+					}
+					cms.close();
+					episodes = episodes.substring(0, episodes.length() - 2);
+					// directors
+					db.execSQL("DELETE FROM directors WHERE serieId='"+ s.getId() +"' AND episodeId IN ("+ episodes +")");
+					// guestStars
+					db.execSQL("DELETE FROM guestStars WHERE serieId='"+ s.getId() +"' AND episodeId IN ("+ episodes +")");
+					// writers
+					db.execSQL("DELETE FROM writers WHERE serieId='"+ s.getId() +"' AND episodeId IN ("+ episodes +")");
+				} catch (SQLiteException e) {
+					if (cms != null) {
+						cms.close();
+					}
+					Log.e(DroidShows.TAG, e.getMessage());
 				}
-				cur.close();
+			} else {
+				// directors
+				db.execSQL("DELETE FROM directors WHERE serieId='"+ s.getId() +"'");
+				// guestStars
+				db.execSQL("DELETE FROM guestStars WHERE serieId='"+ s.getId() +"'");
+				// writers
+				db.execSQL("DELETE FROM writers WHERE serieId='"+ s.getId() +"'");
 			}
+
+			List<String> seen = getSeen(s.getId(), max_season);
+			db.execSQL("DELETE FROM episodes WHERE serieId='"+ s.getId() +"'"
+					+(max_season != -1 ? " AND (seasonNumber="+ max_season +" OR seasonNumber=0)" : ""));
+			
 			for (int e = 0; e < s.getEpisodes().size(); e++) {
 				if (max_season != -1) {
 					int season = s.getEpisodes().get(e).getSeasonNumber();
@@ -691,157 +669,86 @@ public class SQLiteStore extends SQLiteOpenHelper
 						continue;
 					}
 				}
-				int inDB = 0;
-				int iseen = 0;
-				if (clean) {
-					// Guillaume: check for redundant rows for this episode and delete them
-					int[] inDB_seen = cleanUp(s.getId(), s.getSerieName(), s.getEpisodes().get(e).getSeasonNumber(), s.getEpisodes().get(e).getEpisodeNumber(), s.getEpisodes().get(e).getId());
-					inDB = inDB_seen[0];
-					iseen = inDB_seen[1];
-				} else {
-					// Check if the episode is already in the DB
-					if (episodesIdList.contains(s.getEpisodes().get(e).getId())) {
-						inDB = 1;
-					}
-					// Log.d(DroidShows.TAG, "* DBG * . Found "+ episodesIdList.size() +" episodes in the database");
+				// Guillaume: check for redundant rows for this episode and delete them
+				for (int d = 0; d < s.getEpisodes().get(e).getDirectors().size(); d++) {
+					execQuery("INSERT INTO directors (serieId, episodeId, director) "+"VALUES ('"
+						+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()
+						+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getDirectors().get(d)) +");");
 				}
-				if (inDB == 1) {
-					// Log.d(DroidShows.TAG, "IF inDB with clean "+ clean);
-					String tmpEOverview = "";
+				for (int g = 0; g < s.getEpisodes().get(e).getGuestStars().size(); g++) {
+					execQuery("INSERT INTO guestStars (serieId, episodeId, guestStar) "+"VALUES ('"
+						+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()
+						+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getGuestStars().get(g)) +");");
+				}
+				for (int w = 0; w < s.getEpisodes().get(e).getWriters().size(); w++) {
+					execQuery("INSERT INTO writers (serieId, episodeId, writer) "+"VALUES ('"+ s.getId()
+						+"', '"+ s.getEpisodes().get(e).getId()
+						+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getWriters().get(w)) +");");
+				}
+				String tmpOverview = "";
+				if (s.getEpisodes().get(e).getOverview() != null) {
 					if (!TextUtils.isEmpty(s.getEpisodes().get(e).getOverview())) {
-						tmpEOverview = s.getEpisodes().get(e).getOverview();
+						tmpOverview = s.getEpisodes().get(e).getOverview();
 					}
-					String tmpEName = "";
+				}
+				String tmpName = "";
+				if (s.getEpisodes().get(e).getEpisodeName() != null) {
 					if (!TextUtils.isEmpty(s.getEpisodes().get(e).getEpisodeName())) {
-						tmpEName = s.getEpisodes().get(e).getEpisodeName();
+						tmpName = s.getEpisodes().get(e).getEpisodeName();
 					}
-					if (!tmpEName.equals("")) {
-						// Log.d(DroidShows.TAG, "Updating episode "+ tmpEName);
-						// updateEpisodeStatmnt.clearBindings();
-						updateEpisodeStatmnt.bindString(1, s.getEpisodes().get(e).getCombinedEpisodeNumber());
-						updateEpisodeStatmnt.bindString(2, s.getEpisodes().get(e).getCombinedSeason());
-						bindStringOrNull(updateEpisodeStatmnt, 3, s.getEpisodes().get(e).getDvdChapter());
-						bindStringOrNull(updateEpisodeStatmnt, 4, s.getEpisodes().get(e).getDvdDiscId());
-						updateEpisodeStatmnt.bindLong(5, s.getEpisodes().get(e).getEpisodeNumber());
-						bindStringOrNull(updateEpisodeStatmnt, 6, s.getEpisodes().get(e).getDvdSeason());
-						bindStringOrNull(updateEpisodeStatmnt, 7, s.getEpisodes().get(e).getEpImgFlag());
-						updateEpisodeStatmnt.bindString(8, tmpEName);
-						updateEpisodeStatmnt.bindLong(9, s.getEpisodes().get(e).getEpisodeNumber());
-						bindStringOrNull(updateEpisodeStatmnt, 10, s.getEpisodes().get(e).getFirstAired());
-						bindStringOrNull(updateEpisodeStatmnt, 11, s.getEpisodes().get(e).getImdbId());
-						bindStringOrNull(updateEpisodeStatmnt, 12, s.getEpisodes().get(e).getLanguage());
-						updateEpisodeStatmnt.bindString(13, tmpEOverview);
-						bindStringOrNull(updateEpisodeStatmnt, 14, s.getEpisodes().get(e).getProductionCode());
-						bindStringOrNull(updateEpisodeStatmnt, 15, s.getEpisodes().get(e).getRating());
-						updateEpisodeStatmnt.bindLong(16, s.getEpisodes().get(e).getSeasonNumber());
-						bindStringOrNull(updateEpisodeStatmnt, 17, s.getEpisodes().get(e).getAbsoluteNumber());
-						updateEpisodeStatmnt.bindString(18, s.getEpisodes().get(e).getLastUpdated());
-						updateEpisodeStatmnt.bindString(19, s.getEpisodes().get(e).getSeasonId());
-						updateEpisodeStatmnt.bindString(20, s.getEpisodes().get(e).getId());
-						updateEpisodeStatmnt.bindString(21, s.getId());
-						if (clean) updateEpisodeStatmnt.bindLong(22, iseen); // Guillaume
-						updateEpisodeStatmnt.execute();
-						for (int d = 0; d < s.getEpisodes().get(e).getDirectors().size(); d++) {
-							execQuery("INSERT INTO directors (serieId, episodeId, director) "+"VALUES ('"
-								+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()
-								+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getDirectors().get(d)) +");");
-						}
-						for (int g = 0; g < s.getEpisodes().get(e).getGuestStars().size(); g++) {
-							execQuery("INSERT INTO guestStars (serieId, episodeId, guestStar) "+"VALUES ('"
-								+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()
-								+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getGuestStars().get(g)) +");");
-						}
-						for (int w = 0; w < s.getEpisodes().get(e).getWriters().size(); w++) {
-							execQuery("INSERT INTO writers (serieId, episodeId, writer) "+"VALUES ('"
-								+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()
-								+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getWriters().get(w)) +");");
-						}
-						Log.d(DroidShows.TAG, s.getEpisodes().get(e).getSeasonNumber() +"x"+ s.getEpisodes().get(e).getEpisodeNumber() +" has been updated.");
-					}
-				} else {
-					Log.d(DroidShows.TAG, s.getSerieName() +" "+ s.getEpisodes().get(e).getSeasonNumber() +"x"
-						+ s.getEpisodes().get(e).getEpisodeNumber() +" ("+ s.getEpisodes().get(e).getId()
-						+") did not yet exist in db");
-					int[] inDB_seen = cleanUp(s.getId(), s.getSerieName(), s.getEpisodes().get(e).getSeasonNumber(), s.getEpisodes().get(e).getEpisodeNumber(), s.getEpisodes().get(e).getId());
-					inDB = inDB_seen[0];
-					iseen = inDB_seen[1];
-					for (int d = 0; d < s.getEpisodes().get(e).getDirectors().size(); d++) {
-						execQuery("INSERT INTO directors (serieId, episodeId, director) "+"VALUES ('"
-							+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()
-							+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getDirectors().get(d)) +");");
-					}
-					for (int g = 0; g < s.getEpisodes().get(e).getGuestStars().size(); g++) {
-						execQuery("INSERT INTO guestStars (serieId, episodeId, guestStar) "+"VALUES ('"
-							+ s.getId() +"', '"+ s.getEpisodes().get(e).getId()
-							+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getGuestStars().get(g)) +");");
-					}
-					for (int w = 0; w < s.getEpisodes().get(e).getWriters().size(); w++) {
-						execQuery("INSERT INTO writers (serieId, episodeId, writer) "+"VALUES ('"+ s.getId()
-							+"', '"+ s.getEpisodes().get(e).getId()
-							+"',"+ DatabaseUtils.sqlEscapeString(s.getEpisodes().get(e).getWriters().get(w)) +");");
-					}
-					String tmpOverview = "";
-					if (s.getEpisodes().get(e).getOverview() != null) {
-						if (!TextUtils.isEmpty(s.getEpisodes().get(e).getOverview())) {
-							tmpOverview = s.getEpisodes().get(e).getOverview();
-						}
-					}
-					String tmpName = "";
-					if (s.getEpisodes().get(e).getEpisodeName() != null) {
-						if (!TextUtils.isEmpty(s.getEpisodes().get(e).getEpisodeName())) {
-							tmpName = s.getEpisodes().get(e).getEpisodeName();
-						}
-					}
-					if (!tmpName.equals("")) {
-						execQuery("INSERT INTO episodes (serieId, id, combinedEpisodeNumber, combinedSeason, "
-							+"dvdChapter, dvdDiscId, dvdEpisodeNumber, dvdSeason, epImgFlag, episodeName, "
-							+"episodeNumber, firstAired, imdbId, language, overview, productionCode, rating, seasonNumber, "
-							+"absoluteNumber, filename, lastUpdated, seasonId, seen) VALUES ('"
-							+ s.getId()
-							+"', '"
-							+ s.getEpisodes().get(e).getId()
-							+"', '"
-							+ s.getEpisodes().get(e).getCombinedEpisodeNumber()
-							+"', '"
-							+ s.getEpisodes().get(e).getCombinedSeason()
-							+"', '"
-							+ s.getEpisodes().get(e).getDvdChapter()
-							+"', '"
-							+ s.getEpisodes().get(e).getDvdDiscId()
-							+"', '"
-							+ s.getEpisodes().get(e).getEpisodeNumber()
-							+"', '"
-							+ s.getEpisodes().get(e).getDvdSeason()
-							+"', '"
-							+ s.getEpisodes().get(e).getEpImgFlag()
-							+"',"
-							+ DatabaseUtils.sqlEscapeString(tmpName)
-							+", "
-							+ s.getEpisodes().get(e).getEpisodeNumber()
-							+", '"
-							+ s.getEpisodes().get(e).getFirstAired()
-							+"', '"
-							+ s.getEpisodes().get(e).getImdbId()
-							+"', '"
-							+ s.getEpisodes().get(e).getLanguage()
-							+"',"
-							+ DatabaseUtils.sqlEscapeString(tmpOverview)
-							+", '"
-							+ s.getEpisodes().get(e).getProductionCode()
-							+"', '"
-							+ s.getEpisodes().get(e).getRating()
-							+"', "
-							+ s.getEpisodes().get(e).getSeasonNumber()
-							+", '"
-							+ s.getEpisodes().get(e).getAbsoluteNumber()
-							+"', '"
-							+ s.getEpisodes().get(e).getFilename()
-							+"', '"
-							+ s.getEpisodes().get(e).getLastUpdated()
-							+"', '"
-							+ s.getEpisodes().get(e).getSeasonId() +"', "+ iseen +");");
-					}
-					Log.d(DroidShows.TAG, s.getEpisodes().get(e).getSeasonNumber() +"x"+ s.getEpisodes().get(e).getEpisodeNumber() +" has been added.");
+				}
+				
+				int iseen = (seen.contains(s.getEpisodes().get(e).getSeasonNumber()
+						+"x"+ s.getEpisodes().get(e).getEpisodeNumber()) ? 1 : 0);
+				
+				if (!tmpName.equals("")) {
+					execQuery("INSERT INTO episodes (serieId, id, combinedEpisodeNumber, combinedSeason, "
+						+"dvdChapter, dvdDiscId, dvdEpisodeNumber, dvdSeason, epImgFlag, episodeName, "
+						+"episodeNumber, firstAired, imdbId, language, overview, productionCode, rating, seasonNumber, "
+						+"absoluteNumber, filename, lastUpdated, seasonId, seen) VALUES ('"
+						+ s.getId()
+						+"', '"
+						+ s.getEpisodes().get(e).getId()
+						+"', '"
+						+ s.getEpisodes().get(e).getCombinedEpisodeNumber()
+						+"', '"
+						+ s.getEpisodes().get(e).getCombinedSeason()
+						+"', '"
+						+ s.getEpisodes().get(e).getDvdChapter()
+						+"', '"
+						+ s.getEpisodes().get(e).getDvdDiscId()
+						+"', '"
+						+ s.getEpisodes().get(e).getEpisodeNumber()
+						+"', '"
+						+ s.getEpisodes().get(e).getDvdSeason()
+						+"', '"
+						+ s.getEpisodes().get(e).getEpImgFlag()
+						+"',"
+						+ DatabaseUtils.sqlEscapeString(tmpName)
+						+", "
+						+ s.getEpisodes().get(e).getEpisodeNumber()
+						+", '"
+						+ s.getEpisodes().get(e).getFirstAired()
+						+"', '"
+						+ s.getEpisodes().get(e).getImdbId()
+						+"', '"
+						+ s.getEpisodes().get(e).getLanguage()
+						+"',"
+						+ DatabaseUtils.sqlEscapeString(tmpOverview)
+						+", '"
+						+ s.getEpisodes().get(e).getProductionCode()
+						+"', '"
+						+ s.getEpisodes().get(e).getRating()
+						+"', "
+						+ s.getEpisodes().get(e).getSeasonNumber()
+						+", '"
+						+ s.getEpisodes().get(e).getAbsoluteNumber()
+						+"', '"
+						+ s.getEpisodes().get(e).getFilename()
+						+"', '"
+						+ s.getEpisodes().get(e).getLastUpdated()
+						+"', '"
+						+ s.getEpisodes().get(e).getSeasonId() +"', "+ iseen +");");
 				}
 			}
 			db.setTransactionSuccessful();
@@ -874,6 +781,18 @@ public class SQLiteStore extends SQLiteOpenHelper
 		} catch (SQLiteException e) {
 			Log.e(DroidShows.TAG, e.getMessage());
 		}
+	}
+	
+	public void deleteEpisode(String serieId, String episodeId) {
+		try {
+			db.execSQL("DELETE FROM directors WHERE serieId='"+ serieId +"' AND episodeId='"+ episodeId +"'");
+			db.execSQL("DELETE FROM guestStars WHERE serieId='"+ serieId +"' AND episodeId='"+ episodeId +"'");
+			db.execSQL("DELETE FROM writers WHERE serieId='"+ serieId +"' AND episodeId='"+ episodeId +"'");
+			db.execSQL("DELETE FROM episodes WHERE serieId='"+ serieId +"' AND id='"+ episodeId +"'");			
+		} catch (SQLiteException e) {
+			Log.e(DroidShows.TAG, e.getMessage());
+		}
+		updateShowStats(serieId);
 	}
 
 	/* *********************************************************************************** */

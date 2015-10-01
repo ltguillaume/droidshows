@@ -46,7 +46,8 @@ public class ViewSerie extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.view_serie);
 		View view = findViewById(R.id.viewSerie);
-		view.setOnTouchListener(new SwipeDetect());
+		SwipeDetect swipeDetect = new SwipeDetect();
+		view.setOnTouchListener(swipeDetect);
 		serieId = getIntent().getStringExtra("serieId");
 	
 		String query = "SELECT serieName, posterThumb, poster, fanart, overview, status, firstAired, airsDayOfWeek, "
@@ -183,7 +184,10 @@ public class ViewSerie extends Activity
 			if (!actors.isEmpty()) {
 				TextView serieActorsV = (TextView) findViewById(R.id.actors);
 				serieActorsV.setText(actors.toString().replace("]", "").replace("[", ""));
-				findViewById(R.id.actorsField).setVisibility(View.VISIBLE);
+				serieActorsV.setOnTouchListener(swipeDetect);
+				View actorsField = (View) findViewById(R.id.actorsField);
+				actorsField.setOnTouchListener(swipeDetect);
+				actorsField.setVisibility(View.VISIBLE);
 			}
 		}
 		

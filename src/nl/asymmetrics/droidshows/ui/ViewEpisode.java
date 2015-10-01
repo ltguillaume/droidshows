@@ -35,7 +35,8 @@ public class ViewEpisode extends Activity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.view_episode);
 		View view = findViewById(R.id.viewEpisodes);
-		view.setOnTouchListener(new SwipeDetect());
+		SwipeDetect swipeDetect = new SwipeDetect();
+		view.setOnTouchListener(swipeDetect);
 		String serieId = getIntent().getStringExtra("serieId");
 		final String serieName = getIntent().getStringExtra("serieName");
 		String episodeId = getIntent().getStringExtra("episodeId");
@@ -123,9 +124,12 @@ public class ViewEpisode extends Activity
 			}
 			cwriters.close();
 			if (!writers.isEmpty()) {
-				TextView writer = (TextView) findViewById(R.id.writer);
-				writer.setText(writers.toString().replace("]", "").replace("[", ""));
-				findViewById(R.id.writerField).setVisibility(View.VISIBLE);
+				TextView writersV = (TextView) findViewById(R.id.writer);
+				writersV.setText(writers.toString().replace("]", "").replace("[", ""));
+				writersV.setOnTouchListener(swipeDetect);
+				View writerField = (View) findViewById(R.id.writerField);
+				writerField.setOnTouchListener(swipeDetect);
+				writerField.setVisibility(View.VISIBLE);
 			}
 			
 			Cursor cdirectors = DroidShows.db.Query("SELECT director FROM directors WHERE episodeId='"+ episodeId
@@ -138,9 +142,12 @@ public class ViewEpisode extends Activity
 			}
 			cdirectors.close();
 			if (!directors.isEmpty()) {
-				TextView director = (TextView) findViewById(R.id.director);
-				director.setText(directors.toString().replace("]", "").replace("[", ""));
-				findViewById(R.id.directorField).setVisibility(View.VISIBLE);
+				TextView directorsV = (TextView) findViewById(R.id.director);
+				directorsV.setText(directors.toString().replace("]", "").replace("[", ""));
+				directorsV.setOnTouchListener(swipeDetect);
+				View directorField = (View) findViewById(R.id.directorField);
+				directorField.setOnTouchListener(swipeDetect);
+				directorField.setVisibility(View.VISIBLE);
 			}
 	
 			Cursor cgs = DroidShows.db.Query("SELECT guestStar FROM guestStars WHERE episodeId='"+ episodeId
@@ -155,7 +162,10 @@ public class ViewEpisode extends Activity
 			if (!guestStars.isEmpty()) {
 				TextView guestStarsV = (TextView) findViewById(R.id.guestStars);
 				guestStarsV.setText(guestStars.toString().replace("]", "").replace("[", ""));
-				findViewById(R.id.guestStarsField).setVisibility(View.VISIBLE);
+				guestStarsV.setOnTouchListener(swipeDetect);
+				View guestStarsField = (View) findViewById(R.id.guestStarsField);
+				guestStarsField.setOnTouchListener(swipeDetect);
+				guestStarsField.setVisibility(View.VISIBLE);
 			}
 		}
 	}

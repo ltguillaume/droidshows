@@ -73,11 +73,7 @@ public class SerieEpisodes extends ListActivity {
 			startViewEpisode(episodes.get(info.position));
 			return true;
 		case DELEP_CONTEXT:
-			String query;
-			query = "DELETE FROM episodes WHERE serieId='" + serieId + "' "
-				+ "AND id = '" + episodes.get(info.position) + "'";
-			Log.d(DroidShows.TAG, query);
-			DroidShows.db.execQuery(query);
+			DroidShows.db.deleteEpisode(serieId, episodes.get(info.position));
 			episodes.remove(info.position);
 			episodesAdapter.notifyDataSetChanged();
 			return true;
