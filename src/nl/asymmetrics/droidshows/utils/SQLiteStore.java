@@ -227,16 +227,16 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return episodes;
 	}
 
-	private List<String> getSeen(String serieId, int max_season) {
-		List<String> episodesSeen = new ArrayList<String>();
-		Cursor c = Query("SELECT seasonNumber, episodeNumber FROM episodes WHERE serieId='"+ serieId +"'"
+	private List<EpisodeSeen> getSeen(String serieId, int max_season) {
+		List<EpisodeSeen> episodesSeen = new ArrayList<EpisodeSeen>();
+		Cursor c = Query("SELECT seasonNumber, episodeNumber, seen FROM episodes WHERE serieId='"+ serieId +"'"
 			+ (max_season != -1 ? " AND (seasonNumber="+ max_season +" OR seasonNumber=0)": "")
-			+" AND seen=1");
+			+" AND seen>0");
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				do {
-					episodesSeen.add(c.getInt(0) +"x"+ c.getInt(1));
+					episodesSeen.add(new EpisodeSeen(c.getInt(0) +"x"+ c.getInt(1), c.getInt(2)));
 				} while (c.moveToNext());
 			}
 			c.close();
@@ -244,7 +244,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 			Log.e(DroidShows.TAG, e.getMessage());
 		}
-		Log.d(DroidShows.TAG, episodesSeen.toString());
 		return episodesSeen;
 	}
 
@@ -505,7 +504,9 @@ public class SQLiteStore extends SQLiteOpenHelper
 	public void updateUnwatchedSeason(String serieId, int nseason) {
 		try {
 			String today = dateFormat.format(new Date());	// Get today's date
-			db.execSQL("UPDATE episodes SET seen=1 WHERE serieId='"+ serieId +"' AND seasonNumber="+ nseason
+			Date date = new Date();
+			int seen = 10000 * (1900 + date.getYear()) + 100 * (date.getMonth() + 1) + date.getDate();
+			db.execSQL("UPDATE episodes SET seen="+ seen +" WHERE serieId='"+ serieId +"' AND seasonNumber="+ nseason
 			+" AND firstAired < '"+ today +"' AND firstAired <> ''");
 		} catch (SQLiteException e) {
 			Log.e(DroidShows.TAG, e.getMessage());
@@ -535,7 +536,12 @@ public class SQLiteStore extends SQLiteOpenHelper
 				int episode = c.getInt(2);
 				episodeMarked =  season +"x"+ (episode < 10 ? "0" : "") + episode;
 				c.close();
-				seen ^= 1;
+				if (seen > 0)
+					seen = 0;
+				else {
+					Date date = new Date();
+					seen = 10000 * (1900 + date.getYear()) + 100 * (date.getMonth() + 1) + date.getDate();
+				}
 				db.execSQL("UPDATE episodes SET seen="+ seen +" WHERE serieId='"+ serieId +"' AND id='"+ episodeId +"'");
 			}
 		} catch (SQLiteException e) {
@@ -658,7 +664,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 				db.execSQL("DELETE FROM writers WHERE serieId='"+ s.getId() +"'");
 			}
 
-			List<String> seen = getSeen(s.getId(), max_season);
+			List<EpisodeSeen> seenEpisodes = getSeen(s.getId(), max_season);
 			db.execSQL("DELETE FROM episodes WHERE serieId='"+ s.getId() +"'"
 					+(max_season != -1 ? " AND (seasonNumber="+ max_season +" OR seasonNumber=0)" : ""));
 			
@@ -698,9 +704,15 @@ public class SQLiteStore extends SQLiteOpenHelper
 					}
 				}
 				
-				int iseen = (seen.contains(s.getEpisodes().get(e).getSeasonNumber()
-						+"x"+ s.getEpisodes().get(e).getEpisodeNumber()) ? 1 : 0);
-				
+				int iseen = 0;
+				String epCode = s.getEpisodes().get(e).getSeasonNumber() +"x"+ s.getEpisodes().get(e).getEpisodeNumber();
+				for (EpisodeSeen es : seenEpisodes) {
+					if (epCode.equals(es.episode)) {
+						iseen = es.seen;
+						break;
+					}
+				}
+								
 				if (!tmpName.equals("")) {
 					execQuery("INSERT INTO episodes (serieId, id, combinedEpisodeNumber, combinedSeason, "
 						+"dvdChapter, dvdDiscId, dvdEpisodeNumber, dvdSeason, epImgFlag, episodeName, "
@@ -866,5 +878,15 @@ public class SQLiteStore extends SQLiteOpenHelper
 			nextAir = dateFormat.format(tmpNextAir);
 		}
 		execQuery("UPDATE series SET seasonCount="+ seasonCount +", unwatchedAired="+ unwatchedAired +", unwatched="+ unwatched +", nextEpisode='"+ nextEpisode +"', nextAir='"+ nextAir +"' WHERE id="+ serieId);
+	}
+	
+	private class EpisodeSeen {
+		public String episode;
+		public int seen;
+		
+		public EpisodeSeen(String episodeValue, int seenValue) {
+			episode = episodeValue;
+			seen = seenValue;
+		}
 	}
 }

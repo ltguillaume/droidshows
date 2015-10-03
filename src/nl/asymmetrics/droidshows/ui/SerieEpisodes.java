@@ -2,6 +2,7 @@ package nl.asymmetrics.droidshows.ui;
 
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import nl.asymmetrics.droidshows.DroidShows;
@@ -37,6 +38,9 @@ public class SerieEpisodes extends ListActivity {
 	private List<String> episodes = null;
 	private ListView listView;
 	private SwipeDetect swipeDetect = new SwipeDetect();
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
+	private Format formatter = SimpleDateFormat.getDateInstance();
 
 	/* Context Menus */
 	private static final int VIEWEP_CONTEXT = Menu.FIRST;
@@ -87,7 +91,7 @@ public class SerieEpisodes extends ListActivity {
 		if (swipeDetect.value == 0) {
 			if (DroidShows.fullLineCheckOption) {
 				try {
-					DroidShows.db.updateUnwatchedEpisode(serieId, episodes.get(position));
+					check(v);
 					CheckBox c = (CheckBox) v.findViewById(R.id.seen);
 					c.setChecked(!c.isChecked());
 				} catch (Exception e) {
@@ -144,9 +148,7 @@ public class SerieEpisodes extends ListActivity {
 
 				String aired = c.getString(airedCol);
 				if (!aired.equals("") && !aired.equals("null")) {
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 					try {
-						Format formatter = SimpleDateFormat.getDateInstance();
 						aired = formatter.format(sdf.parse(aired));
 					} catch (ParseException e) {
 						Log.e(DroidShows.TAG, e.getMessage());
@@ -164,8 +166,19 @@ public class SerieEpisodes extends ListActivity {
 					holder.name.setText(tmpName);
 					holder.aired.setText(tmpAired);
 				}
-
-				holder.seen.setChecked(c.getInt(seenCol) == 1);
+				
+				int seen = c.getInt(seenCol);
+				holder.seen.setChecked(seen > 0);
+				if (seen > 1) {
+					try {
+						holder.seen.setTextColor(holder.aired.getTextColors().getDefaultColor());
+						holder.seen.setText(formatter.format(sdfseen.parse(seen +"")));
+					} catch (ParseException e) {
+						Log.e(DroidShows.TAG, e.getMessage());
+					}
+				} else {
+					holder.seen.setText("");
+				}
 			}
 			c.close();
 			return convertView;
@@ -182,6 +195,13 @@ public class SerieEpisodes extends ListActivity {
 		int position = getListView().getPositionForView(v);
 		try {
 			DroidShows.db.updateUnwatchedEpisode(serieId, episodes.get(position));
+			CheckBox c = (CheckBox) v.findViewById(R.id.seen);
+			if (c.isChecked()) {
+				c.setTextColor(getResources().getColor(android.R.color.white));
+				c.setText(formatter.format(new Date()));
+			} else {
+				c.setText("");
+			}
 		} catch (Exception e) {
 			Log.e(DroidShows.TAG, e.getMessage());
 		}

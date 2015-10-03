@@ -45,6 +45,7 @@ __Shows Overview__:
 __Seasons/Episodes list__:  
 \+ Showing "[aired] of [season episodes]"  
 \+ Aired date in episodes list  
+\+ Date of when episode was marked as seen is shown next to checkmark  
 \+ Click on episode title for details, on checkmark to change seen state  
 \* Big performance improvement for entirely rewritten Seasons activity: is now almost instant  
   
@@ -59,7 +60,6 @@ __Update__:
 \* Prevent double episodes  
   
 __Other__:  
-\+ [Clean database] in About to remove double episodes post hoc  
 \+ Menu (overflow) button should show up in Android 3.0+  
 \+ Dutch translation  
 \+ Translucent background  
