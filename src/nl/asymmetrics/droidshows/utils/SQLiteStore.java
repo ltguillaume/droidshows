@@ -192,7 +192,11 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public List<String> getSeries(int showArchive) {
 		List<String> series = new ArrayList<String>();
-		Cursor cseries = Query("SELECT id FROM series"+ (showArchive < 2 ? " WHERE passiveStatus="+ showArchive : ""));
+		String showArchiveString = "";
+		if (showArchive < 2)
+			showArchiveString = " WHERE passiveStatus="
+					+(showArchive == 0 ? "0 OR passiveStatus IS NULL" : showArchive +"");
+		Cursor cseries = Query("SELECT id FROM series"+ showArchiveString);
 		try {
 			cseries.moveToFirst();
 			if (cseries != null && cseries.isFirst()) {
