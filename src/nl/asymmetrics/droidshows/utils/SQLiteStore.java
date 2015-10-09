@@ -836,7 +836,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			+"overview TEXT, "+"firstAired VARCHAR, "+"imdbId VARCHAR, "+"zap2ItId VARCHAR, "
 			+"airsDayOfWeek VARCHAR, "+"airsTime VARCHAR, "+"contentRating VARCHAR, "
 			+"network VARCHAR, "+"rating VARCHAR, "+"runtime VARCHAR, "+"status VARCHAR, "
-			+"fanart VARCHAR, "+"lastUpdated VARCHAR, "+"passiveStatus INT, "+"poster VARCHAR,"
+			+"fanart VARCHAR, "+"lastUpdated VARCHAR, "+"passiveStatus INTEGER DEFAULT 0, "+"poster VARCHAR,"
 			+"posterInCache VARCHAR, "+"posterThumb VARCHAR, "
 			+"seasonCount INTEGER, "+"unwatchedAired INTEGER, "+"unwatched INTEGER, "+"nextEpisode VARCHAR, "+"nextAir VARCHAR" 
 			+");");
