@@ -12,6 +12,7 @@
 <string name="layout_main_no_items">No shows found.</string>
 <string name="layout_search_no_items">No shows found.</string>
 <string name="layout_seasons_no_items">No seasons to display.</string>
+<string name="archive">Archive</string>
 <string name="addserie_hint">Show to add...</string>
 <string name="search_hint">Search...</string>
 <string name="menu_undo">Undo</string>
@@ -26,8 +27,8 @@
 <string name="menu_context_updated">updated</string>
 <string name="menu_context_delete">Delete</string>
 <string name="menu_context_add_serie">Add show</string>
-<string name="menu_show_toggled">Show disabled</string>
-<string name="menu_hide_toggled">Hide disabled</string>
+<string name="menu_show_archive">Show archive</string>
+<string name="menu_show_current">Show current</string>
 <string name="menu_context_view_serie_details">Show\'s details</string>
 <string name="menu_context_view_imdb">IMDb details</string>
 <string name="menu_context_view_ep_imdb">Next episode on IMDb</string>
@@ -64,8 +65,8 @@
 \n&#187; Click full-screen poster image for fan art
 \n\nIn Show/Episode Details:
 \n&#187; Tap IMDb rating to view in IMDb</string>
-<string name="menu_enable">Enable</string>
-<string name="menu_disable">Disable</string>
+<string name="menu_archive">Archive</string>
+<string name="menu_unarchive">Unarchive</string>
 <string name="messages_title_updating_all_series">Updating all shows</string>
 <string name="messages_title_updating_db">Updating database</string>
 <string name="messages_update_serie">Gathering show information…</string>

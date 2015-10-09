@@ -20,20 +20,21 @@ public class SwipeDetect implements View.OnTouchListener {
 			case MotionEvent.ACTION_MOVE:
 				int deltaX = onDownX - (int) event.getX();
 				int deltaY = onDownY - (int) event.getY();
-				if (value < 2 && (((deltaX < 0) ? -deltaX : deltaX) / 4) > ((deltaY < 0) ? -deltaY : deltaY)) {
+				if (value > -1 && (((deltaX < 0) ? -deltaX : deltaX) / 4) > ((deltaY < 0) ? -deltaY : deltaY)) {
 					if (deltaX > v.getWidth() / 4) {	// > 0 = RTL
 						if (v.getContext() instanceof DroidShows) {
 							value = 1;	// mark next episode seen
 							return true;
 						} else if (DroidShows.switchSwipeDirection || v.getContext() instanceof ViewSerie) {
-							value = -1;	// no ListItemClick
 							((Activity)v.getContext()).onBackPressed();
+							value = -1;
+							return true;
 						}
-						value = 2;	// Don't fire more than once
+						value = -1;	// Don't fire more than once
 					} else if (!DroidShows.switchSwipeDirection && -deltaX > v.getWidth() / 4) {	// < 0 = LTR
-						value = -1;	// no ListItemClick
 						((Activity)v.getContext()).onBackPressed();
-						value = 2;
+						value = -1;
+						return true;
 					}
 				}
 		}

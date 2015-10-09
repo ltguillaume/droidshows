@@ -78,15 +78,15 @@ public class DroidShows extends ListActivity
 	private static final int UNDO_MENU_ITEM = Menu.FIRST;
 	private static final int ADD_SERIE_MENU_ITEM = UNDO_MENU_ITEM + 1;
 	private static final int SEARCH_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
-	private static final int TOGGLE_FILTER_MENU_ITEM = SEARCH_MENU_ITEM + 1;
-	private static final int SORT_MENU_ITEM = TOGGLE_FILTER_MENU_ITEM + 1;
+	private static final int TOGGLE_ARCHIVE_MENU_ITEM = SEARCH_MENU_ITEM + 1;
+	private static final int SORT_MENU_ITEM = TOGGLE_ARCHIVE_MENU_ITEM + 1;
 	private static final int UPDATEALL_MENU_ITEM = SORT_MENU_ITEM + 1;
 	private static final int OPTIONS_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
 	private static final int EXIT_MENU_ITEM = OPTIONS_MENU_ITEM + 1;
 	/* Context Menus */
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = Menu.FIRST;
-	private static final int TOGGLE_SERIE_STATUS_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
-	private static final int VIEW_SERIEDETAILS_CONTEXT = TOGGLE_SERIE_STATUS_CONTEXT + 1;
+	private static final int TOGGLE_ARCHIVED = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
+	private static final int VIEW_SERIEDETAILS_CONTEXT = TOGGLE_ARCHIVED + 1;
 	private static final int VIEW_IMDB_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
 	private static final int VIEW_EP_IMDB_CONTEXT = VIEW_IMDB_CONTEXT + 1;
 	private static final int UPDATE_CONTEXT = VIEW_EP_IMDB_CONTEXT + 1;
@@ -108,13 +108,7 @@ public class DroidShows extends ListActivity
 	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
 	private static final int SORT_BY_LAST_UNSEEN = 1;
-	private static final int SORT_BY_NAME_ICON = android.R.drawable.ic_menu_sort_alphabetically;
-	private static final int SORT_BY_LAST_UNSEEN_ICON = android.R.drawable.ic_menu_sort_by_size;
 	private static int sortOption;
-	private static final String FILTER_PREF_NAME = "filter_passive";
-	private static final int FILTER_DISABLED = 0;
-	private static final int FILTER_ENABLED = 1;
-	private static int filterOption;
 	private static final String LAST_SEASON_PREF_NAME = "last_season";
 	private static final int UPDATE_ALL_SEASONS = 0;
 	private static final int UPDATE_LAST_SEASON_ONLY = 1;
@@ -142,6 +136,7 @@ public class DroidShows extends ListActivity
 	private EditText searchV;
 	private InputMethodManager keyboard;
 	private int padding;
+	private static int showArchive;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -171,7 +166,6 @@ public class DroidShows extends ListActivity
 		// Preferences
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
 		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
-		filterOption = sharedPrefs.getInt(FILTER_PREF_NAME, FILTER_DISABLED);
 		lastSeasonOption = sharedPrefs.getInt(LAST_SEASON_PREF_NAME, UPDATE_ALL_SEASONS);
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
@@ -255,8 +249,8 @@ public class DroidShows extends ListActivity
 		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
 		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
-		menu.add(0, TOGGLE_FILTER_MENU_ITEM, 0, getString(R.string.menu_show_toggled)).setIcon(android.R.drawable.ic_menu_view);
-		menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort_last_unseen)).setIcon(SORT_BY_LAST_UNSEEN_ICON);
+		menu.add(0, TOGGLE_ARCHIVE_MENU_ITEM, 0, getString(R.string.menu_show_archive));
+		menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort_last_unseen));
 		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update_all)).setIcon(android.R.drawable.ic_menu_upload);
 		menu.add(0, OPTIONS_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
 		menu.add(0, EXIT_MENU_ITEM, 0, getString(R.string.menu_exit)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
@@ -271,16 +265,18 @@ public class DroidShows extends ListActivity
 			menu.findItem(UNDO_MENU_ITEM).setVisible(false);
 		}
 		if (sortOption == SORT_BY_LAST_UNSEEN) {
-			menu.findItem(SORT_MENU_ITEM).setIcon(SORT_BY_NAME_ICON);
-			menu.findItem(SORT_MENU_ITEM).setTitle(R.string.menu_sort_az);
+			menu.findItem(SORT_MENU_ITEM).setIcon(android.R.drawable.ic_menu_sort_alphabetically)
+				.setTitle(R.string.menu_sort_az);
 		} else {
-			menu.findItem(SORT_MENU_ITEM).setIcon(SORT_BY_LAST_UNSEEN_ICON);
-			menu.findItem(SORT_MENU_ITEM).setTitle(R.string.menu_sort_last_unseen);
+			menu.findItem(SORT_MENU_ITEM).setIcon(android.R.drawable.ic_menu_sort_by_size)
+				.setTitle(R.string.menu_sort_last_unseen);
 		}
-		if (filterOption == FILTER_DISABLED) {
-			menu.findItem(TOGGLE_FILTER_MENU_ITEM).setTitle(R.string.menu_hide_toggled);
+		if (showArchive == 1) {
+			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM).setTitle(R.string.menu_show_current)
+				.setIcon(android.R.drawable.ic_menu_today);
 		} else {
-			menu.findItem(TOGGLE_FILTER_MENU_ITEM).setTitle(R.string.menu_show_toggled);
+			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM).setTitle(R.string.menu_show_archive)
+				.setIcon(android.R.drawable.ic_menu_recent_history);
 		}
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -294,8 +290,8 @@ public class DroidShows extends ListActivity
 			case SEARCH_MENU_ITEM :
 				onSearchRequested();
 				break;
-			case TOGGLE_FILTER_MENU_ITEM :
-				toggleFilter();
+			case TOGGLE_ARCHIVE_MENU_ITEM :
+				toggleArchive();
 				break;
 			case SORT_MENU_ITEM :
 				toggleSort();
@@ -320,12 +316,16 @@ public class DroidShows extends ListActivity
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void toggleFilter() {
+	private void toggleArchive() {
 		asyncInfo.cancel(true);
-		filterOption ^= 1;
+		listView.setEmptyView(findViewById(R.id.empty_notext));
+		seriesAdapter.clear();
+		showArchive ^= 1;
 		getSeries();
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
+		setTitle(getString(R.string.layout_app_name)
+				+(showArchive == 1 ? " - "+ getString(R.string.archive) : ""));
 	}
 
 	public void toggleSort() {
@@ -448,8 +448,7 @@ public class DroidShows extends ListActivity
 						thumb.delete();
 				for (File file : new File(getApplicationInfo().dataDir +"/databases/").listFiles())
 				    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
-				if (filterOption == FILTER_ENABLED)
-					filterOption ^= 1;
+				showArchive = 0;
 				getSeries();
 				updateAllSeries();
 				undo.clear();
@@ -504,19 +503,17 @@ public class DroidShows extends ListActivity
 		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
 		menu.add(0, VIEW_EP_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_ep_imdb));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
-		menu.add(0, TOGGLE_SERIE_STATUS_CONTEXT, 0, getString(R.string.menu_disable));
+		menu.add(0, TOGGLE_ARCHIVED, 0, getString(R.string.menu_archive));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 	    if (seriesAdapter.getItem(info.position).getUnwatchedAired() == 0)
 	    	menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
 	    if (seriesAdapter.getItem(info.position).getPassiveStatus())
-	    	menu.findItem(TOGGLE_SERIE_STATUS_CONTEXT).setTitle(R.string.menu_enable);
+	    	menu.findItem(TOGGLE_ARCHIVED).setTitle(R.string.menu_unarchive);
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		TVShowItem serie;
-		String serieId;
 		switch (item.getItemId()) {
 			case MARK_NEXT_EPISODE_AS_SEEN_CONTEXT :
 				markNextEpSeen(info.position);
@@ -533,21 +530,13 @@ public class DroidShows extends ListActivity
 			case UPDATE_CONTEXT :
 				updateSerie(seriesAdapter.getItem(info.position).getSerieId(), info.position);
 				return true;
-			case TOGGLE_SERIE_STATUS_CONTEXT :
-				serie = seriesAdapter.getItem(info.position);
-				serieId = serie.getSerieId();
-				Integer st = db.getSerieStatus(serieId);
-				st ^= 1;
-				db.updateSerieStatus(serieId, st);
-				if (filterOption == FILTER_ENABLED && st == 1) {	// Remove show from list if passive and filter is enabled
-					series.remove(seriesAdapter.getItem(info.position));
-				} else {	// Update data to change the show's title on refresh
-					seriesAdapter.getItem(info.position).setPassiveStatus(st == 1);
-				}
+			case TOGGLE_ARCHIVED :
+				String serieId = seriesAdapter.getItem(info.position).getSerieId();
+				db.updateSerieStatus(serieId, showArchive ^ 1);
+				series.remove(seriesAdapter.getItem(info.position));
 				listView.post(updateListView);
 				return true;
 			case DELETE_CONTEXT :
-				// TODO (1): add a verification to be sure that the TV show was well eliminated
 				final int position = info.position;
 				final Runnable deleteserie = new Runnable() {
 					public void run() {
@@ -919,14 +908,9 @@ public class DroidShows extends ListActivity
 		if (series != null) series.clear();
 		try {
 			List<String> serieIds;
-			serieIds = db.getSeries();
+			serieIds = db.getSeries(showArchive);
 			for (int i = 0; i < serieIds.size(); i++) {
 				String serieId = serieIds.get(i);
-				if (filterOption == FILTER_ENABLED) {
-					int status = db.getSerieStatus(serieId);
-					if (status == 1)
-						continue;
-				}
 				TVShowItem tvsi = createTVShowItem(serieId);
 				series.add(tvsi);
 			}
@@ -995,7 +979,6 @@ public class DroidShows extends ListActivity
 		super.onPause();
 		SharedPreferences.Editor ed = sharedPrefs.edit();
 		ed.putInt(SORT_PREF_NAME, sortOption);
-		ed.putInt(FILTER_PREF_NAME, filterOption);
 		ed.putInt(LAST_SEASON_PREF_NAME, lastSeasonOption);
 		ed.putBoolean(INCLUDE_SPECIALS_NAME, includeSpecialsOption);
 		ed.putBoolean(FULL_LINE_CHECK_NAME, fullLineCheckOption);
@@ -1052,19 +1035,20 @@ public class DroidShows extends ListActivity
 	@Override
 	public boolean onSearchRequested() {
 		findViewById(R.id.search).setVisibility(View.VISIBLE);
-		if (searchV.requestFocus()) {
-			searchV.selectAll();
-			keyboard.showSoftInput(searchV, InputMethodManager.SHOW_IMPLICIT);
-		}
+		searchV.requestFocus();
+		searchV.selectAll();
+		keyboard.toggleSoftInput(0, InputMethodManager.HIDE_IMPLICIT_ONLY);
 		return true;
 	}
 
 	@Override
 	public void onBackPressed() {
-		if (findViewById(R.id.search).getVisibility() == View.GONE)
-			super.onBackPressed();
-		else
+		if (findViewById(R.id.search).getVisibility() == View.VISIBLE)
 			clearFilter(null);
+		else if (showArchive == 1)
+			toggleArchive();
+		else
+			super.onBackPressed();
 	}
 
 	@Override
@@ -1164,13 +1148,7 @@ public class DroidShows extends ListActivity
 			int nunwatched = serie.getUnwatched();
 			int nunwatchedAired = serie.getUnwatchedAired();
 			String ended = (serie.getShowStatus().equalsIgnoreCase("Ended") ? " \u2020" : "");
-			if (holder.sn != null) {
-				if (serie.getPassiveStatus()) {
-					holder.sn.setText("[" + serie.getName() + "]"+ ended);
-				} else {
-					holder.sn.setText(serie.getName() + ended);
-				}
-			}
+			holder.sn.setText(serie.getName() + ended);
 			if (holder.si != null) {
 				String siText = "";
 				int sNumber = serie.getSNumber();

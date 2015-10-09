@@ -5,6 +5,7 @@
 <string name="layout_main_no_items">Geen series gevonden.</string>
 <string name="layout_search_no_items">Geen series gevonden.</string>
 <string name="layout_seasons_no_items">Geen seizoenen gevonden.</string>
+<string name="archive">Archief</string>
 <string name="addserie_hint">Nieuwe serie zoeken...</string>
 <string name="search_hint">Zoeken...</string>
 <string name="menu_undo">Ongedaan maken</string>
@@ -19,8 +20,8 @@
 <string name="menu_context_updated">bijgewerkt</string>
 <string name="menu_context_delete">Verwijderen</string>
 <string name="menu_context_add_serie">Serie toevoegen</string>
-<string name="menu_show_toggled">Achtergehouden series tonen</string>
-<string name="menu_hide_toggled">Achtergehouden series verbergen</string>
+<string name="menu_show_archive">Archief</string>
+<string name="menu_show_current">Actieve series</string>
 <string name="menu_context_view_serie_details">Details</string>
 <string name="menu_context_view_imdb">Serie op IMDb</string>
 <string name="menu_context_view_ep_imdb">Aflevering op IMDb</string>
@@ -57,8 +58,8 @@
 \n&#187; Klik op grote poster voor fan art
 \n\nIn Details van Serie/Aflevering:
 \n&#187; Klik op IMDb-score voor IMDb-pagina</string>
-<string name="menu_enable">Altijd tonen</string>
-<string name="menu_disable">Achterhouden</string>
+<string name="menu_archive">Archiveren</string>
+<string name="menu_unarchive">Terughalen</string>
 <string name="messages_title_updating_all_series">Alle series bijwerken</string>
 <string name="messages_title_updating_db">Database bijwerken</string>
 <string name="messages_update_serie">Downloaden nieuwe gegevens…</string>

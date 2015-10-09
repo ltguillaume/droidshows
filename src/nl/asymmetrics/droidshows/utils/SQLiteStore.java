@@ -190,9 +190,9 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return episodes;
 	}
 
-	public List<String> getSeries() {
+	public List<String> getSeries(int showArchive) {
 		List<String> series = new ArrayList<String>();
-		Cursor cseries = Query("SELECT id FROM series");
+		Cursor cseries = Query("SELECT id FROM series"+ (showArchive < 2 ? " WHERE passiveStatus="+ showArchive : ""));
 		try {
 			cseries.moveToFirst();
 			if (cseries != null && cseries.isFirst()) {
@@ -262,23 +262,6 @@ public class SQLiteStore extends SQLiteOpenHelper
 			return null;
 		}
 		return sname;
-	}
-
-	public Integer getSerieStatus(String serieId) {
-		Integer sstatus = 0;
-		Cursor c = Query("SELECT passiveStatus FROM series WHERE id='"+ serieId +"'");
-		try {
-			c.moveToFirst();
-			if (c != null && c.isFirst()) {
-				sstatus = c.getInt(0);
-			}
-			c.close();
-		} catch (SQLiteException e) {
-			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
-			return null;
-		}
-		return sstatus;
 	}
 
 	public int getEPUnwatchedAired(String serieId) {
@@ -507,7 +490,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			Date date = new Date();
 			int seen = 10000 * (1900 + date.getYear()) + 100 * (date.getMonth() + 1) + date.getDate();
 			db.execSQL("UPDATE episodes SET seen="+ seen +" WHERE serieId='"+ serieId +"' AND seasonNumber="+ nseason
-			+" AND firstAired < '"+ today +"' AND firstAired <> ''");
+			+" AND firstAired < '"+ today +"' AND firstAired <> '' AND seen < 1");
 		} catch (SQLiteException e) {
 			Log.e(DroidShows.TAG, e.getMessage());
 		}
@@ -861,7 +844,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 	}
 	
 	public void updateShowStats() {
-		List<String> series = getSeries();
+		List<String> series = getSeries(2);	// 2 = archive and current shows
 		for (int i = 0; i < series.size(); i += 1) {
 			updateShowStats(series.get(i));
 		}
