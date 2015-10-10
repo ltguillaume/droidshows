@@ -448,6 +448,8 @@ public class DroidShows extends ListActivity
 						thumb.delete();
 				for (File file : new File(getApplicationInfo().dataDir +"/databases/").listFiles())
 				    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
+				if (showArchive == 1)
+					setTitle(getString(R.string.layout_app_name));
 				showArchive = 2;	// Get archived and current shows
 				getSeries();
 				updateAllSeries();
@@ -835,10 +837,8 @@ public class DroidShows extends ListActivity
 							Log.e(TAG, "Skipped this show (no data received)");
 						}
 					}
-					if (showArchive == 2) {	// If coming from restore
+					if (showArchive == 2)	// If coming from restore
 						showArchive = 0;
-						setTitle(getString(R.string.layout_app_name));
-					}
 					getSeries();
 					updateAllSeriesPD.dismiss();
 					theTVDB = null;
