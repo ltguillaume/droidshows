@@ -464,11 +464,7 @@ public class DroidShows extends ListActivity
 		
 	private void copy(File source, File destination) throws IOException {
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			boolean rerunAsync = false;
-			if (asyncInfo.getStatus() != AsyncTask.Status.FINISHED) {
-				asyncInfo.cancel(true);
-				rerunAsync = true;
-			}
+			asyncInfo.cancel(true);
 			db.close();
 			FileChannel sourceCh = null, destinationCh = null;
 			try {
@@ -487,11 +483,8 @@ public class DroidShows extends ListActivity
 				}
 			}
 			db.openDataBase();
-
-			if (rerunAsync) {
-				asyncInfo = new AsyncInfo();
-				asyncInfo.execute();
-			}
+			asyncInfo = new AsyncInfo();
+			asyncInfo.execute();
 		}
 	}
 
@@ -531,12 +524,16 @@ public class DroidShows extends ListActivity
 				updateSerie(seriesAdapter.getItem(info.position).getSerieId(), info.position);
 				return true;
 			case TOGGLE_ARCHIVED :
+				asyncInfo.cancel(true);
 				String serieId = seriesAdapter.getItem(info.position).getSerieId();
 				db.updateSerieStatus(serieId, showArchive ^ 1);
 				series.remove(seriesAdapter.getItem(info.position));
 				listView.post(updateListView);
+				asyncInfo = new AsyncInfo();
+				asyncInfo.execute();
 				return true;
 			case DELETE_CONTEXT :
+				asyncInfo.cancel(true);
 				final int position = info.position;
 				final Runnable deleteserie = new Runnable() {
 					public void run() {
@@ -547,6 +544,8 @@ public class DroidShows extends ListActivity
 						listView.post(updateListView);
 						Looper.prepare();	// Threads don't have a message loop
 						Toast.makeText(getApplicationContext(), sname +" "+ getString(R.string.messages_deleted), Toast.LENGTH_LONG).show();
+						asyncInfo = new AsyncInfo();
+						asyncInfo.execute();
 						Looper.loop();
 					}
 				};
