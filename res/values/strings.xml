@@ -66,7 +66,7 @@
 \n\nIn Show/Episode Details:
 \n&#187; Tap IMDb rating to view in IMDb</string>
 <string name="menu_archive">Archive</string>
-<string name="menu_unarchive">Unarchive</string>
+<string name="menu_unarchive">Recover</string>
 <string name="messages_title_updating_all_series">Updating all shows</string>
 <string name="messages_title_updating_db">Updating database</string>
 <string name="messages_update_serie">Gathering show information…</string>
@@ -97,6 +97,8 @@
 <string name="messages_marked_unseen">marked as unseen</string>
 <string name="messages_context_mark_seasonunseen">Mark all episodes as unseen</string>
 <string name="messages_context_mark_asseenuptothis">Seasons up to here are seen</string>
+<string name="messages_context_archived">archived</string>
+<string name="messages_context_unarchived">recovered</string>
 <string name="messages_aired">Aired:</string>
 <string name="messages_at">at</string>
 <string name="messages_of">of</string>

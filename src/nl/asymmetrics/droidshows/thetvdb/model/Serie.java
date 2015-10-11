@@ -38,6 +38,7 @@ public class Serie {
     private List<Integer> nseasons;
     private String posterInCache = "";
     private String posterThumb = "";
+    private int passiveStatus = 0;
 
     public String getId() {
         return id;
@@ -247,6 +248,14 @@ public class Serie {
         this.posterThumb = posterThumb;
     }
 
+    public int getPassiveStatus() {
+        return passiveStatus;
+    }
+
+    public void setPassiveStatus(int passiveStatus) {
+        this.passiveStatus = passiveStatus;
+    }
+
     public boolean saveToDB(SQLiteStore SQLS) {
         try{
             for(int a=0; a < this.actors.size(); a++){
@@ -271,13 +280,13 @@ public class Serie {
             SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, "+
                            "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, "+
                            "network, rating, runtime, status, fanart, lastUpdated, poster, "+
-                           "posterInCache, posterThumb) VALUES ('"+ this.id +"','"+ this.serieId +"','"+ this.language
+                           "posterInCache, posterThumb, passiveStatus) VALUES ('"+ this.id +"','"+ this.serieId +"','"+ this.language
                            +"',"+ DatabaseUtils.sqlEscapeString(this.serieName) +",'"+ this.banner
                            +"',"+ DatabaseUtils.sqlEscapeString(this.overview) +",'"+ this.firstAired
                            +"','"+ this.imdbId +"','"+ this.zap2ItId +"','"+ this.airsDayOfWeek +"','"+ this.airsTime
                            +"','"+ this.contentRating +"','"+ this.network +"','"+ this.rating +"','"+ this.runtime
                            +"','"+ this.status +"','"+ this.fanart +"','"+ this.lastUpdated +"','"+ this.poster
-                           +"','"+ this.posterInCache +"','"+ this.posterThumb +"');");
+                           +"','"+ this.posterInCache +"','"+ this.posterThumb +"', '"+ this.passiveStatus +"');");
 
             for(int e=0; e < this.episodes.size(); e++) {
                 this.episodes.get(e).setSeriesId(this.id);

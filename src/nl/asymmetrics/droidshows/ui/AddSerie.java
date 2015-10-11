@@ -291,6 +291,7 @@ public class AddSerie extends ListActivity
 							return;
 						}
 						Log.d(DroidShows.TAG, "Adding TV show: saving TV show to database");
+						sToAdd.setPassiveStatus(DroidShows.showArchive);
 						sToAdd.saveToDB(DroidShows.db);
 						Log.d(DroidShows.TAG, "Adding TV show: creating the TV show item");
 						int nseasons = DroidShows.db.getSeasonCount(sToAdd.getId());
@@ -299,7 +300,7 @@ public class AddSerie extends ListActivity
 						int unwatchedAired = DroidShows.db.getEPUnwatchedAired(sToAdd.getId());
 						int unwatched = DroidShows.db.getEPUnwatched(sToAdd.getId());
 						Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
-						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatchedAired, unwatched, false, sToAdd.getStatus());
+						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatchedAired, unwatched, sToAdd.getPassiveStatus() == 1, sToAdd.getStatus());
 						DroidShows.series.add(tvsi);
 						series.add(sToAdd.getId());
 						runOnUiThread(DroidShows.updateListView);
@@ -314,7 +315,8 @@ public class AddSerie extends ListActivity
 						bAddShowTh = false;
 					}
 					if (sucesso) {
-						CharSequence text = String.format(getString(R.string.messages_series_success), sToAdd.getSerieName());
+						CharSequence text = String.format(getString(R.string.messages_series_success), sToAdd.getSerieName())
+								+(DroidShows.showArchive == 1 ? " ("+ getString(R.string.messages_context_archived) +")": "");
 						Looper.prepare();
 						Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
 						Looper.loop();

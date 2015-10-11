@@ -136,7 +136,7 @@ public class DroidShows extends ListActivity
 	private EditText searchV;
 	private InputMethodManager keyboard;
 	private int padding;
-	private static int showArchive;
+	public static int showArchive;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -529,6 +529,9 @@ public class DroidShows extends ListActivity
 				asyncInfo.cancel(true);
 				String serieId = seriesAdapter.getItem(info.position).getSerieId();
 				db.updateSerieStatus(serieId, showArchive ^ 1);
+				String message = seriesAdapter.getItem(info.position).getName()
+					+" "+ (showArchive == 1 ? getString(R.string.messages_context_unarchived) : getString(R.string.messages_context_archived));
+				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				series.remove(seriesAdapter.getItem(info.position));
 				listView.post(updateListView);
 				asyncInfo = new AsyncInfo();

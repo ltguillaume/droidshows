@@ -90,6 +90,8 @@
 <string name="messages_marked_unseen">gemarkeerd als niet gezien</string>
 <string name="messages_context_mark_seasonunseen">Nog geen afleveringen gezien</string>
 <string name="messages_context_mark_asseenuptothis">Seizoenen tot aan hier gezien</string>
+<string name="messages_context_archived">gearchiveerd</string>
+<string name="messages_context_unarchived">teruggehaald</string>
 <string name="messages_aired">Uitgezonden:</string>
 <string name="messages_at">om</string>
 <string name="messages_of">van</string>
