@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="copyright" translatable="false">DroidShows v{v}
-\nltGuillaume.github.io/DroidShows
-\nXDA/Changelog: tiny.cc/DroidShows
-\n&#169;2010 Carlos Limpinho, Paulo Cabido:\ncode.google.com/p/droidseries
-\nForked by Mikael Berthe
-\n&#169;2014-{y} Guillaume (GPLv3):\ngithub.com/ltGuillaume/DroidShows
-\n\nNew icon file is a mix of\niconeasy.com/icon/tv-shows-2-icon (Thrasos Varnava) and\nwallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)</string>
 <string name="lang_code">es</string>
 <string name="layout_app_name">DroidShows</string>
 <string name="layout_main_no_items">No se encontraron series.</string>
@@ -33,7 +26,7 @@
 <string name="menu_context_view_imdb">Detalles de IMDb</string>
 <string name="menu_context_view_ep_imdb">Próximo episodio en IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Marcar el siguiente episodio como visto</string>
-<string name="dialog_OK">OK</string> OK
+<string name="dialog_OK">OK</string>
 <string name="dialog_backup">Copia de seguridad</string>
 <string name="dialog_backup_done">Completada la copia de seguridad de la base de datos</string>
 <string name="dialog_backup_failed">¡No se ha podido hacer la copia de seguridad!</string>

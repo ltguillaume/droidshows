@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import nl.asymmetrics.droidshows.R;
@@ -320,6 +321,7 @@ public class DroidShows extends ListActivity
 		asyncInfo.cancel(true);
 		listView.setEmptyView(findViewById(R.id.empty_notext));
 		seriesAdapter.clear();
+		lastStatsUpdate = "";
 		showArchive ^= 1;
 		getSeries();
 		asyncInfo = new AsyncInfo();
@@ -1017,8 +1019,10 @@ public class DroidShows extends ListActivity
 		protected Void doInBackground(Void... params) {
 			String newAsync = dateFormat.format(new Date());
 			if (!lastStatsUpdate.equals(newAsync)) {
-				for (TVShowItem serie : series) {
+				Iterator<TVShowItem> it = series.iterator();
+				while(it.hasNext()) {
 					if (isCancelled()) return null;
+					TVShowItem serie = it.next();
 					String serieId = serie.getSerieId();
 					int unwatched = db.getEPUnwatched(serieId);
 					int unwatchedAired = db.getEPUnwatchedAired(serieId);
