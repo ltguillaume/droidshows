@@ -7,10 +7,10 @@
 <string name="layout_seasons_no_items">No hay temporadas que mostrar.</string>
 <string name="archive">Archivo</string>
 <string name="addserie_hint">Nombre de la serie</string>
-<string name="search_hint">Buscar...</string>
+<string name="search_hint">Buscar&#x2026;</string>
 <string name="menu_undo">Deshacer</string>
 <string name="menu_add_serie">Añadir una serie</string>
-<string name="menu_update_all">Actualizar todas las series</string>
+<string name="menu_update">Actualizar las series</string>
 <string name="menu_search">Buscar series</string>
 <string name="menu_sort_az">Ordenar por nombre</string>
 <string name="menu_sort_last_unseen">Ordenar por no visto</string>
@@ -40,7 +40,7 @@
 <string name="dialog_delete">¿Seguro que desea borrar %s?</string>
 <string name="dialog_Cancel">Cancelar</string>
 <string name="dialog_search">Texto buscado:</string>
-<string name="dialog_update_all_series">¿Seguro que desea actualizar todas las series ahora mismo?</string>
+<string name="dialog_update_series">¿Seguro que desea actualizar las series ahora mismo?</string>
 <string name="dialog_update_speedup">\n\nPuede acelerar este proceso con la opción en Menú > Opciones.</string>
 <string name="dialog_last_season">Solo actualizar la última temporada de cada serie</string>
 <string name="dialog_include_specials">Contar los especiales como episodios no vistos</string>
@@ -60,12 +60,12 @@
 \n&#187; Toque la puntuación en IMDb para verla en IMDb</string>
 <string name="menu_archive">Archivo</string>
 <string name="menu_unarchive">Recuperar</string>
-<string name="messages_title_updating_all_series">Actualizando todas las series</string>
+<string name="messages_title_updating_series">Actualizando las series</string>
 <string name="messages_title_updating_db">Actualizando base de datos</string>
 <string name="messages_update_serie">Obteniendo información de la serie…</string>
 <string name="messages_no_internet">La conexión a internet no está disponible</string>
-<string name="messages_title_update_all_series">Actualiza todas las series</string>
-<string name="messages_update_all_series">Consiguiendo información de las series. Esta operación puede tardar un poco...</string>
+<string name="messages_title_update_series">Actualiza todas las series</string>
+<string name="messages_update_series">Consiguiendo información de las series. Esta operación puede tardar un poco&#x2026;</string>
 <string name="messages_episodes">episodios</string>
 <string name="messages_new_episodes">nuevos episodios</string>
 <string name="messages_new_episode">nuevo episodio</string>

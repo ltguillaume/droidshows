@@ -1,14 +1,23 @@
 package nl.asymmetrics.droidshows.utils;
 
 import nl.asymmetrics.droidshows.DroidShows;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteException;
 import android.util.Log;
 
 public class Update
 {
+	private SQLiteStore db;
+	private Context context;
+	
+	public Update(Context context) {
+		this.context = context;
+	}
+	
 	public boolean updateDroidShows() {
-		DroidShows.db.execQuery("CREATE TABLE IF NOT EXISTS droidseries (version VARCHAR)");
+		SQLiteStore db = SQLiteStore.getInstance(context);
+		db.execQuery("CREATE TABLE IF NOT EXISTS droidseries (version VARCHAR)");
 		String version = getVersion();
 		boolean done = false;
 		if (version.equals("0.1.5-6")) {
@@ -35,26 +44,26 @@ public class Update
 			} catch (Exception e) {}
 			c.close();
 		} catch (SQLiteException e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(SQLiteStore.TAG, e.getMessage());
 		}
 		return version;
 	}
 
 	private boolean u0156To0157() {
-		Log.d(DroidShows.TAG, "UPDATING TO VERSION 0.1.5-7");
+		Log.d(SQLiteStore.TAG, "UPDATING TO VERSION 0.1.5-7");
 		try {
 			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN passiveStatus INTEGER DEFAULT 0");
 			DroidShows.db.execQuery("UPDATE droidseries SET version='0.1.5-7'");
 			return true;
 		} catch (Exception e) {
-			Log.e(DroidShows.TAG, "Error updating database");
+			Log.e(SQLiteStore.TAG, "Error updating database");
 			e.printStackTrace();
 			return false;
 		}
 	}
 
 	private boolean u0157To0157G() {
-		Log.d(DroidShows.TAG, "UPDATING TO VERSION 0.1.5-7G");
+		Log.d(SQLiteStore.TAG, "UPDATING TO VERSION 0.1.5-7G");
 		try {
 			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN seasonCount INTEGER DEFAULT -1");
 			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN unwatchedAired INTEGER DEFAULT -1");
@@ -64,7 +73,7 @@ public class Update
 			DroidShows.db.execQuery("UPDATE droidseries SET version='0.1.5-7G'");
 			return true;
 		} catch (Exception e) {
-			Log.e(DroidShows.TAG, "Error updating database");
+			Log.e(SQLiteStore.TAG, "Error updating database");
 			e.printStackTrace();
 			return false;
 		}

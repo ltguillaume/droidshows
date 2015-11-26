@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import nl.asymmetrics.droidshows.R;
-import nl.asymmetrics.droidshows.DroidShows;
+import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -28,12 +28,14 @@ public class ViewEpisode extends Activity
 	private List<String> writers = new ArrayList<String>();
 	private List<String> directors = new ArrayList<String>();
 	private List<String> guestStars = new ArrayList<String>();
+	private SQLiteStore db;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		this.overridePendingTransition(R.anim.right_enter, R.anim.right_exit);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.view_episode);
+		db = SQLiteStore.getInstance(this);
 		View view = findViewById(R.id.viewEpisodes);
 		SwipeDetect swipeDetect = new SwipeDetect();
 		view.setOnTouchListener(swipeDetect);
@@ -43,7 +45,7 @@ public class ViewEpisode extends Activity
 		
 		String query = "SELECT seasonNumber, episodeNumber, episodeName, overview, rating, firstAired, imdbId FROM episodes "
 			+ "WHERE id = '"+ episodeId +"' AND serieId='"+ serieId +"'";
-		Cursor c = DroidShows.db.Query(query);
+		Cursor c = db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			int seasonNumberCol = c.getColumnIndex("seasonNumber");
@@ -62,7 +64,7 @@ public class ViewEpisode extends Activity
 					Format formatter = SimpleDateFormat.getDateInstance();
 					firstAired = formatter.format(epDate);
 				} catch (ParseException e) {
-					Log.e(DroidShows.TAG, e.getMessage());
+					Log.e(SQLiteStore.TAG, e.getMessage());
 				}
 			} else {
 				firstAired = "";
@@ -114,7 +116,7 @@ public class ViewEpisode extends Activity
 				findViewById(R.id.overviewField).setVisibility(View.VISIBLE);
 			}
 
-			Cursor cwriters = DroidShows.db.Query("SELECT writer FROM writers WHERE episodeId='" + episodeId
+			Cursor cwriters = db.Query("SELECT writer FROM writers WHERE episodeId='" + episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cwriters.moveToFirst();
 			if (cwriters != null && cwriters.isFirst()) {
@@ -132,7 +134,7 @@ public class ViewEpisode extends Activity
 				writerField.setVisibility(View.VISIBLE);
 			}
 			
-			Cursor cdirectors = DroidShows.db.Query("SELECT director FROM directors WHERE episodeId='"+ episodeId
+			Cursor cdirectors = db.Query("SELECT director FROM directors WHERE episodeId='"+ episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cdirectors.moveToFirst();
 			if (cdirectors != null && cdirectors.isFirst()) {
@@ -150,7 +152,7 @@ public class ViewEpisode extends Activity
 				directorField.setVisibility(View.VISIBLE);
 			}
 	
-			Cursor cgs = DroidShows.db.Query("SELECT guestStar FROM guestStars WHERE episodeId='"+ episodeId
+			Cursor cgs = db.Query("SELECT guestStar FROM guestStars WHERE episodeId='"+ episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cgs.moveToFirst();
 			if (cgs != null && cgs.isFirst()) {

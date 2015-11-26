@@ -7,6 +7,7 @@ import java.util.List;
 
 import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.R;
+import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.ListActivity;
 import android.content.Context;
@@ -41,6 +42,7 @@ public class SerieEpisodes extends ListActivity {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
 	private Format formatter = SimpleDateFormat.getDateInstance();
+	private SQLiteStore db;
 
 	/* Context Menus */
 	private static final int VIEWEP_CONTEXT = Menu.FIRST;
@@ -51,11 +53,12 @@ public class SerieEpisodes extends ListActivity {
 		this.overridePendingTransition(R.anim.right_enter, R.anim.right_exit);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.serie_episodes);
+		db = SQLiteStore.getInstance(this);
 		serieId = getIntent().getStringExtra("serieId");
-		serieName = DroidShows.db.getSerieName(serieId);
+		serieName = db.getSerieName(serieId);
 		seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
 		setTitle(serieName +" - "+ (seasonNumber == 0 ? getString(R.string.messages_specials) : getString(R.string.messages_season) +" "+ seasonNumber));
-		episodes = DroidShows.db.getEpisodes(serieId, seasonNumber);
+		episodes = db.getEpisodes(serieId, seasonNumber);
 		episodesAdapter = new EpisodesAdapter(this, R.layout.row_serie_episodes, episodes);
 		setListAdapter(episodesAdapter);
 		listView = getListView();
@@ -77,7 +80,7 @@ public class SerieEpisodes extends ListActivity {
 			startViewEpisode(episodes.get(info.position));
 			return true;
 		case DELEP_CONTEXT:
-			DroidShows.db.deleteEpisode(serieId, episodes.get(info.position));
+			db.deleteEpisode(serieId, episodes.get(info.position));
 			episodes.remove(info.position);
 			episodesAdapter.notifyDataSetChanged();
 			return true;
@@ -95,13 +98,13 @@ public class SerieEpisodes extends ListActivity {
 					CheckBox c = (CheckBox) v.findViewById(R.id.seen);
 					c.setChecked(!c.isChecked());
 				} catch (Exception e) {
-					Log.e(DroidShows.TAG, "Could not set episode seen state: "+ e.getMessage());
+					Log.e(SQLiteStore.TAG, "Could not set episode seen state: "+ e.getMessage());
 				}
 			} else {
 				try {
 					startViewEpisode(episodes.get(position));
 				} catch (Exception e) {
-					Log.e(DroidShows.TAG, e.getMessage());
+					Log.e(SQLiteStore.TAG, e.getMessage());
 				}
 			}
 		}
@@ -137,7 +140,7 @@ public class SerieEpisodes extends ListActivity {
 			String episodeId = items.get(position);
 			String query = "SELECT episodeName, episodeNumber, seen, firstAired FROM episodes WHERE id='"
 					+ episodeId + "' AND serieId='" + serieId + "'";
-			Cursor c = DroidShows.db.Query(query);
+			Cursor c = db.Query(query);
 			c.moveToFirst();
 
 			if (c != null) {
@@ -151,7 +154,7 @@ public class SerieEpisodes extends ListActivity {
 					try {
 						aired = formatter.format(sdf.parse(aired));
 					} catch (ParseException e) {
-						Log.e(DroidShows.TAG, e.getMessage());
+						Log.e(SQLiteStore.TAG, e.getMessage());
 					}
 				} else {
 					aired = "";
@@ -174,7 +177,7 @@ public class SerieEpisodes extends ListActivity {
 						holder.seen.setTextColor(holder.aired.getTextColors().getDefaultColor());
 						holder.seen.setText(formatter.format(sdfseen.parse(seen +"")));
 					} catch (ParseException e) {
-						Log.e(DroidShows.TAG, e.getMessage());
+						Log.e(SQLiteStore.TAG, e.getMessage());
 					}
 				} else {
 					holder.seen.setText("");
@@ -194,7 +197,7 @@ public class SerieEpisodes extends ListActivity {
 	public void check(View v) {
 		int position = getListView().getPositionForView(v);
 		try {
-			DroidShows.db.updateUnwatchedEpisode(serieId, episodes.get(position));
+			db.updateUnwatchedEpisode(serieId, episodes.get(position));
 			CheckBox c = (CheckBox) v.findViewById(R.id.seen);
 			if (c.isChecked()) {
 				c.setTextColor(getResources().getColor(android.R.color.white));
@@ -203,7 +206,7 @@ public class SerieEpisodes extends ListActivity {
 				c.setText("");
 			}
 		} catch (Exception e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(SQLiteStore.TAG, e.getMessage());
 		}
 	}
 

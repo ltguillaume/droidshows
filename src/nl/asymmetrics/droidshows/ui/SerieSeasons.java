@@ -3,9 +3,9 @@ package nl.asymmetrics.droidshows.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.thetvdb.model.Season;
+import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.annotation.TargetApi;
 import android.app.ListActivity;
@@ -42,17 +42,21 @@ public class SerieSeasons extends ListActivity
 	public static SeriesSeasonsAdapter seasonsAdapter;
 	private static final Boolean pool = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB);
 	private SwipeDetect swipeDetect = new SwipeDetect();
+	private SQLiteStore db;
+	private String on;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		this.overridePendingTransition(R.anim.right_enter, R.anim.right_exit);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.serie_seasons);
+		db = SQLiteStore.getInstance(this);
 		serieId = getIntent().getStringExtra("serieId");
-		setTitle(DroidShows.db.getSerieName(serieId));
+		setTitle(db.getSerieName(serieId));
 		getSeasons();
 		seasonsAdapter = new SeriesSeasonsAdapter(this, R.layout.row_serie_seasons, seasons);
 		setListAdapter(seasonsAdapter);
+		on = getString(R.string.messages_on);
 		listView = getListView();
 		listView.getViewTreeObserver().addOnGlobalLayoutListener(listDone);
 		registerForContextMenu(listView);
@@ -71,16 +75,16 @@ public class SerieSeasons extends ListActivity
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 			case ALLEPSEEN_CONTEXT :
-				DroidShows.db.updateUnwatchedSeason(serieId, seasonNumbers.get(info.position));
+				db.updateUnwatchedSeason(serieId, seasonNumbers.get(info.position));
 				getInfo();
 				return true;
 			case ALLEPUNSEEN_CONTEXT :
-				DroidShows.db.updateWatchedSeason(serieId, seasonNumbers.get(info.position));
+				db.updateWatchedSeason(serieId, seasonNumbers.get(info.position));
 				getInfo();
 				return true;
 			case ALLUPTOTHIS_CONTEXT :
 				for (int i = 1; i <= seasonNumbers.get(info.position); i++) {
-					DroidShows.db.updateUnwatchedSeason(serieId, i);
+					db.updateUnwatchedSeason(serieId, i);
 				}
 				getInfo();
 				return true;
@@ -101,7 +105,7 @@ public class SerieSeasons extends ListActivity
 
 	private void getSeasons() {
 		try {
-			Cursor cseasons = DroidShows.db.Query("SELECT season FROM serie_seasons WHERE serieId = '"+ serieId +"'");
+			Cursor cseasons = db.Query("SELECT season FROM serie_seasons WHERE serieId = '"+ serieId +"'");
 			cseasons.moveToFirst();
 			if (cseasons.getCount() != 0) {
 				do {
@@ -110,7 +114,7 @@ public class SerieSeasons extends ListActivity
 			}
 			cseasons.close();
 		} catch (Exception e) {
-			Log.e(DroidShows.TAG, "Error getting seasons: "+ e.getMessage());
+			Log.e(SQLiteStore.TAG, "Error getting seasons: "+ e.getMessage());
 		}
 		for (int i = 0; i < seasonNumbers.size(); i++) {
 			String season = "";
@@ -148,12 +152,12 @@ public class SerieSeasons extends ListActivity
 			int i = params[0];
 			String serieId = seasons.get(i).getSerieId();
 			int seasonNumber = seasons.get(i).getSNumber();
-			int unwatchedAired = DroidShows.db.getSeasonEPUnwatchedAired(serieId, seasonNumber);
-			int unwatched = DroidShows.db.getSeasonEPUnwatched(serieId, seasonNumber);
+			int unwatchedAired = db.getSeasonEPUnwatchedAired(serieId, seasonNumber);
+			int unwatched = db.getSeasonEPUnwatched(serieId, seasonNumber);
 			seasons.get(i).setUnwatchedAired(unwatchedAired);
 			seasons.get(i).setUnwatched(unwatched);
 			if (unwatched > 0) {
-				seasons.get(i).setNextEpisode(DroidShows.db.getNextEpisode(serieId, seasonNumber));
+				seasons.get(i).setNextEpisode(db.getNextEpisode(serieId, seasonNumber));
 			}
 			listView.post(new Runnable() { public void run() { seasonsAdapter.notifyDataSetChanged(); }});
 			return null;
@@ -198,7 +202,7 @@ public class SerieSeasons extends ListActivity
 				holder.season.setText(s.getSeason());
 			}
 			if (holder.unwatched != null) {
-				String unwatchedText = DroidShows.db.getSeasonEpisodeCount(serieId, s.getSNumber())
+				String unwatchedText = db.getSeasonEpisodeCount(serieId, s.getSNumber())
 						+" "+ getString(R.string.messages_episodes);
 				if (nunwatched > 0) {
 					String unwatched = "";
@@ -217,7 +221,7 @@ public class SerieSeasons extends ListActivity
 					nextEpisodeText = getString(R.string.messages_season_completely_watched);
 				} else if (nunwatched > 0) {
 					nextEpisodeText = getString(R.string.messages_next_episode) + " "
-						+ s.getNextEpisode().replace("[on]", getString(R.string.messages_on));
+						+ s.getNextEpisode().replace("[on]", on);
 					if (nunwatchedAired > 0) holder.nextEpisode.setTypeface(null, Typeface.BOLD);
 				}
 				holder.nextEpisode.setText(nextEpisodeText);				

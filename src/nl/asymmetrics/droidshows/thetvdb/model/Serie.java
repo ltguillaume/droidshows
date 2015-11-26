@@ -292,9 +292,7 @@ public class Serie {
                 this.episodes.get(e).setSeriesId(this.id);
                 this.episodes.get(e).saveToDB(SQLS);
             }
-            
-            DroidShows.db.updateShowStats(this.id);
-
+            SQLS.updateShowStats(serieId);
         } catch(SQLiteException e){
             Log.e("DroidShows", e.getMessage());
             return false;

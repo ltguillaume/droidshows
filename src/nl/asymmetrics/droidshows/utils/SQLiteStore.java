@@ -24,14 +24,37 @@ import android.util.Log;
 
 public class SQLiteStore extends SQLiteOpenHelper
 {
+	public static final String TAG = "DroidShows";
+	private static SQLiteStore instance = null;
 	private static String DB_PATH = "";
 	private static String DB_NAME = "DroidShows.db";
 	private SQLiteDatabase db;
-  private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-	public SQLiteStore(Context context) {
+	public static SQLiteStore getInstance(Context context) {
+		if (instance == null)
+			instance = new SQLiteStore(context.getApplicationContext());
+		return instance;
+	}
+	
+	private SQLiteStore(Context context) {
 		super(context, DB_NAME, null, 1);
 		DB_PATH = context.getApplicationInfo().dataDir +"/databases/";
+		try {
+			openDataBase();
+		} catch (SQLException sqle) {
+			try {
+				createDataBase();
+				close();
+				try {
+					openDataBase();
+				} catch (SQLException sqle2) {
+					Log.e(TAG, sqle2.getMessage());
+				}
+			} catch (IOException e) {
+				Log.e(TAG, "Unable to create database");
+			}
+		}
 	}
 
 	public void createDataBase() throws IOException {
@@ -47,7 +70,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			String myPath = DB_PATH + DB_NAME;
 			checkDB = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READONLY);
 		} catch (SQLiteException e) {
-			Log.d(DroidShows.TAG, "Database does't exist yet.");
+			Log.d(TAG, "Database does't exist yet.");
 		}
 		if (checkDB != null) {
 			checkDB.close();
@@ -184,7 +207,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			}
 			c.close();
 		} catch (SQLiteException e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 			c.close();
 		}
 		return episodes;
@@ -206,7 +229,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			}
 			cseries.close();
 		} catch (SQLiteException e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 			cseries.close();
 		}
 		return series;
@@ -226,7 +249,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 		} catch (SQLiteException e) {
 			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return episodes;
 	}
@@ -246,7 +269,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 		} catch (SQLiteException e) {
 			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return episodesSeen;
 	}
@@ -262,7 +285,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 		} catch (SQLiteException e) {
 			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 			return null;
 		}
 		return sname;
@@ -282,7 +305,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 		} catch (SQLiteException e) {
 			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return unwatchedAired;
 	}
@@ -300,7 +323,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 		} catch (SQLiteException e) {
 			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return unwatched;
 	}
@@ -317,7 +340,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 		} catch (SQLiteException e) {
 			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return unwatched;
 	}
@@ -334,7 +357,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 		} catch (SQLiteException e) {
 			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return unwatched;
 	}
@@ -359,7 +382,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 					try {
 						na = dateFormat.parse(fa);
 					} catch (ParseException e) {
-						Log.e(DroidShows.TAG, e.getMessage());
+						Log.e(TAG, e.getMessage());
 						return null;
 					}
 				}
@@ -369,7 +392,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			if (c != null) {
 				c.close();
 			}
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 			return null;
 		}
 		return na;
@@ -400,7 +423,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			if (c != null) {
 				c.close();
 			}
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return ""+ id;
 	}
@@ -430,7 +453,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 						Format formatter = SimpleDateFormat.getDateInstance();
 						epDataStr += formatter.format(dateFormat.parse(c.getString(faCol)));
 					} catch (ParseException e) {
-						Log.e(DroidShows.TAG, e.getMessage());
+						Log.e(TAG, e.getMessage());
 					}
 				}
 				String enumber = "";
@@ -450,7 +473,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			if (c != null) {
 				c.close();
 			}
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return nextEpisode;
 	}
@@ -466,7 +489,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 		} catch (SQLiteException e) {
 			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return count;
 	}
@@ -482,7 +505,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 		} catch (SQLiteException e) {
 			c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		return count;
 	}
@@ -496,7 +519,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			db.execSQL("UPDATE episodes SET seen="+ seen +" WHERE serieId='"+ serieId +"' AND seasonNumber="+ nseason
 			+" AND firstAired < '"+ today +"' AND firstAired <> '' AND seen < 1");
 		} catch (SQLiteException e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		updateShowStats(serieId);
 	}
@@ -506,7 +529,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			db.execSQL("UPDATE episodes SET seen=0 WHERE serieId='"+ serieId +"' AND seasonNumber="
 				+ nseason);
 		} catch (SQLiteException e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		updateShowStats(serieId);
 	}
@@ -533,7 +556,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			}
 		} catch (SQLiteException e) {
 			if (c != null) c.close();
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		updateShowStats(serieId);
 		return episodeMarked;
@@ -543,13 +566,13 @@ public class SQLiteStore extends SQLiteOpenHelper
 		try {
 			db.execSQL("UPDATE series SET passiveStatus="+ passiveStatus +" WHERE id='"+ serieId +"'");
 		} catch (SQLiteException e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 	}
 
 	public void updateSerie(Serie s, boolean last_season) {
 		if (s == null) {
-			Log.e(DroidShows.TAG, "Error: Serie is null");
+			Log.e(TAG, "Error: Serie is null");
 			return;
 		}
 		try {
@@ -577,17 +600,17 @@ public class SQLiteStore extends SQLiteOpenHelper
 						} while (cms.moveToNext());
 					}
 					cms.close();
-					Log.d(DroidShows.TAG, "Updating only last season "+ max_season +" and specials of "+ tmpSName);
+					Log.d(TAG, "Updating only last season "+ max_season +" and specials of "+ tmpSName);
 				} catch (SQLiteException e) {
 					if (cms != null) {
 						cms.close();
 					}
-					Log.e(DroidShows.TAG, e.getMessage());
+					Log.e(TAG, e.getMessage());
 				}
 			} else {
-				Log.d(DroidShows.TAG, "Updating all seasons of "+ tmpSName);
+				Log.d(TAG, "Updating all seasons of "+ tmpSName);
 			}
-			// Log.d(DroidShows.TAG, "MAX SEASON: "+ max_season);
+			// Log.d(TAG, "MAX SEASON: "+ max_season);
 			db.beginTransaction();
 			db.execSQL("UPDATE series SET language='"+ s.getLanguage() +"', serieName="+ DatabaseUtils.sqlEscapeString(tmpSName)
 				+", overview="+ DatabaseUtils.sqlEscapeString(tmpSOverview) +", "+"firstAired='"+ s.getFirstAired()
@@ -640,7 +663,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 					if (cms != null) {
 						cms.close();
 					}
-					Log.e(DroidShows.TAG, e.getMessage());
+					Log.e(TAG, e.getMessage());
 				}
 			} else {
 				// directors
@@ -753,7 +776,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			db.setTransactionSuccessful();
 			db.endTransaction();
 		} catch (SQLiteException e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		updateShowStats(s.getId());
 	}
@@ -778,7 +801,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			c.close();
 			db.execSQL("DELETE FROM series WHERE id='"+ serieId +"'");
 		} catch (SQLiteException e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 	}
 	
@@ -789,7 +812,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			db.execSQL("DELETE FROM writers WHERE serieId='"+ serieId +"' AND episodeId='"+ episodeId +"'");
 			db.execSQL("DELETE FROM episodes WHERE serieId='"+ serieId +"' AND id='"+ episodeId +"'");			
 		} catch (SQLiteException e) {
-			Log.e(DroidShows.TAG, e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 		updateShowStats(serieId);
 	}

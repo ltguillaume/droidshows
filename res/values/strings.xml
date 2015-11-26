@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<string name="copyright" translatable="false">DroidShows v{v}
-\nltGuillaume.github.io/DroidShows
-\nXDA/Changelog: tiny.cc/DroidShows
-\n&#169;2010 Carlos Limpinho, Paulo Cabido:\ncode.google.com/p/droidseries
-\nForked by Mikael Berthe
-\n&#169;2014-{y} Guillaume (GPLv3):\ngithub.com/ltGuillaume/DroidShows
-\n\nNew icon file is a mix of\niconeasy.com/icon/tv-shows-2-icon (Thrasos Varnava) and\nwallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)</string>
 <string name="lang_code">en</string>
 <string name="layout_app_name">DroidShows</string>
 <string name="layout_main_no_items">No shows found.</string>
 <string name="layout_search_no_items">No shows found.</string>
 <string name="layout_seasons_no_items">No seasons to display.</string>
 <string name="archive">Archive</string>
-<string name="addserie_hint">Show to add...</string>
-<string name="search_hint">Search...</string>
+<string name="addserie_hint">Show to add&#x2026;</string>
+<string name="search_hint">Search&#x2026;</string>
 <string name="menu_undo">Undo</string>
 <string name="menu_add_serie">Add a show</string>
-<string name="menu_update_all">Update all shows</string>
+<string name="menu_update">Update shows</string>
 <string name="menu_search">Search shows</string>
 <string name="menu_sort_az">Sort by name</string>
 <string name="menu_sort_last_unseen">Sort by unseen</string>
@@ -47,13 +40,13 @@
 <string name="dialog_delete">Are you sure you want to delete %s?</string>
 <string name="dialog_Cancel">Cancel</string>
 <string name="dialog_search">Search string:</string>
-<string name="dialog_update_all_series">Are you sure you want to update all the shows now?</string>
+<string name="dialog_update_series">Are you sure you want to update all listed shows now?</string>
 <string name="dialog_update_speedup">\n\nYou can speed up this process with the option in Menu > Options.</string>
 <string name="dialog_last_season">Update shows\' last season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to mark episode</string>
 <string name="dialog_switch_swipe_direction">Swipe right-to-left to go back</string>
-<string name="dialog_help">&#187; Don\'t forget to update all shows regularly
+<string name="dialog_help">&#187; Don\'t forget to update shows regularly
 \n&#187; Long-press items for more options
 \n&#187; Swipe left-to-right to go back
 \n\nIn Shows Overview:
@@ -67,12 +60,12 @@
 \n&#187; Tap IMDb rating to view in IMDb</string>
 <string name="menu_archive">Archive</string>
 <string name="menu_unarchive">Recover</string>
-<string name="messages_title_updating_all_series">Updating all shows</string>
+<string name="messages_title_updating_series">Updating shows</string>
 <string name="messages_title_updating_db">Updating database</string>
 <string name="messages_update_serie">Gathering show information…</string>
 <string name="messages_no_internet">No Internet connection is available</string>
-<string name="messages_title_update_all_series">Update all shows</string>
-<string name="messages_update_all_series">Gathering shows information. This operation will take a while…</string>
+<string name="messages_title_update_series">Update shows</string>
+<string name="messages_update_series">Gathering shows information. This operation will take a while…</string>
 <string name="messages_episodes">episodes</string>
 <string name="messages_new_episodes">new episodes</string>
 <string name="messages_new_episode">new episode</string>

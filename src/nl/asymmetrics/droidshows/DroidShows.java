@@ -38,7 +38,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
-import android.database.SQLException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
@@ -74,7 +73,6 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 
 public class DroidShows extends ListActivity
 {
-	public static String VERSION = "0.1.5-7G";
 	/* Menus */
 	private static final int UNDO_MENU_ITEM = Menu.FIRST;
 	private static final int ADD_SERIE_MENU_ITEM = UNDO_MENU_ITEM + 1;
@@ -94,7 +92,6 @@ public class DroidShows extends ListActivity
 	private static final int DELETE_CONTEXT = UPDATE_CONTEXT + 1;
 	public static String on;
 	private static AlertDialog m_AlertDlg;
-	public static final String TAG = "DroidShows";
 	private static ProgressDialog m_ProgressDialog = null;
 	private static ProgressDialog updateAllSeriesPD = null;
 	public static SeriesAdapter seriesAdapter;
@@ -103,7 +100,7 @@ public class DroidShows extends ListActivity
 	private static int oldListPosition = -1;
 	private static TheTVDB theTVDB;
 	private Utils utils = new Utils();
-	private Update updateDS = new Update();
+	private Update updateDS;
 	private static final String PREF_NAME = "DroidShowsPref";
 	private SharedPreferences sharedPrefs;
 	private static final String SORT_PREF_NAME = "sort";
@@ -139,28 +136,20 @@ public class DroidShows extends ListActivity
 	private int padding;
 	public static int showArchive;
 	
-	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		db = new SQLiteStore(this);
-		try {
-			db.openDataBase();
-		} catch (SQLException sqle) {
-			try {
-				db.createDataBase();
-				db.close();
-				try {
-					db.openDataBase();
-				} catch (SQLException sqle2) {
-					Log.e(TAG, sqle2.getMessage());
-				}
-			} catch (IOException e) {
-				Log.e(TAG, "Unable to create database");
+		if (!isTaskRoot()) {	// Prevent multiple instances: http://stackoverflow.com/a/11042163
+			final Intent intent = getIntent();
+			if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(intent.getAction())) {
+				finish();
+				return;
 			}
 		}
+		setContentView(R.layout.main);
+		db = SQLiteStore.getInstance(this);
 
+		updateDS = new Update(this);
 		if(updateDS.updateDroidShows())
 			db.updateShowStats();
 
@@ -252,7 +241,7 @@ public class DroidShows extends ListActivity
 		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
 		menu.add(0, TOGGLE_ARCHIVE_MENU_ITEM, 0, getString(R.string.menu_show_archive));
 		menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort_last_unseen));
-		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update_all)).setIcon(android.R.drawable.ic_menu_upload);
+		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update)).setIcon(android.R.drawable.ic_menu_upload);
 		menu.add(0, OPTIONS_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
 		menu.add(0, EXIT_MENU_ITEM, 0, getString(R.string.menu_exit)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		return super.onCreateOptionsMenu(menu);
@@ -753,7 +742,7 @@ public class DroidShows extends ListActivity
 					new File(posterThumbPath).delete();
 					posterThumbPath = getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs"+ posterURL.getFile().toString();
 				} catch (MalformedURLException e) {
-					Log.e(TAG, "Show "+ serieId +" doesn't have poster URL");
+					Log.e(SQLiteStore.TAG, "Show "+ serieId +" doesn't have poster URL");
 					e.printStackTrace();
 					return;
 				}
@@ -761,13 +750,13 @@ public class DroidShows extends ListActivity
 				try {
 					FileUtils.copyURLToFile(posterURL, posterThumbFile);
 				} catch (IOException e) {
-					Log.e(TAG, "Could not download poster: "+ posterURL);
+					Log.e(SQLiteStore.TAG, "Could not download poster: "+ posterURL);
 					e.printStackTrace();
 					return;
 				}
 				Bitmap posterThumb = BitmapFactory.decodeFile(posterThumbPath);
 				if (posterThumb == null) {
-					Log.e(TAG, "Corrupt or unknown poster file type:"+ posterThumbPath);
+					Log.e(SQLiteStore.TAG, "Corrupt or unknown poster file type:"+ posterThumbPath);
 					return;
 				}
 				int width = getWindowManager().getDefaultDisplay().getWidth();
@@ -783,9 +772,9 @@ public class DroidShows extends ListActivity
 					fOut.close();
 					db.execQuery("UPDATE series SET posterInCache='true', poster='"+ poster
 						+"', posterThumb='"+ posterThumbPath +"' WHERE id='"+ serieId +"'");
-					Log.d(TAG, "Updated poster thumb for "+ sToUpdate.getSerieName());
+					Log.d(SQLiteStore.TAG, "Updated poster thumb for "+ sToUpdate.getSerieName());
 				} catch (FileNotFoundException e) {
-					Log.e(TAG, "File not found:"+ posterThumbFile);
+					Log.e(SQLiteStore.TAG, "File not found:"+ posterThumbFile);
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -825,12 +814,12 @@ public class DroidShows extends ListActivity
 				public void run() {
 					theTVDB = new TheTVDB("8AC675886350B3C3");
 					for (int i = 0; i < series.size(); i++) {
-						Log.d(TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName() +" ["+ i +"/"+ (series.size()-1) +"]");
+						Log.d(SQLiteStore.TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName() +" ["+ i +"/"+ (series.size()-1) +"]");
 						toastMessage = series.get(i).getName() + "\u2026";
 						runOnUiThread(updateMessage);
 						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), langCode);
 						if (sToUpdate != null) {
-							Log.d(TAG, "Updating the database");
+							Log.d(SQLiteStore.TAG, "Updating the database");
 							try {
 								db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 								updatePosterThumb(series.get(i).getSerieId(), sToUpdate);
@@ -839,7 +828,7 @@ public class DroidShows extends ListActivity
 							}
 							updateAllSeriesPD.incrementProgressBy(1);
 						} else {
-							Log.e(TAG, "Skipped this show (no data received)");
+							Log.e(SQLiteStore.TAG, "Skipped this show (no data received)");
 						}
 					}
 					if (showArchive == 2)	// If coming from restore
@@ -851,16 +840,16 @@ public class DroidShows extends ListActivity
 			};
 			updateAllSeriesPD = new ProgressDialog(this);
 			AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-			alertDialog.setTitle(R.string.messages_title_update_all_series);
-			String updateMessageAD = getString(R.string.dialog_update_all_series) + (lastSeasonOption == UPDATE_ALL_SEASONS ? getString(R.string.dialog_update_speedup) : "");
+			alertDialog.setTitle(R.string.messages_title_update_series);
+			String updateMessageAD = getString(R.string.dialog_update_series) + (lastSeasonOption == UPDATE_ALL_SEASONS ? getString(R.string.dialog_update_speedup) : "");
 			alertDialog.setMessage(updateMessageAD);
 			alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
 			alertDialog.setCancelable(false);
 			alertDialog.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					updateAllSeriesPD.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-					updateAllSeriesPD.setTitle(R.string.messages_title_updating_all_series);
-					updateAllSeriesPD.setMessage(getString(R.string.messages_update_all_series));
+					updateAllSeriesPD.setTitle(R.string.messages_title_updating_series);
+					updateAllSeriesPD.setMessage(getString(R.string.messages_update_series));
 					updateAllSeriesPD.setCancelable(false);
 					updateAllSeriesPD.setMax(series.size());
 					updateAllSeriesPD.setProgress(0);
@@ -924,7 +913,7 @@ public class DroidShows extends ListActivity
 			}
 			listView.post(updateListView);
 		} catch (Exception e) {
-			Log.e(TAG, "Error populating TVShowItems or no shows added yet");
+			Log.e(SQLiteStore.TAG, "Error populating TVShowItems or no shows added yet");
 			e.printStackTrace();
 		}
 	}
@@ -1036,7 +1025,7 @@ public class DroidShows extends ListActivity
 					}
 				}
 				lastStatsUpdate = newAsync;
-				Log.d(TAG, "Updated show stats on "+ newAsync);
+//				Log.d(SQLiteStore.TAG, "Updated show stats on "+ newAsync);
 			}
 			return null;
 		}

@@ -6,11 +6,11 @@
 <string name="layout_search_no_items">Geen series gevonden.</string>
 <string name="layout_seasons_no_items">Geen seizoenen gevonden.</string>
 <string name="archive">Archief</string>
-<string name="addserie_hint">Nieuwe serie zoeken...</string>
-<string name="search_hint">Zoeken...</string>
+<string name="addserie_hint">Nieuwe serie zoeken&#x2026;</string>
+<string name="search_hint">Zoeken&#x2026;</string>
 <string name="menu_undo">Ongedaan maken</string>
 <string name="menu_add_serie">Serie toevoegen</string>
-<string name="menu_update_all">Alle series bijwerken</string>
+<string name="menu_update">Series bijwerken</string>
 <string name="menu_search">Serie zoeken</string>
 <string name="menu_sort_az">Sorteren op naam</string>
 <string name="menu_sort_last_unseen">Sorteren op datum</string>
@@ -40,7 +40,7 @@
 <string name="dialog_delete">Weet je zeker dat je de serie %s wilt verwijderen?</string>
 <string name="dialog_Cancel">Annuleren</string>
 <string name="dialog_search">Zoekterm:</string>
-<string name="dialog_update_all_series">Weet je zeker dat je alle series nu wilt bijwerken?</string>
+<string name="dialog_update_series">Weet je zeker dat je alle series in deze lijst nu wilt bijwerken?</string>
 <string name="dialog_update_speedup">\n\nDit kan sneller met de optie in Menu > Opties.</string>
 <string name="dialog_last_season">Alleen laatste seizoenen bijwerken</string>
 <string name="dialog_include_specials">Specials meetellen in overzicht</string>
@@ -60,12 +60,12 @@
 \n&#187; Klik op IMDb-score voor IMDb-pagina</string>
 <string name="menu_archive">Archiveren</string>
 <string name="menu_unarchive">Terughalen</string>
-<string name="messages_title_updating_all_series">Alle series bijwerken</string>
+<string name="messages_title_updating_series">Series bijwerken</string>
 <string name="messages_title_updating_db">Database bijwerken</string>
 <string name="messages_update_serie">Downloaden nieuwe gegevens…</string>
 <string name="messages_no_internet">Er is geen internetverbinding</string>
-<string name="messages_title_update_all_series">Alle series bijwerken</string>
-<string name="messages_update_all_series">Bezig met downloaden van nieuwe gegevens. Even geduld…</string>
+<string name="messages_title_update_series">Series bijwerken</string>
+<string name="messages_update_series">Bezig met downloaden van nieuwe gegevens. Even geduld…</string>
 <string name="messages_episodes">afleveringen</string>
 <string name="messages_new_episodes">afleveringen</string>
 <string name="messages_new_episode">aflevering</string>
