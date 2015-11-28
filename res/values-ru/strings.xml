@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="lang_code">ru</string>
+<string name="layout_app_name">DroidShows</string>
+<string name="layout_main_no_items">Сериалы не найдены. Для добавления сералов используйте соответствующий пункт меню</string>
+<string name="layout_search_no_items">Сериалы не найдены.</string>
+<string name="layout_seasons_no_items">Сезонов нет.</string>
+<string name="archive">Архив</string>
+<string name="addserie_hint">Добавить сериал&#x2026;</string>
+<string name="search_hint">Поиск&#x2026;</string>
+<string name="menu_undo">Отмена</string>
+<string name="menu_add_serie">Добавить сериал</string>
+<string name="menu_update">Обновить</string>
+<string name="menu_search">Поиск сериала</string>
+<string name="menu_sort_az">В алфавитном порядке</string>
+<string name="menu_sort_last_unseen">Сначала просмотренные</string>
+<string name="menu_about">Настройки</string>
+<string name="menu_exit">Выход</string>
+<string name="menu_context_update">Обновить</string>
+<string name="menu_context_updated">обновлено</string>
+<string name="menu_context_delete">Удалить</string>
+<string name="menu_context_add_serie">Добавить сериал</string>
+<string name="menu_show_archive">Сериал заархивирован</string>
+<string name="menu_show_current">Текущий сериал</string>
+<string name="menu_context_view_serie_details">Информация о сериале</string>
+<string name="menu_context_view_imdb">Подробности на IMDb</string>
+<string name="menu_context_view_ep_imdb">Следующая серия на IMDb</string>
+<string name="menu_context_mark_next_episode_as_seen">Отметить следующую серию просмотренной</string>
+<string name="dialog_OK">OK</string>
+<string name="dialog_backup">Резервирование</string>
+<string name="dialog_backup_done">Резервная копия создана</string>
+<string name="dialog_backup_failed">Невозможно создать резервную копию!</string>
+<string name="dialog_change_language">Язык краткого описания</string>
+<string name="dialog_restore">Восстановить</string>
+<string name="dialog_restore_now">Востановление безвовратно удалит текущие данные. Продолжить?</string>
+<string name="dialog_restore_done">Данные успешно восстановлены</string>
+<string name="dialog_restore_failed">Невозможно восстановить!</string>
+<string name="dialog_restore_notfound">Резервная копия не найдена на внешнем носителе!</string>
+<string name="dialog_title_delete">Удалить сериал?</string>
+<string name="dialog_delete">Вы действительно хотите удалить %s?</string>
+<string name="dialog_Cancel">Отмена</string>
+<string name="dialog_search">Искать:</string>
+<string name="dialog_update_series">Начать обновление информации о сериалах?</string>
+<string name="dialog_update_speedup">\n\nВы можете ускорить процесс в Меню > Настройки.</string>
+<string name="dialog_last_season">Обновить только последние сезоны</string>
+<string name="dialog_include_specials">Включить доп. видео в количество просмотренных</string>
+<string name="dialog_full_line_check">Вся строка помечает просмотренным</string>
+<string name="dialog_switch_swipe_direction">Проведите справа налево, чтобы вернуться назад</string>
+<string name="dialog_help">&#187; Не забывайте обновлять информацию о сериалах
+\n&#187; По длинному нажатию показывается меню
+\n&#187; Листайте влево, чтобы вернуться назад
+\n\nВ главном меню:
+\n&#187; Нажмите на картинку чтобы показать подробности
+\n&#187; Длинное нахатие на постер для показа информации о следующей серии
+\n&#187; Проведите спрова налево, чтобы пометить следующюю серию просмотренной
+\n\nВ меню сериала:
+\n&#187; Нажмите на постер, чтобы увеличить
+\n&#187; Нажмите ещё раз для просмотра "фан-арта"
+\n\nВ информации о сериале/серии:
+\n&#187; Нажмите на рейтинг IMDb, чтобы открыть сайт</string>
+<string name="menu_archive">Архивировать</string>
+<string name="menu_unarchive">Разархивировать</string>
+<string name="messages_title_updating_series">Обновить сериалы</string>
+<string name="messages_title_updating_db">База данных обновляется</string>
+<string name="messages_update_serie">Получение информации о сериале…</string>
+<string name="messages_no_internet">Подключение к интернету отсутствует</string>
+<string name="messages_title_update_series">Обновление сериалов</string>
+<string name="messages_update_series">Получение информации о сериалах. Может занять какоу-то время…</string>
+<string name="messages_episodes">серии</string>
+<string name="messages_new_episodes">новые серии</string>
+<string name="messages_new_episode">новая серия</string>
+<string name="messages_ep_aired">показана</string>
+<string name="messages_to_be_aired">ожидается</string>
+<string name="messages_seasons">Сезоны</string>
+<string name="messages_season">Сезон</string>
+<string name="messages_next_episode">Следующая серия:</string>
+<string name="messages_no_new_eps">Новых серий нет</string>
+<string name="messages_season_completely_watched">Сезон полностьб просмотрен</string>
+<string name="messages_deleted">удалено</string>
+<string name="messages_title_search_series">Поиск сериалов</string>
+<string name="messages_search_series">Получение информации…</string>
+<string name="messages_series_success">Сериал %s добавлен</string>
+<string name="messages_title_adding_serie">Сериал добавляется</string>
+<string name="messages_adding_serie">Получение информации о сериале…</string>
+<string name="messages_context_mark_seasonseen">Пометить все серии просмотренными</string>
+<string name="messages_specials">Доп. видео</string>
+<string name="messsages_view_ep_details">Показать информацию о серии</string>
+<string name="messages_thetvdb_con_error">Ошибка подключения к TheTVDB.com. Попробуйте снова.</string>
+<string name="messages_marked_seen">пометить просмотренным</string>
+<string name="messages_marked_unseen">пометить непросмотренным</string>
+<string name="messages_context_mark_seasonunseen">Пометить все серии просмотренными</string>
+<string name="messages_context_mark_asseenuptothis">Все сезоны до этого пометить просмотренными</string>
+<string name="messages_context_archived">помещено в архив</string>
+<string name="messages_context_unarchived">восстановлено из архива</string>
+<string name="messages_aired">Показана:</string>
+<string name="messages_at">в</string>
+<string name="messages_of">из</string>
+<string name="messages_on">на</string>
+<string name="messages_daily">Ежежневно</string>
+<string name="messages_ep">С.</string>
+<string name="episode_directors">Режиссёры:</string>
+<string name="episode_writers">Авторы:</string>
+<string name="episode_guest_stars">Приглашённые звёзды:</string>
+<string name="series_runtime_minutes">минут</string>
+<string name="series_synopsis">Короткое описание:</string>
+<string name="series_actors">В ролях:</string>
+<string name="showstatus_continuing">продолжается</string>
+<string name="showstatus_ended">закончен</string>
+</resources>
