@@ -3,7 +3,6 @@ package nl.asymmetrics.droidshows.thetvdb.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteException;
@@ -292,7 +291,7 @@ public class Serie {
                 this.episodes.get(e).setSeriesId(this.id);
                 this.episodes.get(e).saveToDB(SQLS);
             }
-            SQLS.updateShowStats(serieId);
+            SQLS.updateShowStats(this.id);
         } catch(SQLiteException e){
             Log.e("DroidShows", e.getMessage());
             return false;

@@ -7,7 +7,7 @@
 <string name="layout_seasons_no_items">No hay temporadas que mostrar.</string>
 <string name="archive">Archivo</string>
 <string name="addserie_hint">Nombre de la serie</string>
-<string name="search_hint">Buscar&#x2026;</string>
+<string name="search_hint">Buscar&#8230;</string>
 <string name="menu_undo">Deshacer</string>
 <string name="menu_add_serie">Añadir una serie</string>
 <string name="menu_update">Actualizar las series</string>
@@ -65,7 +65,7 @@
 <string name="messages_update_serie">Obteniendo información de la serie…</string>
 <string name="messages_no_internet">La conexión a internet no está disponible</string>
 <string name="messages_title_update_series">Actualiza todas las series</string>
-<string name="messages_update_series">Consiguiendo información de las series. Esta operación puede tardar un poco&#x2026;</string>
+<string name="messages_update_series">Consiguiendo información de las series. Esta operación puede tardar un poco&#8230;</string>
 <string name="messages_episodes">episodios</string>
 <string name="messages_new_episodes">nuevos episodios</string>
 <string name="messages_new_episode">nuevo episodio</string>

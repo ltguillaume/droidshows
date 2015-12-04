@@ -217,8 +217,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 		List<String> series = new ArrayList<String>();
 		String showArchiveString = "";
 		if (showArchive < 2)
-			showArchiveString = " WHERE passiveStatus="
-					+(showArchive == 0 ? "0 OR passiveStatus IS NULL" : showArchive +"");
+			showArchiveString = " WHERE passiveStatus"
+					+(showArchive == 0 ? "=0 OR passiveStatus IS NULL" : ">="+ showArchive);	// Solves issue with former bug when adding show directly after restoring backup
 		Cursor cseries = Query("SELECT id FROM series"+ showArchiveString);
 		try {
 			cseries.moveToFirst();

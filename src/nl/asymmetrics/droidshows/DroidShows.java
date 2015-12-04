@@ -441,10 +441,12 @@ public class DroidShows extends ListActivity
 				    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
 				if (showArchive == 1)
 					setTitle(getString(R.string.layout_app_name));
+				undo.clear();
 				showArchive = 2;	// Get archived and current shows
 				getSeries();
 				updateAllSeries();
-				undo.clear();
+				showArchive = 0;
+				getSeries();
 			} catch (IOException e) {
 				toastTxt = R.string.dialog_restore_failed;
 				e.printStackTrace();
@@ -724,6 +726,7 @@ public class DroidShows extends ListActivity
 			updateShowTh.start();
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
+			m_ProgressDialog.cancel();
 		}
 	}
 	
