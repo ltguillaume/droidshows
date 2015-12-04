@@ -441,12 +441,10 @@ public class DroidShows extends ListActivity
 				    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
 				if (showArchive == 1)
 					setTitle(getString(R.string.layout_app_name));
-				undo.clear();
 				showArchive = 2;	// Get archived and current shows
 				getSeries();
 				updateAllSeries();
-				showArchive = 0;
-				getSeries();
+				undo.clear();
 			} catch (IOException e) {
 				toastTxt = R.string.dialog_restore_failed;
 				e.printStackTrace();

@@ -297,7 +297,7 @@ public class AddSerie extends ListActivity
 							return;
 						}
 						Log.d(SQLiteStore.TAG, "Adding TV show: saving TV show to database");
-						sToAdd.setPassiveStatus(DroidShows.showArchive);
+						sToAdd.setPassiveStatus((DroidShows.showArchive == 1 ? 1 : 0));
 						sToAdd.saveToDB(db);
 						Log.d(SQLiteStore.TAG, "Adding TV show: creating the TV show item");
 						int nseasons = db.getSeasonCount(sToAdd.getId());
