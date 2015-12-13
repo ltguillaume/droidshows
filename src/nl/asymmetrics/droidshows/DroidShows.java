@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
 import nl.asymmetrics.droidshows.R;
@@ -84,8 +83,8 @@ public class DroidShows extends ListActivity
 	private static final int EXIT_MENU_ITEM = OPTIONS_MENU_ITEM + 1;
 	/* Context Menus */
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = Menu.FIRST;
-	private static final int TOGGLE_ARCHIVED = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
-	private static final int VIEW_SERIEDETAILS_CONTEXT = TOGGLE_ARCHIVED + 1;
+	private static final int TOGGLE_ARCHIVED_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
+	private static final int VIEW_SERIEDETAILS_CONTEXT = TOGGLE_ARCHIVED_CONTEXT + 1;
 	private static final int VIEW_IMDB_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
 	private static final int VIEW_EP_IMDB_CONTEXT = VIEW_IMDB_CONTEXT + 1;
 	private static final int UPDATE_CONTEXT = VIEW_EP_IMDB_CONTEXT + 1;
@@ -489,13 +488,13 @@ public class DroidShows extends ListActivity
 		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
 		menu.add(0, VIEW_EP_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_ep_imdb));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
-		menu.add(0, TOGGLE_ARCHIVED, 0, getString(R.string.menu_archive));
+		menu.add(0, TOGGLE_ARCHIVED_CONTEXT, 0, getString(R.string.menu_archive));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 	    if (seriesAdapter.getItem(info.position).getUnwatchedAired() == 0)
 	    	menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
 	    if (seriesAdapter.getItem(info.position).getPassiveStatus())
-	    	menu.findItem(TOGGLE_ARCHIVED).setTitle(R.string.menu_unarchive);
+	    	menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setTitle(R.string.menu_unarchive);
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -516,7 +515,7 @@ public class DroidShows extends ListActivity
 			case UPDATE_CONTEXT :
 				updateSerie(seriesAdapter.getItem(info.position).getSerieId(), info.position);
 				return true;
-			case TOGGLE_ARCHIVED :
+			case TOGGLE_ARCHIVED_CONTEXT :
 				asyncInfo.cancel(true);
 				String serieId = seriesAdapter.getItem(info.position).getSerieId();
 				db.updateSerieStatus(serieId, showArchive ^ 1);
@@ -1009,10 +1008,8 @@ public class DroidShows extends ListActivity
 		protected Void doInBackground(Void... params) {
 			String newAsync = dateFormat.format(new Date());
 			if (!lastStatsUpdate.equals(newAsync)) {
-				Iterator<TVShowItem> it = series.iterator();
-				while(it.hasNext()) {
+				for (TVShowItem serie : series) {
 					if (isCancelled()) return null;
-					TVShowItem serie = it.next();
 					String serieId = serie.getSerieId();
 					int unwatched = db.getEPUnwatched(serieId);
 					int unwatchedAired = db.getEPUnwatchedAired(serieId);
@@ -1020,11 +1017,14 @@ public class DroidShows extends ListActivity
 						if (isCancelled()) return null;
 						serie.setUnwatched(unwatched);
 						serie.setUnwatchedAired(unwatchedAired);
-						listView.post(updateListView);
+						runOnUiThread(new Runnable() {
+							public void run() {seriesAdapter.notifyDataSetChanged();}
+						});
 						if (isCancelled()) return null;
 						db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +" WHERE id="+ serieId);
 					}
 				}
+				listView.post(updateListView);
 				lastStatsUpdate = newAsync;
 //				Log.d(SQLiteStore.TAG, "Updated show stats on "+ newAsync);
 			}
