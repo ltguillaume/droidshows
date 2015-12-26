@@ -310,7 +310,7 @@ public class DroidShows extends ListActivity
 		listView.setEmptyView(findViewById(R.id.empty_notext));
 		seriesAdapter.clear();
 		lastStatsUpdate = "";
-		showArchive ^= 1;
+		showArchive = (showArchive + 1) % 2;
 		getSeries();
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
@@ -1008,7 +1008,8 @@ public class DroidShows extends ListActivity
 		protected Void doInBackground(Void... params) {
 			String newAsync = dateFormat.format(new Date());
 			if (!lastStatsUpdate.equals(newAsync)) {
-				for (TVShowItem serie : series) {
+				for (int i = 0; i < series.size(); i++) {
+					TVShowItem serie = series.get(i);
 					if (isCancelled()) return null;
 					String serieId = serie.getSerieId();
 					int unwatched = db.getEPUnwatched(serieId);

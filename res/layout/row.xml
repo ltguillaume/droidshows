@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:paddingTop="6dp" android:paddingBottom="6dp">
 	<nl.asymmetrics.droidshows.ui.IconView android:id="@+id/serieicon" android:layout_width="wrap_content" android:layout_height="fill_parent" android:scaleType="fitXY" android:paddingRight="6dp"/>
 	<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginTop="2dp" android:layout_marginBottom="6dp">
 		<TextView android:id="@+id/seriename" android:layout_width="fill_parent" android:layout_height="wrap_content" android:textStyle="bold" android:textSize="18sp" android:ellipsize="marquee" android:maxLines="1" android:singleLine="true"/>
