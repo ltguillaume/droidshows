@@ -61,6 +61,8 @@ public class SerieSeasons extends ListActivity
 		listView.getViewTreeObserver().addOnGlobalLayoutListener(listDone);
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
+		if (getIntent().getBooleanExtra("nextEpisode", false))
+			listView.setSelection(db.getNextEpisode(serieId, -1).season -1);
 	}
 	
 	/* context menu */
@@ -99,6 +101,8 @@ public class SerieSeasons extends ListActivity
 			Intent serieEpisode = new Intent(SerieSeasons.this, SerieEpisodes.class);
 			serieEpisode.putExtra("serieId", serieId);
 			serieEpisode.putExtra("seasonNumber", seasonNumbers.get(position));
+			if (seasonsAdapter.getItem(position).getUnwatched() > 0)
+				serieEpisode.putExtra("nextEpisode", true);
 			startActivity(serieEpisode);
 		}
 	}
@@ -157,7 +161,7 @@ public class SerieSeasons extends ListActivity
 			seasons.get(i).setUnwatchedAired(unwatchedAired);
 			seasons.get(i).setUnwatched(unwatched);
 			if (unwatched > 0) {
-				seasons.get(i).setNextEpisode(db.getNextEpisode(serieId, seasonNumber));
+				seasons.get(i).setNextEpisode(db.getNextEpisodeString(serieId, seasonNumber));
 			}
 			listView.post(new Runnable() { public void run() { seasonsAdapter.notifyDataSetChanged(); }});
 			return null;

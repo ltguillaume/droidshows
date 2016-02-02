@@ -23,6 +23,7 @@
 <string name="menu_show_archive">Archiv</string>
 <string name="menu_show_current">Aktive Serien</string>
 <string name="menu_context_view_serie_details">Einzelheiten</string>
+<string name="menu_context_view_wiki">Die Serie in der Wikipedia</string>
 <string name="menu_context_view_imdb">Die Serie in der IMDb</string>
 <string name="menu_context_view_ep_imdb">Nächste Folge in der IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Folgende Folge gesehen markieren</string>

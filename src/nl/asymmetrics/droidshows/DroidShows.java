@@ -83,12 +83,13 @@ public class DroidShows extends ListActivity
 	private static final int EXIT_MENU_ITEM = OPTIONS_MENU_ITEM + 1;
 	/* Context Menus */
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = Menu.FIRST;
-	private static final int TOGGLE_ARCHIVED_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
-	private static final int VIEW_SERIEDETAILS_CONTEXT = TOGGLE_ARCHIVED_CONTEXT + 1;
-	private static final int VIEW_IMDB_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
+	private static final int VIEW_SERIEDETAILS_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
+	private static final int VIEW_WIKI_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
+	private static final int VIEW_IMDB_CONTEXT = VIEW_WIKI_CONTEXT + 1;
 	private static final int VIEW_EP_IMDB_CONTEXT = VIEW_IMDB_CONTEXT + 1;
 	private static final int UPDATE_CONTEXT = VIEW_EP_IMDB_CONTEXT + 1;
-	private static final int DELETE_CONTEXT = UPDATE_CONTEXT + 1;
+	private static final int TOGGLE_ARCHIVED_CONTEXT = UPDATE_CONTEXT + 1;
+	private static final int DELETE_CONTEXT = TOGGLE_ARCHIVED_CONTEXT + 1;
 	public static String on;
 	private static AlertDialog m_AlertDlg;
 	private static ProgressDialog m_ProgressDialog = null;
@@ -485,6 +486,7 @@ public class DroidShows extends ListActivity
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, 0, getString(R.string.menu_context_mark_next_episode_as_seen));
 		menu.add(0, VIEW_SERIEDETAILS_CONTEXT, 0, getString(R.string.menu_context_view_serie_details));
+		menu.add(0, VIEW_WIKI_CONTEXT, 0, getString(R.string.menu_context_view_wiki));
 		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
 		menu.add(0, VIEW_EP_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_ep_imdb));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
@@ -505,6 +507,9 @@ public class DroidShows extends ListActivity
 				return true;
 			case VIEW_SERIEDETAILS_CONTEXT :
 				showDetails(seriesAdapter.getItem(info.position).getSerieId());
+				return true;
+			case VIEW_WIKI_CONTEXT :
+				WikiDetails(seriesAdapter.getItem(info.position).getName());
 				return true;
 			case VIEW_IMDB_CONTEXT :
 				IMDbDetails(seriesAdapter.getItem(info.position).getSerieId(), seriesAdapter.getItem(info.position).getName(), false);
@@ -583,6 +588,8 @@ public class DroidShows extends ListActivity
 			backFromSeasonSerieId = serieId;
 			Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
 			serieSeasons.putExtra("serieId", serieId);
+			if (seriesAdapter.getItem(position).getUnwatched() > 0)
+				serieSeasons.putExtra("nextEpisode", true);
 			startActivity(serieSeasons);
 		}
 	}
@@ -652,6 +659,26 @@ public class DroidShows extends ListActivity
 		startActivity(viewSerie);
 	}
 	
+	private void WikiDetails(String serieName) {
+		serieName = serieName.replaceAll(" \\(....\\)", "");
+		Intent wiki;
+		String wikiApp = null;
+	    if (getApplicationContext().getPackageManager().getLaunchIntentForPackage("org.wikipedia") != null)
+	    	wikiApp = "org.wikipedia";
+	    else if (getApplicationContext().getPackageManager().getLaunchIntentForPackage("org.wikipedia.beta") != null)
+	    	wikiApp = "org.wikipedia.beta";
+	    if (wikiApp == null) {
+	    	String uri = "http://"+ langCode +".m.wikipedia.org/w/index.php?title=Special:Search&search="+ serieName;
+	    	wiki = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+	    } else {
+	    	wiki = new Intent(Intent.ACTION_SEND)
+	    		.putExtra(Intent.EXTRA_TEXT, serieName)
+	    		.setType("text/plain")
+	    		.setPackage(wikiApp);
+	    }
+	    startActivity(wiki);
+	}
+	
 	private void IMDbDetails(String serieId, String serieName, boolean viewNextEpisode) {
 		String nextEpisode = (viewNextEpisode ? db.getNextEpisodeId(serieId, -1, false) : "-1");
 		String query;
@@ -663,14 +690,14 @@ public class DroidShows extends ListActivity
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			String imdbId = c.getString(0);
-	    if (!nextEpisode.equals("-1") && imdbId.equals(serieIMDbId(serieId)))	// Sometimes the given episode's IMDb id is that of the show's
-	    	imdbId = "-1";	// So we want to search for the episode instead of go to the show's page 
-	    String name = c.getString(1);
+		    if (!nextEpisode.equals("-1") && imdbId.equals(serieIMDbId(serieId)))	// Sometimes the given episode's IMDb id is that of the show's
+		    	imdbId = "-1";	// So we want to search for the episode instead of go to the show's page 
+		    String name = c.getString(1);
 			c.close();
 			String uri = "imdb:///";
 			Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
-	    if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
-	    	uri = "http://m.imdb.com/";
+			if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
+				uri = "http://m.imdb.com/";
 			if (imdbId.indexOf("tt") == 0)
 				uri += "title/"+ imdbId;
 			else

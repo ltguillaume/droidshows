@@ -301,7 +301,7 @@ public class AddSerie extends ListActivity
 						sToAdd.saveToDB(db);
 						Log.d(SQLiteStore.TAG, "Adding TV show: creating the TV show item");
 						int nseasons = db.getSeasonCount(sToAdd.getId());
-						String nextEpisode = db.getNextEpisode(sToAdd.getId(), -1).replace("[on]", on);
+						String nextEpisode = db.getNextEpisodeString(sToAdd.getId(), -1).replace("[on]", on);
 						Date nextAir = db.getNextAir(sToAdd.getId(), -1);
 						int unwatchedAired = db.getEPUnwatchedAired(sToAdd.getId());
 						int unwatched = db.getEPUnwatched(sToAdd.getId());

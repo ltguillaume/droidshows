@@ -64,6 +64,8 @@ public class SerieEpisodes extends ListActivity {
 		listView = getListView();
 		listView.setOnTouchListener(swipeDetect);
 		registerForContextMenu(getListView());
+		if (getIntent().getBooleanExtra("nextEpisode", false))
+			listView.setSelection(db.getNextEpisode(serieId, seasonNumber).episode -3);
 	}
 
 	/* context menu */

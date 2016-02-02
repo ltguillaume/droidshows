@@ -28,7 +28,7 @@ __Shows Overview__:
 \+ Status of show in details, and † in overview if show is not continuing  
 \+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list  
 \+ Option in [About] to only update shows' last season  
-\+ Context item to view show details on IMDb  
+\+ Context items to view show details on Wikipedia and IMDb  
 \+ Tap cover for show info, long-press for next episode's info  
 \+ Swipe right-to-left to mark next episode as seen (shows confirmation toast)  
 \+ Option to include specials in unwatched count  
@@ -48,6 +48,7 @@ __Seasons/Episodes list__:
 \+ Aired date in episodes list  
 \+ Date of when episode was marked as seen is shown next to checkmark  
 \+ Click on episode title for details, on checkmark to change seen state  
+\+ Automatically scroll to current season / first unwatched episode  
 \* Big performance improvement for entirely rewritten Seasons activity: is now almost instant  
   
 __Add show__:  
@@ -62,7 +63,8 @@ __Update__:
   
 __Other__:  
 \+ Menu (overflow) button should show up in Android 3.0+  
-\+ Dutch translation  
+\+ Dutch, German, Spanish and Russian translation  
+\+ Choose which synopsis language to fetch from TheTVDb  
 \+ Translucent background  
 \+ Swipe left-to-right acts as back button  
 \+ Animations that help understand the app's structure  

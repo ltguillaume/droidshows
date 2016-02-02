@@ -23,6 +23,7 @@
 <string name="menu_show_archive">Show archive</string>
 <string name="menu_show_current">Show current</string>
 <string name="menu_context_view_serie_details">Show\'s details</string>
+<string name="menu_context_view_wiki">Wikipedia details</string>
 <string name="menu_context_view_imdb">IMDb details</string>
 <string name="menu_context_view_ep_imdb">Next episode on IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>

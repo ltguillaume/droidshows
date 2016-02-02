@@ -428,46 +428,22 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return ""+ id;
 	}
 
-	public String getNextEpisode(String serieId, int snumber) {
-		String nextEpisode = "";
+	public NextEpisode getNextEpisode(String serieId, int snumber) {
+		NextEpisode nextEpisode = null;
 		Cursor c = null;
 		try {
 			if (snumber == -1) {
-				c = Query("SELECT firstAired, episodeNumber, seasonNumber FROM episodes WHERE serieId='"+ serieId
+				c = Query("SELECT seasonNumber, episodeNumber, firstAired FROM episodes WHERE serieId='"+ serieId
 					+"' AND seen=0"+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0")
 					+" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			} else {
-				c = Query("SELECT firstAired, episodeNumber, seasonNumber FROM episodes WHERE serieId='"+ serieId
+				c = Query("SELECT seasonNumber, episodeNumber, firstAired FROM episodes WHERE serieId='"+ serieId
 					+"' AND seasonNumber="+ snumber +" AND seen=0"
 					+" ORDER BY episodeNumber ASC LIMIT 1");
 			}
 			c.moveToFirst();
-			if (c != null && c.isFirst()) {
-				int faCol = c.getColumnIndex("firstAired");
-				int enCol = c.getColumnIndex("episodeNumber");
-				int snCol = c.getColumnIndex("seasonNumber");
-				String epDataStr = "";
-				String tmpEpDataStr = c.getString(faCol);
-				if (!tmpEpDataStr.isEmpty() && !tmpEpDataStr.equals("null")) {
-					try {
-						Format formatter = SimpleDateFormat.getDateInstance();
-						epDataStr += formatter.format(dateFormat.parse(c.getString(faCol)));
-					} catch (ParseException e) {
-						Log.e(TAG, e.getMessage());
-					}
-				}
-				String enumber = "";
-				if (c.getInt(enCol) < 10) {
-					enumber = "0"+ c.getInt(enCol);
-				} else {
-					enumber = ""+ c.getInt(enCol);
-				}
-				if (!epDataStr.equals("")) {
-					nextEpisode = c.getInt(snCol) +"x"+ enumber +" [on] "+ epDataStr;
-				} else {
-					nextEpisode = c.getInt(snCol) +"x"+ enumber;
-				}
-			}
+			if (c != null && c.isFirst())
+				nextEpisode = new NextEpisode(c.getInt(0), c.getInt(1), c.getString(2));
 			c.close();
 		} catch (SQLiteException e) {
 			if (c != null) {
@@ -475,7 +451,27 @@ public class SQLiteStore extends SQLiteOpenHelper
 			}
 			Log.e(TAG, e.getMessage());
 		}
+		if (nextEpisode == null)
+			nextEpisode = new NextEpisode(0, 0, "");
 		return nextEpisode;
+	}
+	
+	public String getNextEpisodeString(String serieId, int snumber) {
+		NextEpisode nextEpisode = getNextEpisode(serieId, snumber);
+		if (nextEpisode.season == 0 && nextEpisode.episode == 0)
+			return "";
+		String nextEpisodeString = nextEpisode.season +"x"
+			+ (nextEpisode.episode < 10 ? "0" : "") + nextEpisode.episode;
+
+		if (!nextEpisode.firstAired.isEmpty() && !nextEpisode.firstAired.equals("null")) {
+			try {
+				Format formatter = SimpleDateFormat.getDateInstance();
+				nextEpisodeString += " [on] "+ formatter.format(dateFormat.parse(nextEpisode.firstAired));
+			} catch (ParseException e) {
+				Log.e(TAG, e.getMessage());
+			}
+		}
+		return nextEpisodeString;
 	}
 
 	public int getSeasonCount(String serieId) {
@@ -881,7 +877,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		int seasonCount = getSeasonCount(serieId);
 		int unwatchedAired = getEPUnwatchedAired(serieId);
 		int unwatched = getEPUnwatched(serieId);
-		String nextEpisode = getNextEpisode(serieId, -1);
+		String nextEpisode = getNextEpisodeString(serieId, -1);
 		String nextAir = "";
 		Date tmpNextAir = getNextAir(serieId, -1);
 		if (tmpNextAir != null) {
@@ -894,9 +890,21 @@ public class SQLiteStore extends SQLiteOpenHelper
 		public String episode;
 		public int seen;
 		
-		public EpisodeSeen(String episodeValue, int seenValue) {
-			episode = episodeValue;
-			seen = seenValue;
+		public EpisodeSeen(String episode, int seen) {
+			this.episode = episode;
+			this.seen = seen;
+		}
+	}
+	
+	public class NextEpisode {
+		public int season = 0;
+		public int episode = 0;
+		public String firstAired = "";
+		
+		public NextEpisode(int season, int episode, String firstAired) {
+			this.season = season;
+			this.episode = episode;
+			this.firstAired = firstAired;
 		}
 	}
 }

@@ -23,6 +23,7 @@
 <string name="menu_show_archive">Archief</string>
 <string name="menu_show_current">Actieve series</string>
 <string name="menu_context_view_serie_details">Details</string>
+<string name="menu_context_view_wiki">Serie op Wikipedia</string>
 <string name="menu_context_view_imdb">Serie op IMDb</string>
 <string name="menu_context_view_ep_imdb">Aflevering op IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
