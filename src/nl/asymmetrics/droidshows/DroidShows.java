@@ -81,6 +81,7 @@ public class DroidShows extends ListActivity
 	private static final int UPDATEALL_MENU_ITEM = SORT_MENU_ITEM + 1;
 	private static final int OPTIONS_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
 	private static final int EXIT_MENU_ITEM = OPTIONS_MENU_ITEM + 1;
+	private static final int TOGGLE_EXCLUDE_SEEN_MENU_ITEM = EXIT_MENU_ITEM + 1;
 	/* Context Menus */
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = Menu.FIRST;
 	private static final int VIEW_SERIEDETAILS_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
@@ -107,6 +108,8 @@ public class DroidShows extends ListActivity
 	private static final int SORT_BY_NAME = 0;
 	private static final int SORT_BY_LAST_UNSEEN = 1;
 	private static int sortOption;
+	private static final String EXCLUDE_SEEN_PREF_NAME = "exclude_seen";
+	private static boolean excludeSeen;
 	private static final String LAST_SEASON_PREF_NAME = "last_season";
 	private static final int UPDATE_ALL_SEASONS = 0;
 	private static final int UPDATE_LAST_SEASON_ONLY = 1;
@@ -135,6 +138,16 @@ public class DroidShows extends ListActivity
 	private InputMethodManager keyboard;
 	private int padding;
 	public static int showArchive;
+	private Vibrator vib = null;
+	private Date today;
+	private TVShowItem lastSerie;
+	
+	private Date getToday() {
+		try {
+			today = dateFormat.parse(dateFormat.format(new Date()));
+		} catch (ParseException e) { e.printStackTrace(); }
+		return today;
+	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -148,6 +161,7 @@ public class DroidShows extends ListActivity
 		}
 		setContentView(R.layout.main);
 		db = SQLiteStore.getInstance(this);
+		getToday();
 
 		updateDS = new Update(this);
 		if(updateDS.updateDroidShows())
@@ -156,6 +170,7 @@ public class DroidShows extends ListActivity
 		// Preferences
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
 		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
+		excludeSeen = sharedPrefs.getBoolean(EXCLUDE_SEEN_PREF_NAME, false);
 		lastSeasonOption = sharedPrefs.getInt(LAST_SEASON_PREF_NAME, UPDATE_ALL_SEASONS);
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
@@ -182,53 +197,58 @@ public class DroidShows extends ListActivity
 		});
 		keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
+		vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	}
 	
 	private void setFastScroll() {
-		if (seriesAdapter.getCount() > 20) {
-			try {	// http://stackoverflow.com/a/26447004
-				Drawable thumb = getResources().getDrawable(R.drawable.thumb);
-				String fieldName = "mFastScroller";
-				if (android.os.Build.VERSION.SDK_INT >= 22)	// 22 = Lollipop
-		            fieldName = "mFastScroll";
-
-				java.lang.reflect.Field fieldFastScroller = AbsListView.class.getDeclaredField(fieldName);
-				fieldFastScroller.setAccessible(true);
-				listView.setFastScrollEnabled(true);
-				Object thisFastScroller = fieldFastScroller.get(listView);
-				java.lang.reflect.Field fieldToChange;
-
-				if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-					fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbImage");
-					fieldToChange.setAccessible(true);
-					ImageView iv = (ImageView) fieldToChange.get(thisFastScroller);
-					fieldToChange.set(thisFastScroller, iv);
-					iv.setMinimumWidth(thumb.getIntrinsicWidth());	//IS//THIS//NECESSARY//?//
-					iv.setMaxWidth(thumb.getIntrinsicWidth());	//IS//THIS//NECESSARY//?//
-					iv.setImageDrawable(thumb);
-
-					fieldToChange = fieldFastScroller.getType().getDeclaredField("mTrackImage");
-					fieldToChange.setAccessible(true);
-					iv = (ImageView) fieldToChange.get(thisFastScroller);
-					fieldToChange.set(thisFastScroller, iv);
-					iv.setImageDrawable(null);	// getResources().getDrawable(R.drawable.div)
-				} else {
-					fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbDrawable");
-					fieldToChange.setAccessible(true);
-					fieldToChange.set(thisFastScroller, thumb);
-
-					fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbW");
-					fieldToChange.setAccessible(true);
-					fieldToChange.setInt(thisFastScroller, thumb.getIntrinsicWidth());
-
-					if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-						fieldToChange = fieldFastScroller.getType().getDeclaredField("mTrackDrawable");
+		listView.setVerticalScrollBarEnabled(!excludeSeen);
+		listView.setFastScrollEnabled(!excludeSeen);
+		if (!excludeSeen) {
+			if (seriesAdapter.getCount() > 20) {
+				try {	// http://stackoverflow.com/a/26447004
+					Drawable thumb = getResources().getDrawable(R.drawable.thumb);
+					String fieldName = "mFastScroller";
+					if (android.os.Build.VERSION.SDK_INT >= 22)	// 22 = Lollipop
+			            fieldName = "mFastScroll";
+	
+					java.lang.reflect.Field fieldFastScroller = AbsListView.class.getDeclaredField(fieldName);
+					fieldFastScroller.setAccessible(true);
+					listView.setFastScrollEnabled(true);
+					Object thisFastScroller = fieldFastScroller.get(listView);
+					java.lang.reflect.Field fieldToChange;
+	
+					if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+						fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbImage");
 						fieldToChange.setAccessible(true);
-						fieldToChange.set(thisFastScroller, null);
+						ImageView iv = (ImageView) fieldToChange.get(thisFastScroller);
+						fieldToChange.set(thisFastScroller, iv);
+						iv.setMinimumWidth(thumb.getIntrinsicWidth());	//IS//THIS//NECESSARY//?//
+						iv.setMaxWidth(thumb.getIntrinsicWidth());	//IS//THIS//NECESSARY//?//
+						iv.setImageDrawable(thumb);
+	
+						fieldToChange = fieldFastScroller.getType().getDeclaredField("mTrackImage");
+						fieldToChange.setAccessible(true);
+						iv = (ImageView) fieldToChange.get(thisFastScroller);
+						fieldToChange.set(thisFastScroller, iv);
+						iv.setImageDrawable(null);	// getResources().getDrawable(R.drawable.div)
+					} else {
+						fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbDrawable");
+						fieldToChange.setAccessible(true);
+						fieldToChange.set(thisFastScroller, thumb);
+	
+						fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbW");
+						fieldToChange.setAccessible(true);
+						fieldToChange.setInt(thisFastScroller, thumb.getIntrinsicWidth());
+	
+						if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+							fieldToChange = fieldFastScroller.getType().getDeclaredField("mTrackDrawable");
+							fieldToChange.setAccessible(true);
+							fieldToChange.set(thisFastScroller, null);
+						}
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -236,12 +256,13 @@ public class DroidShows extends ListActivity
 	/* Options Menu */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		menu.add(0, SORT_MENU_ITEM, 0, "");
+		menu.add(0, TOGGLE_EXCLUDE_SEEN_MENU_ITEM, 0, "").setIcon(android.R.drawable.ic_menu_view);
+		menu.add(0, TOGGLE_ARCHIVE_MENU_ITEM, 0, "");
 		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
-		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
-		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
-		menu.add(0, TOGGLE_ARCHIVE_MENU_ITEM, 0, getString(R.string.menu_show_archive));
-		menu.add(0, SORT_MENU_ITEM, 0, getString(R.string.menu_sort_last_unseen));
 		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update)).setIcon(android.R.drawable.ic_menu_upload);
+		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
+		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, OPTIONS_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
 		menu.add(0, EXIT_MENU_ITEM, 0, getString(R.string.menu_exit)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		return super.onCreateOptionsMenu(menu);
@@ -255,18 +276,29 @@ public class DroidShows extends ListActivity
 			menu.findItem(UNDO_MENU_ITEM).setVisible(false);
 		}
 		if (sortOption == SORT_BY_LAST_UNSEEN) {
-			menu.findItem(SORT_MENU_ITEM).setIcon(android.R.drawable.ic_menu_sort_alphabetically)
+			menu.findItem(SORT_MENU_ITEM)
+				.setIcon(android.R.drawable.ic_menu_sort_alphabetically)
 				.setTitle(R.string.menu_sort_az);
 		} else {
-			menu.findItem(SORT_MENU_ITEM).setIcon(android.R.drawable.ic_menu_sort_by_size)
+			menu.findItem(SORT_MENU_ITEM)
+				.setIcon(android.R.drawable.ic_menu_sort_by_size)
 				.setTitle(R.string.menu_sort_last_unseen);
 		}
 		if (showArchive == 1) {
-			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM).setTitle(R.string.menu_show_current)
-				.setIcon(android.R.drawable.ic_menu_today);
+			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
+				.setIcon(android.R.drawable.ic_menu_today)
+				.setTitle(R.string.menu_show_current);
 		} else {
-			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM).setTitle(R.string.menu_show_archive)
-				.setIcon(android.R.drawable.ic_menu_recent_history);
+			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
+				.setIcon(android.R.drawable.ic_menu_recent_history)
+				.setTitle(R.string.menu_show_archive);
+		}
+		if (excludeSeen) {
+			menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
+				.setTitle(R.string.menu_include_seen);
+		} else {
+			menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
+				.setTitle(R.string.menu_exclude_seen);
 		}
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -285,6 +317,9 @@ public class DroidShows extends ListActivity
 				break;
 			case SORT_MENU_ITEM :
 				toggleSort();
+				break;
+			case TOGGLE_EXCLUDE_SEEN_MENU_ITEM :
+				toggleExcludeSeen();
 				break;
 			case UPDATEALL_MENU_ITEM :
 				updateAllSeries();
@@ -319,9 +354,15 @@ public class DroidShows extends ListActivity
 				+(showArchive == 1 ? " - "+ getString(R.string.archive) : ""));
 	}
 
-	public void toggleSort() {
+	private void toggleSort() {
 		sortOption ^= 1;
 		listView.post(updateListView);
+	}
+	
+	private void toggleExcludeSeen() {
+		excludeSeen ^= true;
+		listView.post(updateListView);
+		setFastScroll();
 	}
 
 	private void aboutDialog() {
@@ -578,11 +619,9 @@ public class DroidShows extends ListActivity
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 		oldListPosition = position;
-		if (swipeDetect.value == 1) {
-			if (markNextEpSeen(position)) {
-				Vibrator vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-				vib.vibrate(150);
-			}
+		if (swipeDetect.value == 1 && seriesAdapter.getItem(position).getUnwatchedAired() > 0) {
+			vib.vibrate(150);
+			markNextEpSeen(position);
 		} else if (swipeDetect.value == 0) {
 			String serieId = seriesAdapter.getItem(position).getSerieId();
 			backFromSeasonSerieId = serieId;
@@ -594,7 +633,7 @@ public class DroidShows extends ListActivity
 		}
 	}
 	
-	private boolean markNextEpSeen(int position) {
+	private void markNextEpSeen(int position) {
 		oldListPosition = position;
 		TVShowItem serie = seriesAdapter.getItem(position);
 		String serieId = serie.getSerieId();
@@ -604,9 +643,7 @@ public class DroidShows extends ListActivity
 			Toast.makeText(getApplicationContext(), serie.getName() +" "+ episodeMarked +" "+ getString(R.string.messages_marked_seen), Toast.LENGTH_SHORT).show();
 			undo.add(new String[] {serieId, nextEpisode, serie.getName()});
 			updateShowView(serie);
-			return true;
 		}
-		return false;
 	}
 	
 	private void markLastEpUnseen() {
@@ -637,6 +674,7 @@ public class DroidShows extends ListActivity
 	
 	private void updateShowView(final TVShowItem serie) {
 		final TVShowItem newSerie = createTVShowItem(serie.getSerieId());
+		lastSerie = newSerie;
 		series.set(series.indexOf(serie), newSerie);
 		listView.post(updateListView);
 		listView.post(new Runnable() {
@@ -846,7 +884,7 @@ public class DroidShows extends ListActivity
 						runOnUiThread(updateMessage);
 						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), langCode);
 						if (sToUpdate != null) {
-							Log.d(SQLiteStore.TAG, "Updating the database");
+//							Log.d(SQLiteStore.TAG, "Updating the database");
 							try {
 								db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 								updatePosterThumb(series.get(i).getSerieId(), sToUpdate);
@@ -931,8 +969,7 @@ public class DroidShows extends ListActivity
 	private void getSeries() {
 		if (series != null) series.clear();
 		try {
-			List<String> serieIds;
-			serieIds = db.getSeries(showArchive);
+			List<String> serieIds = db.getSeries(showArchive);
 			for (int i = 0; i < serieIds.size(); i++) {
 				String serieId = serieIds.get(i);
 				TVShowItem tvsi = createTVShowItem(serieId);
@@ -1003,6 +1040,7 @@ public class DroidShows extends ListActivity
 		super.onPause();
 		SharedPreferences.Editor ed = sharedPrefs.edit();
 		ed.putInt(SORT_PREF_NAME, sortOption);
+		ed.putBoolean(EXCLUDE_SEEN_PREF_NAME, excludeSeen);
 		ed.putInt(LAST_SEASON_PREF_NAME, lastSeasonOption);
 		ed.putBoolean(INCLUDE_SPECIALS_NAME, includeSpecialsOption);
 		ed.putBoolean(FULL_LINE_CHECK_NAME, fullLineCheckOption);
@@ -1033,8 +1071,9 @@ public class DroidShows extends ListActivity
 	private class AsyncInfo extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
-			String newAsync = dateFormat.format(new Date());
-			if (!lastStatsUpdate.equals(newAsync)) {
+			String today = dateFormat.format(getToday());
+			if (!lastStatsUpdate.equals(today)) {
+				db.updateToday(today);
 				for (int i = 0; i < series.size(); i++) {
 					TVShowItem serie = series.get(i);
 					if (isCancelled()) return null;
@@ -1053,7 +1092,7 @@ public class DroidShows extends ListActivity
 					}
 				}
 				listView.post(updateListView);
-				lastStatsUpdate = newAsync;
+				lastStatsUpdate = today;
 //				Log.d(SQLiteStore.TAG, "Updated show stats on "+ newAsync);
 			}
 			return null;
@@ -1099,7 +1138,7 @@ public class DroidShows extends ListActivity
 	public class SeriesAdapter extends ArrayAdapter<TVShowItem> {
 		private List<TVShowItem> items;
 		private ShowsFilter filter;
-		public boolean isFiltered = false;
+		private boolean isFiltered = false;
 
 		public SeriesAdapter(Context context, int textViewResourceId, List<TVShowItem> series) {
 			super(context, textViewResourceId, series);
@@ -1158,9 +1197,14 @@ public class DroidShows extends ListActivity
 		}
 
 		public View getView(final int position, View convertView, ViewGroup parent) {
+			TVShowItem serie = items.get(position);
+			LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			final ViewHolder holder;
-			if (convertView == null) {
-				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+			if (excludeSeen && !isFiltered && serie != lastSerie && (serie.getNextAir() == null || serie.getNextAir().after(today))) {
+				convertView = vi.inflate(R.layout.row_excluded, parent, false);
+				convertView.setEnabled(false);
+				return convertView;
+			} else if (convertView == null || !convertView.isEnabled()) {
 				convertView = vi.inflate(R.layout.row, parent, false);
 				holder = new ViewHolder();
 				holder.sn = (TextView) convertView.findViewById(R.id.seriename);
@@ -1172,7 +1216,6 @@ public class DroidShows extends ListActivity
 				holder = (ViewHolder) convertView.getTag();
 				holder.icon.setOnClickListener(null);
 			}
-			TVShowItem serie = items.get(position);
 			int nunwatched = serie.getUnwatched();
 			int nunwatchedAired = serie.getUnwatchedAired();
 			String ended = (serie.getShowStatus().equalsIgnoreCase("Ended") ? " \u2020" : "");
@@ -1195,7 +1238,7 @@ public class DroidShows extends ListActivity
 					unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes) : getString(R.string.messages_new_episode)) +" ";
 					if (nunwatchedAired > 0) {
 						unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired +" "+ getString(R.string.messages_of) +" ") + unwatched + getString(R.string.messages_ep_aired) + (nunwatchedAired == nunwatched && ended.isEmpty() ? " \u00b7" : "");
-						holder.si.setEnabled(true);
+						holder.si.setEnabled(serie.getNextAir().before(today));
 					} else {
 						unwatched += getString(R.string.messages_to_be_aired);
 						holder.si.setEnabled(false);

@@ -22,6 +22,8 @@
 <string name="menu_context_add_serie">Add show</string>
 <string name="menu_show_archive">Show archive</string>
 <string name="menu_show_current">Show current</string>
+<string name="menu_exclude_seen">Exclude seen</string>
+<string name="menu_include_seen">Include seen</string>
 <string name="menu_context_view_serie_details">Show\'s details</string>
 <string name="menu_context_view_wiki">Wikipedia details</string>
 <string name="menu_context_view_imdb">IMDb details</string>
@@ -64,7 +66,7 @@
 <string name="messages_title_updating_series">Updating shows</string>
 <string name="messages_title_updating_db">Updating database</string>
 <string name="messages_update_serie">Gathering show information…</string>
-<string name="messages_no_internet">No Internet connection is available</string>
+<string name="messages_no_internet">No Internet connection available</string>
 <string name="messages_title_update_series">Update shows</string>
 <string name="messages_update_series">Gathering shows information. This operation will take a while…</string>
 <string name="messages_episodes">episodes</string>

@@ -22,6 +22,8 @@
 <string name="menu_context_add_serie">Serie toevoegen</string>
 <string name="menu_show_archive">Archief</string>
 <string name="menu_show_current">Actieve series</string>
+<string name="menu_exclude_seen">Verberg bekeken</string>
+<string name="menu_include_seen">Toon bekeken</string>
 <string name="menu_context_view_serie_details">Details</string>
 <string name="menu_context_view_wiki">Serie op Wikipedia</string>
 <string name="menu_context_view_imdb">Serie op IMDb</string>

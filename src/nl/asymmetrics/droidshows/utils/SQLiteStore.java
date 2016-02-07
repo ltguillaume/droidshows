@@ -30,6 +30,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 	private static String DB_NAME = "DroidShows.db";
 	private SQLiteDatabase db;
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private static String today = dateFormat.format(new Date());	// Get today's date
 
 	public static SQLiteStore getInstance(Context context) {
 		if (instance == null)
@@ -293,9 +294,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public int getEPUnwatchedAired(String serieId) {
 		int unwatchedAired = 0;
-		String today = dateFormat.format(new Date());	// Get today's date
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId
-			+"' AND seen=0 AND firstAired < '"+ today +"' AND firstAired <> ''"
+			+"' AND seen=0 AND firstAired <= '"+ today +"' AND firstAired <> ''"
 			+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0"));
 		try {
 			c.moveToFirst();
@@ -312,9 +312,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public int getSeasonEPUnwatchedAired(String serieId, int snumber) {
 		int unwatched = -1;
-		String today = dateFormat.format(new Date());	// Get today's date
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="+ snumber
-				+" AND seen=0 AND firstAired < '"+ today +"' AND firstAired <> ''");
+				+" AND seen=0 AND firstAired <= '"+ today +"' AND firstAired <> ''");
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -402,15 +401,14 @@ public class SQLiteStore extends SQLiteOpenHelper
 		int id = -1;
 		Cursor c = null;
 		try {
-			String today = dateFormat.format(new Date());
 			if (snumber == -1) {
 				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' AND seen=0"
 						+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0")
-						+ (noFutureEp ? " AND firstAired < '"+ today +"' AND firstAired <> ''": "")
+						+ (noFutureEp ? " AND firstAired <= '"+ today +"' AND firstAired <> ''": "")
 						+" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			} else {
 				c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="+ snumber
-						+"AND seen=0 AND firstAired < '"+ today
+						+"AND seen=0 AND firstAired <= '"+ today
 						+"' AND firstAired <> '' ORDER BY episodeNumber ASC LIMIT 1");
 			}
 			c.moveToFirst();
@@ -509,11 +507,10 @@ public class SQLiteStore extends SQLiteOpenHelper
 	/* Update Methods */
 	public void updateUnwatchedSeason(String serieId, int nseason) {
 		try {
-			String today = dateFormat.format(new Date());	// Get today's date
 			Date date = new Date();
 			int seen = 10000 * (1900 + date.getYear()) + 100 * (date.getMonth() + 1) + date.getDate();
 			db.execSQL("UPDATE episodes SET seen="+ seen +" WHERE serieId='"+ serieId +"' AND seasonNumber="+ nseason
-			+" AND firstAired < '"+ today +"' AND firstAired <> '' AND seen < 1");
+			+" AND firstAired <= '"+ today +"' AND firstAired <> '' AND seen < 1");
 		} catch (SQLiteException e) {
 			Log.e(TAG, e.getMessage());
 		}
@@ -884,6 +881,10 @@ public class SQLiteStore extends SQLiteOpenHelper
 			nextAir = dateFormat.format(tmpNextAir);
 		}
 		execQuery("UPDATE series SET seasonCount="+ seasonCount +", unwatchedAired="+ unwatchedAired +", unwatched="+ unwatched +", nextEpisode='"+ nextEpisode +"', nextAir='"+ nextAir +"' WHERE id="+ serieId);
+	}
+	
+	public void updateToday(String tomorrow) {
+		today = tomorrow;
 	}
 	
 	private class EpisodeSeen {

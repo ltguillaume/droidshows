@@ -22,6 +22,8 @@
 <string name="menu_context_add_serie">Добавить сериал</string>
 <string name="menu_show_archive">Показать архив</string>
 <string name="menu_show_current">Показать текущие</string>
+<string name="menu_exclude_seen">Скрыть просмотренные</string>
+<string name="menu_include_seen">Показать просмотренные</string>
 <string name="menu_context_view_serie_details">Информация о сериале</string>
 <string name="menu_context_view_wiki">Подробности на Wikipedia</string>
 <string name="menu_context_view_imdb">Подробности на IMDb</string>
