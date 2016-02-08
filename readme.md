@@ -1,6 +1,6 @@
 # DroidShows<img src="/icon/icon6.png" align="right"/>
 DroidShows: a 2015 reboot of DroidSeries TV Show Tracker  
-This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, quick search, separate archive list, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
+This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, quick search, separate archive/backlog list, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
 * Don't forget to update all shows regularly
 * Long-press items for more options
 * Swipe left-to-right to go back  
@@ -23,7 +23,7 @@ __Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/
 ![DroidShows Screenshot](/icon/screenshot.png)  
 __Shows Overview__:  
 \+ Showing "[aired unwatched] of [total unwatched]"  
-\+ Added separate archive to keep non-current shows out of your way  
+\+ Added separate archive/backlog to keep shows you're not currently watching out of your way  
 \+ Added icon ic_menu_view for show/hide toggled  
 \+ Status of show in details, and † in overview if show is not continuing  
 \+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list  
@@ -38,6 +38,7 @@ __Shows Overview__:
 \+ New show & episode details views  
 \+ View full size poster and fan art  
 \+ Quick search (filter)  
+\+ Exclude shows without unseen aired episodes  
 \* Sorting shows by first unseen episode  
 \* Clarified toggle and sort options  
 \* Not showing "null" entries from DB  
@@ -80,5 +81,5 @@ __Other__:
   
 ©2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPLv3  
 Modified by [Mikael Berthe](http://gitorious.org/droidseries/mckaels-droidseries)  
-©2014-2015 Guillaume under GPLv3 ([previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume))  
+©2014-2016 Guillaume under GPLv3 ([previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume))  
 New icon file is a mix of work by [Thrasos Varnava](http://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)

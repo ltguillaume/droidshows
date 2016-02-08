@@ -203,6 +203,7 @@ public class DroidShows extends ListActivity
 	private void setFastScroll() {
 		listView.setVerticalScrollBarEnabled(!excludeSeen);
 		listView.setFastScrollEnabled(!excludeSeen);
+		listView.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
 		if (!excludeSeen) {
 			if (seriesAdapter.getCount() > 20) {
 				try {	// http://stackoverflow.com/a/26447004
