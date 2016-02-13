@@ -31,7 +31,7 @@
 <string name="menu_context_mark_next_episode_as_seen">Folgende Folge gesehen markieren</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_backup">Datensicherung</string>
-<string name="dialog_backup_done">Datensucherung fertig</string>
+<string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>
 <string name="dialog_change_language">Übersichtsprache</string>
 <string name="dialog_restore">Datenrücksicherung</string>
