@@ -31,25 +31,25 @@
 <string name="menu_context_mark_next_episode_as_seen">Folgende Folge gesehen markieren</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_backup">Datensicherung</string>
-<string name="dialog_backup_done">Datensucherung fertig</string>
+<string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>
 <string name="dialog_change_language">Übersichtsprache</string>
-<string name="dialog_restore">Datenrücksicherung</string>
-<string name="dialog_restore_now">Während Datenrücksicherung werden alle Daten in DroidShows überschrieben. Fortfahren?</string>
-<string name="dialog_restore_done">Datenrücksicherung fertig</string>
-<string name="dialog_restore_failed">Datenrücksicherung fehlgeschlagen!</string>
+<string name="dialog_restore">Datenwiederherstellung</string>
+<string name="dialog_restore_now">Während der Datenwiederherstellung werden alle Daten in DroidShows überschrieben. Fortfahren?</string>
+<string name="dialog_restore_done">Datenwiederherstellung fertig</string>
+<string name="dialog_restore_failed">Datenwiederherstellung fehlgeschlagen!</string>
 <string name="dialog_restore_notfound">Sicherungskopie nicht gefunden!</string>
 <string name="dialog_title_delete">Serie löschen?</string>
 <string name="dialog_delete">Wirklich %s löschen?</string>
 <string name="dialog_Cancel">Abbrechen</string>
 <string name="dialog_search">Suchbegriff:</string>
 <string name="dialog_update_series">Jetzt alle Serien aktualisieren?</string>
-<string name="dialog_update_speedup">\n\nSie können es in Menu > Einschtellungen.</string>
+<string name="dialog_update_speedup">\n\nSie können es in Menu > Einstellungen.</string>
 <string name="dialog_last_season">Nur letzte Folge aktualisieren</string>
 <string name="dialog_include_specials">Besondere Folgen in Übersicht zeigen</string>
 <string name="dialog_full_line_check">Ganze Zeile markiert als gesehen</string>
 <string name="dialog_switch_swipe_direction">Von rechts nach links wischen um zurück zu gehen</string>
-<string name="dialog_help">&#187; Aktualisieren Serien regelmäßig
+<string name="dialog_help">&#187; Aktualisiere Serien regelmäßig
 \n&#187; Lange antippen um mehrere Aktione anzuzeigen
 \n&#187; Von links nach rechts wischen um zurück zu gehen
 \n\nIn Serien Übersicht:
@@ -57,7 +57,7 @@
 \n&#187; Lange antippen um Infos zur nächsten Episode anzuzeigen
 \n&#187; Von rechts nach links wischen um die nächste Folge als gesehen zu markieren
 \n\nIn Serieneinzelheiten:
-\n&#187; Auf ein Poster tippen um größer zu machen
+\n&#187; Auf ein Poster tippen um es größer zu machen
 \n&#187; Noch mal tippen um "Fan Art" anzuzeigen
 \n\nIn Serien-/Folgeneinzelheiten:
 \n&#187; Auf IMDb Bewertung drücken um zur IMDb fortzuführen</string>
