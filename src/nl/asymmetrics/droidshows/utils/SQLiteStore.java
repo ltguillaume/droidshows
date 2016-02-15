@@ -274,6 +274,17 @@ public class SQLiteStore extends SQLiteOpenHelper
 		}
 		return episodesSeen;
 	}
+	
+	public String getSerieIMDbId(String serieId) {
+		String imdbId = "";
+		Cursor c = Query("SELECT imdbId, serieName FROM series WHERE id = '" + serieId + "'");
+		c.moveToFirst();
+		if (c != null && c.isFirst()) {
+			imdbId = c.getString(0);
+			c.close();
+		}
+		return imdbId;
+	}
 
 	public String getSerieName(String serieId) {
 		String sname = "";

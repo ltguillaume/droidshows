@@ -729,7 +729,7 @@ public class DroidShows extends ListActivity
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			String imdbId = c.getString(0);
-		    if (!nextEpisode.equals("-1") && imdbId.equals(serieIMDbId(serieId)))	// Sometimes the given episode's IMDb id is that of the show's
+		    if (!nextEpisode.equals("-1") && imdbId.equals(db.getSerieIMDbId(serieId)))	// Sometimes the given episode's IMDb id is that of the show's
 		    	imdbId = "-1";	// So we want to search for the episode instead of go to the show's page 
 		    String name = c.getString(1);
 			c.close();
@@ -746,17 +746,6 @@ public class DroidShows extends ListActivity
 		}
 	}
 	
-	private String serieIMDbId(String serieId) {
-		String imdbId = "";
-		Cursor c = db.Query("SELECT imdbId, serieName FROM series WHERE id = '" + serieId + "'");
-		c.moveToFirst();
-		if (c != null && c.isFirst()) {
-			imdbId = c.getString(0);
-			c.close();
-		}
-		return imdbId;
-	}
-
 	private void updateSerie(final String serieId, int position) {
 		oldListPosition = position;
 		final String serieName = seriesAdapter.getItem(position).getName();

@@ -24,7 +24,10 @@ import android.widget.TextView;
 
 public class ViewEpisode extends Activity
 {
-	private String uri = "imdb:///";
+	private String episodeName = "",
+			serieName = "",
+			imdbId = "",
+			uri = "imdb:///";
 	private List<String> writers = new ArrayList<String>();
 	private List<String> directors = new ArrayList<String>();
 	private List<String> guestStars = new ArrayList<String>();
@@ -40,7 +43,7 @@ public class ViewEpisode extends Activity
 		SwipeDetect swipeDetect = new SwipeDetect();
 		view.setOnTouchListener(swipeDetect);
 		String serieId = getIntent().getStringExtra("serieId");
-		final String serieName = getIntent().getStringExtra("serieName");
+		serieName = getIntent().getStringExtra("serieName");
 		String episodeId = getIntent().getStringExtra("episodeId");
 		
 		String query = "SELECT seasonNumber, episodeNumber, episodeName, overview, rating, firstAired, imdbId FROM episodes "
@@ -72,10 +75,10 @@ public class ViewEpisode extends Activity
 	
 			int seasonNumber = c.getInt(seasonNumberCol);
 			int episodeNumber = c.getInt(episodeNumberCol);
-			final String episodeName = c.getString(enameCol);
+			episodeName = c.getString(enameCol);
 			String overview = c.getString(overviewCol);
 			String rating = c.getString(ratingCol);
-			final String imdbId = c.getString(imdbIdCol);
+			imdbId = c.getString(imdbIdCol);
 			c.close();
 	
 			setTitle(serieName +" "+ seasonNumber +"x"+ episodeNumber);				
@@ -88,21 +91,6 @@ public class ViewEpisode extends Activity
 				ratingV.setText("IMDb: "+ rating);
 			else
 				ratingV.setText("IMDb Info");
-			ratingV.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					String uri = "imdb:///";
-					Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
-					if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
-						uri = "http://m.imdb.com/";
-					if (imdbId.indexOf("tt") == 0) {
-						uri += "title/"+ imdbId;
-					} else {
-						uri += "find?q="+ serieName.replaceAll(" \\(....\\)", "") +" "+ episodeName;
-					}
-					Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-					startActivity(imdb);
-				}
-			});
 			
 			if (!firstAired.equalsIgnoreCase("null") && !firstAired.equals("")) {
 				TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
@@ -170,8 +158,23 @@ public class ViewEpisode extends Activity
 				guestStarsField.setVisibility(View.VISIBLE);
 			}
 		}
+
+		Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
+		if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
+			uri = "http://m.imdb.com/";
 	}
 	
+	public void IMDbDetails(View v) {
+		String uri = this.uri;
+		if (imdbId.indexOf("tt") == 0) {
+			uri += "title/"+ imdbId;
+		} else {
+			uri += "find?q="+ serieName.replaceAll(" \\(....\\)", "") +" "+ episodeName;
+		}
+		Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+		startActivity(imdb);
+	}
+
 	public void IMDbNames(View v) {
 		final List<String> names;
 		int id = v.getId();

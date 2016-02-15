@@ -210,6 +210,7 @@ public class ViewSerie extends Activity
 	}
 	
 	public void IMDbDetails(View v) {
+		String uri = this.uri;
 		if (imdbId.indexOf("tt") == 0) {
 			uri += "title/"+ imdbId;
 		} else {
