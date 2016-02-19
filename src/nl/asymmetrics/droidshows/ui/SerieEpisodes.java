@@ -1,9 +1,9 @@
 package nl.asymmetrics.droidshows.ui;
 
-import java.text.Format;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Date;
 
 import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.R;
@@ -39,9 +39,7 @@ public class SerieEpisodes extends ListActivity {
 	private List<String> episodes = null;
 	private ListView listView;
 	private SwipeDetect swipeDetect = new SwipeDetect();
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
-	private Format formatter = SimpleDateFormat.getDateInstance();
 	private SQLiteStore db;
 
 	/* Context Menus */
@@ -115,6 +113,7 @@ public class SerieEpisodes extends ListActivity {
 	public class EpisodesAdapter extends ArrayAdapter<String> {
 
 		private List<String> items;
+		private LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		public EpisodesAdapter(Context context, int textViewResourceId, List<String> episodes) {
 			super(context, textViewResourceId, episodes);
@@ -126,7 +125,6 @@ public class SerieEpisodes extends ListActivity {
 			final ViewHolder holder;
 
 			if (convertView == null) {
-				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = vi.inflate(R.layout.row_serie_episodes, parent, false);
 
 				holder = new ViewHolder();
@@ -154,7 +152,7 @@ public class SerieEpisodes extends ListActivity {
 				String aired = c.getString(airedCol);
 				if (!aired.equals("") && !aired.equals("null")) {
 					try {
-						aired = formatter.format(sdf.parse(aired));
+						aired = SimpleDateFormat.getDateInstance().format(SQLiteStore.dateFormat.parse(aired));
 					} catch (ParseException e) {
 						Log.e(SQLiteStore.TAG, e.getMessage());
 					}
@@ -177,7 +175,7 @@ public class SerieEpisodes extends ListActivity {
 				if (seen > 1) {
 					try {
 						holder.seen.setTextColor(holder.aired.getTextColors().getDefaultColor());
-						holder.seen.setText(formatter.format(sdfseen.parse(seen +"")));
+						holder.seen.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
 					} catch (ParseException e) {
 						Log.e(SQLiteStore.TAG, e.getMessage());
 					}
@@ -203,7 +201,7 @@ public class SerieEpisodes extends ListActivity {
 			CheckBox c = (CheckBox) v.findViewById(R.id.seen);
 			if (c.isChecked()) {
 				c.setTextColor(getResources().getColor(android.R.color.white));
-				c.setText(formatter.format(new Date()));
+				c.setText(SimpleDateFormat.getDateInstance().format(Calendar.getInstance().getTime()));
 			} else {
 				c.setText("");
 			}

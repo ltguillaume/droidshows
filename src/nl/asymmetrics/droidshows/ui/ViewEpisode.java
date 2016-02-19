@@ -1,6 +1,5 @@
 package nl.asymmetrics.droidshows.ui;
 
-import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.TextView;
 
 public class ViewEpisode extends Activity
@@ -62,10 +60,8 @@ public class ViewEpisode extends Activity
 			String firstAired = c.getString(airedCol);
 			if (!firstAired.equals("") && !firstAired.equals("null")) {
 				try {
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-					Date epDate = sdf.parse(firstAired);
-					Format formatter = SimpleDateFormat.getDateInstance();
-					firstAired = formatter.format(epDate);
+					Date epDate = SQLiteStore.dateFormat.parse(firstAired);
+					firstAired = SimpleDateFormat.getDateInstance().format(epDate);
 				} catch (ParseException e) {
 					Log.e(SQLiteStore.TAG, e.getMessage());
 				}

@@ -301,12 +301,12 @@ public class AddSerie extends ListActivity
 						sToAdd.saveToDB(db);
 						Log.d(SQLiteStore.TAG, "Adding TV show: creating the TV show item");
 						int nseasons = db.getSeasonCount(sToAdd.getId());
-						String nextEpisode = db.getNextEpisodeString(sToAdd.getId(), -1).replace("[on]", on);
-						Date nextAir = db.getNextAir(sToAdd.getId(), -1);
+						SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(sToAdd.getId(), -1);
+						String nextEpisodeStr = db.getNextEpisodeString(nextEpisode).replace("[on]", on);
 						int unwatchedAired = db.getEPUnwatchedAired(sToAdd.getId());
 						int unwatched = db.getEPUnwatched(sToAdd.getId());
 						Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
-						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisode, nextAir, unwatchedAired, unwatched, sToAdd.getPassiveStatus() == 1, sToAdd.getStatus());
+						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons, nextEpisodeStr, nextEpisode.firstAiredDate, unwatchedAired, unwatched, sToAdd.getPassiveStatus() == 1, sToAdd.getStatus());
 						DroidShows.series.add(tvsi);
 						series.add(sToAdd.getId());
 						runOnUiThread(DroidShows.updateListView);

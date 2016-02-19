@@ -12,6 +12,7 @@ import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
@@ -133,21 +134,12 @@ public class DroidShows extends ListActivity
 	private static List<String[]> undo = new ArrayList<String[]>();
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private static AsyncInfo asyncInfo;
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 	private EditText searchV;
 	private InputMethodManager keyboard;
 	private int padding;
 	public static int showArchive;
 	private Vibrator vib = null;
-	private Date today;
 	private TVShowItem lastSerie;
-	
-	private Date getToday() {
-		try {
-			today = dateFormat.parse(dateFormat.format(new Date()));
-		} catch (ParseException e) { e.printStackTrace(); }
-		return today;
-	}
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -161,7 +153,6 @@ public class DroidShows extends ListActivity
 		}
 		setContentView(R.layout.main);
 		db = SQLiteStore.getInstance(this);
-		getToday();
 
 		updateDS = new Update(this);
 		if(updateDS.updateDroidShows())
@@ -375,7 +366,7 @@ public class DroidShows extends ListActivity
 		try {
 			changelog.setText(getString(R.string.copyright)
 				.replace("{v}", getPackageManager().getPackageInfo(getPackageName(), 0).versionName)
-				.replace("{y}", new Date().getYear()+1900 +""));
+				.replace("{y}", Calendar.getInstance().get(Calendar.YEAR) +""));
 			changelog.setTextColor(changelog.getTextColors().getDefaultColor());
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
@@ -946,7 +937,7 @@ public class DroidShows extends ListActivity
 			nextEpisode = tmpNextEpisode.replace("[on]", on);
 		if (!tmpNextAir.isEmpty()) {
 			try {
-				nextAir = dateFormat.parse(tmpNextAir);
+				nextAir = SQLiteStore.dateFormat.parse(tmpNextAir);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -1061,9 +1052,10 @@ public class DroidShows extends ListActivity
 	private class AsyncInfo extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
-			String today = dateFormat.format(getToday());
-			if (!lastStatsUpdate.equals(today)) {
-				db.updateToday(today);
+			String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
+			if (!lastStatsUpdate.equals(newToday)) {
+				db.updateToday(newToday);
+//				Log.d(SQLiteStore.TAG, "AsyncInfo | Today = "+ newToday);
 				for (int i = 0; i < series.size(); i++) {
 					TVShowItem serie = series.get(i);
 					if (isCancelled()) return null;
@@ -1082,7 +1074,7 @@ public class DroidShows extends ListActivity
 					}
 				}
 				listView.post(updateListView);
-				lastStatsUpdate = today;
+				lastStatsUpdate = newToday;
 //				Log.d(SQLiteStore.TAG, "Updated show stats on "+ newAsync);
 			}
 			return null;
@@ -1129,6 +1121,7 @@ public class DroidShows extends ListActivity
 		private List<TVShowItem> items;
 		private ShowsFilter filter;
 		private boolean isFiltered = false;
+		private LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		public SeriesAdapter(Context context, int textViewResourceId, List<TVShowItem> series) {
 			super(context, textViewResourceId, series);
@@ -1188,11 +1181,12 @@ public class DroidShows extends ListActivity
 
 		public View getView(final int position, View convertView, ViewGroup parent) {
 			TVShowItem serie = items.get(position);
-			LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			final ViewHolder holder;
-			if (excludeSeen && !isFiltered && serie != lastSerie && (serie.getNextAir() == null || serie.getNextAir().after(today))) {
-				convertView = vi.inflate(R.layout.row_excluded, parent, false);
-				convertView.setEnabled(false);
+			ViewHolder holder;
+			if (excludeSeen && !isFiltered && serie != lastSerie && (serie.getNextAir() == null || serie.getNextAir().after(Calendar.getInstance().getTime()))) {
+				if (convertView.isEnabled()) {
+					convertView = vi.inflate(R.layout.row_excluded, parent, false);
+					convertView.setEnabled(false);
+				}
 				return convertView;
 			} else if (convertView == null || !convertView.isEnabled()) {
 				convertView = vi.inflate(R.layout.row, parent, false);
@@ -1201,6 +1195,7 @@ public class DroidShows extends ListActivity
 				holder.si = (TextView) convertView.findViewById(R.id.serieinfo);
 				holder.sne = (TextView) convertView.findViewById(R.id.serienextepisode);
 				holder.icon = (IconView) convertView.findViewById(R.id.serieicon);
+				convertView.setEnabled(true);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
@@ -1228,7 +1223,7 @@ public class DroidShows extends ListActivity
 					unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes) : getString(R.string.messages_new_episode)) +" ";
 					if (nunwatchedAired > 0) {
 						unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired +" "+ getString(R.string.messages_of) +" ") + unwatched + getString(R.string.messages_ep_aired) + (nunwatchedAired == nunwatched && ended.isEmpty() ? " \u00b7" : "");
-						holder.si.setEnabled(serie.getNextAir().before(today));
+						holder.si.setEnabled(true);
 					} else {
 						unwatched += getString(R.string.messages_to_be_aired);
 						holder.si.setEnabled(false);
@@ -1240,11 +1235,7 @@ public class DroidShows extends ListActivity
 				if (nunwatched > 0) {
 					holder.sne.setText(getString(R.string.messages_next_episode) +" "+ serie.getNextEpisode());
 					holder.sne.setVisibility(View.VISIBLE);
-					if (nunwatchedAired > 0) {
-						holder.sne.setEnabled(true);
-					} else {
-						holder.sne.setEnabled(false);
-					}
+					holder.sne.setEnabled(serie.getNextAir() != null && serie.getNextAir().compareTo(Calendar.getInstance().getTime()) <= 0);
 				} else {
 					holder.sne.setText("");
 				}

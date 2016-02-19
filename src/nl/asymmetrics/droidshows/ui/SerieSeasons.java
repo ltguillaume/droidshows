@@ -1,6 +1,7 @@
 package nl.asymmetrics.droidshows.ui;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import nl.asymmetrics.droidshows.R;
@@ -12,7 +13,6 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -127,7 +127,7 @@ public class SerieSeasons extends ListActivity
 			} else {
 				season = getString(R.string.messages_season) + " " + seasonNumbers.get(i);
 			}
-			Season newSeason = new Season(serieId, seasonNumbers.get(i), season, -1, -1, "");
+			Season newSeason = new Season(serieId, seasonNumbers.get(i), season, -1, -1, null, null);
 			seasons.add(newSeason);
 		}
 	}	
@@ -161,7 +161,9 @@ public class SerieSeasons extends ListActivity
 			seasons.get(i).setUnwatchedAired(unwatchedAired);
 			seasons.get(i).setUnwatched(unwatched);
 			if (unwatched > 0) {
-				seasons.get(i).setNextEpisode(db.getNextEpisodeString(serieId, seasonNumber));
+				SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(serieId, seasonNumber);
+				seasons.get(i).setNextAir(nextEpisode.firstAiredDate);
+				seasons.get(i).setNextEpisode(db.getNextEpisodeString(nextEpisode));
 			}
 			listView.post(new Runnable() { public void run() { seasonsAdapter.notifyDataSetChanged(); }});
 			return null;
@@ -177,6 +179,7 @@ public class SerieSeasons extends ListActivity
 	private class SeriesSeasonsAdapter extends ArrayAdapter<Season>
 	{
 		private List<Season> items;
+		private LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		public SeriesSeasonsAdapter(Context context, int textViewResourceId, List<Season> seasons) {
 			super(context, textViewResourceId, seasons);
@@ -184,9 +187,8 @@ public class SerieSeasons extends ListActivity
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			final ViewHolder holder;
+			ViewHolder holder;
 			if (convertView == null) {
-				LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 				convertView = vi.inflate(R.layout.row_serie_seasons, parent, false);
 				holder = new ViewHolder();
 				holder.season = (TextView) convertView.findViewById(R.id.serieseason);
@@ -197,7 +199,6 @@ public class SerieSeasons extends ListActivity
 				holder = (ViewHolder) convertView.getTag();
 				holder.unwatched.setText("");
 				holder.nextEpisode.setText("");
-				holder.nextEpisode.setTypeface(null, Typeface.NORMAL);
 			}
 			Season s = items.get(position);
 			int nunwatched = s.getUnwatched();
@@ -220,15 +221,14 @@ public class SerieSeasons extends ListActivity
 				holder.unwatched.setText(unwatchedText);
 			}
 			if (holder.nextEpisode != null) {
-				String nextEpisodeText = "";
 				if (nunwatched == 0) {
-					nextEpisodeText = getString(R.string.messages_season_completely_watched);
+					holder.nextEpisode.setText(getString(R.string.messages_season_completely_watched));
+					holder.nextEpisode.setEnabled(false);
 				} else if (nunwatched > 0) {
-					nextEpisodeText = getString(R.string.messages_next_episode) + " "
-						+ s.getNextEpisode().replace("[on]", on);
-					if (nunwatchedAired > 0) holder.nextEpisode.setTypeface(null, Typeface.BOLD);
+					holder.nextEpisode.setText((s.getNextEpisode() == null ? "" : 
+						getString(R.string.messages_next_episode) +" "+ s.getNextEpisode().replace("[on]", on)));
+					holder.nextEpisode.setEnabled(s.getNextAir() != null && s.getNextAir().compareTo(Calendar.getInstance().getTime()) <= 0);
 				}
-				holder.nextEpisode.setText(nextEpisodeText);				
 			}
 			return convertView;
 		}

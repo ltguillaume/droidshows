@@ -1,6 +1,5 @@
 package nl.asymmetrics.droidshows.ui;
 
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -133,10 +132,8 @@ public class ViewSerie extends Activity
 			if (!firstAired.equals("null") && !firstAired.equals("")) {
 				TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
 				try {
-					SimpleDateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
-					Date epDate = SDF.parse(firstAired);
-					Format formatter = SimpleDateFormat.getDateInstance();
-					firstAired = formatter.format(epDate);
+					Date epDate = SQLiteStore.dateFormat.parse(firstAired);
+					firstAired = SimpleDateFormat.getDateInstance().format(epDate);
 				} catch (ParseException e) {
 					Log.e(SQLiteStore.TAG, e.getMessage());
 				}
@@ -154,10 +151,8 @@ public class ViewSerie extends Activity
 					airday = getString(R.string.messages_daily);
 				if (!airtime.equalsIgnoreCase("null") && !airtime.equals("")) {
 					try {
-						SimpleDateFormat SDF = new SimpleDateFormat("h:m a");
-						Date epDate = SDF.parse(airtime);
-						Format formatter = SimpleDateFormat.getTimeInstance(SimpleDateFormat.SHORT);
-						airtime = formatter.format(epDate);
+						Date epDate = SQLiteStore.dateFormat.parse(airtime);
+						airtime = SimpleDateFormat.getDateInstance().format(epDate);
 					} catch (ParseException e) {
 						Log.e(SQLiteStore.TAG, e.getMessage());
 					}
