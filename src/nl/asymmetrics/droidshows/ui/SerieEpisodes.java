@@ -2,8 +2,8 @@ package nl.asymmetrics.droidshows.ui;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.R;
@@ -150,38 +150,39 @@ public class SerieEpisodes extends ListActivity {
 				int airedCol = c.getColumnIndex("firstAired");
 
 				String aired = c.getString(airedCol);
-				if (!aired.equals("") && !aired.equals("null")) {
-					try {
-						aired = SimpleDateFormat.getDateInstance().format(SQLiteStore.dateFormat.parse(aired));
-					} catch (ParseException e) {
-						Log.e(SQLiteStore.TAG, e.getMessage());
-					}
-				} else {
+				Date airedDate = null;
+				if (!aired.isEmpty() && !aired.equals("null")) {
+						try { 
+							airedDate = SQLiteStore.dateFormat.parse(aired);
+							aired = SimpleDateFormat.getDateInstance().format(airedDate);
+						} catch (ParseException e) { e.printStackTrace(); }
+				} else
 					aired = "";
-				}
 
 				if (holder.name != null) {
-					String tmpName = "", tmpAired = "";
-					tmpName = (getString(R.string.messages_ep).isEmpty() ? "" : getString(R.string.messages_ep) +" ") 
-						+ c.getInt(enumberCol) +". "+ c.getString(enameCol);
-					if (!aired.equals(""))
-						tmpAired = getString(R.string.messages_aired) + " "+ aired;
+					String tmpName = (getString(R.string.messages_ep).isEmpty() ? "" : 
+						getString(R.string.messages_ep) +" ") + c.getInt(enumberCol) +". "+ c.getString(enameCol);
 					holder.name.setText(tmpName);
-					holder.aired.setText(tmpAired);
+				}
+				
+				if (holder.aired != null) {
+					if (!aired.isEmpty())
+						holder.aired.setText(getString(R.string.messages_aired) + " "+ aired);
+					else
+						holder.aired.setText("");
+					holder.aired.setEnabled(airedDate != null &&
+						airedDate.compareTo(Calendar.getInstance().getTime()) <= 0);
 				}
 				
 				int seen = c.getInt(seenCol);
 				holder.seen.setChecked(seen > 0);
-				if (seen > 1) {
+				if (seen > 1)	// If seen value is a date
 					try {
 						holder.seen.setTextColor(holder.aired.getTextColors().getDefaultColor());
 						holder.seen.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
-					} catch (ParseException e) {
-						Log.e(SQLiteStore.TAG, e.getMessage());
-					}
-				} else {
+					} catch (ParseException e) { Log.e(SQLiteStore.TAG, e.getMessage()); }
+				else
 					holder.seen.setText("");
-				}
 			}
 			c.close();
 			return convertView;

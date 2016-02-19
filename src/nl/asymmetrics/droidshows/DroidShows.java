@@ -340,6 +340,7 @@ public class DroidShows extends ListActivity
 		lastStatsUpdate = "";
 		showArchive = (showArchive + 1) % 2;
 		getSeries();
+		seriesAdapter.getFilter().filter(searchV.getText());
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
 		setTitle(getString(R.string.layout_app_name)
