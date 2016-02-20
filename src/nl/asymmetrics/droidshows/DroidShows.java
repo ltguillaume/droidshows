@@ -1184,7 +1184,7 @@ public class DroidShows extends ListActivity
 			TVShowItem serie = items.get(position);
 			ViewHolder holder;
 			if (excludeSeen && !isFiltered && serie != lastSerie && (serie.getNextAir() == null || serie.getNextAir().after(Calendar.getInstance().getTime()))) {
-				if (convertView.isEnabled()) {
+				if (convertView == null || convertView.isEnabled()) {
 					convertView = vi.inflate(R.layout.row_excluded, parent, false);
 					convertView.setEnabled(false);
 				}
