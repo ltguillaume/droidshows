@@ -39,6 +39,7 @@ public class ViewSerie extends Activity
 	private String uri = "imdb:///";
 	private List<String> actors = new ArrayList<String>();
 	private SQLiteStore db;
+	private SwipeDetect swipeDetect = new SwipeDetect();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -47,7 +48,6 @@ public class ViewSerie extends Activity
 		setContentView(R.layout.view_serie);
 		db = SQLiteStore.getInstance(this);
 		View view = findViewById(R.id.viewSerie);
-		SwipeDetect swipeDetect = new SwipeDetect();
 		view.setOnTouchListener(swipeDetect);
 		serieId = getIntent().getStringExtra("serieId");
 	
@@ -128,6 +128,7 @@ public class ViewSerie extends Activity
 				ratingV.setText("IMDb: "+ rating);
 			else
 				ratingV.setText("IMDb Info");
+			ratingV.setOnTouchListener(swipeDetect);
 					
 			if (!firstAired.equals("null") && !firstAired.equals("")) {
 				TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
@@ -150,12 +151,6 @@ public class ViewSerie extends Activity
 				if (airday.equalsIgnoreCase("Daily"))
 					airday = getString(R.string.messages_daily);
 				if (!airtime.equalsIgnoreCase("null") && !airtime.equals("")) {
-					try {
-						Date epDate = SQLiteStore.dateFormat.parse(airtime);
-						airtime = SimpleDateFormat.getDateInstance().format(epDate);
-					} catch (ParseException e) {
-						Log.e(SQLiteStore.TAG, e.getMessage());
-					}
 					airtimeV.setText(airday +" "+ getString(R.string.messages_at) +" "+ airtime);
 					airtimeV.setVisibility(View.VISIBLE);
 				}
@@ -205,6 +200,7 @@ public class ViewSerie extends Activity
 	}
 	
 	public void IMDbDetails(View v) {
+		if (swipeDetect.value != 0) return;
 		String uri = this.uri;
 		if (imdbId.indexOf("tt") == 0) {
 			uri += "title/"+ imdbId;
@@ -216,6 +212,7 @@ public class ViewSerie extends Activity
 	}
 	
 	public void IMDbNames(View v) {
+		if (swipeDetect.value != 0) return;
 		AlertDialog namesList = new AlertDialog.Builder(this)
 			.setTitle(R.string.menu_context_view_imdb)
 			.setItems(actors.toArray(new CharSequence[actors.size()]), new DialogInterface.OnClickListener() {

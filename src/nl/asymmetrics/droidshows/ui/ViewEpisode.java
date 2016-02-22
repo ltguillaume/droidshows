@@ -30,6 +30,7 @@ public class ViewEpisode extends Activity
 	private List<String> directors = new ArrayList<String>();
 	private List<String> guestStars = new ArrayList<String>();
 	private SQLiteStore db;
+	private SwipeDetect swipeDetect = new SwipeDetect();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +39,6 @@ public class ViewEpisode extends Activity
 		setContentView(R.layout.view_episode);
 		db = SQLiteStore.getInstance(this);
 		View view = findViewById(R.id.viewEpisodes);
-		SwipeDetect swipeDetect = new SwipeDetect();
 		view.setOnTouchListener(swipeDetect);
 		String serieId = getIntent().getStringExtra("serieId");
 		serieName = getIntent().getStringExtra("serieName");
@@ -87,6 +87,7 @@ public class ViewEpisode extends Activity
 				ratingV.setText("IMDb: "+ rating);
 			else
 				ratingV.setText("IMDb Info");
+			ratingV.setOnTouchListener(swipeDetect);
 			
 			if (!firstAired.equalsIgnoreCase("null") && !firstAired.equals("")) {
 				TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
@@ -161,6 +162,7 @@ public class ViewEpisode extends Activity
 	}
 	
 	public void IMDbDetails(View v) {
+		if (swipeDetect.value != 0) return;
 		String uri = this.uri;
 		if (imdbId.indexOf("tt") == 0) {
 			uri += "title/"+ imdbId;
@@ -172,6 +174,7 @@ public class ViewEpisode extends Activity
 	}
 
 	public void IMDbNames(View v) {
+		if (swipeDetect.value != 0) return;
 		final List<String> names;
 		int id = v.getId();
 		if (id == R.id.writer || id == R.id.writerField)

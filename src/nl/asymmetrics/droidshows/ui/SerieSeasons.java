@@ -97,14 +97,13 @@ public class SerieSeasons extends ListActivity
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		if (swipeDetect.value == 0) {
-			Intent serieEpisode = new Intent(SerieSeasons.this, SerieEpisodes.class);
-			serieEpisode.putExtra("serieId", serieId);
-			serieEpisode.putExtra("seasonNumber", seasonNumbers.get(position));
-			if (seasonsAdapter.getItem(position).getUnwatched() > 0)
-				serieEpisode.putExtra("nextEpisode", true);
-			startActivity(serieEpisode);
-		}
+		if (swipeDetect.value != 0) return;
+		Intent serieEpisode = new Intent(SerieSeasons.this, SerieEpisodes.class);
+		serieEpisode.putExtra("serieId", serieId);
+		serieEpisode.putExtra("seasonNumber", seasonNumbers.get(position));
+		if (seasonsAdapter.getItem(position).getUnwatched() > 0)
+			serieEpisode.putExtra("nextEpisode", true);
+		startActivity(serieEpisode);
 	}
 
 	private void getSeasons() {

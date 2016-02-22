@@ -12,6 +12,7 @@ import java.util.List;
 import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.thetvdb.model.Episode;
 import nl.asymmetrics.droidshows.thetvdb.model.Serie;
+import nl.asymmetrics.droidshows.thetvdb.model.TVShowItem;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -106,6 +107,40 @@ public class SQLiteStore extends SQLiteOpenHelper
 	}
 
 	/* Get Methods */
+	public TVShowItem createTVShowItem(String serieId) {
+		String name = "", tmpPoster = "", showStatus = "", tmpNextEpisode = "", nextEpisode = "", tmpNextAir = "";
+		int tmpStatus = 0, seasonCount = 0, unwatched = 0, unwatchedAired = 0;
+		Date nextAir = null;
+		String query = "SELECT serieName, posterThumb, status, passiveStatus, seasonCount, unwatchedAired, unwatched, nextEpisode, nextAir FROM series WHERE id = '" + serieId + "'";
+		Cursor c = Query(query);
+		c.moveToFirst();
+		if (c != null && c.isFirst()) {
+			name = c.getString(c.getColumnIndex("serieName"));
+			tmpPoster = c.getString(c.getColumnIndex("posterThumb"));
+			showStatus = c.getString(c.getColumnIndex("status"));
+			tmpStatus = c.getInt(c.getColumnIndex("passiveStatus"));
+			seasonCount = c.getInt(c.getColumnIndex("seasonCount"));
+			unwatchedAired = c.getInt(c.getColumnIndex("unwatchedAired"));
+			unwatched = c.getInt(c.getColumnIndex("unwatched"));
+			tmpNextEpisode = c.getString(c.getColumnIndex("nextEpisode"));
+			tmpNextAir = c.getString(c.getColumnIndex("nextAir"));
+		}
+		c.close();
+		if (!tmpNextEpisode.equals("-1"))
+			nextEpisode = tmpNextEpisode;
+		if (!tmpNextAir.isEmpty() && !tmpNextAir.equals("null")) {
+			try {
+				nextAir = SQLiteStore.dateFormat.parse(tmpNextAir);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		boolean status = (tmpStatus == 1);
+		TVShowItem tvsi = new TVShowItem(serieId, tmpPoster, null, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, showStatus);
+		return tvsi;
+	}
+
+	
 	public List<Episode> getEpisodes(String serieId) {
 		List<Episode> episodes = null;
 		episodes = new ArrayList<Episode>();
@@ -236,15 +271,29 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return series;
 	}
 
-	public List<String> getEpisodes(String serieId, int seasonNumber) {
-		List<String> episodes = new ArrayList<String>();
-		Cursor c = Query("SELECT id FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="
+	public List<EpisodeRow> getEpisodeRows(String serieId, int seasonNumber) {
+		List<EpisodeRow> episodes = new ArrayList<EpisodeRow>();
+		Cursor c = Query("SELECT id, episodeName, episodeNumber, seen, firstAired FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="
 			+ seasonNumber +" ORDER BY episodeNumber ASC");
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				do {
-					episodes.add(c.getString(0));
+					String id = c.getString(c.getColumnIndex("id"));
+					String name = c.getInt(c.getColumnIndex("episodeNumber")) +". "
+							+ c.getString(c.getColumnIndex("episodeName"));
+					String aired = c.getString(c.getColumnIndex("firstAired"));
+					Date airedDate = null;
+					if (!aired.isEmpty() && !aired.equals("null")) {
+							try { 
+								airedDate = dateFormat.parse(aired);
+								aired = SimpleDateFormat.getDateInstance().format(airedDate);
+							} catch (ParseException e) { e.printStackTrace(); }
+					} else
+						aired = "";
+					int seen = c.getInt(c.getColumnIndex("seen"));
+					
+					episodes.add(new EpisodeRow(id, name, aired, airedDate, seen));
 				} while (c.moveToNext());
 			}
 			c.close();
@@ -863,6 +912,22 @@ public class SQLiteStore extends SQLiteOpenHelper
 		
 		public EpisodeSeen(String episode, int seen) {
 			this.episode = episode;
+			this.seen = seen;
+		}
+	}
+	
+	public class EpisodeRow {
+		public String id;
+		public String name;
+		public String aired;
+		public Date airedDate;
+		public int seen;
+		
+		public EpisodeRow(String id, String name, String aired, Date airedDate, int seen) {
+			this.id = id;
+			this.name = name;
+			this.aired = aired;
+			this.airedDate = airedDate;
 			this.seen = seen;
 		}
 	}

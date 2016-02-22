@@ -9,7 +9,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -174,6 +173,7 @@ public class DroidShows extends ListActivity
 		setListAdapter(seriesAdapter);
 		on = getString(R.string.messages_on);
 		listView = getListView();
+		listView.setDivider(null);
 		getSeries();
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
@@ -666,7 +666,7 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void updateShowView(final TVShowItem serie) {
-		final TVShowItem newSerie = createTVShowItem(serie.getSerieId());
+		final TVShowItem newSerie = db.createTVShowItem(serie.getSerieId());
 		lastSerie = newSerie;
 		series.set(series.indexOf(serie), newSerie);
 		listView.post(updateListView);
@@ -914,39 +914,6 @@ public class DroidShows extends ListActivity
 			alertDialog.show();
 		}
 	}
-	
-	private static TVShowItem createTVShowItem(String serieId) {
-		String name = "", tmpPoster = "", showStatus = "", tmpNextEpisode = "", nextEpisode = "", tmpNextAir = "";
-		int tmpStatus = 0, seasonCount = 0, unwatched = 0, unwatchedAired = 0;
-		Date nextAir = null;
-		String query = "SELECT serieName, posterThumb, status, passiveStatus, seasonCount, unwatchedAired, unwatched, nextEpisode, nextAir FROM series WHERE id = '" + serieId + "'";
-		Cursor c = db.Query(query);
-		c.moveToFirst();
-		if (c != null && c.isFirst()) {
-			name = c.getString(c.getColumnIndex("serieName"));
-			tmpPoster = c.getString(c.getColumnIndex("posterThumb"));
-			showStatus = c.getString(c.getColumnIndex("status"));
-			tmpStatus = c.getInt(c.getColumnIndex("passiveStatus"));
-			seasonCount = c.getInt(c.getColumnIndex("seasonCount"));
-			unwatchedAired = c.getInt(c.getColumnIndex("unwatchedAired"));
-			unwatched = c.getInt(c.getColumnIndex("unwatched"));
-			tmpNextEpisode = c.getString(c.getColumnIndex("nextEpisode"));
-			tmpNextAir = c.getString(c.getColumnIndex("nextAir"));
-		}
-		c.close();
-		if (!tmpNextEpisode.equals("-1"))
-			nextEpisode = tmpNextEpisode.replace("[on]", on);
-		if (!tmpNextAir.isEmpty()) {
-			try {
-				nextAir = SQLiteStore.dateFormat.parse(tmpNextAir);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-		}
-		boolean status = (tmpStatus == 1);
-		TVShowItem tvsi = new TVShowItem(serieId, tmpPoster, null, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, showStatus);
-		return tvsi;
-	}
 
 	private void getSeries() {
 		if (series != null) series.clear();
@@ -954,7 +921,7 @@ public class DroidShows extends ListActivity
 			List<String> serieIds = db.getSeries(showArchive);
 			for (int i = 0; i < serieIds.size(); i++) {
 				String serieId = serieIds.get(i);
-				TVShowItem tvsi = createTVShowItem(serieId);
+				TVShowItem tvsi = db.createTVShowItem(serieId);
 				series.add(tvsi);
 			}
 			listView.post(updateListView);
@@ -1234,7 +1201,7 @@ public class DroidShows extends ListActivity
 			}
 			if (holder.sne != null) {
 				if (nunwatched > 0) {
-					holder.sne.setText(getString(R.string.messages_next_episode) +" "+ serie.getNextEpisode());
+					holder.sne.setText(getString(R.string.messages_next_episode) +" "+ serie.getNextEpisode().replace("[on]", on));
 					holder.sne.setVisibility(View.VISIBLE);
 					holder.sne.setEnabled(serie.getNextAir() != null && serie.getNextAir().compareTo(Calendar.getInstance().getTime()) <= 0);
 				} else {

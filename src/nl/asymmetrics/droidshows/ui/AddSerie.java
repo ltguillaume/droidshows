@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import nl.asymmetrics.droidshows.DroidShows;
@@ -302,7 +301,7 @@ public class AddSerie extends ListActivity
 						Log.d(SQLiteStore.TAG, "Adding TV show: creating the TV show item");
 						int nseasons = db.getSeasonCount(sToAdd.getId());
 						SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(sToAdd.getId(), -1);
-						String nextEpisodeStr = db.getNextEpisodeString(nextEpisode).replace("[on]", on);
+						String nextEpisodeStr = db.getNextEpisodeString(nextEpisode);
 						int unwatchedAired = db.getEPUnwatchedAired(sToAdd.getId());
 						int unwatched = db.getEPUnwatched(sToAdd.getId());
 						Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());

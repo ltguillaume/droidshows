@@ -16,7 +16,7 @@ public class Update
 	}
 	
 	public boolean updateDroidShows() {
-		SQLiteStore db = SQLiteStore.getInstance(context);
+		db = SQLiteStore.getInstance(context);
 		db.execQuery("CREATE TABLE IF NOT EXISTS droidseries (version VARCHAR)");
 		String version = getVersion();
 		boolean done = false;

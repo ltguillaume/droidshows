@@ -2,17 +2,16 @@ package nl.asymmetrics.droidshows.ui;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.utils.SQLiteStore;
+import nl.asymmetrics.droidshows.utils.SQLiteStore.EpisodeRow;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 
 import java.text.ParseException;
 
@@ -36,7 +35,7 @@ public class SerieEpisodes extends ListActivity {
 	private String serieName;
 	private String serieId;
 	private int seasonNumber;
-	private List<String> episodes = null;
+	private List<EpisodeRow> episodes = null;
 	private ListView listView;
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
@@ -56,7 +55,7 @@ public class SerieEpisodes extends ListActivity {
 		serieName = db.getSerieName(serieId);
 		seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
 		setTitle(serieName +" - "+ (seasonNumber == 0 ? getString(R.string.messages_specials) : getString(R.string.messages_season) +" "+ seasonNumber));
-		episodes = db.getEpisodes(serieId, seasonNumber);
+		episodes = db.getEpisodeRows(serieId, seasonNumber);
 		episodesAdapter = new EpisodesAdapter(this, R.layout.row_serie_episodes, episodes);
 		setListAdapter(episodesAdapter);
 		listView = getListView();
@@ -77,10 +76,10 @@ public class SerieEpisodes extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case VIEWEP_CONTEXT:
-			startViewEpisode(episodes.get(info.position));
+			startViewEpisode(episodes.get(info.position).id);
 			return true;
 		case DELEP_CONTEXT:
-			db.deleteEpisode(serieId, episodes.get(info.position));
+			db.deleteEpisode(serieId, episodes.get(info.position).id);
 			episodes.remove(info.position);
 			episodesAdapter.notifyDataSetChanged();
 			return true;
@@ -91,31 +90,30 @@ public class SerieEpisodes extends ListActivity {
 
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		if (swipeDetect.value == 0) {
-			if (DroidShows.fullLineCheckOption) {
-				try {
-					check(v);
-					CheckBox c = (CheckBox) v.findViewById(R.id.seen);
-					c.setChecked(!c.isChecked());
-				} catch (Exception e) {
-					Log.e(SQLiteStore.TAG, "Could not set episode seen state: "+ e.getMessage());
-				}
-			} else {
-				try {
-					startViewEpisode(episodes.get(position));
-				} catch (Exception e) {
-					Log.e(SQLiteStore.TAG, e.getMessage());
-				}
+		if (swipeDetect.value != 0) return;
+		if (DroidShows.fullLineCheckOption) {
+			try {
+				check(v);
+				CheckBox c = (CheckBox) v.findViewById(R.id.seen);
+				c.setChecked(!c.isChecked());
+			} catch (Exception e) {
+				Log.e(SQLiteStore.TAG, "Could not set episode seen state: "+ e.getMessage());
+			}
+		} else {
+			try {
+				startViewEpisode(episodes.get(position).id);
+			} catch (Exception e) {
+				Log.e(SQLiteStore.TAG, e.getMessage());
 			}
 		}
 	}
 
-	public class EpisodesAdapter extends ArrayAdapter<String> {
+	public class EpisodesAdapter extends ArrayAdapter<EpisodeRow> {
 
-		private List<String> items;
+		private List<EpisodeRow> items;
 		private LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		public EpisodesAdapter(Context context, int textViewResourceId, List<String> episodes) {
+		public EpisodesAdapter(Context context, int textViewResourceId, List<EpisodeRow> episodes) {
 			super(context, textViewResourceId, episodes);
 			this.items = episodes;
 		}
@@ -137,54 +135,32 @@ public class SerieEpisodes extends ListActivity {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
-			String episodeId = items.get(position);
-			String query = "SELECT episodeName, episodeNumber, seen, firstAired FROM episodes WHERE id='"
-					+ episodeId + "' AND serieId='" + serieId + "'";
-			Cursor c = db.Query(query);
-			c.moveToFirst();
+			EpisodeRow ep = items.get(position);
 
-			if (c != null) {
-				int enameCol = c.getColumnIndex("episodeName");
-				int enumberCol = c.getColumnIndex("episodeNumber");
-				int seenCol = c.getColumnIndex("seen");
-				int airedCol = c.getColumnIndex("firstAired");
-
-				String aired = c.getString(airedCol);
-				Date airedDate = null;
-				if (!aired.isEmpty() && !aired.equals("null")) {
-						try { 
-							airedDate = SQLiteStore.dateFormat.parse(aired);
-							aired = SimpleDateFormat.getDateInstance().format(airedDate);
-						} catch (ParseException e) { e.printStackTrace(); }
-				} else
-					aired = "";
-
-				if (holder.name != null) {
-					String tmpName = (getString(R.string.messages_ep).isEmpty() ? "" : 
-						getString(R.string.messages_ep) +" ") + c.getInt(enumberCol) +". "+ c.getString(enameCol);
-					holder.name.setText(tmpName);
-				}
-				
-				if (holder.aired != null) {
-					if (!aired.isEmpty())
-						holder.aired.setText(getString(R.string.messages_aired) + " "+ aired);
-					else
-						holder.aired.setText("");
-					holder.aired.setEnabled(airedDate != null &&
-						airedDate.compareTo(Calendar.getInstance().getTime()) <= 0);
-				}
-				
-				int seen = c.getInt(seenCol);
-				holder.seen.setChecked(seen > 0);
-				if (seen > 1)	// If seen value is a date
-					try {
-						holder.seen.setTextColor(holder.aired.getTextColors().getDefaultColor());
-						holder.seen.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
-					} catch (ParseException e) { Log.e(SQLiteStore.TAG, e.getMessage()); }
-				else
-					holder.seen.setText("");
+			if (holder.name != null) {
+				String name = (getString(R.string.messages_ep).isEmpty() ? "" : 
+					getString(R.string.messages_ep) +" ") + ep.name;
+				holder.name.setText(name);
 			}
-			c.close();
+			
+			if (holder.aired != null) {
+				if (!ep.aired.isEmpty())
+					holder.aired.setText(getString(R.string.messages_aired) + " "+ ep.aired);
+				else
+					holder.aired.setText("");
+				holder.aired.setEnabled(ep.airedDate != null &&
+						ep.airedDate.compareTo(Calendar.getInstance().getTime()) <= 0);
+			}
+			
+			holder.seen.setChecked(ep.seen > 0);
+			if (ep.seen > 1)	// If seen value is a date
+				try {
+					holder.seen.setTextColor(holder.aired.getTextColors().getDefaultColor());
+					holder.seen.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(ep.seen +"")));
+				} catch (ParseException e) { Log.e(SQLiteStore.TAG, e.getMessage()); }
+			else
+				holder.seen.setText("");
+
 			return convertView;
 		}
 	}
@@ -198,7 +174,7 @@ public class SerieEpisodes extends ListActivity {
 	public void check(View v) {
 		int position = getListView().getPositionForView(v);
 		try {
-			db.updateUnwatchedEpisode(serieId, episodes.get(position));
+			db.updateUnwatchedEpisode(serieId, episodes.get(position).id);
 			CheckBox c = (CheckBox) v.findViewById(R.id.seen);
 			if (c.isChecked()) {
 				c.setTextColor(getResources().getColor(android.R.color.white));
