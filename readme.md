@@ -70,6 +70,7 @@ __Other__:
 \+ Swipe left-to-right acts as back button  
 \+ Animations that help understand the app's structure  
 \+ Backup/restore database  
+\+ Automatically create backups (max. once a day)
 \* Date/time format according to locale  
 \* Big performance improvement for Overview activity (values are kept up-to-date in series table)  
 \* Some progress dialogs cancelable  
@@ -82,4 +83,4 @@ __Other__:
 ©2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPLv3  
 Modified by [Mikael Berthe](http://gitorious.org/droidseries/mckaels-droidseries)  
 ©2014-2016 Guillaume under GPLv3 ([previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume))  
-New icon file is a mix of work by [Thrasos Varnava](http://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)
+New icon is a mix of work by [Thrasos Varnava](http://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)

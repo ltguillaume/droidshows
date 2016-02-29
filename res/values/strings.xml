@@ -24,12 +24,13 @@
 <string name="menu_show_current">Show current</string>
 <string name="menu_exclude_seen">Exclude seen</string>
 <string name="menu_include_seen">Include seen</string>
-<string name="menu_context_view_serie_details">Show\'s details</string>
-<string name="menu_context_view_wiki">Wikipedia details</string>
-<string name="menu_context_view_imdb">IMDb details</string>
-<string name="menu_context_view_ep_imdb">Next episode on IMDb</string>
+<string name="menu_context_view_serie_details">Show details</string>
+<string name="menu_context_view_wiki">Show on Wikipedia</string>
+<string name="menu_context_view_imdb">Show on IMDb</string>
+<string name="menu_context_view_ep_imdb">Episode on IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>
 <string name="dialog_OK">OK</string>
+<string name="dialog_auto_backup">Automatically perform daily backups</string>
 <string name="dialog_backup">Backup</string>
 <string name="dialog_backup_done">Database backup completed</string>
 <string name="dialog_backup_failed">Unable to perform backup!</string>

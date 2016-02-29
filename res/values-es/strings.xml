@@ -30,6 +30,7 @@
 <string name="menu_context_view_ep_imdb">Próximo episodio en IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Marcar el siguiente episodio como visto</string>
 <string name="dialog_OK">OK</string>
+<string name="dialog_auto_backup">Copia de seguridad diaria automática</string>
 <string name="dialog_backup">Copia de seguridad</string>
 <string name="dialog_backup_done">Completada la copia de seguridad de la base de datos</string>
 <string name="dialog_backup_failed">¡No se ha podido hacer la copia de seguridad!</string>

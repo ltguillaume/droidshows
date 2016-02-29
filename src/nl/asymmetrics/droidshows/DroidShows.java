@@ -73,22 +73,22 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 public class DroidShows extends ListActivity
 {
 	/* Menus */
-	private static final int UNDO_MENU_ITEM = Menu.FIRST;
+	private static final int TOGGLE_ARCHIVE_MENU_ITEM = Menu.FIRST;
+	private static final int TOGGLE_EXCLUDE_SEEN_MENU_ITEM = TOGGLE_ARCHIVE_MENU_ITEM + 1;
+	private static final int SORT_MENU_ITEM = TOGGLE_EXCLUDE_SEEN_MENU_ITEM + 1;
+	private static final int SEARCH_MENU_ITEM = SORT_MENU_ITEM + 1;
+	private static final int UNDO_MENU_ITEM = SEARCH_MENU_ITEM + 1;
 	private static final int ADD_SERIE_MENU_ITEM = UNDO_MENU_ITEM + 1;
-	private static final int SEARCH_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
-	private static final int TOGGLE_ARCHIVE_MENU_ITEM = SEARCH_MENU_ITEM + 1;
-	private static final int SORT_MENU_ITEM = TOGGLE_ARCHIVE_MENU_ITEM + 1;
-	private static final int UPDATEALL_MENU_ITEM = SORT_MENU_ITEM + 1;
+	private static final int UPDATEALL_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
 	private static final int OPTIONS_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
 	private static final int EXIT_MENU_ITEM = OPTIONS_MENU_ITEM + 1;
-	private static final int TOGGLE_EXCLUDE_SEEN_MENU_ITEM = EXIT_MENU_ITEM + 1;
 	/* Context Menus */
-	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = Menu.FIRST;
-	private static final int VIEW_SERIEDETAILS_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
+	private static final int VIEW_SERIEDETAILS_CONTEXT = Menu.FIRST;
 	private static final int VIEW_WIKI_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
 	private static final int VIEW_IMDB_CONTEXT = VIEW_WIKI_CONTEXT + 1;
 	private static final int VIEW_EP_IMDB_CONTEXT = VIEW_IMDB_CONTEXT + 1;
-	private static final int UPDATE_CONTEXT = VIEW_EP_IMDB_CONTEXT + 1;
+	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = VIEW_EP_IMDB_CONTEXT + 1;
+	private static final int UPDATE_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
 	private static final int TOGGLE_ARCHIVED_CONTEXT = UPDATE_CONTEXT + 1;
 	private static final int DELETE_CONTEXT = TOGGLE_ARCHIVED_CONTEXT + 1;
 	public static String on;
@@ -104,6 +104,8 @@ public class DroidShows extends ListActivity
 	private Update updateDS;
 	private static final String PREF_NAME = "DroidShowsPref";
 	private SharedPreferences sharedPrefs;
+	private static final String AUTO_BACKUP_PREF_NAME = "auto_backup";
+	private static boolean autoBackupOption;
 	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
 	private static final int SORT_BY_LAST_UNSEEN = 1;
@@ -159,6 +161,7 @@ public class DroidShows extends ListActivity
 
 		// Preferences
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
+		autoBackupOption = sharedPrefs.getBoolean(AUTO_BACKUP_PREF_NAME, false);
 		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
 		excludeSeen = sharedPrefs.getBoolean(EXCLUDE_SEEN_PREF_NAME, false);
 		lastSeasonOption = sharedPrefs.getInt(LAST_SEASON_PREF_NAME, UPDATE_ALL_SEASONS);
@@ -248,13 +251,13 @@ public class DroidShows extends ListActivity
 	/* Options Menu */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, SORT_MENU_ITEM, 0, "");
-		menu.add(0, TOGGLE_EXCLUDE_SEEN_MENU_ITEM, 0, "").setIcon(android.R.drawable.ic_menu_view);
 		menu.add(0, TOGGLE_ARCHIVE_MENU_ITEM, 0, "");
-		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
-		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update)).setIcon(android.R.drawable.ic_menu_upload);
+		menu.add(0, TOGGLE_EXCLUDE_SEEN_MENU_ITEM, 0, "").setIcon(android.R.drawable.ic_menu_view);
+		menu.add(0, SORT_MENU_ITEM, 0, "");
 		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
+		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
 		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
+		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update)).setIcon(android.R.drawable.ic_menu_upload);
 		menu.add(0, OPTIONS_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
 		menu.add(0, EXIT_MENU_ITEM, 0, getString(R.string.menu_exit)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		return super.onCreateOptionsMenu(menu);
@@ -262,20 +265,6 @@ public class DroidShows extends ListActivity
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (undo.size() > 0) {
-			menu.findItem(UNDO_MENU_ITEM).setVisible(true);
-		} else {
-			menu.findItem(UNDO_MENU_ITEM).setVisible(false);
-		}
-		if (sortOption == SORT_BY_LAST_UNSEEN) {
-			menu.findItem(SORT_MENU_ITEM)
-				.setIcon(android.R.drawable.ic_menu_sort_alphabetically)
-				.setTitle(R.string.menu_sort_az);
-		} else {
-			menu.findItem(SORT_MENU_ITEM)
-				.setIcon(android.R.drawable.ic_menu_sort_by_size)
-				.setTitle(R.string.menu_sort_last_unseen);
-		}
 		if (showArchive == 1) {
 			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
 				.setIcon(android.R.drawable.ic_menu_today)
@@ -291,6 +280,20 @@ public class DroidShows extends ListActivity
 		} else {
 			menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
 				.setTitle(R.string.menu_exclude_seen);
+		}
+		if (sortOption == SORT_BY_LAST_UNSEEN) {
+			menu.findItem(SORT_MENU_ITEM)
+				.setIcon(android.R.drawable.ic_menu_sort_alphabetically)
+				.setTitle(R.string.menu_sort_az);
+		} else {
+			menu.findItem(SORT_MENU_ITEM)
+				.setIcon(android.R.drawable.ic_menu_sort_by_size)
+				.setTitle(R.string.menu_sort_last_unseen);
+		}
+		if (undo.size() > 0) {
+			menu.findItem(UNDO_MENU_ITEM).setVisible(true);
+		} else {
+			menu.findItem(UNDO_MENU_ITEM).setVisible(false);
 		}
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -324,7 +327,7 @@ public class DroidShows extends ListActivity
 				break;
 			case EXIT_MENU_ITEM :
 				onPause();	// save options
-				asyncInfo.cancel(true);
+				backup(true);
 				db.close();
 				this.finish();
 				System.gc();
@@ -374,6 +377,8 @@ public class DroidShows extends ListActivity
 		}
 		TextView changeLangB = (TextView) about.findViewById(R.id.change_language);
 		changeLangB.setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
+		CheckBox autoBackupCheckbox = (CheckBox) about.findViewById(R.id.auto_backup);
+		autoBackupCheckbox.setChecked(autoBackupOption);
 		CheckBox lastSeasonCheckbox = (CheckBox) about.findViewById(R.id.last_season);
 		lastSeasonCheckbox.setChecked(lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 		CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials);
@@ -387,7 +392,9 @@ public class DroidShows extends ListActivity
 			.setTitle(R.string.layout_app_name).setIcon(R.drawable.icon)
 			.setPositiveButton(getString(R.string.dialog_backup), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					backup();
+					backup(false);
+					asyncInfo = new AsyncInfo();
+					asyncInfo.execute();
 				}
 			})
 			.setNegativeButton(getString(R.string.dialog_restore), new DialogInterface.OnClickListener() {
@@ -410,6 +417,9 @@ public class DroidShows extends ListActivity
 	
 	public void dialogOptions(View v) {
 		switch(v.getId()) {
+			case R.id.auto_backup:
+				autoBackupOption ^= true;
+				break;
 			case R.id.last_season:
 				lastSeasonOption ^= 1;
 				break;
@@ -438,32 +448,44 @@ public class DroidShows extends ListActivity
 		}
 	}
 	
-	private void backup() {
-		int toastTxt = R.string.dialog_backup_done;
+	private void backup(boolean auto) {
+		File destination = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db");
+		if (auto && (!autoBackupOption || new SimpleDateFormat("yyyy-MM-dd")
+			.format(destination.lastModified()).equals(lastStatsUpdate)))
+			return;
 		File source = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
-		File destination = new File(Environment.getExternalStorageDirectory(), "DroidShows.db");
 		if (destination.exists()) {
-			try {
-				copy(destination, new File(Environment.getExternalStorageDirectory(), "DroidShows.db.previous"));
-			} catch (IOException e) {
-				e.printStackTrace();
+			File previous0 = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db0");
+			if (previous0.exists()) {
+				File previous1 = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db1");
+				if (previous1.exists())
+					previous1.delete();
+				previous0.renameTo(previous1);
 			}
+			destination.renameTo(previous0);
 		}
+		File folder = new File(Environment.getExternalStorageDirectory() +"/DroidShows");
+		if (!folder.isDirectory())
+			folder.mkdir();
+		int toastTxt = R.string.dialog_backup_done;
 		try {
 			copy(source, destination);
 		} catch (IOException e) {
 			toastTxt = R.string.dialog_backup_failed;
 			e.printStackTrace();
 		}
-		Toast.makeText(getApplicationContext(), toastTxt, Toast.LENGTH_LONG).show();
+		if (!auto || toastTxt == R.string.dialog_backup_failed)
+			Toast.makeText(getApplicationContext(), toastTxt, Toast.LENGTH_LONG).show();
 	}
 	
 	private void restore() {
 		int toastTxt = R.string.dialog_restore_done;
-		File source = new File(Environment.getExternalStorageDirectory(), "DroidShows.db");
+		File source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db");
+		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db0");
+		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db1");
 		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory(), "droidseries.db");
 		if (source.exists()) {
-			File destination = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
+			File destination = new File(getApplicationInfo().dataDir +"/databases", "DroidShows.db");
 			try {
 				copy(source, destination);
 				updateDS.updateDroidShows();
@@ -471,7 +493,7 @@ public class DroidShows extends ListActivity
 				if (thumbs != null)
 					for (File thumb : thumbs)
 						thumb.delete();
-				for (File file : new File(getApplicationInfo().dataDir +"/databases/").listFiles())
+				for (File file : new File(getApplicationInfo().dataDir +"/databases").listFiles())
 				    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
 				if (showArchive == 1)
 					setTitle(getString(R.string.layout_app_name));
@@ -510,19 +532,17 @@ public class DroidShows extends ListActivity
 				}
 			}
 			db.openDataBase();
-			asyncInfo = new AsyncInfo();
-			asyncInfo.execute();
 		}
 	}
 
 	/* context menu */
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, 0, getString(R.string.menu_context_mark_next_episode_as_seen));
 		menu.add(0, VIEW_SERIEDETAILS_CONTEXT, 0, getString(R.string.menu_context_view_serie_details));
 		menu.add(0, VIEW_WIKI_CONTEXT, 0, getString(R.string.menu_context_view_wiki));
 		menu.add(0, VIEW_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_imdb));
 		menu.add(0, VIEW_EP_IMDB_CONTEXT, 0, getString(R.string.menu_context_view_ep_imdb));
+		menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, 0, getString(R.string.menu_context_mark_next_episode_as_seen));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
 		menu.add(0, TOGGLE_ARCHIVED_CONTEXT, 0, getString(R.string.menu_archive));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
@@ -988,6 +1008,7 @@ public class DroidShows extends ListActivity
 	public void onPause() {
 		super.onPause();
 		SharedPreferences.Editor ed = sharedPrefs.edit();
+		ed.putBoolean(AUTO_BACKUP_PREF_NAME, autoBackupOption);
 		ed.putInt(SORT_PREF_NAME, sortOption);
 		ed.putBoolean(EXCLUDE_SEEN_PREF_NAME, excludeSeen);
 		ed.putInt(LAST_SEASON_PREF_NAME, lastSeasonOption);
@@ -999,6 +1020,13 @@ public class DroidShows extends ListActivity
 		ed.commit();
 	}
 	
+	@Override
+	protected void onDestroy() {
+		if (autoBackupOption)
+			backup(true);
+		super.onDestroy();
+	}
+
 	@Override
 	public void onRestart() {
 		super.onRestart();
@@ -1020,30 +1048,34 @@ public class DroidShows extends ListActivity
 	private class AsyncInfo extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
-			String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
-			if (!lastStatsUpdate.equals(newToday)) {
-				db.updateToday(newToday);
+			try {
+				String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
+				if (!lastStatsUpdate.equals(newToday)) {
+					db.updateToday(newToday);
 //				Log.d(SQLiteStore.TAG, "AsyncInfo | Today = "+ newToday);
-				for (int i = 0; i < series.size(); i++) {
-					TVShowItem serie = series.get(i);
-					if (isCancelled()) return null;
-					String serieId = serie.getSerieId();
-					int unwatched = db.getEPUnwatched(serieId);
-					int unwatchedAired = db.getEPUnwatchedAired(serieId);
-					if (unwatched != serie.getUnwatched() || unwatchedAired != serie.getUnwatchedAired()) {
+					for (int i = 0; i < series.size(); i++) {
+						TVShowItem serie = series.get(i);
 						if (isCancelled()) return null;
-						serie.setUnwatched(unwatched);
-						serie.setUnwatchedAired(unwatchedAired);
-						runOnUiThread(new Runnable() {
-							public void run() {seriesAdapter.notifyDataSetChanged();}
-						});
-						if (isCancelled()) return null;
-						db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +" WHERE id="+ serieId);
+						String serieId = serie.getSerieId();
+						int unwatched = db.getEPUnwatched(serieId);
+						int unwatchedAired = db.getEPUnwatchedAired(serieId);
+						if (unwatched != serie.getUnwatched() || unwatchedAired != serie.getUnwatchedAired()) {
+							if (isCancelled()) return null;
+							serie.setUnwatched(unwatched);
+							serie.setUnwatchedAired(unwatchedAired);
+							runOnUiThread(new Runnable() {
+								public void run() {seriesAdapter.notifyDataSetChanged();}
+							});
+							if (isCancelled()) return null;
+							db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +" WHERE id="+ serieId);
+						}
 					}
-				}
-				listView.post(updateListView);
-				lastStatsUpdate = newToday;
+					listView.post(updateListView);
+					lastStatsUpdate = newToday;
 //				Log.d(SQLiteStore.TAG, "Updated show stats on "+ newAsync);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 			return null;
 		}

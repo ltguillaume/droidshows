@@ -30,6 +30,7 @@
 <string name="menu_context_view_ep_imdb">Следующая серия на IMDb</string>
 <string name="menu_context_mark_next_episode_as_seen">Отметить следующую серию просмотренной</string>
 <string name="dialog_OK">OK</string>
+<string name="dialog_auto_backup">автоматическое ежедневное резервное копирование</string>
 <string name="dialog_backup">Резервирование</string>
 <string name="dialog_backup_done">Резервная копия создана</string>
 <string name="dialog_backup_failed">Невозможно создать резервную копию!</string>

@@ -152,19 +152,23 @@ public class SerieSeasons extends ListActivity
 	private class AsyncInfo extends AsyncTask<Integer, Void, Void> {
 		@Override
 		protected Void doInBackground(Integer... params) {
-			int i = params[0];
-			String serieId = seasons.get(i).getSerieId();
-			int seasonNumber = seasons.get(i).getSNumber();
-			int unwatchedAired = db.getSeasonEPUnwatchedAired(serieId, seasonNumber);
-			int unwatched = db.getSeasonEPUnwatched(serieId, seasonNumber);
-			seasons.get(i).setUnwatchedAired(unwatchedAired);
-			seasons.get(i).setUnwatched(unwatched);
-			if (unwatched > 0) {
-				SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(serieId, seasonNumber);
-				seasons.get(i).setNextAir(nextEpisode.firstAiredDate);
-				seasons.get(i).setNextEpisode(db.getNextEpisodeString(nextEpisode));
+			try {
+				int i = params[0];
+				String serieId = seasons.get(i).getSerieId();
+				int seasonNumber = seasons.get(i).getSNumber();
+				int unwatchedAired = db.getSeasonEPUnwatchedAired(serieId, seasonNumber);
+				int unwatched = db.getSeasonEPUnwatched(serieId, seasonNumber);
+				seasons.get(i).setUnwatchedAired(unwatchedAired);
+				seasons.get(i).setUnwatched(unwatched);
+				if (unwatched > 0) {
+					SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(serieId, seasonNumber);
+					seasons.get(i).setNextAir(nextEpisode.firstAiredDate);
+					seasons.get(i).setNextEpisode(db.getNextEpisodeString(nextEpisode));
+				}
+				listView.post(new Runnable() { public void run() { seasonsAdapter.notifyDataSetChanged(); }});
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			listView.post(new Runnable() { public void run() { seasonsAdapter.notifyDataSetChanged(); }});
 			return null;
 		}
 	}
