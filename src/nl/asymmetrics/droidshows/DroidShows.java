@@ -449,11 +449,13 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void backup(boolean auto) {
-		File destination = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db");
-		if (auto && (!autoBackupOption || new SimpleDateFormat("yyyy-MM-dd")
-			.format(destination.lastModified()).equals(lastStatsUpdate)))
-			return;
 		File source = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
+		File destination = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db");
+		if (auto && (!autoBackupOption || 
+				new SimpleDateFormat("yyyy-MM-dd")
+					.format(destination.lastModified()).equals(lastStatsUpdate) ||
+				source.lastModified() == destination.lastModified()))
+			return;
 		if (destination.exists()) {
 			File previous0 = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db0");
 			if (previous0.exists()) {
