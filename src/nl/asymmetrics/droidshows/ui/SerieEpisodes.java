@@ -94,8 +94,6 @@ public class SerieEpisodes extends ListActivity {
 		if (DroidShows.fullLineCheckOption) {
 			try {
 				check(v);
-				CheckBox c = (CheckBox) v.findViewById(R.id.seen);
-				c.setChecked(!c.isChecked());
 			} catch (Exception e) {
 				Log.e(SQLiteStore.TAG, "Could not set episode seen state: "+ e.getMessage());
 			}
@@ -183,6 +181,7 @@ public class SerieEpisodes extends ListActivity {
 				episodes.get(position).seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
 			} else {
 				c.setText("");
+				episodes.get(position).seen = 0;
 			}
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, e.getMessage());
