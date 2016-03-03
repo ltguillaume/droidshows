@@ -179,6 +179,8 @@ public class SerieEpisodes extends ListActivity {
 			if (c.isChecked()) {
 				c.setTextColor(getResources().getColor(android.R.color.white));
 				c.setText(SimpleDateFormat.getDateInstance().format(Calendar.getInstance().getTime()));
+				Calendar cal = Calendar.getInstance();
+				episodes.get(position).seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
 			} else {
 				c.setText("");
 			}
