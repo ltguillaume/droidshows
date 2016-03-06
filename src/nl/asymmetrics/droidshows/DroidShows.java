@@ -634,7 +634,8 @@ public class DroidShows extends ListActivity
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 		oldListPosition = position;
-		if (swipeDetect.value == 1 && seriesAdapter.getItem(position).getUnwatchedAired() > 0) {
+		if (swipeDetect.value == 1 && seriesAdapter.getItem(position).getNextAir() != null &&
+				!seriesAdapter.getItem(position).getNextAir().after(Calendar.getInstance().getTime())) {
 			vib.vibrate(150);
 			markNextEpSeen(position);
 		} else if (swipeDetect.value == 0) {
