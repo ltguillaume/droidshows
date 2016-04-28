@@ -10,7 +10,8 @@ __In Shows Overview__:
 * Swipe right-to-left to mark next as seen  
 __In Show Details__:
 * Tap poster for full-screen view
-* Click full-screen poster image for fan art  
+* Click full-screen poster image for fan art 
+* Long-press full-screen poster to open in external app  
 __In Show/Episode Details__:
 * Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage
 

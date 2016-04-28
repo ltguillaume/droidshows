@@ -22,7 +22,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnLongClickListener;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebView.HitTestResult;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -246,6 +249,20 @@ public class ViewSerie extends Activity
 			posterView.setInitialScale(1);
 			posterView.setOverScrollMode(View.OVER_SCROLL_NEVER);
 			posterView.setWebViewClient(new WebViewHandler());
+			posterView.setLongClickable(true);
+			posterView.setOnLongClickListener(new OnLongClickListener() {
+				public boolean onLongClick(View arg0) {
+					HitTestResult hit = posterView.getHitTestResult();
+					if (hit.getType() == HitTestResult.IMAGE_TYPE ||
+				            hit.getType() == HitTestResult.SRC_IMAGE_ANCHOR_TYPE) {
+						Intent extViewIntent = new Intent();
+						extViewIntent.setAction(Intent.ACTION_VIEW);
+						extViewIntent.setDataAndType(Uri.parse(hit.getExtra()), "image/*");
+						startActivity(extViewIntent);
+					}
+					return true;
+				}
+			});
 			posterLoaded = true;
 		}
 		posterView.setVisibility(View.VISIBLE);
@@ -262,6 +279,12 @@ public class ViewSerie extends Activity
 			v.loadData(getURL(img, a), "text/html", "UTF-8");
 			return true;
 		}
+
+		/*@Override
+		public void onPageFinished(WebView view, String url) {
+		    super.onPageFinished(view, url);
+		    view.clearCache(true);
+		}*/
 	}
 	
 	private String getURL(String img, String a) {

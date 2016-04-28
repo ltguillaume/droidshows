@@ -129,7 +129,7 @@ public class DroidShows extends ListActivity
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
 	public static Thread updateAllShowsTh = null;
-	private String toastMessage;
+	private String dialogMsg;
 	public static SQLiteStore db;
 	public static List<TVShowItem> series = null;
 	private static List<String[]> undo = new ArrayList<String[]>();
@@ -599,9 +599,9 @@ public class DroidShows extends ListActivity
 						series.remove(series.indexOf(serie));
 						listView.post(updateListView);
 						Looper.prepare();	// Threads don't have a message loop
-						Toast.makeText(getApplicationContext(), sname +" "+ getString(R.string.messages_deleted), Toast.LENGTH_LONG).show();
-						asyncInfo = new AsyncInfo();
-						asyncInfo.execute();
+							Toast.makeText(getApplicationContext(), sname +" "+ getString(R.string.messages_deleted), Toast.LENGTH_LONG).show();
+							asyncInfo = new AsyncInfo();
+							asyncInfo.execute();
 						Looper.loop();
 					}
 				};
@@ -768,22 +768,21 @@ public class DroidShows extends ListActivity
 			Runnable updateserierun = new Runnable() {
 				public void run() {
 					theTVDB = new TheTVDB("8AC675886350B3C3");
+					String toastMsg = getString(R.string.messages_thetvdb_con_error);
 					if (theTVDB.getMirror() != null) {
 						Serie sToUpdate = theTVDB.getSerie(serieId, langCode);
-						toastMessage = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
-						runOnUiThread(changeMessage);
-						db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
-						updatePosterThumb(serieId, sToUpdate);
-					} else {
-						Looper.prepare();
-						Toast.makeText(getApplicationContext(), "Could not connect to TheTVDb", Toast.LENGTH_LONG).show();
-						Looper.loop();
-						return;
+						if (sToUpdate != null) {
+							dialogMsg = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
+							runOnUiThread(changeMessage);
+							db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+							updatePosterThumb(serieId, sToUpdate);
+							toastMsg = serieName +" "+ getString(R.string.menu_context_updated);
+						}
 					}
 					m_ProgressDialog.dismiss();
 					Looper.prepare();
-					Toast.makeText(getApplicationContext(), serieName +" "+ getString(R.string.menu_context_updated), Toast.LENGTH_SHORT).show();
-					listView.post(updateShowView(serieId));
+						Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
+						listView.post(updateShowView(serieId));
 					Looper.loop();
 					theTVDB = null;
 				}
@@ -861,7 +860,7 @@ public class DroidShows extends ListActivity
 
 	private Runnable changeMessage = new Runnable() {
 		public void run() {
-			m_ProgressDialog.setMessage(toastMessage);
+			m_ProgressDialog.setMessage(dialogMsg);
 		}
 	};
 	
@@ -877,7 +876,7 @@ public class DroidShows extends ListActivity
 		} else {
 			final Runnable updateMessage = new Runnable() {
 				public void run() {
-					updateAllSeriesPD.setMessage(toastMessage);
+					updateAllSeriesPD.setMessage(dialogMsg);
 				}
 			};
 			final Runnable updateallseries = new Runnable() {
@@ -885,7 +884,7 @@ public class DroidShows extends ListActivity
 					theTVDB = new TheTVDB("8AC675886350B3C3");
 					for (int i = 0; i < series.size(); i++) {
 						Log.d(SQLiteStore.TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName() +" ["+ i +"/"+ (series.size()-1) +"]");
-						toastMessage = series.get(i).getName() + "\u2026";
+						dialogMsg = series.get(i).getName() + "\u2026";
 						runOnUiThread(updateMessage);
 						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), langCode);
 						if (sToUpdate != null) {
