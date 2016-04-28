@@ -1,6 +1,8 @@
 # DroidShows<img src="/icon/icon6.png" align="right"/>
 DroidShows: a reboot of DroidSeries Offline TV Show Tracker  
-This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, quick search, separate archive/backlog list, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. Some pointers:
+This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, quick search and filters, separate archive/backlog list, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. DroidShows only needs an internet connection when updating the show info or watching full-size posters.
+
+__Some pointers__:
 * Don't forget to update all shows regularly
 * Long-press items for more options
 * Swipe left-to-right to go back  
@@ -61,7 +63,7 @@ __Add show__:
 \* Large-size posters aren't cached, to save space in /data/data/  
   
 __Update__:  
-\* Prevent double episodes  
+\* Prevent double episode entries  
   
 __Other__:  
 \+ Menu (overflow) button should show up in Android 3.0+  
