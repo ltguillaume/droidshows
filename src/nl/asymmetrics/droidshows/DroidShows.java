@@ -1051,7 +1051,7 @@ public class DroidShows extends ListActivity
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
-				String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
+				String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
 				if (!lastStatsUpdate.equals(newToday)) {
 					db.updateToday(newToday);
 //				Log.d(SQLiteStore.TAG, "AsyncInfo | Today = "+ newToday);
