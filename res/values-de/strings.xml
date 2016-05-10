@@ -60,7 +60,7 @@
 \n\nIn Serieneinzelheiten:
 \n&#187; Auf ein Poster tippen um es größer zu machen
 \n&#187; Noch mal tippen um "Fan Art" anzuzeigen
-\n&#187; Lange antippen des Große Poster um in andere Apps anzuzeigen
+\n&#187; Zum Öffnen in einer externen App, großes Poster lange drücken
 \n\nIn Serien-/Folgeneinzelheiten:
 \n&#187; Auf IMDb Bewertung drücken um zur IMDb fortzuführen</string>
 <string name="menu_archive">Archivieren</string>
@@ -90,6 +90,7 @@
 <string name="messages_context_mark_seasonseen">Alle Folgen gesehen markieren</string>
 <string name="messages_specials">Besondere Folgen</string>
 <string name="messsages_view_ep_details">Folgeinformation zeigen</string>
+<string name="messsages_edit_seen_date">Anschau-Zeitpunkt bearbeiten</string>
 <string name="messages_thetvdb_con_error">Kann nicht mit TheTVDB.com verbinden. Probieren Sie bitte noch mal.</string>
 <string name="messages_marked_seen">gesehen markiert</string>
 <string name="messages_marked_unseen">nicht gesehen markiert</string>

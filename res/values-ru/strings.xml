@@ -60,7 +60,7 @@
 \n\nВ меню сериала:
 \n&#187; Нажмите на постер, чтобы увеличить
 \n&#187; Нажмите ещё раз для просмотра "фан-арта"
-\n&#187; Длинное нахатие на большой постер для просмотра в другом приложении
+\n&#187; Долгое нажатия для просмотра в другом приложении
 \n\nВ информации о сериале/серии:
 \n&#187; Нажмите на рейтинг IMDb, чтобы открыть сайт</string>
 <string name="menu_archive">Архивировать</string>
@@ -90,6 +90,7 @@
 <string name="messages_context_mark_seasonseen">Пометить все серии просмотренными</string>
 <string name="messages_specials">Доп. видео</string>
 <string name="messsages_view_ep_details">Показать информацию о серии</string>
+<string name="messsages_edit_seen_date">Изменение даты просмотра</string>
 <string name="messages_thetvdb_con_error">Ошибка подключения к TheTVDB.com. Попробуйте снова.</string>
 <string name="messages_marked_seen">пометить просмотренным</string>
 <string name="messages_marked_unseen">пометить непросмотренным</string>

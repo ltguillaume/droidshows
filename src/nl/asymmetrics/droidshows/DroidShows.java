@@ -655,7 +655,7 @@ public class DroidShows extends ListActivity
 		String serieId = serie.getSerieId();
 		String nextEpisode = db.getNextEpisodeId(serieId, -1, true);
 		if (!nextEpisode.equals("-1")) {
-			String episodeMarked = db.updateUnwatchedEpisode(serieId, nextEpisode);
+			String episodeMarked = db.updateUnwatchedEpisode(serieId, nextEpisode, -1);
 			Toast.makeText(getApplicationContext(), serie.getName() +" "+ episodeMarked +" "+ getString(R.string.messages_marked_seen), Toast.LENGTH_SHORT).show();
 			undo.add(new String[] {serieId, nextEpisode, serie.getName()});
 			updateShowView(serie);
@@ -668,7 +668,7 @@ public class DroidShows extends ListActivity
 		String serieId = episodeInfo[0];
 		String episodeId = episodeInfo[1];
 		String serieName = episodeInfo[2];
-		String episodeMarked = db.updateUnwatchedEpisode(serieId, episodeId);
+		String episodeMarked = db.updateUnwatchedEpisode(serieId, episodeId, -1);
 		undo.remove(undo.size()-1);
 		Toast.makeText(getApplicationContext(), serieName +" "+ episodeMarked +" "+ getString(R.string.messages_marked_unseen), Toast.LENGTH_SHORT).show();
 		listView.post(updateShowView(serieId));
@@ -1051,7 +1051,7 @@ public class DroidShows extends ListActivity
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {
-				String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
+				String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
 				if (!lastStatsUpdate.equals(newToday)) {
 					db.updateToday(newToday);
 //				Log.d(SQLiteStore.TAG, "AsyncInfo | Today = "+ newToday);

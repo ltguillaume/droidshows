@@ -549,7 +549,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		updateShowStats(serieId);
 	}
 
-	public String updateUnwatchedEpisode(String serieId, String episodeId) {
+	public String updateUnwatchedEpisode(String serieId, String episodeId, int newSeen) {
 		Cursor c = null;
 		String episodeMarked = "";
 		try {
@@ -561,13 +561,17 @@ public class SQLiteStore extends SQLiteOpenHelper
 				int episode = c.getInt(2);
 				episodeMarked =  season +"x"+ (episode < 10 ? "0" : "") + episode;
 				c.close();
-				if (seen > 0)
-					seen = 0;
-				else {
-					Calendar cal = Calendar.getInstance();
-					seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
-//					Date date = new Date();
-//					seen = 10000 * (1900 + date.getYear()) + 100 * (date.getMonth() + 1) + date.getDate();
+				if (newSeen > -1) {
+					seen = newSeen;
+				} else {
+					if (seen > 0)
+						seen = 0;
+					else {
+						Calendar cal = Calendar.getInstance();
+						seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
+	//					Date date = new Date();
+	//					seen = 10000 * (1900 + date.getYear()) + 100 * (date.getMonth() + 1) + date.getDate();
+					}
 				}
 				db.execSQL("UPDATE episodes SET seen="+ seen +" WHERE serieId='"+ serieId +"' AND id='"+ episodeId +"'");
 			}

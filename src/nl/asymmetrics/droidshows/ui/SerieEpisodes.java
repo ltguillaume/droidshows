@@ -9,6 +9,7 @@ import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import nl.asymmetrics.droidshows.utils.SQLiteStore.EpisodeRow;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
+import android.app.DatePickerDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.TextView;
@@ -40,10 +42,12 @@ public class SerieEpisodes extends ListActivity {
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
 	private SQLiteStore db;
+	private DatePickerDialog dateDialog;
 
 	/* Context Menus */
 	private static final int VIEWEP_CONTEXT = Menu.FIRST;
-	private static final int DELEP_CONTEXT = Menu.FIRST + 1;
+	private static final int SEENDATE_CONTEXT = Menu.FIRST + 1;
+	private static final int DELEP_CONTEXT = SEENDATE_CONTEXT + 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +73,7 @@ public class SerieEpisodes extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, VIEWEP_CONTEXT, 0, getString(R.string.messsages_view_ep_details));
+		menu.add(0, SEENDATE_CONTEXT, 0, getString(R.string.messsages_edit_seen_date));
 		menu.add(0, DELEP_CONTEXT, 0, getString(R.string.menu_context_delete));
 	}
 
@@ -77,6 +82,28 @@ public class SerieEpisodes extends ListActivity {
 		switch (item.getItemId()) {
 		case VIEWEP_CONTEXT:
 			startViewEpisode(episodes.get(info.position).id);
+			return true;
+		case SEENDATE_CONTEXT:
+			int year = 0, month = 0, day = 0;
+			int seen = episodes.get(info.position).seen;
+			if (seen > 1) {
+				year = seen / 10000;
+				month = seen % 10000 / 100 -1;
+				day = seen % 100;
+			} else {
+				Calendar cal = Calendar.getInstance();
+				year = cal.get(Calendar.YEAR);
+				month = cal.get(Calendar.MONTH);
+				day = cal.get(Calendar.DAY_OF_MONTH);
+			}
+
+			final View epView = info.targetView;
+			dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {			
+				public void onDateSet(DatePicker view, int year, int month, int day) {
+					check(epView, 10000 * year + 100 * (month +1) + day);
+				}
+			}, year, month, day);
+			dateDialog.show();
 			return true;
 		case DELEP_CONTEXT:
 			db.deleteEpisode(serieId, episodes.get(info.position).id);
@@ -93,7 +120,7 @@ public class SerieEpisodes extends ListActivity {
 		if (swipeDetect.value != 0) return;
 		if (DroidShows.fullLineCheckOption) {
 			try {
-				check(v);
+				check(v, -1);
 			} catch (Exception e) {
 				Log.e(SQLiteStore.TAG, "Could not set episode seen state: "+ e.getMessage());
 			}
@@ -170,15 +197,24 @@ public class SerieEpisodes extends ListActivity {
 	}
 
 	public void check(View v) {
-		int position = getListView().getPositionForView(v);
+		check(v, -1);
+	}
+	
+	private void check(View v, int seen) {
+		int position = listView.getPositionForView(v);
 		try {
-			db.updateUnwatchedEpisode(serieId, episodes.get(position).id);
+			db.updateUnwatchedEpisode(serieId, episodes.get(position).id, seen);
 			CheckBox c = (CheckBox) v.findViewById(R.id.seen);
+			if (seen > -1)
+				c.setChecked(true);
 			if (c.isChecked()) {
 				c.setTextColor(getResources().getColor(android.R.color.white));
-				c.setText(SimpleDateFormat.getDateInstance().format(Calendar.getInstance().getTime()));
-				Calendar cal = Calendar.getInstance();
-				episodes.get(position).seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
+				if (seen == -1) {
+					Calendar cal = Calendar.getInstance();
+					seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
+				}
+				episodes.get(position).seen = seen;
+				c.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
 			} else {
 				c.setText("");
 				episodes.get(position).seen = 0;
