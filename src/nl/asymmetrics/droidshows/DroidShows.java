@@ -177,7 +177,7 @@ public class DroidShows extends ListActivity
 		on = getString(R.string.messages_on);
 		listView = getListView();
 		listView.setDivider(null);
-		getSeries();
+		getSeries(showArchive);
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
 		setFastScroll();
@@ -342,7 +342,7 @@ public class DroidShows extends ListActivity
 		seriesAdapter.clear();
 		lastStatsUpdate = "";
 		showArchive = (showArchive + 1) % 2;
-		getSeries();
+		getSeries(showArchive);
 		seriesAdapter.getFilter().filter(searchV.getText());
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
@@ -426,7 +426,7 @@ public class DroidShows extends ListActivity
 			case R.id.include_specials:
 				includeSpecialsOption ^= true;
 				db.updateShowStats();
-				getSeries();
+				getSeries(showArchive);
 				break;
 			case R.id.full_line_check:
 				fullLineCheckOption ^= true;
@@ -499,8 +499,7 @@ public class DroidShows extends ListActivity
 				    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
 				if (showArchive == 1)
 					setTitle(getString(R.string.layout_app_name));
-				showArchive = 2;	// Get archived and current shows
-				getSeries();
+				getSeries(2);	// Get archived and current shows
 				updateAllSeries();
 				undo.clear();
 			} catch (IOException e) {
@@ -867,7 +866,8 @@ public class DroidShows extends ListActivity
 	public void clearFilter(View v) {
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 		searchV.setText("");
-		findViewById(R.id.search).setVisibility(View.GONE);		
+		findViewById(R.id.search).setVisibility(View.GONE);
+		getSeries(showArchive);
 	}
 
 	private void updateAllSeries() {
@@ -900,9 +900,7 @@ public class DroidShows extends ListActivity
 							Log.e(SQLiteStore.TAG, "Skipped this show (no data received)");
 						}
 					}
-					if (showArchive == 2)	// If coming from restore
-						showArchive = 0;
-					getSeries();
+					getSeries(showArchive);
 					updateAllSeriesPD.dismiss();
 					theTVDB = null;
 				}
@@ -937,10 +935,10 @@ public class DroidShows extends ListActivity
 		}
 	}
 
-	private void getSeries() {
+	private void getSeries(int show) {
 		if (series != null) series.clear();
 		try {
-			List<String> serieIds = db.getSeries(showArchive);
+			List<String> serieIds = db.getSeries(show);
 			for (int i = 0; i < serieIds.size(); i++) {
 				String serieId = serieIds.get(i);
 				TVShowItem tvsi = db.createTVShowItem(serieId);
@@ -1088,6 +1086,7 @@ public class DroidShows extends ListActivity
 		findViewById(R.id.search).setVisibility(View.VISIBLE);
 		searchV.requestFocus();
 		searchV.selectAll();
+		getSeries(2);	// Get archived and current shows
 		keyboard.toggleSoftInput(0, InputMethodManager.HIDE_IMPLICIT_ONLY);
 		return true;
 	}
