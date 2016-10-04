@@ -135,7 +135,7 @@ public class DroidShows extends ListActivity
 	private static List<String[]> undo = new ArrayList<String[]>();
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private static AsyncInfo asyncInfo;
-	private EditText searchV;
+	private static EditText searchV;
 	private InputMethodManager keyboard;
 	private int padding;
 	public static int showArchive;
@@ -265,6 +265,12 @@ public class DroidShows extends ListActivity
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		boolean searching = (seriesAdapter.isFiltered || findViewById(R.id.search).getVisibility() == View.VISIBLE);
+			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
+				.setEnabled(!searching);
+			menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
+				.setEnabled(!searching);
+
 		if (showArchive == 1) {
 			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
 				.setIcon(android.R.drawable.ic_menu_today)
@@ -596,6 +602,7 @@ public class DroidShows extends ListActivity
 						String sname = serie.getName();
 						db.deleteSerie(serie.getSerieId());
 						series.remove(series.indexOf(serie));
+						seriesAdapter.getFilter().filter(searchV.getText());
 						listView.post(updateListView);
 						Looper.prepare();	// Threads don't have a message loop
 							Toast.makeText(getApplicationContext(), sname +" "+ getString(R.string.messages_deleted), Toast.LENGTH_LONG).show();
@@ -613,7 +620,6 @@ public class DroidShows extends ListActivity
 					public void onClick(DialogInterface dialog, int which) {
 						deleteTh = new Thread(deleteserie);
 						deleteTh.start();
-						clearFilter(null);
 						return;
 					}
 				});
@@ -1000,6 +1006,8 @@ public class DroidShows extends ListActivity
 			};
 			
 			seriesAdapter.sort(comperator);
+			if (seriesAdapter.isFiltered)
+				seriesAdapter.getFilter().filter(searchV.getText());
 			seriesAdapter.notifyDataSetChanged();
 		}
 	};
@@ -1083,17 +1091,19 @@ public class DroidShows extends ListActivity
 
 	@Override
 	public boolean onSearchRequested() {
-		findViewById(R.id.search).setVisibility(View.VISIBLE);
+		if (findViewById(R.id.search).getVisibility() != View.VISIBLE) {
+			findViewById(R.id.search).setVisibility(View.VISIBLE);
+			getSeries(2);	// Get archived and current shows
+		}
 		searchV.requestFocus();
 		searchV.selectAll();
-		getSeries(2);	// Get archived and current shows
 		keyboard.toggleSoftInput(0, InputMethodManager.HIDE_IMPLICIT_ONLY);
 		return true;
 	}
 
 	@Override
 	public void onBackPressed() {
-		if (findViewById(R.id.search).getVisibility() == View.VISIBLE)
+		if (seriesAdapter.isFiltered || findViewById(R.id.search).getVisibility() == View.VISIBLE)
 			clearFilter(null);
 		else if (showArchive == 1)
 			toggleArchive();

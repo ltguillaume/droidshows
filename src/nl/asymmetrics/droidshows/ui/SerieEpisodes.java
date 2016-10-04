@@ -97,10 +97,10 @@ public class SerieEpisodes extends ListActivity {
 				day = cal.get(Calendar.DAY_OF_MONTH);
 			}
 
-			final View epView = info.targetView;
+			final int position = info.position;
 			dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {			
 				public void onDateSet(DatePicker view, int year, int month, int day) {
-					check(epView, 10000 * year + 100 * (month +1) + day);
+					check(position, 10000 * year + 100 * (month +1) + day);
 				}
 			}, year, month, day);
 			dateDialog.show();
@@ -120,7 +120,7 @@ public class SerieEpisodes extends ListActivity {
 		if (swipeDetect.value != 0) return;
 		if (DroidShows.fullLineCheckOption) {
 			try {
-				check(v, -1);
+				check(v);
 			} catch (Exception e) {
 				Log.e(SQLiteStore.TAG, "Could not set episode seen state: "+ e.getMessage());
 			}
@@ -153,6 +153,7 @@ public class SerieEpisodes extends ListActivity {
 				holder = new ViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.name);
 				holder.aired = (TextView) convertView.findViewById(R.id.aired);
+				holder.seenDate = (TextView) convertView.findViewById(R.id.seendate);
 				holder.seen = (CheckBox) convertView.findViewById(R.id.seen);
 
 				convertView.setTag(holder);
@@ -180,48 +181,65 @@ public class SerieEpisodes extends ListActivity {
 			holder.seen.setChecked(ep.seen > 0);
 			if (ep.seen > 1)	// If seen value is a date
 				try {
-					holder.seen.setTextColor(holder.aired.getTextColors().getDefaultColor());
-					holder.seen.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(ep.seen +"")));
+					holder.seenDate.setTextColor(holder.aired.getTextColors().getDefaultColor());
+					holder.seenDate.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(ep.seen +"")));
 				} catch (ParseException e) { Log.e(SQLiteStore.TAG, e.getMessage()); }
 			else
-				holder.seen.setText("");
+				holder.seenDate.setText("");
 
 			return convertView;
 		}
 	}
 
 	static class ViewHolder {
-		TextView name;
-		TextView aired;
+		TextView name, aired, seenDate;
 		CheckBox seen;
 	}
 
-	public void check(View v) {
-		check(v, -1);
+	private View getViewByPosition(int position) {
+		try {
+			final int firstListItemPosition = listView.getFirstVisiblePosition();
+			final int lastListItemPosition = firstListItemPosition + listView.getChildCount() - 1;
+			if (position < firstListItemPosition || position > lastListItemPosition)
+				return listView.getAdapter().getView(position, null, listView); 
+			else					
+				return listView.getChildAt(position - firstListItemPosition);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
-	private void check(View v, int seen) {
+	public void check(View v) {
 		int position = listView.getPositionForView(v);
-		try {
-			db.updateUnwatchedEpisode(serieId, episodes.get(position).id, seen);
+		check(position, v, -1);
+	}
+	
+	private void check(int position, int seen) {
+		check(position, getViewByPosition(position), seen);
+	}
+	
+	private void check(int position, View v, int seen) {
+		if (v != null) {
 			CheckBox c = (CheckBox) v.findViewById(R.id.seen);
+			TextView d = (TextView) getViewByPosition(position).findViewById(R.id.seendate);
 			if (seen > -1)
 				c.setChecked(true);
 			if (c.isChecked()) {
-				c.setTextColor(getResources().getColor(android.R.color.white));
+				d.setTextColor(getResources().getColor(android.R.color.white));
 				if (seen == -1) {
 					Calendar cal = Calendar.getInstance();
 					seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
 				}
 				episodes.get(position).seen = seen;
-				c.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
+				try { d.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
+				} catch (ParseException e) { e.printStackTrace(); }
 			} else {
-				c.setText("");
+				d.setText("");
 				episodes.get(position).seen = 0;
 			}
-		} catch (Exception e) {
-			Log.e(SQLiteStore.TAG, e.getMessage());
 		}
+		db.updateUnwatchedEpisode(serieId, episodes.get(position).id, seen);
 	}
 
 	private void startViewEpisode(String episode) {
