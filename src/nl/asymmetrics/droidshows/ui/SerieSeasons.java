@@ -8,12 +8,13 @@ import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.thetvdb.model.Season;
 import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
-import android.annotation.TargetApi;
+import android.annotation.SuppressLint;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -40,7 +41,6 @@ public class SerieSeasons extends ListActivity
 	private static final int ALLEPUNSEEN_CONTEXT = ALLUPTOTHIS_CONTEXT + 1;
 	private static ListView listView;
 	public static SeriesSeasonsAdapter seasonsAdapter;
-	private static final Boolean pool = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB);
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private SQLiteStore db;
 	private String on;
@@ -131,39 +131,38 @@ public class SerieSeasons extends ListActivity
 		}
 	}	
 	
-	@TargetApi(android.os.Build.VERSION_CODES.HONEYCOMB)
 	private void getInfo() {
-		for (int i = 0; i < seasons.size(); i++) {
-			if (pool) {	// Otherwise executions won't be parallel >= HoneyComb
-				new AsyncInfo().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, i);
-			} else {
-				new AsyncInfo().execute(i);
-			}
-		}
+		new AsyncInfo().execute();
 	}
 	
 	private final OnGlobalLayoutListener listDone = new OnGlobalLayoutListener() {
+		@SuppressWarnings("deprecation")
+		@SuppressLint("NewApi")
 		public void onGlobalLayout() {
-			listView.getViewTreeObserver().removeGlobalOnLayoutListener(listDone);
+			if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+				listView.getViewTreeObserver().removeGlobalOnLayoutListener(listDone);
+			else
+				listView.getViewTreeObserver().removeOnGlobalLayoutListener(listDone);
 			getInfo();
 		}
 	};
 	
-	private class AsyncInfo extends AsyncTask<Integer, Void, Void> {
+	private class AsyncInfo extends AsyncTask<Void, Void, Void> {
 		@Override
-		protected Void doInBackground(Integer... params) {
+		protected Void doInBackground(Void... params) {
 			try {
-				int i = params[0];
-				String serieId = seasons.get(i).getSerieId();
-				int seasonNumber = seasons.get(i).getSNumber();
-				int unwatchedAired = db.getSeasonEPUnwatchedAired(serieId, seasonNumber);
-				int unwatched = db.getSeasonEPUnwatched(serieId, seasonNumber);
-				seasons.get(i).setUnwatchedAired(unwatchedAired);
-				seasons.get(i).setUnwatched(unwatched);
-				if (unwatched > 0) {
-					SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(serieId, seasonNumber);
-					seasons.get(i).setNextAir(nextEpisode.firstAiredDate);
-					seasons.get(i).setNextEpisode(db.getNextEpisodeString(nextEpisode));
+				for (int i = 0; i < seasons.size(); i++) {
+					String serieId = seasons.get(i).getSerieId();
+					int seasonNumber = seasons.get(i).getSNumber();
+					int unwatchedAired = db.getSeasonEPUnwatchedAired(serieId, seasonNumber);
+					int unwatched = db.getSeasonEPUnwatched(serieId, seasonNumber);
+					seasons.get(i).setUnwatchedAired(unwatchedAired);
+					seasons.get(i).setUnwatched(unwatched);
+					if (unwatched > 0) {
+						SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(serieId, seasonNumber);
+						seasons.get(i).setNextAir(nextEpisode.firstAiredDate);
+						seasons.get(i).setNextEpisode(db.getNextEpisodeString(nextEpisode));
+					}
 				}
 				listView.post(new Runnable() { public void run() { seasonsAdapter.notifyDataSetChanged(); }});
 			} catch (Exception e) {

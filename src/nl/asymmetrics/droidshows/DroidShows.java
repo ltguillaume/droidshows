@@ -164,7 +164,7 @@ public class DroidShows extends ListActivity
 		autoBackupOption = sharedPrefs.getBoolean(AUTO_BACKUP_PREF_NAME, false);
 		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
 		excludeSeen = sharedPrefs.getBoolean(EXCLUDE_SEEN_PREF_NAME, false);
-		lastSeasonOption = sharedPrefs.getInt(LAST_SEASON_PREF_NAME, UPDATE_ALL_SEASONS);
+		lastSeasonOption = sharedPrefs.getInt(LAST_SEASON_PREF_NAME, UPDATE_LAST_SEASON_ONLY);
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
 		switchSwipeDirection = sharedPrefs.getBoolean(SWITCH_SWIPE_DIRECTION, false);
@@ -344,16 +344,15 @@ public class DroidShows extends ListActivity
 	
 	private void toggleArchive() {
 		asyncInfo.cancel(true);
-		listView.setEmptyView(findViewById(R.id.empty_notext));
-		seriesAdapter.clear();
 		lastStatsUpdate = "";
 		showArchive = (showArchive + 1) % 2;
+		listView.setVisibility(View.INVISIBLE);
 		getSeries(showArchive);
 		seriesAdapter.getFilter().filter(searchV.getText());
-		asyncInfo = new AsyncInfo();
-		asyncInfo.execute();
 		setTitle(getString(R.string.layout_app_name)
 				+(showArchive == 1 ? " - "+ getString(R.string.archive) : ""));
+		asyncInfo = new AsyncInfo();
+		asyncInfo.execute();
 	}
 
 	private void toggleSort() {
@@ -369,7 +368,7 @@ public class DroidShows extends ListActivity
 
 	private void aboutDialog() {
 		if (m_AlertDlg != null) {
-			m_AlertDlg.cancel();
+			m_AlertDlg.dismiss();
 		}
 		View about = View.inflate(this, R.layout.alert_about, null);
 		TextView changelog = (TextView) about.findViewById(R.id.copyright);
@@ -602,7 +601,6 @@ public class DroidShows extends ListActivity
 						String sname = serie.getName();
 						db.deleteSerie(serie.getSerieId());
 						series.remove(series.indexOf(serie));
-						seriesAdapter.getFilter().filter(searchV.getText());
 						listView.post(updateListView);
 						Looper.prepare();	// Threads don't have a message loop
 							Toast.makeText(getApplicationContext(), sname +" "+ getString(R.string.messages_deleted), Toast.LENGTH_LONG).show();
@@ -611,23 +609,23 @@ public class DroidShows extends ListActivity
 						Looper.loop();
 					}
 				};
-				AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-				alertDialog.setTitle(R.string.dialog_title_delete);
-				alertDialog.setMessage(String.format(getString(R.string.dialog_delete), seriesAdapter.getItem(info.position).getName()));
-				alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-				alertDialog.setCancelable(false);
-				alertDialog.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						deleteTh = new Thread(deleteserie);
-						deleteTh.start();
-						return;
-					}
-				});
-				alertDialog.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						return;
-					}
-				});
+				AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
+					.setTitle(R.string.dialog_title_delete)
+					.setMessage(String.format(getString(R.string.dialog_delete), seriesAdapter.getItem(info.position).getName()))
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setCancelable(false)
+					.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							deleteTh = new Thread(deleteserie);
+							deleteTh.start();
+							return;
+						}
+					})
+					.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							return;
+						}
+					});
 				alertDialog.show();
 				return true;
 			default :
@@ -792,12 +790,12 @@ public class DroidShows extends ListActivity
 					theTVDB = null;
 				}
 			};
-			m_ProgressDialog = ProgressDialog.show(DroidShows.this, serieName, getString(R.string.messages_update_serie), true);
+			m_ProgressDialog = ProgressDialog.show(DroidShows.this, serieName, getString(R.string.messages_update_serie), true, false);
 			updateShowTh = new Thread(updateserierun);
 			updateShowTh.start();
 		} else {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
-			m_ProgressDialog.cancel();
+			m_ProgressDialog.dismiss();
 		}
 	}
 	
@@ -870,8 +868,10 @@ public class DroidShows extends ListActivity
 	};
 	
 	public void clearFilter(View v) {
+		listView.setVisibility(View.INVISIBLE);
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 		searchV.setText("");
+		listView.setVisibility(View.INVISIBLE);	// Needed again
 		findViewById(R.id.search).setVisibility(View.GONE);
 		getSeries(showArchive);
 	}
@@ -883,6 +883,7 @@ public class DroidShows extends ListActivity
 			final Runnable updateMessage = new Runnable() {
 				public void run() {
 					updateAllSeriesPD.setMessage(dialogMsg);
+					updateAllSeriesPD.show();
 				}
 			};
 			final Runnable updateallseries = new Runnable() {
@@ -912,31 +913,31 @@ public class DroidShows extends ListActivity
 				}
 			};
 			updateAllSeriesPD = new ProgressDialog(this);
-			AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-			alertDialog.setTitle(R.string.messages_title_update_series);
 			String updateMessageAD = getString(R.string.dialog_update_series) + (lastSeasonOption == UPDATE_ALL_SEASONS ? getString(R.string.dialog_update_speedup) : "");
-			alertDialog.setMessage(updateMessageAD);
-			alertDialog.setIcon(android.R.drawable.ic_dialog_alert);
-			alertDialog.setCancelable(false);
-			alertDialog.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					updateAllSeriesPD.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-					updateAllSeriesPD.setTitle(R.string.messages_title_updating_series);
-					updateAllSeriesPD.setMessage(getString(R.string.messages_update_series));
-					updateAllSeriesPD.setCancelable(false);
-					updateAllSeriesPD.setMax(series.size());
-					updateAllSeriesPD.setProgress(0);
-					updateAllSeriesPD.show();
-					updateAllShowsTh = new Thread(updateallseries);
-					updateAllShowsTh.start();
-					return;
-				}
-			});
-			alertDialog.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int which) {
-					return;
-				}
-			});
+			AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
+				.setTitle(R.string.messages_title_update_series)
+				.setMessage(updateMessageAD)
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setCancelable(false)
+				.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						updateAllSeriesPD.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+						updateAllSeriesPD.setTitle(R.string.messages_title_updating_series);
+						updateAllSeriesPD.setMessage(getString(R.string.messages_update_series));
+						updateAllSeriesPD.setCancelable(false);
+						updateAllSeriesPD.setMax(series.size());
+						updateAllSeriesPD.setProgress(0);
+						updateAllSeriesPD.show();
+						updateAllShowsTh = new Thread(updateallseries);
+						updateAllShowsTh.start();
+						return;
+					}
+				})
+				.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						return;
+					}
+				});
 			alertDialog.show();
 		}
 	}
@@ -1008,6 +1009,7 @@ public class DroidShows extends ListActivity
 			seriesAdapter.sort(comperator);
 			if (seriesAdapter.isFiltered)
 				seriesAdapter.getFilter().filter(searchV.getText());
+			listView.setVisibility(View.VISIBLE);
 			seriesAdapter.notifyDataSetChanged();
 		}
 	};
@@ -1092,6 +1094,7 @@ public class DroidShows extends ListActivity
 	@Override
 	public boolean onSearchRequested() {
 		if (findViewById(R.id.search).getVisibility() != View.VISIBLE) {
+			listView.setVisibility(View.INVISIBLE);
 			findViewById(R.id.search).setVisibility(View.VISIBLE);
 			getSeries(2);	// Get archived and current shows
 		}

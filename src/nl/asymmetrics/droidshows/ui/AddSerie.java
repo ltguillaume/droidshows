@@ -68,7 +68,6 @@ public class AddSerie extends ListActivity
 	private static boolean bAddShowTh = false;
 	private SQLiteStore db;
 	private List<String> series;
-	private String on;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +78,6 @@ public class AddSerie extends ListActivity
 		List<Serie> search_series = new ArrayList<Serie>();
 		this.seriessearch_adapter = new SeriesSearchAdapter(this, R.layout.row_search_series, search_series);
 		setListAdapter(seriessearch_adapter);
-		on = getString(R.string.messages_on);
 		Intent intent = getIntent();
 		getSearchResults(intent); // Guillaume
 	}
@@ -314,9 +312,8 @@ public class AddSerie extends ListActivity
 					} catch (Exception e) {
 						Log.e(SQLiteStore.TAG, "Error adding TV show");
 					}
-					// m_ProgressDialog.dismiss();
+					m_ProgressDialog.dismiss();
 					if (!bAddShowTh) {
-						m_ProgressDialog.dismiss();
 						bAddShowTh = false;
 					}
 					if (sucesso) {
@@ -337,9 +334,9 @@ public class AddSerie extends ListActivity
 			}
 		}
 		if (!alreadyExists) {
+			m_ProgressDialog = ProgressDialog.show(AddSerie.this, getString(R.string.messages_title_adding_serie), getString(R.string.messages_adding_serie), true, false);
 			threadAddShow = new Thread(null, addnewserie, "MagentoBackground");
 			threadAddShow.start();
-			m_ProgressDialog = ProgressDialog.show(AddSerie.this, getString(R.string.messages_title_adding_serie), getString(R.string.messages_adding_serie), true, false);
 		}
 	}
 

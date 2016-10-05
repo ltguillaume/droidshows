@@ -6,5 +6,4 @@
 	</LinearLayout>
 	<ListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/android:list"/>
 	<TextView android:id="@+id/android:empty" android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="6dp" android:text="@string/layout_main_no_items"/>
-	<TextView android:id="@+id/empty_notext" android:layout_width="fill_parent" android:layout_height="fill_parent" android:text=""/>
 </LinearLayout>
