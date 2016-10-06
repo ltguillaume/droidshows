@@ -343,16 +343,12 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void toggleArchive() {
-		asyncInfo.cancel(true);
 		lastStatsUpdate = "";
 		showArchive = (showArchive + 1) % 2;
 		listView.setVisibility(View.INVISIBLE);
 		getSeries(showArchive);
-		seriesAdapter.getFilter().filter(searchV.getText());
 		setTitle(getString(R.string.layout_app_name)
 				+(showArchive == 1 ? " - "+ getString(R.string.archive) : ""));
-		asyncInfo = new AsyncInfo();
-		asyncInfo.execute();
 	}
 
 	private void toggleSort() {
@@ -943,6 +939,8 @@ public class DroidShows extends ListActivity
 	}
 
 	private void getSeries(int show) {
+		if (asyncInfo != null)
+			asyncInfo.cancel(true);
 		if (series != null) series.clear();
 		try {
 			List<String> serieIds = db.getSeries(show);
@@ -956,6 +954,8 @@ public class DroidShows extends ListActivity
 			Log.e(SQLiteStore.TAG, "Error populating TVShowItems or no shows added yet");
 			e.printStackTrace();
 		}
+		asyncInfo = new AsyncInfo();
+		asyncInfo.execute();
 	}
 	
 	public static Runnable updateListView = new Runnable() {
@@ -1051,18 +1051,21 @@ public class DroidShows extends ListActivity
 	@Override
 	public void onResume() {
 		super.onResume();
-		asyncInfo = new AsyncInfo();
-		asyncInfo.execute();
+		if (asyncInfo == null | asyncInfo.getStatus() != AsyncTask.Status.RUNNING) {
+			asyncInfo = new AsyncInfo();
+			asyncInfo.execute();
+		}
 	}
 	
 	private class AsyncInfo extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
+//			Log.d(SQLiteStore.TAG, "AsyncInfo Initializing");
 			try {
 				String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
 				if (!lastStatsUpdate.equals(newToday)) {
 					db.updateToday(newToday);
-//				Log.d(SQLiteStore.TAG, "AsyncInfo | Today = "+ newToday);
+//					Log.d(SQLiteStore.TAG, "AsyncInfo RUNNING | Today = "+ newToday);
 					for (int i = 0; i < series.size(); i++) {
 						TVShowItem serie = series.get(i);
 						if (isCancelled()) return null;
