@@ -96,8 +96,8 @@ public class DroidShows extends ListActivity
 	private static ProgressDialog m_ProgressDialog = null;
 	private static ProgressDialog updateAllSeriesPD = null;
 	public static SeriesAdapter seriesAdapter;
-	private static ListView listView = null;
-	private static String backFromSeasonSerieId = null;
+	private static ListView listView;
+	private static String backFromSeasonSerieId;
 	private static int oldListPosition = -1;
 	private static TheTVDB theTVDB;
 	private Utils utils = new Utils();
@@ -131,7 +131,7 @@ public class DroidShows extends ListActivity
 	public static Thread updateAllShowsTh = null;
 	private String dialogMsg;
 	public static SQLiteStore db;
-	public static List<TVShowItem> series = null;
+	public static List<TVShowItem> series;
 	private static List<String[]> undo = new ArrayList<String[]>();
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private static AsyncInfo asyncInfo;
@@ -347,6 +347,7 @@ public class DroidShows extends ListActivity
 		showArchive = (showArchive + 1) % 2;
 		listView.setVisibility(View.INVISIBLE);
 		getSeries(showArchive);
+		listView.setSelection(0);
 		setTitle(getString(R.string.layout_app_name)
 				+(showArchive == 1 ? " - "+ getString(R.string.archive) : ""));
 	}
@@ -583,7 +584,8 @@ public class DroidShows extends ListActivity
 				String message = seriesAdapter.getItem(info.position).getName()
 					+" "+ (showArchive == 1 ? getString(R.string.messages_context_unarchived) : getString(R.string.messages_context_archived));
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-				series.remove(seriesAdapter.getItem(info.position));
+				if (!seriesAdapter.isFiltered)
+					series.remove(seriesAdapter.getItem(info.position));
 				listView.post(updateListView);
 				asyncInfo = new AsyncInfo();
 				asyncInfo.execute();
@@ -1009,8 +1011,8 @@ public class DroidShows extends ListActivity
 			seriesAdapter.sort(comperator);
 			if (seriesAdapter.isFiltered)
 				seriesAdapter.getFilter().filter(searchV.getText());
-			listView.setVisibility(View.VISIBLE);
 			seriesAdapter.notifyDataSetChanged();
+			listView.setVisibility(View.VISIBLE);
 		}
 	};
 	
@@ -1042,15 +1044,15 @@ public class DroidShows extends ListActivity
 		super.onRestart();
 		listView.post(updateShowView(backFromSeasonSerieId));
 		backFromSeasonSerieId = null;
-		if (searchV.length() > 0) {
-			findViewById(R.id.search).setVisibility(View.VISIBLE);
-			listView.requestFocus();
-		}
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
+		if (searchV.getText().length() > 0) {
+			findViewById(R.id.search).setVisibility(View.VISIBLE);
+			listView.requestFocus();
+		}
 		if (asyncInfo == null | asyncInfo.getStatus() != AsyncTask.Status.RUNNING) {
 			asyncInfo = new AsyncInfo();
 			asyncInfo.execute();
@@ -1137,12 +1139,13 @@ public class DroidShows extends ListActivity
 	public class SeriesAdapter extends ArrayAdapter<TVShowItem> {
 		private List<TVShowItem> items;
 		private ShowsFilter filter;
-		private boolean isFiltered = false;
+		private boolean isFiltered;
 		private LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
 		public SeriesAdapter(Context context, int textViewResourceId, List<TVShowItem> series) {
 			super(context, textViewResourceId, series);
 			items = series;
+			isFiltered = false;
 		}
 		
 		@Override
