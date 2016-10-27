@@ -579,13 +579,16 @@ public class DroidShows extends ListActivity
 				return true;
 			case TOGGLE_ARCHIVED_CONTEXT :
 				asyncInfo.cancel(true);
-				String serieId = seriesAdapter.getItem(info.position).getSerieId();
-				db.updateSerieStatus(serieId, showArchive ^ 1);
-				String message = seriesAdapter.getItem(info.position).getName()
-					+" "+ (showArchive == 1 ? getString(R.string.messages_context_unarchived) : getString(R.string.messages_context_archived));
+				TVShowItem serie = seriesAdapter.getItem(info.position);
+				boolean passiveStatus = serie.getPassiveStatus();
+				db.updateSerieStatus(serie.getSerieId(), (passiveStatus ? 0 : 1));
+				String message = serie.getName() +" "+
+					(passiveStatus ? getString(R.string.messages_context_unarchived) : getString(R.string.messages_context_archived));
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
 				if (!seriesAdapter.isFiltered)
-					series.remove(seriesAdapter.getItem(info.position));
+					series.remove(serie);
+				else
+					serie.setPassiveStatus(!passiveStatus);
 				listView.post(updateListView);
 				asyncInfo = new AsyncInfo();
 				asyncInfo.execute();
