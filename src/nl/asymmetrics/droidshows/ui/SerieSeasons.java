@@ -61,8 +61,7 @@ public class SerieSeasons extends ListActivity
 		listView.getViewTreeObserver().addOnGlobalLayoutListener(listDone);
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
-		if (getIntent().getBooleanExtra("nextEpisode", false))
-			listView.setSelection(db.getNextEpisode(serieId, -1).season -1);
+		listView.setSelection(getIntent().getIntExtra("season", 1) -1);
 	}
 	
 	/* context menu */

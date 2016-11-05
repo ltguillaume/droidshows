@@ -123,7 +123,9 @@ public class DroidShows extends ListActivity
 	private static final String SWITCH_SWIPE_DIRECTION = "switch_swipe_direction";
 	public static boolean switchSwipeDirection;
 	private static final String LAST_STATS_UPDATE_NAME = "last_stats_update";
-	private static String lastStatsUpdate;
+	private static String lastStatsUpdateCurrent;
+	private static final String LAST_STATS_UPDATE_ARCHIVE_NAME = "last_stats_update_archive";
+	private static String lastStatsUpdateArchive;
 	private static final String LANGUAGE_CODE_NAME = "language";
 	public static String langCode;
 	public static Thread deleteTh = null;
@@ -141,6 +143,7 @@ public class DroidShows extends ListActivity
 	public static int showArchive;
 	private Vibrator vib = null;
 	private TVShowItem lastSerie;
+	private static View main;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -153,6 +156,7 @@ public class DroidShows extends ListActivity
 			}
 		}
 		setContentView(R.layout.main);
+		main = findViewById(R.id.main);
 		db = SQLiteStore.getInstance(this);
 
 		updateDS = new Update(this);
@@ -168,7 +172,8 @@ public class DroidShows extends ListActivity
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
 		switchSwipeDirection = sharedPrefs.getBoolean(SWITCH_SWIPE_DIRECTION, false);
-		lastStatsUpdate = sharedPrefs.getString(LAST_STATS_UPDATE_NAME, "");
+		lastStatsUpdateCurrent = sharedPrefs.getString(LAST_STATS_UPDATE_NAME, "");
+		lastStatsUpdateArchive = sharedPrefs.getString(LAST_STATS_UPDATE_ARCHIVE_NAME, "");
 		langCode = sharedPrefs.getString(LANGUAGE_CODE_NAME, getString(R.string.lang_code));
 
 		series = new ArrayList<TVShowItem>();
@@ -177,7 +182,12 @@ public class DroidShows extends ListActivity
 		on = getString(R.string.messages_on);
 		listView = getListView();
 		listView.setDivider(null);
-		getSeries(showArchive);
+		if (savedInstanceState != null) {
+			showArchive = savedInstanceState.getInt("showArchive");
+			getSeries((savedInstanceState.getBoolean("filtering") ? 2 : showArchive));
+		} else {
+			getSeries(showArchive);
+		}
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
 		setFastScroll();
@@ -343,13 +353,9 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void toggleArchive() {
-		lastStatsUpdate = "";
 		showArchive = (showArchive + 1) % 2;
-		listView.setVisibility(View.INVISIBLE);
 		getSeries(showArchive);
 		listView.setSelection(0);
-		setTitle(getString(R.string.layout_app_name)
-				+(showArchive == 1 ? " - "+ getString(R.string.archive) : ""));
 	}
 
 	private void toggleSort() {
@@ -455,7 +461,7 @@ public class DroidShows extends ListActivity
 		File destination = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db");
 		if (auto && (!autoBackupOption || 
 				new SimpleDateFormat("yyyy-MM-dd")
-					.format(destination.lastModified()).equals(lastStatsUpdate) ||
+					.format(destination.lastModified()).equals(lastStatsUpdateCurrent) ||
 				source.lastModified() == destination.lastModified()))
 			return;
 		if (destination.exists()) {
@@ -647,8 +653,14 @@ public class DroidShows extends ListActivity
 			backFromSeasonSerieId = serieId;
 			Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
 			serieSeasons.putExtra("serieId", serieId);
-			if (seriesAdapter.getItem(position).getUnwatched() > 0)
-				serieSeasons.putExtra("nextEpisode", true);
+			if (seriesAdapter.getItem(position).getUnwatched() > 0) {
+				String str = seriesAdapter.getItem(position).getNextEpisode();
+				str = str.substring(0, str.indexOf("x"));
+				int season = 0;
+				for (int i = 0; i < str.length(); i++)
+					season = season * 10 + (str.charAt(i) - '0');
+				serieSeasons.putExtra("season", season);
+			}
 			startActivity(serieSeasons);
 		}
 	}
@@ -869,10 +881,9 @@ public class DroidShows extends ListActivity
 	};
 	
 	public void clearFilter(View v) {
-		listView.setVisibility(View.INVISIBLE);
+		main.setVisibility(View.INVISIBLE);
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 		searchV.setText("");
-		listView.setVisibility(View.INVISIBLE);	// Needed again
 		findViewById(R.id.search).setVisibility(View.GONE);
 		getSeries(showArchive);
 	}
@@ -908,7 +919,9 @@ public class DroidShows extends ListActivity
 							Log.e(SQLiteStore.TAG, "Skipped this show (no data received)");
 						}
 					}
-					getSeries(showArchive);
+					listView.post(new Runnable() {
+						public void run() {getSeries((seriesAdapter.isFiltered ? 2 : showArchive));}
+					});
 					updateAllSeriesPD.dismiss();
 					theTVDB = null;
 				}
@@ -944,16 +957,18 @@ public class DroidShows extends ListActivity
 	}
 
 	private void getSeries(int show) {
+		main.setVisibility(View.INVISIBLE);
 		if (asyncInfo != null)
 			asyncInfo.cancel(true);
-		if (series != null) series.clear();
 		try {
 			List<String> serieIds = db.getSeries(show);
+			series.clear();
 			for (int i = 0; i < serieIds.size(); i++) {
-				String serieId = serieIds.get(i);
-				TVShowItem tvsi = db.createTVShowItem(serieId);
-				series.add(tvsi);
+				series.add(db.createTVShowItem(serieIds.get(i)));
+				seriesAdapter.notifyDataSetChanged();
 			}
+			setTitle(getString(R.string.layout_app_name)
+					+(show == 1 ? " - "+ getString(R.string.archive) : ""));
 			listView.post(updateListView);
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, "Error populating TVShowItems or no shows added yet");
@@ -965,6 +980,7 @@ public class DroidShows extends ListActivity
 	
 	public static Runnable updateListView = new Runnable() {
 		public void run() {
+			main.setVisibility(View.INVISIBLE);
 			seriesAdapter.notifyDataSetChanged();
 			if (series != null && series.size() > 0) {
 				if (seriesAdapter.isFiltered) {
@@ -1015,7 +1031,7 @@ public class DroidShows extends ListActivity
 			if (seriesAdapter.isFiltered)
 				seriesAdapter.getFilter().filter(searchV.getText());
 			seriesAdapter.notifyDataSetChanged();
-			listView.setVisibility(View.VISIBLE);
+			main.setVisibility(View.VISIBLE);
 		}
 	};
 	
@@ -1030,7 +1046,8 @@ public class DroidShows extends ListActivity
 		ed.putBoolean(INCLUDE_SPECIALS_NAME, includeSpecialsOption);
 		ed.putBoolean(FULL_LINE_CHECK_NAME, fullLineCheckOption);
 		ed.putBoolean(SWITCH_SWIPE_DIRECTION, switchSwipeDirection);
-		ed.putString(LAST_STATS_UPDATE_NAME, lastStatsUpdate);
+		ed.putString(LAST_STATS_UPDATE_NAME, lastStatsUpdateCurrent);
+		ed.putString(LAST_STATS_UPDATE_ARCHIVE_NAME, lastStatsUpdateArchive);
 		ed.putString(LANGUAGE_CODE_NAME, langCode);
 		ed.commit();
 	}
@@ -1067,7 +1084,9 @@ public class DroidShows extends ListActivity
 		protected Void doInBackground(Void... params) {
 //			Log.d(SQLiteStore.TAG, "AsyncInfo Initializing");
 			try {
+				int showArchiveTmp = showArchive;
 				String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
+				String lastStatsUpdate = (showArchiveTmp == 0 ? lastStatsUpdateCurrent: lastStatsUpdateArchive);
 				if (!lastStatsUpdate.equals(newToday)) {
 					db.updateToday(newToday);
 //					Log.d(SQLiteStore.TAG, "AsyncInfo RUNNING | Today = "+ newToday);
@@ -1089,8 +1108,11 @@ public class DroidShows extends ListActivity
 						}
 					}
 					listView.post(updateListView);
-					lastStatsUpdate = newToday;
-//				Log.d(SQLiteStore.TAG, "Updated show stats on "+ newAsync);
+					if (showArchiveTmp == 0 || showArchiveTmp == 2)
+						lastStatsUpdateCurrent = newToday;
+					if (showArchiveTmp > 0)
+						lastStatsUpdateArchive = newToday;
+//				Log.d(SQLiteStore.TAG, "Updated show stats for "+ (showArchiveTmp == 0 ? "current" : "archive") +" on "+ newToday);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -1102,7 +1124,6 @@ public class DroidShows extends ListActivity
 	@Override
 	public boolean onSearchRequested() {
 		if (findViewById(R.id.search).getVisibility() != View.VISIBLE) {
-			listView.setVisibility(View.INVISIBLE);
 			findViewById(R.id.search).setVisibility(View.VISIBLE);
 			getSeries(2);	// Get archived and current shows
 		}
@@ -1124,6 +1145,8 @@ public class DroidShows extends ListActivity
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
+		outState.putBoolean("filtering", seriesAdapter.isFiltered || findViewById(R.id.search).getVisibility() == View.VISIBLE);
+		outState.putInt("showArchive", showArchive);
 		if (m_ProgressDialog != null)
 			m_ProgressDialog.dismiss();
 		super.onSaveInstanceState(outState);
