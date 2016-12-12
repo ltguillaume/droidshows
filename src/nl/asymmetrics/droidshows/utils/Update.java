@@ -27,6 +27,9 @@ public class Update
 		if (version.equals("0.1.5-7")) {
 			done = u0157To0157G();
 		}
+		if (version.equals("0.1.5-7G")) {
+			done = u0157GTo0157G2();
+		}
 		return done;
 	}
 
@@ -71,6 +74,19 @@ public class Update
 			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN nextEpisode VARCHAR DEFAULT '-1'");
 			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN nextAir VARCHAR DEFAULT '-1'");
 			DroidShows.db.execQuery("UPDATE droidseries SET version='0.1.5-7G'");
+			return true;
+		} catch (Exception e) {
+			Log.e(SQLiteStore.TAG, "Error updating database");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	private boolean u0157GTo0157G2() {
+		Log.d(SQLiteStore.TAG, "UPDATING TO VERSION 0.1.5-7G2");
+		try {
+			DroidShows.db.execQuery("ALTER TABLE series ADD COLUMN extResources VARCHAR NOT NULL DEFAULT ''");
+			DroidShows.db.execQuery("UPDATE droidseries SET version='0.1.5-7G2'");
 			return true;
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, "Error updating database");

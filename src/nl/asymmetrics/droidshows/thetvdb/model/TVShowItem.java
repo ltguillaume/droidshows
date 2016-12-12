@@ -16,11 +16,12 @@ public class TVShowItem {
         private int unwatchedAired;
         private int unwatched;
         private String showStatus;
+        private String extResources;
 
         public TVShowItem(String serieid, String icon, Drawable dicon, String
                           name, int snumber, String nextEpisode, Date nextAir,
                           int unwatchedAired, int unwatched, boolean passiveStatus,
-                          String showStatus) {
+                          String showStatus, String extResources) {
                 this.serieid = serieid;
                 this.icon = icon;
                 this.dicon = dicon;
@@ -32,6 +33,7 @@ public class TVShowItem {
                 this.unwatched = unwatched;
                 this.passiveStatus = passiveStatus;
                 this.showStatus = showStatus;
+                this.extResources = extResources;
         }
 
         public String getSerieId() {
@@ -42,33 +44,33 @@ public class TVShowItem {
                 return this.icon;
         }
 
-        public void setIcon (String icon) {
-                this.icon = icon;
-        }
+	        public void setIcon (String icon) {
+	                this.icon = icon;
+	        }
 
         public String getName() {
                 return this.name;
         }
 
-        public void setName(String name) {
-                this.name = name;
-        }
+	        public void setName(String name) {
+	                this.name = name;
+	        }
 
         public int getSNumber() {
                 return this.snumber;
         }
 
-        public void setSNumber(int snumber) {
-                this.snumber = snumber;
-        }
+	        public void setSNumber(int snumber) {
+	                this.snumber = snumber;
+	        }
 
         public String getNextEpisode() {
                 return this.nextEpisode;
         }
 
-        public void setNextEpisode(String nextEpisode) {
-                this.nextEpisode = nextEpisode;
-        }
+	        public void setNextEpisode(String nextEpisode) {
+	                this.nextEpisode = nextEpisode;
+	        }
 
         public Date getNextAir() {
           return this.nextAir;
@@ -82,9 +84,9 @@ public class TVShowItem {
                 return this.unwatched;
         }
 
-        public void setUnwatched(int unwatched) {
-                this.unwatched = unwatched;
-        }
+	        public void setUnwatched(int unwatched) {
+	                this.unwatched = unwatched;
+	        }
 
         public int getUnwatchedAired() {
           return this.unwatchedAired;
@@ -98,22 +100,31 @@ public class TVShowItem {
                 return this.passiveStatus;
         }
 
-        public void setPassiveStatus(boolean passiveStatus) {
-                this.passiveStatus = passiveStatus;
-        }
+	        public void setPassiveStatus(boolean passiveStatus) {
+	                this.passiveStatus = passiveStatus;
+	        }
 
         public Drawable getDIcon() {
                 return this.dicon;
         }
 
-        public void setDIcon(Drawable dicon) {
-                this.dicon = dicon;
-        }
+	        public void setDIcon(Drawable dicon) {
+	                this.dicon = dicon;
+	        }
+        
         public String getShowStatus() {
                 return this.showStatus;
         }
 
-        public void setShowStatus(String showStatus) {
-                this.showStatus = showStatus;
-        }
+	        public void setShowStatus(String showStatus) {
+	                this.showStatus = showStatus;
+	        }
+        
+        public String getExtResources() {
+            return this.extResources;
+	    }
+	
+		    public void setExtResources(String extResources) {
+		            this.extResources = extResources;
+		    }        
 }

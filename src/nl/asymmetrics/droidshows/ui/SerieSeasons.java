@@ -43,7 +43,6 @@ public class SerieSeasons extends ListActivity
 	public static SeriesSeasonsAdapter seasonsAdapter;
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private SQLiteStore db;
-	private String on;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -56,12 +55,13 @@ public class SerieSeasons extends ListActivity
 		getSeasons();
 		seasonsAdapter = new SeriesSeasonsAdapter(this, R.layout.row_serie_seasons, seasons);
 		setListAdapter(seasonsAdapter);
-		on = getString(R.string.messages_on);
 		listView = getListView();
 		listView.getViewTreeObserver().addOnGlobalLayoutListener(listDone);
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
 		listView.setSelection(getIntent().getIntExtra("season", 1) -1);
+		if (getIntent().getBooleanExtra("nextEpisode", false))
+			listView.setSelection(db.getNextEpisode(serieId).season -1);
 	}
 	
 	/* context menu */
@@ -118,12 +118,13 @@ public class SerieSeasons extends ListActivity
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, "Error getting seasons: "+ e.getMessage());
 		}
+		final String strSeason = getString(R.string.messages_season);
 		for (int i = 0; i < seasonNumbers.size(); i++) {
 			String season = "";
 			if (seasonNumbers.get(i) == 0) {
 				season = getString(R.string.messages_specials);
 			} else {
-				season = getString(R.string.messages_season) + " " + seasonNumbers.get(i);
+				season = strSeason + " " + seasonNumbers.get(i);
 			}
 			Season newSeason = new Season(serieId, seasonNumbers.get(i), season, -1, -1, null, null);
 			seasons.add(newSeason);
@@ -182,6 +183,16 @@ public class SerieSeasons extends ListActivity
 		private List<Season> items;
 		private LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+		private final String strEpAired = getString(R.string.messages_ep_aired);
+		private final String strEps = getString(R.string.messages_episodes);
+		private final String strNewEp = getString(R.string.messages_new_episode);
+		private final String strNewEps = getString(R.string.messages_new_episodes);
+		private final String strNextEp = getString(R.string.messages_next_episode);
+		private final String strOf = getString(R.string.messages_of);
+		private final String strOn = getString(R.string.messages_on);
+		private final String strSeasonWatched = getString(R.string.messages_season_completely_watched);
+		private final String strToBeAired = getString(R.string.messages_to_be_aired);
+
 		public SeriesSeasonsAdapter(Context context, int textViewResourceId, List<Season> seasons) {
 			super(context, textViewResourceId, seasons);
 			this.items = seasons;
@@ -209,25 +220,27 @@ public class SerieSeasons extends ListActivity
 			}
 			if (holder.unwatched != null) {
 				String unwatchedText = db.getSeasonEpisodeCount(serieId, s.getSNumber())
-						+" "+ getString(R.string.messages_episodes);
+						+" "+ strEps;
 				if (nunwatched > 0) {
 					String unwatched = "";
-					unwatched = nunwatched +" "+ (nunwatched > 1 ? getString(R.string.messages_new_episodes)
-							: getString(R.string.messages_new_episode)) +" ";
-					if (nunwatchedAired > 0) unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired 
-							+" "+ getString(R.string.messages_of) +" ") + unwatched + getString(R.string.messages_ep_aired);
-					else unwatched += getString(R.string.messages_to_be_aired);
+					unwatched = nunwatched +" "+ (nunwatched > 1 ? strNewEps : strNewEp) +" ";
+					if (nunwatchedAired > 0)
+						unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired 
+							+" "+ strOf +" ") + unwatched + strEpAired;
+					else
+						unwatched += strToBeAired;
 					unwatchedText += " | "+ unwatched;
 				}
 				holder.unwatched.setText(unwatchedText);
 			}
 			if (holder.nextEpisode != null) {
 				if (nunwatched == 0) {
-					holder.nextEpisode.setText(getString(R.string.messages_season_completely_watched));
+					holder.nextEpisode.setText(strSeasonWatched);
 					holder.nextEpisode.setEnabled(false);
 				} else if (nunwatched > 0) {
-					holder.nextEpisode.setText((s.getNextEpisode() == null ? "" : 
-						getString(R.string.messages_next_episode) +" "+ s.getNextEpisode().replace("[on]", on)));
+					holder.nextEpisode.setText((s.getNextEpisode() == null ? "" : s.getNextEpisode()
+						.replace("[ne]", strNextEp)
+						.replace("[on]", strOn)));
 					holder.nextEpisode.setEnabled(s.getNextAir() != null && s.getNextAir().compareTo(Calendar.getInstance().getTime()) <= 0);
 				}
 			}

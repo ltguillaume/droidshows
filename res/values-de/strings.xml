@@ -28,6 +28,7 @@
 <string name="menu_context_view_wiki">Die Serie in der Wikipedia</string>
 <string name="menu_context_view_imdb">Die Serie in der IMDb</string>
 <string name="menu_context_view_ep_imdb">Nächste Folge in der IMDb</string>
+<string name="menu_context_ext_resources">Externe Ressourcen</string>
 <string name="menu_context_mark_next_episode_as_seen">Folgende Folge gesehen markieren</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Automatische tägliche Datensicherung</string>
@@ -50,6 +51,7 @@
 <string name="dialog_include_specials">Besondere Folgen in Übersicht zeigen</string>
 <string name="dialog_full_line_check">Ganze Zeile markiert als gesehen</string>
 <string name="dialog_switch_swipe_direction">Von rechts nach links wischen um zurück zu gehen</string>
+<string name="dialog_show_next_airing">Zeige anstehende Lüften statt der nächsten Episode</string>
 <string name="dialog_help">&#187; Aktualisiere Serien regelmäßig
 \n&#187; Lange antippen um mehrere Aktione anzuzeigen
 \n&#187; Von links nach rechts wischen um zurück zu gehen
@@ -79,6 +81,7 @@
 <string name="messages_seasons">Staffeln</string>
 <string name="messages_season">Staffel</string>
 <string name="messages_next_episode">Nächste Folge:</string>
+<string name="messages_next_airing">Nächste Ausstrahlung:</string>
 <string name="messages_no_new_eps">Keine neue Folgen</string>
 <string name="messages_season_completely_watched">Staffel komplett gesehen\n</string>
 <string name="messages_deleted">gelöscht</string>

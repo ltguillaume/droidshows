@@ -28,6 +28,7 @@
 <string name="menu_context_view_wiki">Detalles en Wikipedia</string>
 <string name="menu_context_view_imdb">Detalles en IMDb</string>
 <string name="menu_context_view_ep_imdb">Próximo episodio en IMDb</string>
+<string name="menu_context_ext_resources">Recurcos externos</string>
 <string name="menu_context_mark_next_episode_as_seen">Marcar el siguiente episodio como visto</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Copia de seguridad diaria automática</string>
@@ -50,6 +51,7 @@
 <string name="dialog_include_specials">Contar los especiales como episodios no vistos</string>
 <string name="dialog_full_line_check">Tocar en toda la linea, marca un espisodio</string>
 <string name="dialog_switch_swipe_direction">Retroceder deslizando de derecha a izquierda</string>
+<string name="dialog_show_next_airing">Mostrar la próxima emisión en lugar del próximo episodio</string>
 <string name="dialog_help">&#187; No olvide actualizar las series de forma regular
 \n&#187; Deje pulsado los elementos ver para más opciones
 \n&#187; Deslice de izquierda a derecha para retroceder.
@@ -79,6 +81,7 @@
 <string name="messages_seasons">Temporadas</string>
 <string name="messages_season">Temporada</string>
 <string name="messages_next_episode">Próximo episodio:</string>
+<string name="messages_next_airing">Próxima emisión:</string>
 <string name="messages_no_new_eps">No hay episodios nuevos</string>
 <string name="messages_season_completely_watched">Temporada vista al completo</string>
 <string name="messages_deleted">borrado</string>

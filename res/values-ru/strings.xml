@@ -28,6 +28,7 @@
 <string name="menu_context_view_wiki">Подробности на Wikipedia</string>
 <string name="menu_context_view_imdb">Подробности на IMDb</string>
 <string name="menu_context_view_ep_imdb">Следующая серия на IMDb</string>
+<string name="menu_context_ext_resources">Внешние ресурсы</string>
 <string name="menu_context_mark_next_episode_as_seen">Отметить следующую серию просмотренной</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">автоматическое ежедневное резервное копирование</string>
@@ -50,6 +51,7 @@
 <string name="dialog_include_specials">Включить доп. видео в количество просмотренных</string>
 <string name="dialog_full_line_check">Вся строка помечает просмотренным</string>
 <string name="dialog_switch_swipe_direction">Проведите справа налево, чтобы вернуться назад</string>
+<string name="dialog_show_next_airing">Показать предстоящую проветривание вместо следующего эпизода</string>
 <string name="dialog_help">&#187; Не забывайте обновлять информацию о сериалах
 \n&#187; По длинному нажатию показывается меню
 \n&#187; Листайте влево, чтобы вернуться назад
@@ -79,6 +81,7 @@
 <string name="messages_seasons">Сезоны</string>
 <string name="messages_season">Сезон</string>
 <string name="messages_next_episode">Следующая серия:</string>
+<string name="messages_next_airing">Cледующая трансляция:</string>
 <string name="messages_no_new_eps">Новых серий нет</string>
 <string name="messages_season_completely_watched">Сезон полностью просмотрен</string>
 <string name="messages_deleted">удалено</string>

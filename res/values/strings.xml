@@ -25,9 +25,10 @@
 <string name="menu_exclude_seen">Exclude seen</string>
 <string name="menu_include_seen">Include seen</string>
 <string name="menu_context_view_serie_details">Show details</string>
-<string name="menu_context_view_wiki">Show on Wikipedia</string>
-<string name="menu_context_view_imdb">Show on IMDb</string>
-<string name="menu_context_view_ep_imdb">Episode on IMDb</string>
+<string name="menu_context_view_wiki">Search on Wikipedia</string>
+<string name="menu_context_view_imdb">IMDb show page</string>
+<string name="menu_context_view_ep_imdb">IMDb episode page</string>
+<string name="menu_context_ext_resources">External resources</string>
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Automatically perform daily backups</string>
@@ -50,6 +51,7 @@
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to mark episode</string>
 <string name="dialog_switch_swipe_direction">Swipe right-to-left to go back</string>
+<string name="dialog_show_next_airing">Show next airing instead of next episode\'s air date</string>
 <string name="dialog_help">&#187; Don\'t forget to update shows regularly
 \n&#187; Long-press items for more options
 \n&#187; Swipe left-to-right to go back
@@ -79,6 +81,7 @@
 <string name="messages_seasons">Seasons</string>
 <string name="messages_season">Season</string>
 <string name="messages_next_episode">Next episode:</string>
+<string name="messages_next_airing">Next airing:</string>
 <string name="messages_no_new_eps">No new episodes</string>
 <string name="messages_season_completely_watched">Season completely watched</string>
 <string name="messages_deleted">deleted</string>

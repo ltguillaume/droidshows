@@ -138,6 +138,9 @@ public class SerieEpisodes extends ListActivity {
 		private List<EpisodeRow> items;
 		private LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
+		private final String strAired = getString(R.string.messages_aired);
+		private final String strEp = (getString(R.string.messages_ep).isEmpty() ? "" : getString(R.string.messages_ep) +" ");
+		
 		public EpisodesAdapter(Context context, int textViewResourceId, List<EpisodeRow> episodes) {
 			super(context, textViewResourceId, episodes);
 			this.items = episodes;
@@ -164,14 +167,13 @@ public class SerieEpisodes extends ListActivity {
 			EpisodeRow ep = items.get(position);
 
 			if (holder.name != null) {
-				String name = (getString(R.string.messages_ep).isEmpty() ? "" : 
-					getString(R.string.messages_ep) +" ") + ep.name;
+				String name = strEp + ep.name;
 				holder.name.setText(name);
 			}
 			
 			if (holder.aired != null) {
 				if (!ep.aired.isEmpty())
-					holder.aired.setText(getString(R.string.messages_aired) + " "+ ep.aired);
+					holder.aired.setText(strAired + " "+ ep.aired);
 				else
 					holder.aired.setText("");
 				holder.aired.setEnabled(ep.airedDate != null &&

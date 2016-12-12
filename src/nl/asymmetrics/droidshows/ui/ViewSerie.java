@@ -90,7 +90,6 @@ public class ViewSerie extends Activity
 					
 			if (!network.equalsIgnoreCase("null")) {
 				TextView networkV = (TextView) findViewById(R.id.network);
-				if (network.endsWith("db")) network = network.substring(0, network.length()-2);
 				networkV.setText(network);
 			}
 	

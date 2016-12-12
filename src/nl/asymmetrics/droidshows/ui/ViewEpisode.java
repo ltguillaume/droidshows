@@ -77,7 +77,9 @@ public class ViewEpisode extends Activity
 			imdbId = c.getString(imdbIdCol);
 			c.close();
 	
-			setTitle(serieName +" "+ seasonNumber +"x"+ episodeNumber);				
+			setTitle(serieName +" - "
+					+ (getString(R.string.messages_ep).isEmpty() ? "" : getString(R.string.messages_ep) +" ")
+					+ seasonNumber +"x"+ (episodeNumber < 10 ? "0" : "") + episodeNumber);				
 			
 			TextView episodeNameV = (TextView) findViewById(R.id.episodeName);
 			episodeNameV.setText(episodeName);

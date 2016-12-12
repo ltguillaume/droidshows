@@ -28,6 +28,7 @@
 <string name="menu_context_view_wiki">Serie op Wikipedia</string>
 <string name="menu_context_view_imdb">Serie op IMDb</string>
 <string name="menu_context_view_ep_imdb">Aflevering op IMDb</string>
+<string name="menu_context_ext_resources">Externe bronnen</string>
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Automatisch dagelijks backups maken</string>
@@ -50,6 +51,7 @@
 <string name="dialog_include_specials">Specials meetellen in overzicht</string>
 <string name="dialog_full_line_check">Hele regel gebruiken voor afvinken</string>
 <string name="dialog_switch_swipe_direction">Veegrichting voor terug omdraaien</string>
+<string name="dialog_show_next_airing">Komende uitzending tonen i.p.v. datum volgende aflevering</string>
 <string name="dialog_help">&#187; Werk regelmatig de series bij
 \n&#187; Druk lang op items voor opties
 \n&#187; Veeg links-rechts om terug te gaan
@@ -79,6 +81,7 @@
 <string name="messages_seasons">Seizoenen</string>
 <string name="messages_season">Seizoen</string>
 <string name="messages_next_episode">Volgende:</string>
+<string name="messages_next_airing">Volgende:</string>
 <string name="messages_no_new_eps">Alles gezien</string>
 <string name="messages_season_completely_watched">Seizoen volledig gezien\n</string>
 <string name="messages_deleted">verwijderd</string>
