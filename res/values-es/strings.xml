@@ -28,7 +28,7 @@
 <string name="menu_context_view_wiki">Detalles en Wikipedia</string>
 <string name="menu_context_view_imdb">Detalles en IMDb</string>
 <string name="menu_context_view_ep_imdb">Próximo episodio en IMDb</string>
-<string name="menu_context_ext_resources">Recurcos externos</string>
+<string name="menu_context_ext_resources">Recursos externos</string>
 <string name="menu_context_mark_next_episode_as_seen">Marcar el siguiente episodio como visto</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Copia de seguridad diaria automática</string>

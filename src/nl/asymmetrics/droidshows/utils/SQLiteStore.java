@@ -885,43 +885,39 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	@Override
 	public void onCreate(SQLiteDatabase dbase) {
+		dbase.execSQL("CREATE TABLE IF NOT EXISTS droidseries (version VARCHAR);");
+		dbase.execSQL("INSERT INTO droidseries (version) VALUES ('0.1.5-7G2');");
 		// tabela dos directors
-		dbase.execSQL("CREATE TABLE IF NOT EXISTS directors ("+"serieId VARCHAR, "
-			+"episodeId VARCHAR, "+"director VARCHAR"+");");
+		dbase.execSQL("CREATE TABLE IF NOT EXISTS directors (serieId VARCHAR, episodeId VARCHAR, director VARCHAR);");
 		// tabela dos guestStars
-		dbase.execSQL("CREATE TABLE IF NOT EXISTS guestStars ("+"serieId VARCHAR, "
-			+"episodeId VARCHAR, "+"guestStar VARCHAR"+");");
+		dbase.execSQL("CREATE TABLE IF NOT EXISTS guestStars (serieId VARCHAR, episodeId VARCHAR, guestStar VARCHAR);");
 		// tabela dos writers
-		dbase.execSQL("CREATE TABLE IF NOT EXISTS writers ("+"serieId VARCHAR, "
-			+"episodeId VARCHAR, "+"writer VARCHAR"+");");
+		dbase.execSQL("CREATE TABLE IF NOT EXISTS writers (serieId VARCHAR, episodeId VARCHAR, writer VARCHAR);");
 		// tabela dos episodios
-		dbase.execSQL("CREATE TABLE IF NOT EXISTS episodes ("+"serieId VARCHAR, "+"id VARCHAR, "
-			+"combinedEpisodeNumber VARCHAR, "+"combinedSeason VARCHAR, "+"dvdChapter VARCHAR, "
-			+"dvdDiscId VARCHAR, "+"dvdEpisodeNumber VARCHAR, "+"dvdSeason VARCHAR, "
-			+"epImgFlag VARCHAR, "+"episodeName VARCHAR, "+"episodeNumber INT, "
-			+"firstAired VARCHAR, "+"imdbId VARCHAR, "+"language VARCHAR, "+"overview TEXT, "
-			+"productionCode VARCHAR, "+"rating VARCHAR, "+"seasonNumber INT, "
-			+"absoluteNumber VARCHAR, "+"filename VARCHAR,"+"lastUpdated VARCHAR, "
-			+"seasonId VARCHAR, "+"seen INT"+");");
+		dbase.execSQL("CREATE TABLE IF NOT EXISTS episodes (serieId VARCHAR, id VARCHAR, "
+			+"combinedEpisodeNumber VARCHAR, combinedSeason VARCHAR, dvdChapter VARCHAR, "
+			+"dvdDiscId VARCHAR, dvdEpisodeNumber VARCHAR, dvdSeason VARCHAR, "
+			+"epImgFlag VARCHAR, episodeName VARCHAR, episodeNumber INT, "
+			+"firstAired VARCHAR, imdbId VARCHAR, language VARCHAR, overview TEXT, "
+			+"productionCode VARCHAR, rating VARCHAR, seasonNumber INT, "
+			+"absoluteNumber VARCHAR, filename VARCHAR,lastUpdated VARCHAR, "
+			+"seasonId VARCHAR, seen INT);");
 		// tabela dos actores
-		dbase.execSQL("CREATE TABLE IF NOT EXISTS actors ("+"serieId VARCHAR, "+"actor VARCHAR"
-			+");");
+		dbase.execSQL("CREATE TABLE IF NOT EXISTS actors (serieId VARCHAR, actor VARCHAR);");
 		// tabela dos genres
-		dbase.execSQL("CREATE TABLE IF NOT EXISTS genres ("+"serieId VARCHAR, "+"genre VARCHAR"
-			+");");
+		dbase.execSQL("CREATE TABLE IF NOT EXISTS genres (serieId VARCHAR, genre VARCHAR);");
 		// tabela das seasons
-		dbase.execSQL("CREATE TABLE IF NOT EXISTS serie_seasons ("+"serieId VARCHAR, "
-			+"season VARCHAR"+");");
+		dbase.execSQL("CREATE TABLE IF NOT EXISTS serie_seasons (serieId VARCHAR, season VARCHAR);");
 		// create tables
-		dbase.execSQL("CREATE TABLE IF NOT EXISTS series ("+"id VARCHAR PRIMARY KEY, "
-			+"serieId VARCHAR, "+"language VARCHAR, "+"serieName VARCHAR, "+"banner VARCHAR, "
-			+"overview TEXT, "+"firstAired VARCHAR, "+"imdbId VARCHAR, "+"zap2ItId VARCHAR, "
-			+"airsDayOfWeek VARCHAR, "+"airsTime VARCHAR, "+"contentRating VARCHAR, "
-			+"network VARCHAR, "+"rating VARCHAR, "+"runtime VARCHAR, "+"status VARCHAR, "
-			+"fanart VARCHAR, "+"lastUpdated VARCHAR, "+"passiveStatus INTEGER DEFAULT 0, "+"poster VARCHAR,"
-			+"posterInCache VARCHAR, "+"posterThumb VARCHAR, "
-			+"seasonCount INTEGER, "+"unwatchedAired INTEGER, "+"unwatched INTEGER, "+"nextEpisode VARCHAR, "+"nextAir VARCHAR" 
-			+");");
+		dbase.execSQL("CREATE TABLE IF NOT EXISTS series (id VARCHAR PRIMARY KEY, "
+			+"serieId VARCHAR, language VARCHAR, serieName VARCHAR, banner VARCHAR, "
+			+"overview TEXT, firstAired VARCHAR, imdbId VARCHAR, zap2ItId VARCHAR, "
+			+"airsDayOfWeek VARCHAR, airsTime VARCHAR, contentRating VARCHAR, "
+			+"network VARCHAR, rating VARCHAR, runtime VARCHAR, status VARCHAR, "
+			+"fanart VARCHAR, lastUpdated VARCHAR, passiveStatus INTEGER DEFAULT 0, poster VARCHAR, "
+			+"posterInCache VARCHAR, posterThumb VARCHAR, "
+			+"seasonCount INTEGER, unwatchedAired INTEGER, unwatched INTEGER, nextEpisode VARCHAR, nextAir VARCHAR, "
+			+"extResources VARCHAR NOT NULL DEFAULT '');");
 	}
 
 	@Override

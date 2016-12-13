@@ -163,7 +163,7 @@ public class DroidShows extends ListActivity
 		main = findViewById(R.id.main);
 		db = SQLiteStore.getInstance(this);
 
-		updateDS = new Update(this);
+		updateDS = new Update(db);
 		if(updateDS.updateDroidShows())
 			db.updateShowStats();
 
