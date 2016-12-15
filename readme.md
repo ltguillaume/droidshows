@@ -8,7 +8,7 @@ __Some pointers__:
 * Swipe left-to-right to go back  
 __In Shows Overview__:
 * Tap poster for next episode info
-* Double tap for external resource (to *[url]s directly, or list)
+* Double tap for external resource (to \*[url]s directly, or list)
 * Long-press poster for show info
 * Swipe right-to-left to mark next as seen  
 __In Show Details__:
@@ -27,7 +27,7 @@ __Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/
 ![DroidShows Screenshot](/icon/screenshot.png)  
 __Shows Overview__:  
 \+ Add your own per-show external resources (links to Wikia, blogs etc.)  
-\+ Put a "*" before external source URLs to open them directly via a double tap on the poster (e.g. "*battlestarwiki.org")  
+\+ Put a "\*" before external source URLs to open them directly via a double tap on the poster (e.g. "\*battlestarwiki.org")  
 \+ Optionally show "1x1 | Next airing: 1x4 on Jan 1, 2017" (Left = next episode for you to watch; Right = first episode to be aired)  
 \+ Showing "[aired unwatched] of [total unwatched]"  
 \+ Added separate archive/backlog to keep shows you're not currently watching out of your way  
@@ -36,7 +36,7 @@ __Shows Overview__:
 \+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list  
 \+ Option in [About] to only update shows' last season  
 \+ Context items to view show details on Wikipedia and IMDb  
-\+ Tap cover for show info, long-press for next episode's info  
+\+ Tap cover for next episode's info, long-press for show info, double tap for external resources  
 \+ Swipe right-to-left to mark next episode as seen (shows confirmation toast)  
 \+ Option to include specials in unwatched count  
 \+ Mark next episode seen via swipe now vibrates  
