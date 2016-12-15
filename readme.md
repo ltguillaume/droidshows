@@ -7,8 +7,9 @@ __Some pointers__:
 * Long-press items for more options
 * Swipe left-to-right to go back  
 __In Shows Overview__:
-* Tap poster for show info
-* Long-press poster for next episode's info
+* Tap poster for next episode info
+* Double tap for external resource (to *[url]s directly, or list)
+* Long-press poster for show info
 * Swipe right-to-left to mark next as seen  
 __In Show Details__:
 * Tap poster for full-screen view
@@ -25,6 +26,9 @@ __Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/
 
 ![DroidShows Screenshot](/icon/screenshot.png)  
 __Shows Overview__:  
+\+ Add your own per-show external resources (links to Wikia, blogs etc.)  
+\+ Put a "*" before external source URLs to open them directly via a double tap on the poster (e.g. "*battlestarwiki.org")  
+\+ Optionally show "1x1 | Next airing: 1x4 on Jan 1, 2017" (Left = next episode for you to watch; Right = first episode to be aired)  
 \+ Showing "[aired unwatched] of [total unwatched]"  
 \+ Added separate archive/backlog to keep shows you're not currently watching out of your way  
 \+ Added icon ic_menu_view for show/hide toggled  

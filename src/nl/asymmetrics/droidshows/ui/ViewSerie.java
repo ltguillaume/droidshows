@@ -203,7 +203,7 @@ public class ViewSerie extends Activity
 	public void IMDbDetails(View v) {
 		if (swipeDetect.value != 0) return;
 		String uri = this.uri;
-		if (imdbId.indexOf("tt") == 0) {
+		if (imdbId.startsWith("tt")) {
 			uri += "title/"+ imdbId;
 		} else {
 			uri += "find?q="+ serieName;
@@ -223,7 +223,6 @@ public class ViewSerie extends Activity
 				}
 			})
 			.show();
-		namesList.setCanceledOnTouchOutside(true);
 	}
 	
 	public void posterView(View v) {

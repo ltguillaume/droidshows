@@ -380,7 +380,6 @@ public class AddSerie extends ListActivity
 			}
 		})
 		.show();
-		sOverview.setCanceledOnTouchOutside(true);
 		
 		for (String serieId : series)
 			if (serieId.equals(sToAdd.getId())) {

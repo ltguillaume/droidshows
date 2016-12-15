@@ -3,6 +3,7 @@ package nl.asymmetrics.droidshows.ui;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -18,18 +19,23 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 public class ViewEpisode extends Activity
 {
 	private String episodeName = "",
 			serieName = "",
+			serieId = "",
+			episodeId = "",
 			imdbId = "",
 			uri = "imdb:///";
+	private int seen = 0;
 	private List<String> writers = new ArrayList<String>();
 	private List<String> directors = new ArrayList<String>();
 	private List<String> guestStars = new ArrayList<String>();
 	private SQLiteStore db;
+	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	
 	@Override
@@ -40,11 +46,11 @@ public class ViewEpisode extends Activity
 		db = SQLiteStore.getInstance(this);
 		View view = findViewById(R.id.viewEpisodes);
 		view.setOnTouchListener(swipeDetect);
-		String serieId = getIntent().getStringExtra("serieId");
+		serieId = getIntent().getStringExtra("serieId");
 		serieName = getIntent().getStringExtra("serieName");
-		String episodeId = getIntent().getStringExtra("episodeId");
+		episodeId = getIntent().getStringExtra("episodeId");
 		
-		String query = "SELECT seasonNumber, episodeNumber, episodeName, overview, rating, firstAired, imdbId FROM episodes "
+		String query = "SELECT seasonNumber, episodeNumber, episodeName, overview, rating, firstAired, imdbId, seen FROM episodes "
 			+ "WHERE id = '"+ episodeId +"' AND serieId='"+ serieId +"'";
 		Cursor c = db.Query(query);
 		c.moveToFirst();
@@ -56,6 +62,7 @@ public class ViewEpisode extends Activity
 			int ratingCol = c.getColumnIndex("rating");
 			int airedCol = c.getColumnIndex("firstAired");
 			int imdbIdCol = c.getColumnIndex("imdbId");
+			int seenCol = c.getColumnIndex("seen");
 	
 			String firstAired = c.getString(airedCol);
 			if (!firstAired.equals("") && !firstAired.equals("null")) {
@@ -75,8 +82,9 @@ public class ViewEpisode extends Activity
 			String overview = c.getString(overviewCol);
 			String rating = c.getString(ratingCol);
 			imdbId = c.getString(imdbIdCol);
+			seen = c.getInt(seenCol);
 			c.close();
-	
+			
 			setTitle(serieName +" - "
 					+ (getString(R.string.messages_ep).isEmpty() ? "" : getString(R.string.messages_ep) +" ")
 					+ seasonNumber +"x"+ (episodeNumber < 10 ? "0" : "") + episodeNumber);				
@@ -91,6 +99,17 @@ public class ViewEpisode extends Activity
 				ratingV.setText("IMDb Info");
 			ratingV.setOnTouchListener(swipeDetect);
 			
+			CheckBox seenCheckBox = (CheckBox) findViewById(R.id.seen);
+			TextView seenDate = (TextView) findViewById(R.id.seendate);
+			seenCheckBox.setChecked(seen > 0);
+			if (seen > 1)	// If seen value is a date
+				try {
+					seenDate.setTextColor(seenDate.getTextColors().getDefaultColor());
+					seenDate.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
+				} catch (ParseException e) { Log.e(SQLiteStore.TAG, e.getMessage()); }
+			else
+				seenDate.setText("");
+
 			if (!firstAired.equalsIgnoreCase("null") && !firstAired.equals("")) {
 				TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
 				firstAiredV.setText(firstAired);
@@ -102,7 +121,7 @@ public class ViewEpisode extends Activity
 				overviewV.setText(overview);
 				findViewById(R.id.overviewField).setVisibility(View.VISIBLE);
 			}
-
+			
 			Cursor cwriters = db.Query("SELECT writer FROM writers WHERE episodeId='" + episodeId
 				+"' AND serieId='"+ serieId +"'");
 			cwriters.moveToFirst();
@@ -166,7 +185,7 @@ public class ViewEpisode extends Activity
 	public void IMDbDetails(View v) {
 		if (swipeDetect.value != 0) return;
 		String uri = this.uri;
-		if (imdbId.indexOf("tt") == 0) {
+		if (imdbId.startsWith("tt")) {
 			uri += "title/"+ imdbId;
 		} else {
 			uri += "find?q="+ serieName.replaceAll(" \\(....\\)", "") +" "+ episodeName;
@@ -197,7 +216,24 @@ public class ViewEpisode extends Activity
 				}
 			})
 			.show();
-		namesList.setCanceledOnTouchOutside(true);
+	}
+	
+	public void check(View v) {
+		if (v != null) {
+			CheckBox c = (CheckBox) findViewById(R.id.seen);
+			TextView d = (TextView) findViewById(R.id.seendate);
+			if (c.isChecked()) {
+				d.setTextColor(getResources().getColor(android.R.color.white));
+				Calendar cal = Calendar.getInstance();
+				seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
+				try { d.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
+				} catch (ParseException e) { e.printStackTrace(); }
+			} else {
+				d.setText("");
+				seen = 0;
+			}
+		}
+		db.updateUnwatchedEpisode(serieId, episodeId, seen);
 	}
 
 	@Override

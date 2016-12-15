@@ -56,8 +56,9 @@
 \n&#187; Long-press items for more options
 \n&#187; Swipe left-to-right to go back
 \n\nIn Shows Overview:
-\n&#187; Tap poster for show info
-\n&#187; Long-press poster for next episode\'s info
+\n&#187; Tap poster for next episode info
+\n&#187; Double tap poster for external resource (to *[url]s directly, or list)
+\n&#187; Long-press poster for show info
 \n&#187; Swipe right-to-left to mark next as seen
 \n\nIn Show Details:
 \n&#187; Tap poster for full-screen view
