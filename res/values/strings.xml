@@ -36,6 +36,7 @@
 <string name="dialog_backup_done">Database backup completed</string>
 <string name="dialog_backup_failed">Unable to perform backup!</string>
 <string name="dialog_change_language">Synopsis Language</string>
+<string name="dialog_use_mirror">Use TheTVDB mirror (try this if updates are too slow)</string>
 <string name="dialog_restore">Restore</string>
 <string name="dialog_restore_now">Restoring a backup will remove all information currently in DroidShows. Continue?</string>
 <string name="dialog_restore_done">Database restored successfully</string>
@@ -95,7 +96,7 @@
 <string name="messages_specials">Specials</string>
 <string name="messsages_view_ep_details">Episode details</string>
 <string name="messsages_edit_seen_date">Edit seen date</string>
-<string name="messages_thetvdb_con_error">Error connecting to TheTVDB.com. Please try again.</string>
+<string name="messages_thetvdb_con_error">Error connecting to TheTVDB. Try again.</string>
 <string name="messages_marked_seen">marked as seen</string>
 <string name="messages_marked_unseen">marked as unseen</string>
 <string name="messages_context_mark_seasonunseen">Mark all episodes as unseen</string>

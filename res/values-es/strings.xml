@@ -36,6 +36,7 @@
 <string name="dialog_backup_done">Completada la copia de seguridad de la base de datos</string>
 <string name="dialog_backup_failed">¡No se ha podido hacer la copia de seguridad!</string>
 <string name="dialog_change_language">Idioma de las sinopsis</string>
+<string name="dialog_use_mirror">Utilice TheTVDB mirror (intente si las actualizaciones van demasiado lento)</string>
 <string name="dialog_restore">Restaurar</string>
 <string name="dialog_restore_now">Restaurar una copia de seguridad eliminará toda la información que tiene actualmente en DroidShows. ¿Desea continuar?</string> 
 <string name="dialog_restore_done">Base de datos restaurada correctamente</string>
@@ -95,7 +96,7 @@
 <string name="messages_specials">Especiales</string>
 <string name="messsages_view_ep_details">Ver detalles del episodio</string>
 <string name="messsages_edit_seen_date">Editar la fecha de visto</string>
-<string name="messages_thetvdb_con_error">Error al conectar a TheTVDB.com. Por favor inténtalo de nuevo.</string>
+<string name="messages_thetvdb_con_error">Error al conectar a TheTVDB. Inténtalo de nuevo.</string>
 <string name="messages_marked_seen">marcado como visto</string>
 <string name="messages_marked_unseen">marcar como no visto</string>
 <string name="messages_context_mark_seasonunseen">Marcar todos los episodios como no visto</string>

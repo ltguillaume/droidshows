@@ -8,7 +8,6 @@ import android.net.NetworkInfo;
 //import android.util.Log;
 public class Utils
 {
-	// private String TAG = getString(R.string.layout_app_name);
 	public boolean isNetworkAvailable(Activity mActivity) {
 		Context context = mActivity.getApplicationContext();
 		ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

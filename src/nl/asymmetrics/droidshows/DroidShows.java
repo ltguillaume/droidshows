@@ -31,6 +31,9 @@ import nl.asymmetrics.droidshows.utils.Utils;
 import nl.asymmetrics.droidshows.utils.SQLiteStore.NextEpisode;
 import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -130,6 +133,8 @@ public class DroidShows extends ListActivity
 	private static final String LANGUAGE_CODE_NAME = "language";
 	private static final String SHOW_NEXT_AIRING = "show_next_airing";
 	public static boolean showNextAiring;
+	private static final String USE_MIRROR = "use_mirror";
+	public static boolean useMirror;
 	public static String langCode;
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
@@ -179,6 +184,7 @@ public class DroidShows extends ListActivity
 		lastStatsUpdateArchive = sharedPrefs.getString(LAST_STATS_UPDATE_ARCHIVE_NAME, "");
 		langCode = sharedPrefs.getString(LANGUAGE_CODE_NAME, getString(R.string.lang_code));
 		showNextAiring = sharedPrefs.getBoolean(SHOW_NEXT_AIRING, false);
+		useMirror = sharedPrefs.getBoolean(USE_MIRROR, false);
 
 		series = new ArrayList<TVShowItem>();
 		seriesAdapter = new SeriesAdapter(this, R.layout.row, series);
@@ -193,7 +199,6 @@ public class DroidShows extends ListActivity
 		}
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
-		setFastScroll();
 		searchV = (EditText) findViewById(R.id.search_text);
 		searchV.addTextChangedListener(new TextWatcher() {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -400,6 +405,8 @@ public class DroidShows extends ListActivity
 		switchSwipeDirectionBox.setChecked(switchSwipeDirection);
 		CheckBox showNextAiringBox = (CheckBox) about.findViewById(R.id.show_next_airing);
 		showNextAiringBox.setChecked(showNextAiring);
+		CheckBox useMirrorBox = (CheckBox) about.findViewById(R.id.use_mirror);
+		useMirrorBox.setChecked(useMirror);
 		m_AlertDlg = new AlertDialog.Builder(this)
 			.setView(about)
 			.setTitle(R.string.layout_app_name).setIcon(R.drawable.icon)
@@ -448,6 +455,9 @@ public class DroidShows extends ListActivity
 			case R.id.show_next_airing:
 				showNextAiring ^= true;
 				updateShowStats();
+				break;
+			case R.id.use_mirror:
+				useMirror ^= true;
 				break;
 			case R.id.change_language:
 				AlertDialog.Builder changeLang = new AlertDialog.Builder(this);
@@ -819,7 +829,7 @@ public class DroidShows extends ListActivity
 		final EditText input = new EditText(this);
 		final String extResourcesInput = extResourcesString;
 		input.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_MULTI_LINE|InputType.TYPE_TEXT_VARIATION_URI);
-		AlertDialog extSourcesList = new AlertDialog.Builder(this)
+		new AlertDialog.Builder(this)
 		.setTitle(R.string.menu_context_ext_resources)
 		.setItems(extResources, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int item) {
@@ -874,7 +884,7 @@ public class DroidShows extends ListActivity
 	private void browseExtResource(String url) {
 		url = url.trim();
 		if (url.startsWith("*"))
-			url = url.substring(1);
+			url = url.substring(1).trim();
 		if (!url.startsWith("http"))
 			url = "http://"+ url;
 		Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -882,22 +892,22 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void updateSerie(final String serieId, int position) {
-		oldListPosition = position;
-		final String serieName = seriesAdapter.getItem(position).getName();
-		if (utils.isNetworkAvailable(DroidShows.this)) {
+		if (!utils.isNetworkAvailable(DroidShows.this)) {
+			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
+		} else {
+			oldListPosition = position;
+			final String serieName = seriesAdapter.getItem(position).getName();
 			Runnable updateserierun = new Runnable() {
 				public void run() {
-					theTVDB = new TheTVDB("8AC675886350B3C3");
+					theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
 					String toastMsg = getString(R.string.messages_thetvdb_con_error);
-					if (theTVDB.getMirror() != null) {
-						Serie sToUpdate = theTVDB.getSerie(serieId, langCode);
-						if (sToUpdate != null) {
-							dialogMsg = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
-							runOnUiThread(changeMessage);
-							db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
-							updatePosterThumb(serieId, sToUpdate);
-							toastMsg = serieName +" "+ getString(R.string.menu_context_updated);
-						}
+					Serie sToUpdate = theTVDB.getSerie(serieId, langCode);
+					if (sToUpdate != null) {
+						dialogMsg = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
+						runOnUiThread(changeMessage);
+						db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+						updatePosterThumb(serieId, sToUpdate);
+						toastMsg = serieName +" "+ getString(R.string.menu_context_updated);
 					}
 					m_ProgressDialog.dismiss();
 					Looper.prepare();
@@ -910,9 +920,6 @@ public class DroidShows extends ListActivity
 			m_ProgressDialog = ProgressDialog.show(DroidShows.this, serieName, getString(R.string.messages_update_serie), true, false);
 			updateShowTh = new Thread(updateserierun);
 			updateShowTh.start();
-		} else {
-			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
-			m_ProgressDialog.dismiss();
 		}
 	}
 	
@@ -1004,24 +1011,31 @@ public class DroidShows extends ListActivity
 			};
 			final Runnable updateallseries = new Runnable() {
 				public void run() {
-					theTVDB = new TheTVDB("8AC675886350B3C3");
+					theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
+					String updatesFailed = "";
 					for (int i = 0; i < series.size(); i++) {
-						Log.d(SQLiteStore.TAG, "Getting updated info from TheTVDB for TV show " + series.get(i).getName() +" ["+ i +"/"+ (series.size()-1) +"]");
+						Log.d(SQLiteStore.TAG, "Getting updated info from TheTVDB "+ (useMirror ? "MIRROR " : "")
+							+"for TV show " + series.get(i).getName() +" ["+ (i+1) +"/"+ (series.size()) +"]");
 						dialogMsg = series.get(i).getName() + "\u2026";
+						updateAllSeriesPD.incrementProgressBy(1);
 						runOnUiThread(updateMessage);
 						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), langCode);
-						if (sToUpdate != null) {
-//							Log.d(SQLiteStore.TAG, "Updating the database");
+						if (sToUpdate == null) {
+							updatesFailed += dialogMsg +" ";
+						} else {
 							try {
 								db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 								updatePosterThumb(series.get(i).getSerieId(), sToUpdate);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
-							updateAllSeriesPD.incrementProgressBy(1);
-						} else {
-							Log.e(SQLiteStore.TAG, "Skipped this show (no data received)");
 						}
+					}
+					if (updatesFailed.length() > 0) {
+						final String updatesFailedResult = updatesFailed;
+						runOnUiThread(new Runnable() {
+							public void run() {errorNotify(updatesFailedResult);}
+						});
 					}
 					listView.post(new Runnable() {
 						public void run() {getSeries((seriesAdapter.isFiltered ? 2 : showArchive));}
@@ -1059,6 +1073,18 @@ public class DroidShows extends ListActivity
 			alertDialog.show();
 		}
 	}
+	
+	@SuppressWarnings("deprecation")
+	private void errorNotify(String error) {
+		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+		PendingIntent appIntent = PendingIntent.getActivity(getApplicationContext(), 0, null, 0);
+		Notification notification = new Notification(R.drawable.icon,
+			getString(R.string.messages_thetvdb_con_error), System.currentTimeMillis());
+		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.messages_thetvdb_con_error),
+			error, appIntent);
+		notification.flags |= Notification.FLAG_AUTO_CANCEL;
+		mNotificationManager.notify(0, notification);
+	}
 
 	private void getSeries(int show) {
 		main.setVisibility(View.INVISIBLE);
@@ -1078,6 +1104,7 @@ public class DroidShows extends ListActivity
 			Log.e(SQLiteStore.TAG, "Error populating TVShowItems or no shows added yet");
 			e.printStackTrace();
 		}
+		setFastScroll();
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
 	}
@@ -1154,6 +1181,7 @@ public class DroidShows extends ListActivity
 		ed.putString(LAST_STATS_UPDATE_ARCHIVE_NAME, lastStatsUpdateArchive);
 		ed.putString(LANGUAGE_CODE_NAME, langCode);
 		ed.putBoolean(SHOW_NEXT_AIRING, showNextAiring);
+		ed.putBoolean(USE_MIRROR, useMirror);
 		ed.commit();
 	}
 	

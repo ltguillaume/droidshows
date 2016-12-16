@@ -36,6 +36,7 @@
 <string name="dialog_backup_done">Резервная копия создана</string>
 <string name="dialog_backup_failed">Невозможно создать резервную копию!</string>
 <string name="dialog_change_language">Язык краткого описания</string>
+<string name="dialog_use_mirror">Используйте TheTVDB зеркало (попробуйте, если обновления идут слишком медленно)</string>
 <string name="dialog_restore">Восстановить</string>
 <string name="dialog_restore_now">Востановление безвовратно удалит текущие данные. Продолжить?</string>
 <string name="dialog_restore_done">Данные успешно восстановлены</string>
@@ -95,7 +96,7 @@
 <string name="messages_specials">Доп. видео</string>
 <string name="messsages_view_ep_details">Показать информацию о серии</string>
 <string name="messsages_edit_seen_date">Изменить дату просмотра</string>
-<string name="messages_thetvdb_con_error">Ошибка подключения к TheTVDB.com. Попробуйте снова.</string>
+<string name="messages_thetvdb_con_error">Ошибка подключения к TheTVDB. Попробуйте снова.</string>
 <string name="messages_marked_seen">пометить просмотренным</string>
 <string name="messages_marked_unseen">пометить непросмотренным</string>
 <string name="messages_context_mark_seasonunseen">Пометить все серии просмотренными</string>

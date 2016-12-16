@@ -137,7 +137,7 @@ public class AddSerie extends ListActivity
 			if (search_series == null) {
 				m_ProgressDialog.dismiss();
 				Looper.prepare();
-				Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
+					Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
 				Looper.loop();
 			} else {
 				runOnUiThread(reloadSearchSeries);
@@ -151,12 +151,8 @@ public class AddSerie extends ListActivity
 		m_ProgressDialog = ProgressDialog.show(AddSerie.this, getString(R.string.messages_title_search_series), getString(R.string.messages_search_series), true, true);
 		new Thread(new Runnable() {
 			public void run() {
-				theTVDB = new TheTVDB("8AC675886350B3C3");
-				if (theTVDB.getMirror() != null) {
-					searchSeries(searchQuery);
-				} else {
-					Log.e(SQLiteStore.TAG, "Error searching for TV shows");
-				}
+				theTVDB = new TheTVDB("8AC675886350B3C3", DroidShows.useMirror);
+				searchSeries(searchQuery);
 			}
 		}).start();
 	}
@@ -202,7 +198,7 @@ public class AddSerie extends ListActivity
 				if (sToAdd == null) {
 					m_ProgressDialog.dismiss();
 					Looper.prepare();
-					Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
+						Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
 					Looper.loop();
 				} else {
 					Log.d(SQLiteStore.TAG, "Adding TV show: getting the poster");

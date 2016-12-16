@@ -36,6 +36,7 @@
 <string name="dialog_backup_done">Backup voltooid</string>
 <string name="dialog_backup_failed">Kon backup niet voltooien!</string>
 <string name="dialog_change_language">Taal Synopsis</string>
+<string name="dialog_use_mirror">Gebruik TheTVDB mirror (probeer dit als updates te langzaam gaan)</string>
 <string name="dialog_restore">Herstellen</string>
 <string name="dialog_restore_now">Het herstellen van een database zal de huidige informatie in DroidShows verwijderen. Doorgaan?</string>
 <string name="dialog_restore_done">Database hersteld</string>
@@ -95,7 +96,7 @@
 <string name="messages_specials">Specials</string>
 <string name="messsages_view_ep_details">Informatie aflevering</string>
 <string name="messsages_edit_seen_date">Datum gezien wijzigen</string>
-<string name="messages_thetvdb_con_error">Kan geen verbinding maken met TheTVDB.com. Probeer het nog eens.</string>
+<string name="messages_thetvdb_con_error">Kan geen verbinding maken met TheTVDB. Probeer opnieuw.</string>
 <string name="messages_marked_seen">gemarkeerd als gezien</string>
 <string name="messages_marked_unseen">gemarkeerd als niet gezien</string>
 <string name="messages_context_mark_seasonunseen">Nog geen afleveringen gezien</string>

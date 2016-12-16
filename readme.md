@@ -70,9 +70,10 @@ __Update__:
 \* Prevent double episode entries  
   
 __Other__:  
+\+ Option to use a mirror if TheTVDB.com is too slow in your region  
 \+ Menu (overflow) button should show up in Android 3.0+  
 \+ Dutch, German, Spanish and Russian translation  
-\+ Choose which synopsis language to fetch from TheTVDb  
+\+ Choose which synopsis language to fetch from TheTVDB  
 \+ Translucent background  
 \+ Swipe left-to-right acts as back button  
 \+ Animations that help understand the app's structure  

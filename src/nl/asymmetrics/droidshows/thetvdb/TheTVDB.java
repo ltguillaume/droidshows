@@ -1,73 +1,29 @@
 package nl.asymmetrics.droidshows.thetvdb;
 
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.Date;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import nl.asymmetrics.droidshows.thetvdb.model.*;
 import nl.asymmetrics.droidshows.thetvdb.utils.*;
+import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import android.text.TextUtils;
 import android.util.Log;
 
 public class TheTVDB {
-	private String TAG = "DroidShows";
-    private String apiKey;
-    private String xmlMirror;
-    private String bannerMirror;
+	private static final String main = "http://thetvdb.com";
+	private static final String mirror = "http://thetvdb.plexapp.com";
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	private String apiKey;
+	private String xmlMirror;
+	private String bannerMirror;
 
-    public TheTVDB(String apiKey) {
-        Mirrors mirrors = new Mirrors(apiKey);
-        xmlMirror = mirrors.getMirror(Mirrors.TYPE_XML) + "/api/";
-        bannerMirror = mirrors.getMirror(Mirrors.TYPE_BANNER) + "/banners/";
-        //zipMirror = mirrors.getMirror(Mirrors.TYPE_ZIP);
-
+    public TheTVDB(String apiKey, boolean useMirror) {
         this.apiKey = apiKey;
-    }
-
-    public String getMirror() {
-        return xmlMirror;
-    }
-
-    public Episode getEpisode(String id, int seasonNbr, int episodeNbr, String language) {
-        Episode episode = null;
-
-        try {
-            XMLParser xmlparser = new XMLParser();
-            String urlToXML = xmlMirror + apiKey + "/series/" + id + "/default/" + seasonNbr + "/" + episodeNbr + "/" + (language!=null?language+".xml":"");
-            List<String> XMLData = xmlparser.parse(urlToXML);
-
-            episode = parseEpisode(XMLData);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-
-        return episode;
-    }
-
-    public String getSeasonYear(String id, int seasonNbr, String language) {
-        String year = null;
-
-        Episode episode = getEpisode(id, seasonNbr, 1, language);
-        if (episode != null) {
-            if (episode.getFirstAired() != null && !TextUtils.isEmpty(episode.getFirstAired()) ) {
-                try {
-                    Date date = dateFormat.parse(episode.getFirstAired());
-                    if (date != null) {
-                        year = date.getYear()+1900 +"";
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage());
-                }
-            }
-        }
-
-        return year;
+        this.xmlMirror = (useMirror ? mirror : main) +"/api/";
+        this.bannerMirror = (useMirror ? mirror : main) +"/banners/";
     }
 
     @SuppressWarnings("unchecked")
@@ -92,7 +48,8 @@ public class TheTVDB {
             }
 
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            Log.e(SQLiteStore.TAG, e.getMessage());
+            return null;
         }
         return results;
     }
@@ -100,15 +57,13 @@ public class TheTVDB {
     @SuppressWarnings("unchecked")
     public Serie getSerie(String id, String language) {
         Serie serie = null;
-        //<mirrorpath_zip>/api/<apikey>/series/<seriesid>/all/<language>.zip
-        //http://thetvdb.com/api/8AC675886350B3C3/series/79349/all/en.xml
 
         try {
             XMLParser xmlparser = new XMLParser();
             String urlToXML = xmlMirror + apiKey + "/series/" + id + "/all/" + (language!=null?language+".xml":"");
             List<String> XMLData = xmlparser.parse(urlToXML);
             if (XMLData == null) {
-                return null;
+            	return null;
             }
 
             serie = parseSeries(XMLData);
@@ -125,24 +80,20 @@ public class TheTVDB {
                         episodes.add(episode);
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "Error gathering the episodes info from the XML file");
+                    Log.e(SQLiteStore.TAG, "Error gathering the episodes info from the XML file");
+                    return null;
                 }
             }
 
             serie.setEpisodes(episodes);
-
-            //gets the season numbers
             serie.setNSeasons(parseNSeasons(episodes));
         } catch (Exception e) {
-        Log.e(TAG, "Error gathering the TV show info from the XML file");
+        	Log.e(SQLiteStore.TAG, "Error gathering the TV show info from the XML file");
+        	return null;
         }
 
         return serie;
     }
-
-    /*
-     * Private functions that help do stuff
-     */
 
     private Serie parseSeries(List<String> xmldata) {
         Serie series = null;

@@ -36,6 +36,7 @@
 <string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>
 <string name="dialog_change_language">Übersichtsprache</string>
+<string name="dialog_use_mirror">TheTVDB mirror verwenden (versuchen Sie dies, wenn Updates zu langsam gehen)</string>
 <string name="dialog_restore">Datenwiederherstellung</string>
 <string name="dialog_restore_now">Während der Datenwiederherstellung werden alle Daten in DroidShows überschrieben. Fortfahren?</string>
 <string name="dialog_restore_done">Datenwiederherstellung fertig</string>
@@ -95,7 +96,7 @@
 <string name="messages_specials">Besondere Folgen</string>
 <string name="messsages_view_ep_details">Folgeinformation zeigen</string>
 <string name="messsages_edit_seen_date">Anschau-Zeitpunkt bearbeiten</string>
-<string name="messages_thetvdb_con_error">Kann nicht mit TheTVDB.com verbinden. Probieren Sie bitte noch mal.</string>
+<string name="messages_thetvdb_con_error">Kann nicht mit TheTVDB verbinden. Probieren Sie bitte noch mal.</string>
 <string name="messages_marked_seen">gesehen markiert</string>
 <string name="messages_marked_unseen">nicht gesehen markiert</string>
 <string name="messages_context_mark_seasonunseen">Alle Folgen ungesehen markieren</string>
