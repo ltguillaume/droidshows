@@ -36,7 +36,7 @@
 <string name="dialog_backup_done">Completada la copia de seguridad de la base de datos</string>
 <string name="dialog_backup_failed">¡No se ha podido hacer la copia de seguridad!</string>
 <string name="dialog_change_language">Idioma de las sinopsis</string>
-<string name="dialog_use_mirror">Utilice TheTVDB mirror (intente si las actualizaciones van demasiado lento)</string>
+<string name="dialog_use_mirror">Utilizar el mirror TheTVDB (Intente esto si las actualizaciones son demasiado lentas)</string>
 <string name="dialog_restore">Restaurar</string>
 <string name="dialog_restore_now">Restaurar una copia de seguridad eliminará toda la información que tiene actualmente en DroidShows. ¿Desea continuar?</string> 
 <string name="dialog_restore_done">Base de datos restaurada correctamente</string>

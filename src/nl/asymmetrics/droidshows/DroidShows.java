@@ -753,11 +753,13 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void episodeDetails(int position) {
-		String episodeId = db.getNextEpisodeId(seriesAdapter.getItem(position).getSerieId());
+		String serieId = seriesAdapter.getItem(position).getSerieId();
+		String episodeId = db.getNextEpisodeId(serieId);
 		if (!episodeId.equals("-1")) {
+			backFromSeasonSerieId = serieId;
 			Intent viewEpisode = new Intent(DroidShows.this, ViewEpisode.class);
-			viewEpisode.putExtra("serieId", seriesAdapter.getItem(position).getSerieId());
 			viewEpisode.putExtra("serieName", seriesAdapter.getItem(position).getName());
+			viewEpisode.putExtra("serieId", serieId);
 			viewEpisode.putExtra("episodeId", episodeId);
 			startActivity(viewEpisode);
 		}
@@ -899,22 +901,24 @@ public class DroidShows extends ListActivity
 			final String serieName = seriesAdapter.getItem(position).getName();
 			Runnable updateserierun = new Runnable() {
 				public void run() {
-					theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
-					String toastMsg = getString(R.string.messages_thetvdb_con_error);
+					if (theTVDB == null)
+						theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
 					Serie sToUpdate = theTVDB.getSerie(serieId, langCode);
-					if (sToUpdate != null) {
+					if (sToUpdate == null) {
+						errorNotify(serieName);
+					} else {
 						dialogMsg = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
 						runOnUiThread(changeMessage);
 						db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 						updatePosterThumb(serieId, sToUpdate);
-						toastMsg = serieName +" "+ getString(R.string.menu_context_updated);
+						Looper.prepare();
+							Toast.makeText(getApplicationContext(),
+								serieName +" "+ getString(R.string.menu_context_updated),
+								Toast.LENGTH_SHORT).show();
+							listView.post(updateShowView(serieId));
+						Looper.loop();
 					}
 					m_ProgressDialog.dismiss();
-					Looper.prepare();
-						Toast.makeText(getApplicationContext(), toastMsg, Toast.LENGTH_SHORT).show();
-						listView.post(updateShowView(serieId));
-					Looper.loop();
-					theTVDB = null;
 				}
 			};
 			m_ProgressDialog = ProgressDialog.show(DroidShows.this, serieName, getString(R.string.messages_update_serie), true, false);
@@ -1011,7 +1015,8 @@ public class DroidShows extends ListActivity
 			};
 			final Runnable updateallseries = new Runnable() {
 				public void run() {
-					theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
+					if (theTVDB == null)
+						theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
 					String updatesFailed = "";
 					for (int i = 0; i < series.size(); i++) {
 						Log.d(SQLiteStore.TAG, "Getting updated info from TheTVDB "+ (useMirror ? "MIRROR " : "")
@@ -1077,7 +1082,7 @@ public class DroidShows extends ListActivity
 	@SuppressWarnings("deprecation")
 	private void errorNotify(String error) {
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		PendingIntent appIntent = PendingIntent.getActivity(getApplicationContext(), 0, null, 0);
+		PendingIntent appIntent = PendingIntent.getActivity(DroidShows.this, 0, null, 0);
 		Notification notification = new Notification(R.drawable.icon,
 			getString(R.string.messages_thetvdb_con_error), System.currentTimeMillis());
 		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.messages_thetvdb_con_error),

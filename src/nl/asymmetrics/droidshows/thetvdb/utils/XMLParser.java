@@ -35,11 +35,12 @@ public class XMLParser {
                     con.setRequestMethod("GET");
                     con.setConnectTimeout(5000);
                     con.setReadTimeout(5000);
-                    if(con.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                        InputStream inputStream = new BufferedInputStream(url.openStream());
+                    if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                        InputStream inputStream = new BufferedInputStream(con.getInputStream());
                         InputSource inputSourceURL = new InputSource(inputStream);
                         xr.parse(inputSourceURL);
                     }
+                    con.disconnect();
 
                     List<String> XMLData = handler.getParsedData();
 

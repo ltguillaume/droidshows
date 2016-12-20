@@ -16,14 +16,14 @@ public class TheTVDB {
 	private static final String main = "http://thetvdb.com";
 	private static final String mirror = "http://thetvdb.plexapp.com";
 
-	private String apiKey;
-	private String xmlMirror;
-	private String bannerMirror;
+	private static String apiKey;
+	private static String xmlMirror;
+	private static String bannerMirror;
 
-    public TheTVDB(String apiKey, boolean useMirror) {
-        this.apiKey = apiKey;
-        this.xmlMirror = (useMirror ? mirror : main) +"/api/";
-        this.bannerMirror = (useMirror ? mirror : main) +"/banners/";
+    public TheTVDB(String newApiKey, boolean useMirror) {
+        apiKey = newApiKey;
+        xmlMirror = (useMirror ? mirror : main) +"/api/";
+        bannerMirror = (useMirror ? mirror : main) +"/banners/";
     }
 
     @SuppressWarnings("unchecked")

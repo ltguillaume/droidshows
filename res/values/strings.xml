@@ -52,7 +52,7 @@
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to mark episode</string>
 <string name="dialog_switch_swipe_direction">Swipe right-to-left to go back</string>
-<string name="dialog_show_next_airing">Show next airing instead of next episode\'s air date</string>
+<string name="dialog_show_next_airing">Show date of next airing episode instead of next episode\'s</string>
 <string name="dialog_help">&#187; Don\'t forget to update shows regularly
 \n&#187; Long-press items for more options
 \n&#187; Swipe left-to-right to go back

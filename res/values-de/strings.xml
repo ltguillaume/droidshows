@@ -28,7 +28,7 @@
 <string name="menu_context_view_wiki">Die Serie in der Wikipedia</string>
 <string name="menu_context_view_imdb">Die Serie in der IMDb</string>
 <string name="menu_context_view_ep_imdb">Nächste Folge in der IMDb</string>
-<string name="menu_context_ext_resources">Externe Ressourcen</string>
+<string name="menu_context_ext_resources">Externe Quellen</string>
 <string name="menu_context_mark_next_episode_as_seen">Folgende Folge gesehen markieren</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Automatische tägliche Datensicherung</string>
@@ -36,7 +36,7 @@
 <string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>
 <string name="dialog_change_language">Übersichtsprache</string>
-<string name="dialog_use_mirror">TheTVDB mirror verwenden (versuchen Sie dies, wenn Updates zu langsam gehen)</string>
+<string name="dialog_use_mirror">Benutze einen TheTVDB mirror (ausprobieren, falls Updates zu lange dauern)</string>
 <string name="dialog_restore">Datenwiederherstellung</string>
 <string name="dialog_restore_now">Während der Datenwiederherstellung werden alle Daten in DroidShows überschrieben. Fortfahren?</string>
 <string name="dialog_restore_done">Datenwiederherstellung fertig</string>
@@ -52,14 +52,14 @@
 <string name="dialog_include_specials">Besondere Folgen in Übersicht zeigen</string>
 <string name="dialog_full_line_check">Ganze Zeile markiert als gesehen</string>
 <string name="dialog_switch_swipe_direction">Von rechts nach links wischen um zurück zu gehen</string>
-<string name="dialog_show_next_airing">Zeige anstehende Lüften statt der nächsten Episode</string>
+<string name="dialog_show_next_airing">Zeige als nächstes laufende Episode anstelle des Datums der nächsten Episode</string>
 <string name="dialog_help">&#187; Aktualisiere Serien regelmäßig
 \n&#187; Lange antippen um mehrere Aktione anzuzeigen
 \n&#187; Von links nach rechts wischen um zurück zu gehen
 \n\nIn Serien Übersicht:
 \n&#187; Auf ein Poster tippen um Infos zur nächsten Episode anzuzeigen
-\n&#187; Doppeltippen um Externe Ressource zu navigieren (direkt nach *[url]s, oder die Liste)
-\n&#187; Lange antippen um Infos anzuzeigen
+\n&#187; Poster doppeltippen für externe Quellen (für *[url]s direkt oder für Listen)
+\n&#187; Poster lange gedrückt halten für weitere Informationen
 \n&#187; Von rechts nach links wischen um die nächste Folge als gesehen zu markieren
 \n\nIn Serieneinzelheiten:
 \n&#187; Auf ein Poster tippen um es größer zu machen
@@ -83,7 +83,7 @@
 <string name="messages_seasons">Staffeln</string>
 <string name="messages_season">Staffel</string>
 <string name="messages_next_episode">Nächste Folge:</string>
-<string name="messages_next_airing">Nächste Ausstrahlung:</string>
+<string name="messages_next_airing">Nächste Sendung:</string>
 <string name="messages_no_new_eps">Keine neue Folgen</string>
 <string name="messages_season_completely_watched">Staffel komplett gesehen\n</string>
 <string name="messages_deleted">gelöscht</string>
