@@ -1082,7 +1082,7 @@ public class DroidShows extends ListActivity
 	@SuppressWarnings("deprecation")
 	private void errorNotify(String error) {
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-		PendingIntent appIntent = PendingIntent.getActivity(DroidShows.this, 0, null, 0);
+		PendingIntent appIntent = PendingIntent.getActivity(DroidShows.this, 0, new Intent(), 0);
 		Notification notification = new Notification(R.drawable.icon,
 			getString(R.string.messages_thetvdb_con_error), System.currentTimeMillis());
 		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.messages_thetvdb_con_error),
