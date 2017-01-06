@@ -193,7 +193,7 @@ public class DroidShows extends ListActivity
 		listView.setDivider(null);
 		if (savedInstanceState != null) {
 			showArchive = savedInstanceState.getInt("showArchive");
-			getSeries((savedInstanceState.getBoolean("filtering") ? 2 : showArchive));
+			getSeries((savedInstanceState.getBoolean("searching") ? 2 : showArchive));
 		} else {
 			getSeries(showArchive);
 		}
@@ -283,11 +283,10 @@ public class DroidShows extends ListActivity
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		boolean searching = (seriesAdapter.isFiltered || findViewById(R.id.search).getVisibility() == View.VISIBLE);
-			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
-				.setEnabled(!searching);
-			menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
-				.setEnabled(!searching);
+		menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
+			.setEnabled(!searching());
+		menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
+			.setEnabled(!searching());
 
 		if (showArchive == 1) {
 			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
@@ -478,7 +477,7 @@ public class DroidShows extends ListActivity
 			public void run() {
 				db.updateShowStats();
 				listView.post(new Runnable() {
-					public void run() {getSeries((seriesAdapter.isFiltered ? 2 : showArchive));}
+					public void run() {getSeries((searching() ? 2 : showArchive));}
 				});
 			}
 		};
@@ -906,11 +905,13 @@ public class DroidShows extends ListActivity
 					Serie sToUpdate = theTVDB.getSerie(serieId, langCode);
 					if (sToUpdate == null) {
 						errorNotify(serieName);
+						m_ProgressDialog.dismiss();
 					} else {
 						dialogMsg = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
 						runOnUiThread(changeMessage);
 						db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
 						updatePosterThumb(serieId, sToUpdate);
+						m_ProgressDialog.dismiss();
 						Looper.prepare();
 							Toast.makeText(getApplicationContext(),
 								serieName +" "+ getString(R.string.menu_context_updated),
@@ -918,7 +919,6 @@ public class DroidShows extends ListActivity
 							listView.post(updateShowView(serieId));
 						Looper.loop();
 					}
-					m_ProgressDialog.dismiss();
 				}
 			};
 			m_ProgressDialog = ProgressDialog.show(DroidShows.this, serieName, getString(R.string.messages_update_serie), true, false);
@@ -1043,7 +1043,7 @@ public class DroidShows extends ListActivity
 						});
 					}
 					listView.post(new Runnable() {
-						public void run() {getSeries((seriesAdapter.isFiltered ? 2 : showArchive));}
+						public void run() {getSeries((searching() ? 2 : showArchive));}
 					});
 					updateAllSeriesPD.dismiss();
 					theTVDB = null;
@@ -1279,7 +1279,7 @@ public class DroidShows extends ListActivity
 
 	@Override
 	public void onBackPressed() {
-		if (seriesAdapter.isFiltered || findViewById(R.id.search).getVisibility() == View.VISIBLE)
+		if (searching())
 			clearFilter(null);
 		else if (showArchive == 1)
 			toggleArchive();
@@ -1289,7 +1289,7 @@ public class DroidShows extends ListActivity
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		outState.putBoolean("filtering", seriesAdapter.isFiltered || findViewById(R.id.search).getVisibility() == View.VISIBLE);
+		outState.putBoolean("searching", searching());
 		outState.putInt("showArchive", showArchive);
 		if (m_ProgressDialog != null)
 			m_ProgressDialog.dismiss();
@@ -1306,6 +1306,10 @@ public class DroidShows extends ListActivity
 		}
 	}
 
+	private boolean searching() {
+		return (seriesAdapter.isFiltered || findViewById(R.id.search).getVisibility() == View.VISIBLE);
+	}
+	
 	public class SeriesAdapter extends ArrayAdapter<TVShowItem> {
 		private List<TVShowItem> items;
 		private ShowsFilter filter;
