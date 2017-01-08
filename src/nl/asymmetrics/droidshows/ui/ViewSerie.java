@@ -214,7 +214,7 @@ public class ViewSerie extends Activity
 	
 	public void IMDbNames(View v) {
 		if (swipeDetect.value != 0) return;
-		AlertDialog namesList = new AlertDialog.Builder(this)
+		new AlertDialog.Builder(this)
 			.setTitle(R.string.menu_context_view_imdb)
 			.setItems(actors.toArray(new CharSequence[actors.size()]), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
