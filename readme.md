@@ -88,7 +88,7 @@ __Other__:
 \* Fixed UI glitches/styles  
 \* Code clean-up (all layouts revised)  
   
-©2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPLv3  
+&copy;2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPLv3  
 Modified by [Mikael Berthe](http://gitorious.org/droidseries/mckaels-droidseries)  
-©2014-2016 Guillaume under GPLv3 ([previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume))  
+&copy;2014-2017 Guillaume under GPLv3 ([previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume))  
 New icon is a mix of work by [Thrasos Varnava](http://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)
