@@ -20,7 +20,7 @@
 <string name="menu_context_updated">actualizado</string>
 <string name="menu_context_delete">Borrar</string>
 <string name="menu_context_add_serie">Añade una serie</string>
-<string name="menu_show_archive">Mostrar el archivo</string>
+<string name="menu_show_archive">Ver las series archivadas</string>
 <string name="menu_show_current">Muestra las series actuales</string>
 <string name="menu_exclude_seen">Ocultar las completadas</string>
 <string name="menu_include_seen">Mostrar las completadas</string>
@@ -50,11 +50,11 @@
 <string name="dialog_update_speedup">Puedes acelerar este proceso con la opción en Menú &gt; Opciones.</string>
 <string name="dialog_last_season">Actualiza sólo la última temporada de las series</string>
 <string name="dialog_include_specials">Cuenta los especiales como episodios no vistos</string>
-<string name="dialog_full_line_check">Toca en toda la linea para marcar un ep.</string>
+<string name="dialog_full_line_check">Toca en toda la línea para marcar un ep.</string>
 <string name="dialog_switch_swipe_direction">Retrocede deslizando de derecha a izquierda</string>
 <string name="dialog_show_next_airing">Muestra la próxima emisión en lugar del próximo episodio</string>
 <string name="dialog_help">» No olvides actualizar las series de forma regular \n» Deja pulsado los elementos ver para más opciones \n» Desliza de izquierda a derecha para retroceder. \n\nEn la Lista de series: \n» Toca el póster para ver la información del próximo episodio \n» Haz doble toque para recurso externo (a *[url]s directamente, o lista) \n» Deja pulsado el póster para mostrar la información de la serie \n» Desliza de derecha a izquierda para marcar el siguiente como visto \n\nDetalles de la serie: \n» Toca el póster para verlo a pantalla completa \n» Toca el póster a pantalla completa para ver un art fan \n» Deja pulsado el póster a pantalla completa para abrirlo con otra app \n\nDetalles de la serie/episodio: \n» Toca la puntuación de IMDb para verla en IMDb</string>
-<string name="menu_archive">Ver el Archivo</string>
+<string name="menu_archive">Archivar</string>
 <string name="menu_unarchive">Recuperar</string>
 <string name="messages_title_updating_series">Actualizando las series</string>
 <string name="messages_title_updating_db">Actualizando base de datos</string>
