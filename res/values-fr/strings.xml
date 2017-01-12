@@ -48,7 +48,7 @@
 <string name="dialog_search">Rechercher:</string>
 <string name="dialog_update_series">Êtes-vous sûr de vouloir mettre à jour tous les séries listées maintenant ?</string>
 <string name="dialog_update_speedup">Vous pouvez accélérer ce processus dans Menu &gt; Options.</string>
-<string name="dialog_last_season">Mettre à jour seulement la dernière saison</string>
+<string name="dialog_latest_season">Mettre à jour seulement la dernière saison</string>
 <string name="dialog_include_specials">Inclure les épisodes spéciaux dans le décompte des épisodes non vus</string>
 <string name="dialog_full_line_check">Utiliser une ligne entière pour marquer l\'épisode</string>
 <string name="dialog_switch_swipe_direction">Glissez votre doigt de droite à gauche pour revenir en arrière</string>

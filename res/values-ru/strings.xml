@@ -48,7 +48,7 @@
 <string name="dialog_search">Искать:</string>
 <string name="dialog_update_series">Начать обновление информации о сериалах?</string>
 <string name="dialog_update_speedup">\n\nВы можете ускорить процесс в Меню > Настройки.</string>
-<string name="dialog_last_season">Обновить только последние сезоны</string>
+<string name="dialog_latest_season">Обновить только последние сезоны</string>
 <string name="dialog_include_specials">Включить доп. видео в количество просмотренных</string>
 <string name="dialog_full_line_check">Вся строка помечает просмотренным</string>
 <string name="dialog_switch_swipe_direction">Проведите справа налево, чтобы вернуться назад</string>

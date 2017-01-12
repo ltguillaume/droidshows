@@ -48,7 +48,7 @@
 <string name="dialog_search">Search string:</string>
 <string name="dialog_update_series">Are you sure you want to update all listed shows now?</string>
 <string name="dialog_update_speedup">\n\nYou can speed up this process with the option in Menu > Options.</string>
-<string name="dialog_last_season">Update shows\' last season only</string>
+<string name="dialog_latest_season">Update shows\' latest season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to mark episode</string>
 <string name="dialog_switch_swipe_direction">Swipe right-to-left to go back</string>

@@ -272,10 +272,20 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return series;
 	}
 
+	public EpisodeRow getEpisodeRow(String serieId, int seasonNumber, String episodeId) {
+		return getEpisodeRows(serieId, seasonNumber, episodeId).get(0);
+	}
+
 	public List<EpisodeRow> getEpisodeRows(String serieId, int seasonNumber) {
+		return getEpisodeRows(serieId, seasonNumber, "");
+	}
+	
+	private List<EpisodeRow> getEpisodeRows(String serieId, int seasonNumber, String episodeId) {
 		List<EpisodeRow> episodes = new ArrayList<EpisodeRow>();
-		Cursor c = Query("SELECT id, episodeName, episodeNumber, seen, firstAired FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="
-			+ seasonNumber +" ORDER BY episodeNumber ASC");
+		Cursor c = Query("SELECT id, episodeName, episodeNumber, seen, firstAired FROM episodes WHERE "
+			+ (episodeId.isEmpty() ? "" : "id="+ episodeId +" AND ")
+			+ "serieId='"+ serieId +"' AND seasonNumber="+ seasonNumber
+			+" ORDER BY episodeNumber ASC");
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {

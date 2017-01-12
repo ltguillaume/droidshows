@@ -34,7 +34,7 @@ __Shows Overview__:
 \+ Added icon ic_menu_view for show/hide toggled  
 \+ Status of show in details, and † in overview if show is not continuing  
 \+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list  
-\+ Option in [About] to only update shows' last season  
+\+ Option in [About] to only update shows' latest season  
 \+ Context items to view show details on Wikipedia and IMDb  
 \+ Tap cover for next episode's info, long-press for show info, double tap for external resources  
 \+ Swipe right-to-left to mark next episode as seen (shows confirmation toast)  
@@ -72,7 +72,7 @@ __Update__:
 __Other__:  
 \+ Option to use a mirror if TheTVDB.com is too slow in your region  
 \+ Menu (overflow) button should show up in Android 3.0+  
-\+ Dutch, German, Spanish and Russian translation  
+\+ Dutch, French, German, Spanish and Russian translations  
 \+ Choose which synopsis language to fetch from TheTVDB  
 \+ Translucent background  
 \+ Swipe left-to-right acts as back button  

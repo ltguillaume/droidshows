@@ -48,7 +48,7 @@
 <string name="dialog_search">Suchbegriff:</string>
 <string name="dialog_update_series">Jetzt alle Serien aktualisieren?</string>
 <string name="dialog_update_speedup">\n\nSie können es in Menu > Einstellungen.</string>
-<string name="dialog_last_season">Nur letzte Folge aktualisieren</string>
+<string name="dialog_latest_season">Nur letzte Folge aktualisieren</string>
 <string name="dialog_include_specials">Besondere Folgen in Übersicht zeigen</string>
 <string name="dialog_full_line_check">Ganze Zeile markiert als gesehen</string>
 <string name="dialog_switch_swipe_direction">Von rechts nach links wischen um zurück zu gehen</string>

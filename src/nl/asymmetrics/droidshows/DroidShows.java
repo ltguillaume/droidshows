@@ -116,10 +116,10 @@ public class DroidShows extends ListActivity
 	private static int sortOption;
 	private static final String EXCLUDE_SEEN_PREF_NAME = "exclude_seen";
 	private static boolean excludeSeen;
-	private static final String LAST_SEASON_PREF_NAME = "last_season";
+	private static final String LATEST_SEASON_PREF_NAME = "last_season";
 	private static final int UPDATE_ALL_SEASONS = 0;
-	private static final int UPDATE_LAST_SEASON_ONLY = 1;
-	private static int lastSeasonOption;
+	private static final int UPDATE_LATEST_SEASON_ONLY = 1;
+	private static int latestSeasonOption;
 	private static final String INCLUDE_SPECIALS_NAME = "include_specials";
 	public static boolean includeSpecialsOption;
 	private static final String FULL_LINE_CHECK_NAME = "full_line";
@@ -176,7 +176,7 @@ public class DroidShows extends ListActivity
 		autoBackupOption = sharedPrefs.getBoolean(AUTO_BACKUP_PREF_NAME, false);
 		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
 		excludeSeen = sharedPrefs.getBoolean(EXCLUDE_SEEN_PREF_NAME, false);
-		lastSeasonOption = sharedPrefs.getInt(LAST_SEASON_PREF_NAME, UPDATE_LAST_SEASON_ONLY);
+		latestSeasonOption = sharedPrefs.getInt(LATEST_SEASON_PREF_NAME, UPDATE_LATEST_SEASON_ONLY);
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
 		switchSwipeDirection = sharedPrefs.getBoolean(SWITCH_SWIPE_DIRECTION, false);
@@ -394,8 +394,8 @@ public class DroidShows extends ListActivity
 		changeLangB.setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
 		CheckBox autoBackupCheckbox = (CheckBox) about.findViewById(R.id.auto_backup);
 		autoBackupCheckbox.setChecked(autoBackupOption);
-		CheckBox lastSeasonCheckbox = (CheckBox) about.findViewById(R.id.last_season);
-		lastSeasonCheckbox.setChecked(lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+		CheckBox latestSeasonCheckbox = (CheckBox) about.findViewById(R.id.latest_season);
+		latestSeasonCheckbox.setChecked(latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
 		CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials);
 		includeSpecialsCheckbox.setChecked(includeSpecialsOption);
 		CheckBox fullLineCheckbox = (CheckBox) about.findViewById(R.id.full_line_check);
@@ -438,8 +438,8 @@ public class DroidShows extends ListActivity
 			case R.id.auto_backup:
 				autoBackupOption ^= true;
 				break;
-			case R.id.last_season:
-				lastSeasonOption ^= 1;
+			case R.id.latest_season:
+				latestSeasonOption ^= 1;
 				break;
 			case R.id.include_specials:
 				includeSpecialsOption ^= true;
@@ -909,7 +909,7 @@ public class DroidShows extends ListActivity
 					} else {
 						dialogMsg = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
 						runOnUiThread(changeMessage);
-						db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+						db.updateSerie(sToUpdate, latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
 						updatePosterThumb(serieId, sToUpdate);
 						m_ProgressDialog.dismiss();
 						Looper.prepare();
@@ -1029,7 +1029,7 @@ public class DroidShows extends ListActivity
 							updatesFailed += dialogMsg +" ";
 						} else {
 							try {
-								db.updateSerie(sToUpdate, lastSeasonOption == UPDATE_LAST_SEASON_ONLY);
+								db.updateSerie(sToUpdate, latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
 								updatePosterThumb(series.get(i).getSerieId(), sToUpdate);
 							} catch (Exception e) {
 								e.printStackTrace();
@@ -1050,7 +1050,7 @@ public class DroidShows extends ListActivity
 				}
 			};
 			updateAllSeriesPD = new ProgressDialog(this);
-			String updateMessageAD = getString(R.string.dialog_update_series) + (lastSeasonOption == UPDATE_ALL_SEASONS ? getString(R.string.dialog_update_speedup) : "");
+			String updateMessageAD = getString(R.string.dialog_update_series) + (latestSeasonOption == UPDATE_ALL_SEASONS ? getString(R.string.dialog_update_speedup) : "");
 			AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
 				.setTitle(R.string.messages_title_update_series)
 				.setMessage(updateMessageAD)
@@ -1178,7 +1178,7 @@ public class DroidShows extends ListActivity
 		ed.putBoolean(AUTO_BACKUP_PREF_NAME, autoBackupOption);
 		ed.putInt(SORT_PREF_NAME, sortOption);
 		ed.putBoolean(EXCLUDE_SEEN_PREF_NAME, excludeSeen);
-		ed.putInt(LAST_SEASON_PREF_NAME, lastSeasonOption);
+		ed.putInt(LATEST_SEASON_PREF_NAME, latestSeasonOption);
 		ed.putBoolean(INCLUDE_SPECIALS_NAME, includeSpecialsOption);
 		ed.putBoolean(FULL_LINE_CHECK_NAME, fullLineCheckOption);
 		ed.putBoolean(SWITCH_SWIPE_DIRECTION, switchSwipeDirection);

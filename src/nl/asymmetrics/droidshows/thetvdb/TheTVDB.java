@@ -9,7 +9,6 @@ import java.util.StringTokenizer;
 import nl.asymmetrics.droidshows.thetvdb.model.*;
 import nl.asymmetrics.droidshows.thetvdb.utils.*;
 import nl.asymmetrics.droidshows.utils.SQLiteStore;
-import android.text.TextUtils;
 import android.util.Log;
 
 public class TheTVDB {
@@ -112,39 +111,18 @@ public class TheTVDB {
                                 series.setLanguage(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<SeriesName>") && !xmldata.get(i+1).contentEquals("</SeriesName>") ) {
-                                String tmpSName = xmldata.get(i+1).trim();
-                                int count = 1;
-
-                                while(!xmldata.get(i+count).contentEquals("</SeriesName>")) {
-                                        count++;
-                                        if(!xmldata.get(i+count).contentEquals("</SeriesName>")) {
-                                                tmpSName += xmldata.get(i+count).trim();
-                                        }
-                                }
-
-                                series.setSerieName(tmpSName);
+                                series.setSerieName(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<banner>") && !xmldata.get(i+1).contentEquals("</banner>") ) {
-                                String s = xmldata.get(i+1).trim();
-                                if (!TextUtils.isEmpty(s)) {
-                                        series.setBanner(bannerMirror + s);
-                                }
+                                String tmpBanner = xmldata.get(i+1).trim();
+                        		if (!tmpBanner.isEmpty())
+                                	series.setBanner(bannerMirror + tmpBanner);
                         }
                         else if ( xmldata.get(i).contentEquals("<Overview>") && !xmldata.get(i+1).contentEquals("</Overview>") ) {
-                        	String tmpOverview = "";
-                        	do {
-                        		i++;
-                        		tmpOverview += xmldata.get(i);
-                        	} while (!xmldata.get(i+1).contentEquals("</Overview>"));
-                            series.setOverview( tmpOverview );
+                            	series.setOverview(xmldata.get(i+1).trim() );
                         }
                         else if ( xmldata.get(i).contentEquals("<FirstAired>") && !xmldata.get(i+1).contentEquals("</FirstAired>") ) {
-                        	String tmpFirstAired = "";
-                        	do {
-                        		i++;
-                        		tmpFirstAired += xmldata.get(i).trim();
-                        	} while(!xmldata.get(i+1).contentEquals("</FirstAired>"));
-                            series.setFirstAired(tmpFirstAired);
+                       			series.setFirstAired(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<IMDB_ID>") && !xmldata.get(i+1).contentEquals("</IMDB_ID>") ) {
                                 series.setImdbId(xmldata.get(i+1).trim());
@@ -183,19 +161,17 @@ public class TheTVDB {
                                 series.setStatus(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<fanart>") && !xmldata.get(i+1).contentEquals("</fanart>") ) {
-                                String s = xmldata.get(i+1).trim();
-                                if (!TextUtils.isEmpty(s)) {
-                                    series.setFanart(bannerMirror + s);
-                                }
+                                String tmpBanner = xmldata.get(i+1).trim();
+                        		if (!tmpBanner.isEmpty())
+                                    series.setFanart(bannerMirror + tmpBanner);
                         }
                         else if ( xmldata.get(i).contentEquals("<lastupdated>") && !xmldata.get(i+1).contentEquals("</lastupdated>") ) {
                                 series.setLastUpdated(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<poster>") && !xmldata.get(i+1).contentEquals("</poster>") ) {
-                                String s = xmldata.get(i+1).trim();
-                                if (!TextUtils.isEmpty(s)) {
-                                    series.setPoster(bannerMirror + s);
-                                }
+                                String tmpPoster = xmldata.get(i+1).trim();
+                                if (!tmpPoster.isEmpty())
+                                    series.setPoster(bannerMirror + tmpPoster);
                         }
                 }
 
@@ -251,12 +227,7 @@ public class TheTVDB {
                                 episode.setEpisodeNumber(Integer.parseInt(xmldata.get(i+1).trim()));
                         }
                         else if ( xmldata.get(i).contentEquals("<FirstAired>") && !xmldata.get(i+1).contentEquals("</FirstAired>") ) {
-                        	String tmpFirstAired = "";
-                        	do {
-                        		i++;
-                        		tmpFirstAired += xmldata.get(i).trim();
-                        	} while (!xmldata.get(i+1).contentEquals("</FirstAired>"));
-                            episode.setFirstAired(tmpFirstAired);
+                        		episode.setFirstAired(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<GuestStars>") && !xmldata.get(i+1).contentEquals("</GuestStars>") ) {
                                 episode.setGuestStars( parseList(xmldata.get(i+1).trim(), "|,") );
@@ -268,12 +239,7 @@ public class TheTVDB {
                                 episode.setLanguage(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<Overview>") && !xmldata.get(i+1).contentEquals("</Overview>") ) {
-                        	String tmpOverview = "";
-                        	do {
-                        		i++;
-                        		tmpOverview += xmldata.get(i);
-                        	} while (!xmldata.get(i+1).contentEquals("</Overview>"));
-                        	episode.setOverview( tmpOverview );
+                        		episode.setOverview(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<ProductionCode>") && !xmldata.get(i+1).contentEquals("</ProductionCode>") ) {
                                 episode.setProductionCode(xmldata.get(i+1).trim());
@@ -291,10 +257,9 @@ public class TheTVDB {
                                 episode.setAbsoluteNumber(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<filename>") && !xmldata.get(i+1).contentEquals("</filename>") ) {
-                                String s = xmldata.get(i+1).trim();
-                                if (!TextUtils.isEmpty(s)) {
-                                    episode.setFilename(bannerMirror + s);
-                                }
+                                String tmpFilename = xmldata.get(i+1).trim();
+                                if (!tmpFilename.isEmpty())
+                                    episode.setFilename(bannerMirror + tmpFilename);
                         }
                         else if ( xmldata.get(i).contentEquals("<lastupdated>") && !xmldata.get(i+1).contentEquals("</lastupdated>") ) {
                                 episode.setLastUpdated(xmldata.get(i+1).trim());
