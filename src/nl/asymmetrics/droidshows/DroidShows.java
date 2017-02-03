@@ -1242,11 +1242,14 @@ public class DroidShows extends ListActivity
 								public void run() {seriesAdapter.notifyDataSetChanged();}
 							});
 							if (isCancelled()) return null;
-							if (showNextAiring && 0 < unwatchedAired && unwatchedAired < unwatched) {
-								Log.d(SQLiteStore.TAG, "Should now change to showNextAiring");
+							if (showNextAiring && 0 < unwatchedAired) {
 								NextEpisode nextEpisode = db.getNextEpisode(serieId);
 								String nextEpisodeString = db.getNextEpisodeString(nextEpisode, true);
 								db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +", nextEpisode='"+ nextEpisodeString +"' WHERE id="+ serieId);
+								serie.setNextEpisode(nextEpisodeString);
+								runOnUiThread(new Runnable() {
+									public void run() {seriesAdapter.notifyDataSetChanged();}
+								});
 							} else
 								db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +" WHERE id="+ serieId);
 						}
