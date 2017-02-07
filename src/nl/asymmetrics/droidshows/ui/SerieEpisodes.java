@@ -43,6 +43,7 @@ public class SerieEpisodes extends ListActivity {
 	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
 	private SQLiteStore db;
 	private DatePickerDialog dateDialog;
+	private int backFromEpisode = -1;
 
 	/* Context Menus */
 	private static final int VIEWEP_CONTEXT = Menu.FIRST;
@@ -126,6 +127,7 @@ public class SerieEpisodes extends ListActivity {
 			}
 		} else {
 			try {
+				backFromEpisode = position;
 				startViewEpisode(episodes.get(position).id);
 			} catch (Exception e) {
 				Log.e(SQLiteStore.TAG, e.getMessage());
@@ -256,5 +258,15 @@ public class SerieEpisodes extends ListActivity {
 	public void onBackPressed() {
 		super.onBackPressed();
 		overridePendingTransition(R.anim.left_enter, R.anim.left_exit);
+	}
+
+	@Override
+	public void onRestart() {
+		super.onRestart();
+		if (backFromEpisode != -1) {
+			episodes.set(backFromEpisode, db.getEpisodeRow(serieId, seasonNumber, episodes.get(backFromEpisode).id));
+			episodesAdapter.notifyDataSetChanged();
+			backFromEpisode = -1;
+		}
 	}
 }

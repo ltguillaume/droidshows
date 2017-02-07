@@ -7,11 +7,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import android.text.TextUtils;
-
 public class XMLHandler extends DefaultHandler{
 
     private List<String> XMLData = new ArrayList<String>();
+    private boolean merge = false;
 
     public List<String> getParsedData() {
         return this.XMLData;
@@ -36,6 +35,7 @@ public class XMLHandler extends DefaultHandler{
      * <tag attribute="attributeValue">*/
     @Override
     public void startElement(String namespaceURI, String localName, String qName, Attributes atts) throws SAXException {
+        this.merge = false;
         this.XMLData.add("<" + localName + ">");
     }
 
@@ -43,7 +43,10 @@ public class XMLHandler extends DefaultHandler{
      * </tag> */
     @Override
     public void endElement(String namespaceURI, String localName, String qName) throws SAXException {
-        this.XMLData.add("</" + localName + ">");
+    	if (this.merge)
+    		this.XMLData.set(this.XMLData.size()-1, this.XMLData.get(this.XMLData.size()-1).trim());
+        this.merge = false;
+    	this.XMLData.add("</" + localName + ">");
     }
 
     /** Gets be called on the following structure:
@@ -51,8 +54,11 @@ public class XMLHandler extends DefaultHandler{
     @Override
     public void characters(char ch[], int start, int length) {
         String tmp = new String(ch, start, length);
-        if ( !TextUtils.isEmpty(tmp.trim()) ){
-            this.XMLData.add(tmp);
-        }
+    	if (this.merge) {
+    		this.XMLData.set(this.XMLData.size()-1, this.XMLData.get(this.XMLData.size()-1) + tmp);
+    	} else {
+    		this.XMLData.add(tmp);
+    	}
+    	this.merge = true;
     }
 }

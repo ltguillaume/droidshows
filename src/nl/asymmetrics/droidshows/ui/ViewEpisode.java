@@ -207,7 +207,7 @@ public class ViewEpisode extends Activity
 		else
 			return;
 
-		AlertDialog namesList = new AlertDialog.Builder(this)
+		new AlertDialog.Builder(this)
 			.setTitle(R.string.menu_context_view_imdb)
 			.setItems(names.toArray(new CharSequence[names.size()]), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {

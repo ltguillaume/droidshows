@@ -48,7 +48,7 @@
 <string name="dialog_search">Zoekterm:</string>
 <string name="dialog_update_series">Weet je zeker dat je alle series in deze lijst nu wilt bijwerken?</string>
 <string name="dialog_update_speedup">\n\nDit kan sneller met de optie in Menu > Opties.</string>
-<string name="dialog_last_season">Alleen laatste seizoenen bijwerken</string>
+<string name="dialog_latest_season">Alleen laatste seizoenen bijwerken</string>
 <string name="dialog_include_specials">Specials meetellen in overzicht</string>
 <string name="dialog_full_line_check">Hele regel gebruiken voor afvinken</string>
 <string name="dialog_switch_swipe_direction">Veegrichting voor terug omdraaien</string>
