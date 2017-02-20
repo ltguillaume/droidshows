@@ -11,7 +11,7 @@
 <string name="menu_undo">Deshacer</string>
 <string name="menu_add_serie">Añade una serie</string>
 <string name="menu_update">Actualiza las series</string>
-<string name="menu_search">Busca series</string>
+<string name="menu_search">Busca</string>
 <string name="menu_sort_az">Ordenar por nombre</string>
 <string name="menu_sort_last_unseen">Ordenar por no visto</string>
 <string name="menu_about">Opciones</string>
@@ -24,6 +24,8 @@
 <string name="menu_show_current">Muestra las series actuales</string>
 <string name="menu_exclude_seen">Ocultar las completadas</string>
 <string name="menu_include_seen">Mostrar las completadas</string>
+<string name="menu_log">Registro</string>
+<string name="menu_close_log">Cerca registro</string>
 <string name="menu_context_view_serie_details">Detalles de la serie</string>
 <string name="menu_context_view_wiki">Detalles en Wikipedia</string>
 <string name="menu_context_view_imdb">Detalles en IMDb</string>

@@ -11,7 +11,7 @@
 <string name="menu_undo">Undo</string>
 <string name="menu_add_serie">Add a show</string>
 <string name="menu_update">Update shows</string>
-<string name="menu_search">Search shows</string>
+<string name="menu_search">Search</string>
 <string name="menu_sort_az">Sort by name</string>
 <string name="menu_sort_last_unseen">Sort by unseen</string>
 <string name="menu_about">Options</string>
@@ -24,6 +24,8 @@
 <string name="menu_show_current">Show current</string>
 <string name="menu_exclude_seen">Exclude seen</string>
 <string name="menu_include_seen">Include seen</string>
+<string name="menu_log">Log</string>
+<string name="menu_close_log">Close log</string>
 <string name="menu_context_view_serie_details">Show details</string>
 <string name="menu_context_view_wiki">Search on Wikipedia</string>
 <string name="menu_context_view_imdb">IMDb show page</string>

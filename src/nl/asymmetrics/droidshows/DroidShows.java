@@ -86,7 +86,8 @@ public class DroidShows extends ListActivity
 	private static final int SORT_MENU_ITEM = TOGGLE_EXCLUDE_SEEN_MENU_ITEM + 1;
 	private static final int SEARCH_MENU_ITEM = SORT_MENU_ITEM + 1;
 	private static final int UNDO_MENU_ITEM = SEARCH_MENU_ITEM + 1;
-	private static final int ADD_SERIE_MENU_ITEM = UNDO_MENU_ITEM + 1;
+	private static final int LOG_MODE_ITEM = UNDO_MENU_ITEM + 1;
+	private static final int ADD_SERIE_MENU_ITEM = LOG_MODE_ITEM + 1;
 	private static final int UPDATEALL_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
 	private static final int OPTIONS_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
 	private static final int EXIT_MENU_ITEM = OPTIONS_MENU_ITEM + 1;
@@ -156,6 +157,7 @@ public class DroidShows extends ListActivity
 	private Vibrator vib = null;
 	private TVShowItem lastSerie;
 	private static View main;
+	private static boolean logMode = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -222,7 +224,7 @@ public class DroidShows extends ListActivity
 		listView.setVerticalScrollBarEnabled(!excludeSeen);
 		listView.setFastScrollEnabled(!excludeSeen);
 		listView.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
-		if (!excludeSeen) {
+		if (!excludeSeen || logMode) {
 			if (seriesAdapter.getCount() > 20) {
 				try {	// http://stackoverflow.com/a/26447004
 					Drawable thumb = getResources().getDrawable(R.drawable.thumb);
@@ -280,6 +282,7 @@ public class DroidShows extends ListActivity
 		menu.add(0, SORT_MENU_ITEM, 0, "");
 		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
 		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
+		menu.add(0, LOG_MODE_ITEM, 0, getString(R.string.menu_log)).setIcon(android.R.drawable.ic_menu_agenda);
 		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update)).setIcon(android.R.drawable.ic_menu_upload);
 		menu.add(0, OPTIONS_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
@@ -290,9 +293,9 @@ public class DroidShows extends ListActivity
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
-			.setEnabled(!searching());
+			.setEnabled(!logMode && !searching());
 		menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
-			.setEnabled(!searching());
+			.setEnabled(!logMode && !searching());
 
 		if (showArchive == 1) {
 			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
@@ -324,6 +327,15 @@ public class DroidShows extends ListActivity
 		} else {
 			menu.findItem(UNDO_MENU_ITEM).setVisible(false);
 		}
+		if (logMode) {
+			menu.findItem(SORT_MENU_ITEM).setEnabled(false);
+			menu.findItem(UPDATEALL_MENU_ITEM).setEnabled(false);
+			menu.findItem(LOG_MODE_ITEM)
+				.setTitle(R.string.menu_close_log);
+		} else {
+			menu.findItem(LOG_MODE_ITEM)
+			.setTitle(R.string.menu_log);
+		}
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -354,6 +366,9 @@ public class DroidShows extends ListActivity
 			case UNDO_MENU_ITEM :
 				markLastEpUnseen();
 				break;
+			case LOG_MODE_ITEM :
+				toggleLogMode();
+				break;
 			case EXIT_MENU_ITEM :
 				onPause();	// save options
 				backup(true);
@@ -380,6 +395,12 @@ public class DroidShows extends ListActivity
 		excludeSeen ^= true;
 		listView.post(updateListView);
 		setFastScroll();
+	}
+
+	private void toggleLogMode() {
+		logMode ^= true;
+		getSeries(showArchive);
+		listView.setSelection(0);
 	}
 
 	private void aboutDialog() {
@@ -591,15 +612,22 @@ public class DroidShows extends ListActivity
 		menu.add(0, PIN_CONTEXT, 0, getString(R.string.menu_context_pin));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-		if (seriesAdapter.getItem(info.position).getUnwatched() == 0) {
+		if (logMode || seriesAdapter.getItem(info.position).getUnwatched() == 0) {
 			menu.findItem(VIEW_EPISODEDETAILS_CONTEXT).setVisible(false);
 			menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
 		} else if (seriesAdapter.getItem(info.position).getUnwatchedAired() == 0)
 	    	menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
-	    if (seriesAdapter.getItem(info.position).getPassiveStatus())
-	    	menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setTitle(R.string.menu_unarchive);
-	    if (pinnedShows.contains(seriesAdapter.getItem(info.position).getSerieId()))
-	    	menu.findItem(PIN_CONTEXT).setTitle(R.string.menu_context_unpin);
+		if (logMode) {
+			menu.findItem(DELETE_CONTEXT).setVisible(false);
+			menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setVisible(false);
+			menu.findItem(PIN_CONTEXT).setVisible(false);
+			menu.findItem(DELETE_CONTEXT).setVisible(false);
+		} else {
+		    if (seriesAdapter.getItem(info.position).getPassiveStatus())
+		    	menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setTitle(R.string.menu_unarchive);
+		    if (pinnedShows.contains(seriesAdapter.getItem(info.position).getSerieId()))
+		    	menu.findItem(PIN_CONTEXT).setTitle(R.string.menu_context_unpin);
+		}
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -694,12 +722,11 @@ public class DroidShows extends ListActivity
 			vib.vibrate(150);
 			markNextEpSeen(position);
 		} else if (swipeDetect.value == 0) {
-			String serieId = seriesAdapter.getItem(position).getSerieId();
-			backFromSeasonSerieId = serieId;
-			Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
-			serieSeasons.putExtra("serieId", serieId);
-			serieSeasons.putExtra("nextEpisode", seriesAdapter.getItem(position).getUnwatched() > 0);
-			startActivity(serieSeasons);
+			if (!logMode) {
+				serieSeasons(position);
+			} else {
+				episodeDetails(position);
+			}
 		}
 	}
 	
@@ -726,6 +753,14 @@ public class DroidShows extends ListActivity
 		listView.post(updateShowView(serieId));
 	}
 	
+	private void serieSeasons(int position) {
+		backFromSeasonSerieId = seriesAdapter.getItem(position).getSerieId();
+		Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
+		serieSeasons.putExtra("serieId", backFromSeasonSerieId);
+		serieSeasons.putExtra("nextEpisode", seriesAdapter.getItem(position).getUnwatched() > 0);
+		startActivity(serieSeasons);
+	}
+	
 	private Runnable updateShowView(final String serieId) {
 		Runnable updateView = new Runnable(){
 			public void run() {
@@ -749,10 +784,11 @@ public class DroidShows extends ListActivity
 		listView.post(new Runnable() {
 			public void run() {
 				int newPosition = seriesAdapter.getPosition(newSerie);
-				if (newPosition != position)
+				if (newPosition != position) {
 					listView.setSelection(newPosition);
-				if (listView.getLastVisiblePosition() > newPosition)
-					listView.smoothScrollBy(-padding, 400);
+					if (listView.getLastVisiblePosition() > newPosition)
+						listView.smoothScrollBy(-padding, 400);
+				}
 			}
 		});
 	}
@@ -765,7 +801,11 @@ public class DroidShows extends ListActivity
 	
 	private void episodeDetails(int position) {
 		String serieId = seriesAdapter.getItem(position).getSerieId();
-		String episodeId = db.getNextEpisodeId(serieId);
+		String episodeId = "-1";
+		if (!logMode)
+			episodeId = db.getNextEpisodeId(serieId);
+		else
+			episodeId = seriesAdapter.getItem(position).getEpisodeId();
 		if (!episodeId.equals("-1")) {
 			backFromSeasonSerieId = serieId;
 			Intent viewEpisode = new Intent(DroidShows.this, ViewEpisode.class);
@@ -1107,14 +1147,24 @@ public class DroidShows extends ListActivity
 		if (asyncInfo != null)
 			asyncInfo.cancel(true);
 		try {
-			List<String> serieIds = db.getSeries(show);
-			series.clear();
-			for (int i = 0; i < serieIds.size(); i++) {
-				series.add(db.createTVShowItem(serieIds.get(i)));
-				seriesAdapter.notifyDataSetChanged();
+			if (!logMode) {
+				List<String> ids = db.getSeries(show);
+				series.clear();
+				for (int i = 0; i < ids.size(); i++) {
+					series.add(db.createTVShowItem(ids.get(i)));
+					seriesAdapter.notifyDataSetChanged();
+				}
+			} else {
+				List<TVShowItem> episodes = db.getLog();
+				series.clear();
+				for (int i = 0; i < episodes.size(); i++) {
+					series.add(episodes.get(i));
+					seriesAdapter.notifyDataSetChanged();
+				}
 			}
 			setTitle(getString(R.string.layout_app_name)
-					+(show == 1 ? " - "+ getString(R.string.archive) : ""));
+					+ (logMode ? " - "+ getString(R.string.menu_log) :
+						(show == 1 ? " - "+ getString(R.string.archive) : "")));
 			listView.post(updateListView);
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, "Error populating TVShowItems or no shows added yet");
@@ -1179,7 +1229,7 @@ public class DroidShows extends ListActivity
 				}
 			};
 			
-			seriesAdapter.sort(comperator);
+			if (!logMode) seriesAdapter.sort(comperator);
 			if (seriesAdapter.isFiltered)
 				seriesAdapter.getFilter().filter(searchV.getText());
 			seriesAdapter.notifyDataSetChanged();
@@ -1217,8 +1267,10 @@ public class DroidShows extends ListActivity
 	@Override
 	public void onRestart() {
 		super.onRestart();
-		listView.post(updateShowView(backFromSeasonSerieId));
-		backFromSeasonSerieId = null;
+		if (!logMode) {
+			listView.post(updateShowView(backFromSeasonSerieId));
+			backFromSeasonSerieId = null;
+		}
 	}
 	
 	@Override
@@ -1228,7 +1280,7 @@ public class DroidShows extends ListActivity
 			findViewById(R.id.search).setVisibility(View.VISIBLE);
 			listView.requestFocus();
 		}
-		if (asyncInfo == null || asyncInfo.getStatus() != AsyncTask.Status.RUNNING) {
+		if (!logMode && (asyncInfo == null || asyncInfo.getStatus() != AsyncTask.Status.RUNNING)) {
 			asyncInfo = new AsyncInfo();
 			asyncInfo.execute();
 		}
@@ -1301,6 +1353,8 @@ public class DroidShows extends ListActivity
 	public void onBackPressed() {
 		if (searching())
 			clearFilter(null);
+		else if (logMode)
+			toggleLogMode();
 		else if (showArchive == 1)
 			toggleArchive();
 		else
@@ -1354,6 +1408,11 @@ public class DroidShows extends ListActivity
 			super(context, textViewResourceId, series);
 			items = series;
 			isFiltered = false;
+		}
+		
+		public void updateData(List<TVShowItem> series) {
+			items = series;
+			notifyDataSetChanged();
 		}
 		
 		@Override
@@ -1410,7 +1469,7 @@ public class DroidShows extends ListActivity
 		public View getView(final int position, View convertView, ViewGroup parent) {
 			TVShowItem serie = items.get(position);
 			ViewHolder holder;
-			if (excludeSeen && !isFiltered && serie != lastSerie && serie.getUnwatchedAired() == 0 && (serie.getNextAir() == null || serie.getNextAir().after(Calendar.getInstance().getTime()))) {
+			if (!logMode &&  excludeSeen && !isFiltered && serie != lastSerie && serie.getUnwatchedAired() == 0 && (serie.getNextAir() == null || serie.getNextAir().after(Calendar.getInstance().getTime()))) {
 				if (convertView == null || convertView.isEnabled()) {
 					convertView = vi.inflate(R.layout.row_excluded, parent, false);
 					convertView.setEnabled(false);
@@ -1430,62 +1489,89 @@ public class DroidShows extends ListActivity
 				holder = (ViewHolder) convertView.getTag();
 				holder.icon.setOnClickListener(null);
 			}
-			int nunwatched = serie.getUnwatched();
-			int nunwatchedAired = serie.getUnwatchedAired();
-			String ended = (serie.getShowStatus().equalsIgnoreCase("Ended") ? " \u2020" : "");
-			holder.sn.setText(serie.getName() + ended);
-			if (pinnedShows.contains(serie.getSerieId()))
-				holder.sn.setTextColor(getResources().getColor(android.R.color.white));
-			else
-				holder.sn.setTextColor(textViewColors);
-			if (holder.si != null) {
-				String siText = "";
-				int sNumber = serie.getSNumber();
-				if (sNumber == 1) {
-					siText = sNumber +" "+ strSeason;
-				} else {
-					siText = sNumber +" "+ strSeasons;
+			if (!logMode) {
+				int nunwatched = serie.getUnwatched();
+				int nunwatchedAired = serie.getUnwatchedAired();
+				String ended = (serie.getShowStatus().equalsIgnoreCase("Ended") ? " \u2020" : "");
+				if (holder.sn != null) {
+					holder.sn.setText(serie.getName() + ended);
+					if (pinnedShows.contains(serie.getSerieId()))
+						holder.sn.setTextColor(getResources().getColor(android.R.color.white));
+					else
+						holder.sn.setTextColor(textViewColors);
 				}
-				String unwatched = "";
-				if (nunwatched == 0) {
-					unwatched = strNoNewEps;
-					if (!serie.getShowStatus().equalsIgnoreCase("null"))
-						unwatched += " ("+ translateStatus(serie.getShowStatus()) +")";
-					holder.si.setEnabled(false);
-				} else {
-					unwatched = nunwatched +" "+ (nunwatched > 1 ? strNewEps : strNewEp) +" ";
-					if (nunwatchedAired > 0) {
-						unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired +" "+ strOf +" ") + unwatched + strEpAired + (nunwatchedAired == nunwatched && ended.isEmpty() ? " \u00b7" : "");
-						holder.si.setEnabled(true);
+				if (holder.si != null) {
+					String siText = "";
+					int sNumber = serie.getSNumber();
+					if (sNumber == 1) {
+						siText = sNumber +" "+ strSeason;
 					} else {
-						unwatched += strToBeAired;
+						siText = sNumber +" "+ strSeasons;
+					}
+					String unwatched = "";
+					if (nunwatched == 0) {
+						unwatched = strNoNewEps;
+						if (!serie.getShowStatus().equalsIgnoreCase("null"))
+							unwatched += " ("+ translateStatus(serie.getShowStatus()) +")";
 						holder.si.setEnabled(false);
+					} else {
+						unwatched = nunwatched +" "+ (nunwatched > 1 ? strNewEps : strNewEp) +" ";
+						if (nunwatchedAired > 0) {
+							unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired +" "+ strOf +" ") + unwatched + strEpAired + (nunwatchedAired == nunwatched && ended.isEmpty() ? " \u00b7" : "");
+							holder.si.setEnabled(true);
+						} else {
+							unwatched += strToBeAired;
+							holder.si.setEnabled(false);
+						}
+					}
+					holder.si.setText(siText +" | "+ unwatched);
+				}
+				if (holder.sne != null) {
+					if (nunwatched > 0 && !serie.getNextEpisode().isEmpty()) {
+						holder.sne.setText(serie.getNextEpisode() == null ? "" : serie.getNextEpisode()
+								.replace("[ne]", strNextEp)
+								.replace("[na]", strNextAiring)
+								.replace("[on]", strOn));
+						holder.sne.setEnabled(serie.getNextAir() != null && serie.getNextAir().compareTo(Calendar.getInstance().getTime()) <= 0);
+					} else {
+						holder.sne.setText("");
 					}
 				}
-				holder.si.setText(siText +" | "+ unwatched);
-			}
-			if (holder.sne != null) {
-				if (nunwatched > 0 && !serie.getNextEpisode().isEmpty()) {
-					holder.sne.setText(serie.getNextEpisode() == null ? "" : serie.getNextEpisode()
-							.replace("[ne]", strNextEp)
-							.replace("[na]", strNextAiring)
-							.replace("[on]", strOn));
-					holder.sne.setEnabled(serie.getNextAir() != null && serie.getNextAir().compareTo(Calendar.getInstance().getTime()) <= 0);
-				} else {
-					holder.sne.setText("");
+				if (holder.icon != null) {
+					Drawable icon = serie.getDIcon();
+					if (icon == null)
+						if (!serie.getIcon().equals(""))
+							icon = Drawable.createFromPath(serie.getIcon());
+					if (icon == null) {
+						holder.icon.setImageResource(R.drawable.noposter);
+					} else {
+						holder.icon.setImageDrawable(icon);
+						serie.setDIcon(icon);
+					}
 				}
-			}
-			if (holder.icon != null) {
-				Drawable icon = serie.getDIcon();
-				if (icon == null)
-					if (!serie.getIcon().equals(""))
-						icon = Drawable.createFromPath(serie.getIcon());
-				if (icon == null) {
-					holder.icon.setImageResource(R.drawable.noposter);
-				} else {
-					holder.icon.setImageDrawable(icon);
-					serie.setDIcon(icon);
+			} else {
+				if (holder.sn != null) {
+					holder.sn.setText(serie.getName());
+					holder.sn.setTextColor(textViewColors);
+				}					
+				if (holder.si != null)
+					holder.si.setText(serie.getEpisodeName());
+				if (holder.sne != null) {
+					holder.sne.setText(serie.getEpisodeSeen());
 				}
+				if (holder.icon != null) {
+					Drawable icon = serie.getDIcon();
+					if (icon == null)
+						if (!serie.getIcon().equals(""))
+							icon = Drawable.createFromPath(serie.getIcon());
+					if (icon == null) {
+						holder.icon.setImageResource(R.drawable.noposter);
+					} else {
+						holder.icon.setImageDrawable(icon);
+						serie.setDIcon(icon);
+					}
+				}
+				
 			}
 			return convertView;
 		}
@@ -1502,7 +1588,10 @@ public class DroidShows extends ListActivity
 		private final GestureDetector.SimpleOnGestureListener iconGestureListener = new GestureDetector.SimpleOnGestureListener() {
 			@Override
 			public boolean onSingleTapConfirmed(MotionEvent e) {
-				episodeDetails(iconListPosition);
+				if (!logMode)
+					episodeDetails(iconListPosition);
+				else
+					serieSeasons(iconListPosition);
 				return true;
 			}
 			@Override

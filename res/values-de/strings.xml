@@ -11,7 +11,7 @@
 <string name="menu_undo">Rückgängig machen</string>
 <string name="menu_add_serie">Serie hinzufügen</string>
 <string name="menu_update">Serien aktualisieren</string>
-<string name="menu_search">Serie suchen</string>
+<string name="menu_search">Suchen</string>
 <string name="menu_sort_az">Nach Name sortieren</string>
 <string name="menu_sort_last_unseen">Nicht gesehene zuerst</string>
 <string name="menu_about">Einstellungen</string>
@@ -24,12 +24,16 @@
 <string name="menu_show_current">Aktive Serien</string>
 <string name="menu_exclude_seen">Gesehene verbergen</string>
 <string name="menu_include_seen">Gesehene zeigen</string>
+<string name="menu_log">Logbuch</string>
+<string name="menu_close_log">Logbuch schließen</string>
 <string name="menu_context_view_serie_details">Einzelheiten</string>
 <string name="menu_context_view_wiki">Die Serie in der Wikipedia</string>
 <string name="menu_context_view_imdb">Die Serie in der IMDb</string>
 <string name="menu_context_view_ep_imdb">Nächste Folge in der IMDb</string>
 <string name="menu_context_ext_resources">Externe Quellen</string>
 <string name="menu_context_mark_next_episode_as_seen">Folgende Folge gesehen markieren</string>
+<string name="menu_context_pin">Festnageln</string>
+<string name="menu_context_unpin">Loslösen</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Automatische tägliche Datensicherung</string>
 <string name="dialog_backup">Datensicherung</string>

@@ -87,7 +87,7 @@ public class ViewEpisode extends Activity
 			
 			setTitle(serieName +" - "
 					+ (getString(R.string.messages_ep).isEmpty() ? "" : getString(R.string.messages_ep) +" ")
-					+ seasonNumber +"x"+ (episodeNumber < 10 ? "0" : "") + episodeNumber);				
+					+ seasonNumber + (episodeNumber < 10 ? "x0" : "x") + episodeNumber);				
 			
 			TextView episodeNameV = (TextView) findViewById(R.id.episodeName);
 			episodeNameV.setText(episodeName);

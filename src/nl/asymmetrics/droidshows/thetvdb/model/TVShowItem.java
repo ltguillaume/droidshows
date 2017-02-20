@@ -17,6 +17,9 @@ public class TVShowItem {
         private int unwatched;
         private String showStatus;
         private String extResources;
+        private String episodeId;
+        private String episodeName;
+        private String episodeSeen;
 
         public TVShowItem(String serieid, String icon, Drawable dicon, String
                           name, int snumber, String nextEpisode, Date nextAir,
@@ -126,5 +129,29 @@ public class TVShowItem {
 	
 		    public void setExtResources(String extResources) {
 		            this.extResources = extResources;
-		    }        
+		    }
+
+        public String getEpisodeId() {
+            return this.episodeId;
+	    }
+	
+		    public void setEpisodeId(String episodeId) {
+		            this.episodeId = episodeId;
+		    }
+
+        public String getEpisodeName() {
+            return this.episodeName;
+	    }
+		
+		    public void setEpisodeName(String episodeName) {
+		            this.episodeName = episodeName;
+		    }
+
+        public String getEpisodeSeen() {
+            return this.episodeSeen;
+	    }
+	
+		    public void setEpisodeSeen(String episodeSeen) {
+		            this.episodeSeen = episodeSeen;
+		    }
 }

@@ -24,6 +24,8 @@
 <string name="menu_show_current">Показать текущие</string>
 <string name="menu_exclude_seen">Скрыть просмотренные</string>
 <string name="menu_include_seen">Показать просмотренные</string>
+<string name="menu_log">Журнал</string>
+<string name="menu_close_log">близко журнала</string>
 <string name="menu_context_view_serie_details">Информация о сериале</string>
 <string name="menu_context_view_wiki">Подробности на Wikipedia</string>
 <string name="menu_context_view_imdb">Подробности на IMDb</string>
