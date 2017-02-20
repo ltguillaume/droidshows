@@ -105,7 +105,6 @@ public class DroidShows extends ListActivity
 	public static SeriesAdapter seriesAdapter;
 	private static ListView listView;
 	private static String backFromSeasonSerieId;
-	private static int oldListPosition = -1;
 	private static TheTVDB theTVDB;
 	private Utils utils = new Utils();
 	private Update updateDS;
@@ -689,7 +688,6 @@ public class DroidShows extends ListActivity
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
-		oldListPosition = position;
 		if (swipeDetect.value == 1 && (seriesAdapter.getItem(position).getUnwatchedAired() > 0 ||
 				 seriesAdapter.getItem(position).getNextAir() != null &&
 				!seriesAdapter.getItem(position).getNextAir().after(Calendar.getInstance().getTime()))) {
@@ -706,7 +704,6 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void markNextEpSeen(int position) {
-		oldListPosition = position;
 		TVShowItem serie = seriesAdapter.getItem(position);
 		String serieId = serie.getSerieId();
 		String nextEpisode = db.getNextEpisodeId(serieId, true);
@@ -719,7 +716,6 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void markLastEpUnseen() {
-		oldListPosition = -1;
 		String[] episodeInfo = undo.get(undo.size()-1);
 		String serieId = episodeInfo[0];
 		String episodeId = episodeInfo[1];
@@ -745,20 +741,18 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void updateShowView(final TVShowItem serie) {
+		final int position = seriesAdapter.getPosition(serie);
 		final TVShowItem newSerie = db.createTVShowItem(serie.getSerieId());
 		lastSerie = newSerie;
 		series.set(series.indexOf(serie), newSerie);
 		listView.post(updateListView);
 		listView.post(new Runnable() {
 			public void run() {
-				if (seriesAdapter.getPosition(newSerie) != oldListPosition) {
-					int pos = seriesAdapter.getPosition(newSerie);
-					if (pos != series.indexOf(serie)) {
-						listView.setSelection(pos);
-						if (0 < pos && pos < listView.getCount() - 5)
-							listView.smoothScrollBy(-padding, 500);
-					}
-				}
+				int newPosition = seriesAdapter.getPosition(newSerie);
+				if (newPosition != position)
+					listView.setSelection(newPosition);
+				if (listView.getLastVisiblePosition() > newPosition)
+					listView.smoothScrollBy(-padding, 400);
 			}
 		});
 	}
@@ -914,7 +908,6 @@ public class DroidShows extends ListActivity
 		if (!utils.isNetworkAvailable(DroidShows.this)) {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 		} else {
-			oldListPosition = position;
 			final String serieName = seriesAdapter.getItem(position).getName();
 			Runnable updateserierun = new Runnable() {
 				public void run() {
