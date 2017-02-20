@@ -30,6 +30,8 @@
 <string name="menu_context_view_ep_imdb">page IMDb de l\'épisode</string>
 <string name="menu_context_ext_resources">Ressources externes</string>
 <string name="menu_context_mark_next_episode_as_seen">Marquer l\'épisode suivant comme vu</string>
+<string name="menu_context_pin">Épingler</string>
+<string name="menu_context_unpin">Détacher</string>
 <string name="dialog_OK">Ok</string>
 <string name="dialog_auto_backup">Effectuer automatiquement des sauvegardes journalières</string>
 <string name="dialog_backup">Sauvegarder</string>
@@ -53,7 +55,15 @@
 <string name="dialog_full_line_check">Utiliser une ligne entière pour marquer l\'épisode</string>
 <string name="dialog_switch_swipe_direction">Glissez votre doigt de droite à gauche pour revenir en arrière</string>
 <string name="dialog_show_next_airing">Montrer la date de épisode qui sort prochainement au lieu de celle du prochain épisode à regarder</string>
-<string name="dialog_help">&#187; N\'oubliez pas de mettre à jour les séries régulièrement\n&#187; Pressez longtemps les éléments pour plus d\'options\n&#187; Glissez de gauche à droite pour revenir en arrière\n\nDans l\'aperçu des shows:\n&#187; Touchez l\'image pour la vue pleine écran\n&#187; Touchez l\'image en plein écran pour une vue "fan art"\n&#187; Pressez longtemps l\'image en plein écran pour ouvrir dans une application externe\n\nDans l\'aperçu d\'un épisode/d\'une série:\n&#187; Touchez l\'évaluation IMDb pour voir sur le site de IMDb</string>
+<string name="dialog_help">&#187; N\'oubliez pas de mettre à jour les séries régulièrement
+\n&#187; Pressez longtemps les éléments pour plus d\'options
+\n&#187; Glissez de gauche à droite pour revenir en arrière
+\n\nDans l\'aperçu des shows:
+\n&#187; Touchez l\'image pour la vue pleine écran
+\n&#187; Touchez l\'image en plein écran pour une vue "fan art"
+\n&#187; Pressez longtemps l\'image en plein écran pour ouvrir dans une application externe
+\n\nDans l\'aperçu d\'un épisode/d\'une série:
+\n&#187; Touchez l\'évaluation IMDb pour voir sur le site de IMDb</string>
 <string name="menu_archive">Archiver</string>
 <string name="menu_unarchive">Ne pas archiver</string>
 <string name="messages_title_updating_series">Mise à jour des séries</string>

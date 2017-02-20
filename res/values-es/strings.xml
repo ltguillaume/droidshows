@@ -30,6 +30,8 @@
 <string name="menu_context_view_ep_imdb">Próximo episodio en IMDb</string>
 <string name="menu_context_ext_resources">Recursos externos</string>
 <string name="menu_context_mark_next_episode_as_seen">Marcar el siguiente ep. como visto</string>
+<string name="menu_context_pin">Pin</string>
+<string name="menu_context_unpin">Soltar</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Copia de seguridad diaria automática</string>
 <string name="dialog_backup">Copia de seguridad</string>

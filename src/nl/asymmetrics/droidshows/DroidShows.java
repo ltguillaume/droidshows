@@ -11,6 +11,7 @@ import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
@@ -40,6 +41,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -95,7 +97,8 @@ public class DroidShows extends ListActivity
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = EXT_RESOURCES_CONTEXT + 1;
 	private static final int UPDATE_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
 	private static final int TOGGLE_ARCHIVED_CONTEXT = UPDATE_CONTEXT + 1;
-	private static final int DELETE_CONTEXT = TOGGLE_ARCHIVED_CONTEXT + 1;
+	private static final int PIN_CONTEXT = TOGGLE_ARCHIVED_CONTEXT + 1;
+	private static final int DELETE_CONTEXT = PIN_CONTEXT + 1;
 	private static AlertDialog m_AlertDlg;
 	private static ProgressDialog m_ProgressDialog = null;
 	private static ProgressDialog updateAllSeriesPD = null;
@@ -136,6 +139,8 @@ public class DroidShows extends ListActivity
 	private static final String USE_MIRROR = "use_mirror";
 	public static boolean useMirror;
 	public static String langCode;
+	private static final String PINNED_SHOWS_NAME = "pinned_shows";
+	private static List<String> pinnedShows = new ArrayList<String>();
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
 	public static Thread updateAllShowsTh = null;
@@ -185,7 +190,9 @@ public class DroidShows extends ListActivity
 		langCode = sharedPrefs.getString(LANGUAGE_CODE_NAME, getString(R.string.lang_code));
 		showNextAiring = sharedPrefs.getBoolean(SHOW_NEXT_AIRING, false);
 		useMirror = sharedPrefs.getBoolean(USE_MIRROR, false);
-
+		String pinnedShowsStr = sharedPrefs.getString(PINNED_SHOWS_NAME, "");
+		if (!pinnedShowsStr.isEmpty())
+			pinnedShows = new ArrayList<String>(Arrays.asList(pinnedShowsStr.replace("[", "").replace("]", "").split(", ")));
 		series = new ArrayList<TVShowItem>();
 		seriesAdapter = new SeriesAdapter(this, R.layout.row, series);
 		setListAdapter(seriesAdapter);
@@ -582,6 +589,7 @@ public class DroidShows extends ListActivity
 		menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, 0, getString(R.string.menu_context_mark_next_episode_as_seen));
 		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
 		menu.add(0, TOGGLE_ARCHIVED_CONTEXT, 0, getString(R.string.menu_archive));
+		menu.add(0, PIN_CONTEXT, 0, getString(R.string.menu_context_pin));
 		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
 		if (seriesAdapter.getItem(info.position).getUnwatched() == 0) {
@@ -591,6 +599,8 @@ public class DroidShows extends ListActivity
 	    	menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
 	    if (seriesAdapter.getItem(info.position).getPassiveStatus())
 	    	menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setTitle(R.string.menu_unarchive);
+	    if (pinnedShows.contains(seriesAdapter.getItem(info.position).getSerieId()))
+	    	menu.findItem(PIN_CONTEXT).setTitle(R.string.menu_context_unpin);
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -626,6 +636,14 @@ public class DroidShows extends ListActivity
 				listView.post(updateListView);
 				asyncInfo = new AsyncInfo();
 				asyncInfo.execute();
+				return true;
+			case PIN_CONTEXT :
+				String serieId = seriesAdapter.getItem(info.position).getSerieId();
+				if (pinnedShows.contains(serieId))
+					pinnedShows.remove(serieId);
+				else
+					pinnedShows.add(serieId);
+				listView.post(updateListView);
 				return true;
 			case DELETE_CONTEXT :
 				asyncInfo.cancel(true);
@@ -1138,6 +1156,11 @@ public class DroidShows extends ListActivity
 			
 			Comparator<TVShowItem> comperator = new Comparator<TVShowItem>() {
 				public int compare(TVShowItem object1, TVShowItem object2) {
+					if (pinnedShows.contains(object1.getSerieId()) && !pinnedShows.contains(object2.getSerieId()))
+						return -1;
+					else if (pinnedShows.contains(object2.getSerieId()) && !pinnedShows.contains(object1.getSerieId()))
+						return 1;
+
 					if (sortOption == SORT_BY_LAST_UNSEEN) {
 						int unwatchedAired1 = object1.getUnwatchedAired();
 						int unwatchedAired2 = object2.getUnwatchedAired();
@@ -1187,6 +1210,7 @@ public class DroidShows extends ListActivity
 		ed.putString(LANGUAGE_CODE_NAME, langCode);
 		ed.putBoolean(SHOW_NEXT_AIRING, showNextAiring);
 		ed.putBoolean(USE_MIRROR, useMirror);
+		ed.putString(PINNED_SHOWS_NAME, pinnedShows.toString());
 		ed.commit();
 	}
 	
@@ -1319,6 +1343,7 @@ public class DroidShows extends ListActivity
 		private boolean isFiltered;
 		private LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		private int iconListPosition;
+		private ColorStateList textViewColors = new TextView(getContext()).getTextColors();
 
 		private final String strEpAired = getString(R.string.messages_ep_aired);
 		private final String strNewEp = getString(R.string.messages_new_episode);
@@ -1416,6 +1441,10 @@ public class DroidShows extends ListActivity
 			int nunwatchedAired = serie.getUnwatchedAired();
 			String ended = (serie.getShowStatus().equalsIgnoreCase("Ended") ? " \u2020" : "");
 			holder.sn.setText(serie.getName() + ended);
+			if (pinnedShows.contains(serie.getSerieId()))
+				holder.sn.setTextColor(getResources().getColor(android.R.color.white));
+			else
+				holder.sn.setTextColor(textViewColors);
 			if (holder.si != null) {
 				String siText = "";
 				int sNumber = serie.getSNumber();

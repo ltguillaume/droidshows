@@ -104,7 +104,6 @@ public class ViewEpisode extends Activity
 			seenCheckBox.setChecked(seen > 0);
 			if (seen > 1)	// If seen value is a date
 				try {
-					seenDate.setTextColor(seenDate.getTextColors().getDefaultColor());
 					seenDate.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
 				} catch (ParseException e) { Log.e(SQLiteStore.TAG, e.getMessage()); }
 			else

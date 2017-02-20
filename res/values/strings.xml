@@ -30,6 +30,8 @@
 <string name="menu_context_view_ep_imdb">IMDb episode page</string>
 <string name="menu_context_ext_resources">External resources</string>
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>
+<string name="menu_context_pin">Pin</string>
+<string name="menu_context_unpin">Unpin</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Automatically perform daily backups</string>
 <string name="dialog_backup">Backup</string>

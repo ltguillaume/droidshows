@@ -13,6 +13,7 @@ import android.app.DatePickerDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 
 import java.text.ParseException;
 
@@ -139,6 +140,7 @@ public class SerieEpisodes extends ListActivity {
 
 		private List<EpisodeRow> items;
 		private LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		private ColorStateList textViewColors = new TextView(getContext()).getTextColors();
 
 		private final String strAired = getString(R.string.messages_aired);
 		private final String strEp = (getString(R.string.messages_ep).isEmpty() ? "" : getString(R.string.messages_ep) +" ");
@@ -185,7 +187,7 @@ public class SerieEpisodes extends ListActivity {
 			holder.seen.setChecked(ep.seen > 0);
 			if (ep.seen > 1)	// If seen value is a date
 				try {
-					holder.seenDate.setTextColor(holder.aired.getTextColors().getDefaultColor());
+					holder.seenDate.setTextColor(textViewColors);
 					holder.seenDate.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(ep.seen +"")));
 				} catch (ParseException e) { Log.e(SQLiteStore.TAG, e.getMessage()); }
 			else
