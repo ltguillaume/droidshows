@@ -24,7 +24,7 @@
 </h1>
 
 <p>DroidShows: a reboot of DroidSeries TV Show Tracker<br>
-This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, quick search, separate archive/backlog list, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. DroidShows only needs an internet connection when updating the show info or watching full-size posters.</p>
+This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, pinning, quick search and filters, a separate archive/backlog list, a last seen episodes log, swipe gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. DroidShows only needs an internet connection when updating the show info or watching full-size posters.</p>
 
 <p><strong>Some pointers</strong>:</p>
 
@@ -39,8 +39,7 @@ This fork adds quite a bunch of features, among which an improved interface, a m
 <li>Swipe right-to-left to mark next as seen<br>
 <strong>In Show Details</strong>:</li>
 <li>Tap poster for full-screen view</li>
-<li>Click full-screen poster image for fan art<br>
-</li>
+<li>Click full-screen poster image for fan art</li>
 <li>Long-press full-screen poster to open in external app<br>
 <strong>In Show/Episode Details</strong>:</li>
 <li>Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage</li>
@@ -54,7 +53,6 @@ This fork adds quite a bunch of features, among which an improved interface, a m
 
 <p><img src="https://github.com/ltGuillaume/DroidShows/blob/master/icon/screenshot.png?raw=true" alt="DroidShows Screenshot"><br>
 <strong>Shows Overview</strong>:<br>
-+ Add your own per-show external resources (links to Wikia, blogs etc.)<br>
 + Put a "*" before external source URLs to open them directly via a double tap on the poster (e.g. "*battlestarwiki.org")<br>
 + Optionally show "1x1 | Next airing: 1x4 on Jan 1, 2017" (Left = next episode for you to watch; Right = first episode to be aired)<br>
 + Showing "[aired unwatched] of [total unwatched]"<br>
@@ -64,11 +62,14 @@ This fork adds quite a bunch of features, among which an improved interface, a m
 + If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list<br>
 + Option in [About] to only update shows' last season<br>
 + Context items to view show details on Wikipedia and IMDb<br>
++ Add your own per-show external resources (links to Wikia, blogs etc.)<br>
++ Pin shows to the top of the list for easy access<br>
 + Tap cover for next episode's info, long-press for show info, double tap for external resources<br>
 + Swipe right-to-left to mark next episode as seen (shows confirmation toast)<br>
 + Option to include specials in unwatched count<br>
 + Mark next episode seen via swipe now vibrates<br>
 + Undo function (until exit)<br>
++ A log that shows the last shows you've marked as seen<br>
 + Showing middot · when all new episodes are aired<br>
 + New show &amp; episode details views<br>
 + View full size poster and fan art<br>
