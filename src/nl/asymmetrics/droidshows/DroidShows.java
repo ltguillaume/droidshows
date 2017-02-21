@@ -158,6 +158,7 @@ public class DroidShows extends ListActivity
 	private TVShowItem lastSerie;
 	private static View main;
 	private static boolean logMode = false;
+	public static String removeEpisodeFromLog = "";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -400,6 +401,7 @@ public class DroidShows extends ListActivity
 	private void toggleLogMode() {
 		logMode ^= true;
 		getSeries(showArchive);
+		removeEpisodeFromLog = "";
 		listView.setSelection(0);
 	}
 
@@ -920,7 +922,7 @@ public class DroidShows extends ListActivity
 								})
 							.show();
 							if (extResourcesInput.length() == 0) {
-								input.setText("tvshow.wikia.com\n*onlongpress-poster.openstarred.url\ntvshow.blogspot.com");
+								input.setText("tvshow.wikia.com\n*double-tap-poster.openstarred.url\ntvshow.blogspot.com");
 								input.selectAll();
 							}
 							input.requestFocus();
@@ -1267,7 +1269,16 @@ public class DroidShows extends ListActivity
 	@Override
 	public void onRestart() {
 		super.onRestart();
-		if (!logMode) {
+		if (logMode) {
+			if (!removeEpisodeFromLog.isEmpty()) {
+				for (int i = 0; i < series.size(); i++)
+					if (series.get(i).getEpisodeId().equals(removeEpisodeFromLog)) {
+						series.remove(i);
+						listView.post(updateListView);
+					}
+				removeEpisodeFromLog = "";
+			}
+		} else {
 			listView.post(updateShowView(backFromSeasonSerieId));
 			backFromSeasonSerieId = null;
 		}

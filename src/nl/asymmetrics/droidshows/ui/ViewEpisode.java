@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
@@ -227,9 +228,11 @@ public class ViewEpisode extends Activity
 				seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
 				try { d.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
 				} catch (ParseException e) { e.printStackTrace(); }
+				DroidShows.removeEpisodeFromLog = "";
 			} else {
 				d.setText("");
 				seen = 0;
+				DroidShows.removeEpisodeFromLog = episodeId;
 			}
 		}
 		db.updateUnwatchedEpisode(serieId, episodeId, seen);

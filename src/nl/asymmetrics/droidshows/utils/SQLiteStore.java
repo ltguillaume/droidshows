@@ -281,7 +281,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		String serieId = "", episodeId = "", episodeName = "", seen = "";
 		int seasonNumber = -1, episodeNumber = -1;
 		Cursor c = Query("SELECT serieId, id, seasonNumber, episodeNumber, episodeName, seen"
-								+ " FROM episodes WHERE seen>0 ORDER BY seen DESC LIMIT 100");
+								+ " FROM episodes WHERE seen>1 ORDER BY seen DESC, serieId DESC, episodeNumber DESC LIMIT 100");
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			do {
