@@ -2,6 +2,7 @@ package nl.asymmetrics.droidshows.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.ImageView;
 
 public class IconView extends ImageView {
@@ -12,9 +13,7 @@ public class IconView extends ImageView {
 	
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		int height = getMeasuredHeight();
-		int width = (int) (height * .75);
-		setMeasuredDimension(width + getPaddingRight(), height);
+		int newWidth = (int) (.64 * ((View) getParent()).getMeasuredHeight());
+		super.onMeasure(MeasureSpec.makeMeasureSpec(newWidth, MeasureSpec.EXACTLY), heightMeasureSpec);
 	}
 }

@@ -1,6 +1,6 @@
 # DroidShows<img src="/icon/icon6.png" align="right"/>
-DroidShows: a reboot of DroidSeries Offline TV Show Tracker  
-This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, quick search and filters, separate archive/backlog list, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. DroidShows only needs an internet connection when updating the show info or watching full-size posters.
+DroidShows: A Reboot of DroidSeries Offline TV Shows Tracker  
+This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, pinning, quick search and filters, a separate archive/backlog list, a last seen episodes log, swipe gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. DroidShows only needs an internet connection when updating the show info or watching full-size posters.
 
 __Some pointers__:
 * Don't forget to update all shows regularly
@@ -26,7 +26,6 @@ __Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/
 
 ![DroidShows Screenshot](/icon/screenshot.png)  
 __Shows Overview__:  
-\+ Add your own per-show external resources (links to Wikia, blogs etc.)  
 \+ Put a "\*" before external source URLs to open them directly via a double tap on the poster (e.g. "\*battlestarwiki.org")  
 \+ Optionally show "1x1 | Next airing: 1x4 on Jan 1, 2017" (Left = next episode for you to watch; Right = first episode to be aired)  
 \+ Showing "[aired unwatched] of [total unwatched]"  
@@ -34,13 +33,16 @@ __Shows Overview__:
 \+ Added icon ic_menu_view for show/hide toggled  
 \+ Status of show in details, and † in overview if show is not continuing  
 \+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list  
-\+ Option in [About] to only update shows' latest season  
+\+ Option to only update shows' latest season  
 \+ Context items to view show details on Wikipedia and IMDb  
+\+ Add your own per-show external resources (links to Wikia, blogs etc.)  
+\+ Pin shows to the top of the list for easy access  
 \+ Tap cover for next episode's info, long-press for show info, double tap for external resources  
 \+ Swipe right-to-left to mark next episode as seen (shows confirmation toast)  
 \+ Option to include specials in unwatched count  
 \+ Mark next episode seen via swipe now vibrates  
-\+ Undo function (until exit)  
+\+ Undo function (until full exit)  
+\+ A log that shows the last shows you've marked as seen
 \+ Showing middot · when all new episodes are aired  
 \+ New show & episode details views  
 \+ View full size poster and fan art  

@@ -1550,9 +1550,8 @@ public class DroidShows extends ListActivity
 				}
 				if (holder.icon != null) {
 					Drawable icon = serie.getDIcon();
-					if (icon == null)
-						if (!serie.getIcon().equals(""))
-							icon = Drawable.createFromPath(serie.getIcon());
+					if (icon == null && !serie.getIcon().equals(""))
+						icon = Drawable.createFromPath(serie.getIcon());
 					if (icon == null) {
 						holder.icon.setImageResource(R.drawable.noposter);
 					} else {
@@ -1572,9 +1571,8 @@ public class DroidShows extends ListActivity
 				}
 				if (holder.icon != null) {
 					Drawable icon = serie.getDIcon();
-					if (icon == null)
-						if (!serie.getIcon().equals(""))
-							icon = Drawable.createFromPath(serie.getIcon());
+					if (icon == null && !serie.getIcon().equals(""))
+						icon = Drawable.createFromPath(serie.getIcon());
 					if (icon == null) {
 						holder.icon.setImageResource(R.drawable.noposter);
 					} else {
