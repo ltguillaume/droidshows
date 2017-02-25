@@ -7,7 +7,7 @@
 <string name="layout_seasons_no_items">No hay temporadas que mostrar.</string>
 <string name="archive">Mover al Archivo</string>
 <string name="addserie_hint">Nombre de la serie</string>
-<string name="search_hint">Buscar…</string>
+<string name="search_hint">Buscar...</string>
 <string name="menu_undo">Deshacer</string>
 <string name="menu_add_serie">Añade una serie</string>
 <string name="menu_update">Actualiza las series</string>
@@ -62,10 +62,10 @@
 <string name="menu_unarchive">Recuperar</string>
 <string name="messages_title_updating_series">Actualizando las series</string>
 <string name="messages_title_updating_db">Actualizando base de datos</string>
-<string name="messages_update_serie">Obteniendo información de la serie…</string>
+<string name="messages_update_serie">Obteniendo información de la serie...</string>
 <string name="messages_no_internet">La conexión a internet no está disponible</string>
 <string name="messages_title_update_series">Actualiza todas las series</string>
-<string name="messages_update_series">Obteniendo la información de las series. Esta operación puede tardar un poco…</string>
+<string name="messages_update_series">Obteniendo la información de las series. Esta operación puede tardar un poco...</string>
 <string name="messages_episodes">episodios</string>
 <string name="messages_new_episodes">nuevos episodios</string>
 <string name="messages_new_episode">nuevo episodio</string>
@@ -79,10 +79,10 @@
 <string name="messages_season_completely_watched">Temporada vista al completo</string>
 <string name="messages_deleted">borrado</string>
 <string name="messages_title_search_series">Buscando series</string>
-<string name="messages_search_series">Recibiendo los datos…</string>
+<string name="messages_search_series">Recibiendo los datos...</string>
 <string name="messages_series_success">%s añadida</string>
 <string name="messages_title_adding_serie">Añadiendo la serie</string>
-<string name="messages_adding_serie">Obteniendo la información de la serie…</string>
+<string name="messages_adding_serie">Obteniendo la información de la serie...</string>
 <string name="messages_context_mark_seasonseen">Marcar todos los eps. como vistos</string>
 <string name="messages_specials">Especiales</string>
 <string name="messsages_view_ep_details">Ver los detalles del episodio</string>
