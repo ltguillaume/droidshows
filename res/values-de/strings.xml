@@ -6,16 +6,16 @@
 <string name="layout_search_no_items">Keine Serien gefunden.</string>
 <string name="layout_seasons_no_items">Keine Staffeln gefunden.</string>
 <string name="archive">Archiv</string>
-<string name="addserie_hint">Serie zu suchen&#x8230;</string>
-<string name="search_hint">Suchen&#x8230;</string>
+<string name="addserie_hint">Serie hinzufügen</string>
+<string name="search_hint">Serie suchen</string>
 <string name="menu_undo">Rückgängig machen</string>
 <string name="menu_add_serie">Serie hinzufügen</string>
 <string name="menu_update">Serien aktualisieren</string>
-<string name="menu_search">Suchen</string>
+<string name="menu_search">Suchen</string>/
 <string name="menu_sort_az">Nach Name sortieren</string>
-<string name="menu_sort_last_unseen">Nicht gesehene zuerst</string>
+<string name="menu_sort_last_unseen">Ungesehene zuerst</string>
 <string name="menu_about">Einstellungen</string>
-<string name="menu_exit">Schließen</string>
+<string name="menu_exit">Beenden</string>
 <string name="menu_context_update">Aktualisieren</string>
 <string name="menu_context_updated">aktualisiert</string>
 <string name="menu_context_delete">Löschen</string>
@@ -24,95 +24,95 @@
 <string name="menu_show_current">Aktive Serien</string>
 <string name="menu_exclude_seen">Gesehene verbergen</string>
 <string name="menu_include_seen">Gesehene zeigen</string>
-<string name="menu_log">Logbuch</string>
-<string name="menu_close_log">Logbuch schließen</string>
-<string name="menu_context_view_serie_details">Einzelheiten</string>
-<string name="menu_context_view_wiki">Die Serie in der Wikipedia</string>
-<string name="menu_context_view_imdb">Die Serie in der IMDb</string>
-<string name="menu_context_view_ep_imdb">Nächste Folge in der IMDb</string>
+<string name="menu_log">Protokoll</string>
+<string name="menu_close_log">Protokoll schließen</string>
+<string name="menu_context_view_serie_details">Details anzeigen</string>
+<string name="menu_context_view_wiki">Auf Wikipedia suchen</string>
+<string name="menu_context_view_imdb">Diese Serie in der IMDb</string>
+<string name="menu_context_view_ep_imdb">Diese Folge in der IMDb</string>
 <string name="menu_context_ext_resources">Externe Quellen</string>
-<string name="menu_context_mark_next_episode_as_seen">Folgende Folge gesehen markieren</string>
-<string name="menu_context_pin">Festnageln</string>
-<string name="menu_context_unpin">Loslösen</string>
+<string name="menu_context_mark_next_episode_as_seen">Nächste Folge als gesehen markieren</string>
+<string name="menu_context_pin">Anheften</string>
+<string name="menu_context_unpin">Losheften</string>
 <string name="dialog_OK">OK</string>
-<string name="dialog_auto_backup">Automatische tägliche Datensicherung</string>
+<string name="dialog_auto_backup">Tägliche automatische Datensicherung</string>
 <string name="dialog_backup">Datensicherung</string>
 <string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>
-<string name="dialog_change_language">Übersichtsprache</string>
-<string name="dialog_use_mirror">Benutze einen TheTVDB mirror (ausprobieren, falls Updates zu lange dauern)</string>
+<string name="dialog_change_language">Sprache der Seriendetails</string>
+<string name="dialog_use_mirror">TheTVDB Spiegel verwenden (ausprobieren, falls Updates zu lange dauern)</string>
 <string name="dialog_restore">Datenwiederherstellung</string>
 <string name="dialog_restore_now">Während der Datenwiederherstellung werden alle Daten in DroidShows überschrieben. Fortfahren?</string>
 <string name="dialog_restore_done">Datenwiederherstellung fertig</string>
 <string name="dialog_restore_failed">Datenwiederherstellung fehlgeschlagen!</string>
 <string name="dialog_restore_notfound">Sicherungskopie nicht gefunden!</string>
 <string name="dialog_title_delete">Serie löschen?</string>
-<string name="dialog_delete">Wirklich %s löschen?</string>
+<string name="dialog_delete">Soll %s wirklich gelöscht?</string>
 <string name="dialog_Cancel">Abbrechen</string>
 <string name="dialog_search">Suchbegriff:</string>
-<string name="dialog_update_series">Jetzt alle Serien aktualisieren?</string>
-<string name="dialog_update_speedup">\n\nSie können es in Menu > Einstellungen.</string>
+<string name="dialog_update_series">Sollen jetzt alle Serien aktualisiert werden?</string>
+<string name="dialog_update_speedup">\n\nIm Menü unter Einstellungen kann festgelegt werden, dass nur die letzte Folge aktualisiert wird.</string>
 <string name="dialog_latest_season">Nur letzte Folge aktualisieren</string>
-<string name="dialog_include_specials">Besondere Folgen in Übersicht zeigen</string>
-<string name="dialog_full_line_check">Ganze Zeile markiert als gesehen</string>
+<string name="dialog_include_specials">Besondere Folgen in der Übersicht zeigen</string>
+<string name="dialog_full_line_check">Die ganze Zeile markiert eine Folge als gesehen</string>
 <string name="dialog_switch_swipe_direction">Von rechts nach links wischen um zurück zu gehen</string>
-<string name="dialog_show_next_airing">Zeige als nächstes laufende Episode anstelle des Datums der nächsten Episode</string>
-<string name="dialog_help">&#187; Aktualisiere Serien regelmäßig
-\n&#187; Lange antippen um mehrere Aktione anzuzeigen
+<string name="dialog_show_next_airing">Ausstrahlungstermin statt nächster Folge anzeigen</string>
+<string name="dialog_help">&#187; Vergiss nicht, die Serien regelmäßig zu aktualisieren
+\n&#187; Lange antippen um mehrere Aktionen anzuzeigen
 \n&#187; Von links nach rechts wischen um zurück zu gehen
 \n\nIn Serien Übersicht:
 \n&#187; Auf ein Poster tippen um Infos zur nächsten Episode anzuzeigen
-\n&#187; Poster doppeltippen für externe Quellen (für *[url]s direkt oder für Listen)
-\n&#187; Poster lange gedrückt halten für weitere Informationen
+\n&#187; Poster doppel antippen für externe Quellen (für *[url]s direkt oder für Listen)
+\n&#187; Poster lange drücken, um weitere Informationen anzuzeigen
 \n&#187; Von rechts nach links wischen um die nächste Folge als gesehen zu markieren
-\n\nIn Serieneinzelheiten:
+\n\nIn den Seriendetails:
 \n&#187; Auf ein Poster tippen um es größer zu machen
 \n&#187; Noch mal tippen um "Fan Art" anzuzeigen
 \n&#187; Zum Öffnen in einer externen App, großes Poster lange drücken
-\n\nIn Serien-/Folgeneinzelheiten:
-\n&#187; Auf IMDb Bewertung drücken um zur IMDb fortzuführen</string>
+\n\nIn Serien-/Folgendetails:
+\n&#187; Auf IMDb Bewertung drücken, um in der IMDb zu bewerten</string>
 <string name="menu_archive">Archivieren</string>
-<string name="menu_unarchive">Einziehen</string>
+<string name="menu_unarchive">Aus dem Archiv entfernen</string>
 <string name="messages_title_updating_series">Serien aktualisieren</string>
 <string name="messages_title_updating_db">Datenbank aktualisieren</string>
-<string name="messages_update_serie">Serien Information wird runtergeladen…</string>
-<string name="messages_no_internet">Kein Internetanschluss vorhanden</string>
+<string name="messages_update_serie">Serien Details werden heruntergeladen…</string>
+<string name="messages_no_internet">Keine Internetverbindung vorhanden</string>
 <string name="messages_title_update_series">Serien aktualisieren</string>
-<string name="messages_update_series">Serieninformation wird runtergeladen. Haben Sie Geduld…</string>
+<string name="messages_update_series">Seriendetails werden heruntergeladen. Dies kann einen Moment dauern…</string>
 <string name="messages_episodes">Folgen</string>
 <string name="messages_new_episodes">neue Folgen</string>
 <string name="messages_new_episode">neue Folge</string>
-<string name="messages_ep_aired">veröffentlicht</string>
-<string name="messages_to_be_aired">wird veröffentlicht</string>
+<string name="messages_ep_aired">ausgestrahlt</string>
+<string name="messages_to_be_aired">wird ausgestrahlt</string>
 <string name="messages_seasons">Staffeln</string>
 <string name="messages_season">Staffel</string>
 <string name="messages_next_episode">Nächste Folge:</string>
-<string name="messages_next_airing">Nächste Sendung:</string>
+<string name="messages_next_airing">Nächste Ausstrahlung:</string>
 <string name="messages_no_new_eps">Keine neue Folgen</string>
 <string name="messages_season_completely_watched">Staffel komplett gesehen\n</string>
 <string name="messages_deleted">gelöscht</string>
 <string name="messages_title_search_series">Serien suchen</string>
-<string name="messages_search_series">Information wrd runtergeladen…</string>
-<string name="messages_series_success">Die Serie %s ist eingefügt</string>
-<string name="messages_title_adding_serie">Serie einfügen</string>
-<string name="messages_adding_serie">Die Serieinformation wird runtergeladen…</string>
-<string name="messages_context_mark_seasonseen">Alle Folgen gesehen markieren</string>
+<string name="messages_search_series">Details werden heruntergeladen…</string>
+<string name="messages_series_success">Die Serie %s wurde hinzugefügt</string>
+<string name="messages_title_adding_serie">Serie hinzufügen</string>
+<string name="messages_adding_serie">Die Serieinformation werden heruntergeladen…</string>
+<string name="messages_context_mark_seasonseen">Alle Folgen als gesehen markieren</string>
 <string name="messages_specials">Besondere Folgen</string>
-<string name="messsages_view_ep_details">Folgeinformation zeigen</string>
-<string name="messsages_edit_seen_date">Anschau-Zeitpunkt bearbeiten</string>
-<string name="messages_thetvdb_con_error">Kann nicht mit TheTVDB verbinden. Probieren Sie bitte noch mal.</string>
-<string name="messages_marked_seen">gesehen markiert</string>
-<string name="messages_marked_unseen">nicht gesehen markiert</string>
-<string name="messages_context_mark_seasonunseen">Alle Folgen ungesehen markieren</string>
-<string name="messages_context_mark_asseenuptothis">Staffeln bis hier gesehen markieren</string>
+<string name="messsages_view_ep_details">Details der Folge anzeigen</string>
+<string name="messsages_edit_seen_date">Anschau-Zeitpunkt ändern</string>
+<string name="messages_thetvdb_con_error">Verbindung zu TheTVDB nicht möglich. Versuche es erneut.</string>
+<string name="messages_marked_seen">als gesehen markiert</string>
+<string name="messages_marked_unseen">als ungesehen markiert</string>
+<string name="messages_context_mark_seasonunseen">Alle Folgen als ungesehen markieren</string>
+<string name="messages_context_mark_asseenuptothis">Alle Staffeln bis hier her als gesehen markieren</string>
 <string name="messages_context_archived">archiviert</string>
-<string name="messages_context_unarchived">eingezogen</string>
+<string name="messages_context_unarchived">aus dem Archiv entfernt</string>
 <string name="messages_aired">ausgestrahlt:</string>
 <string name="messages_at">am</string>
 <string name="messages_of">von</string>
 <string name="messages_on">am</string>
 <string name="messages_daily">Täglich</string>
-<string name="messages_ep">Ep.</string>
+<string name="messages_ep">Folge</string>
 <string name="episode_directors">Regie:</string>
 <string name="episode_writers">Autoren:</string>
 <string name="episode_guest_stars">Gastschauspieler:</string>
