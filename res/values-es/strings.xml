@@ -6,7 +6,7 @@
 <string name="layout_search_no_items">No se encontró ninguna serie.</string>
 <string name="layout_seasons_no_items">No hay temporadas que mostrar.</string>
 <string name="archive">Mover al Archivo</string>
-<string name="addserie_hint">Nombre de la serie</string>
+<string name="addserie_hint">Nombre de la serie…</string>
 <string name="search_hint">Buscar…</string>
 <string name="menu_undo">Deshacer</string>
 <string name="menu_add_serie">Añade una serie</string>
@@ -24,15 +24,15 @@
 <string name="menu_show_current">Muestra las series actuales</string>
 <string name="menu_exclude_seen">Ocultar las completadas</string>
 <string name="menu_include_seen">Mostrar las completadas</string>
-<string name="menu_log">Registro</string>
-<string name="menu_close_log">Cerca registro</string>
+<string name="menu_log">Historial</string>
+<string name="menu_close_log">Cerrar historial</string>
 <string name="menu_context_view_serie_details">Detalles de la serie</string>
 <string name="menu_context_view_wiki">Detalles en Wikipedia</string>
 <string name="menu_context_view_imdb">Detalles en IMDb</string>
 <string name="menu_context_view_ep_imdb">Próximo episodio en IMDb</string>
 <string name="menu_context_ext_resources">Recursos externos</string>
 <string name="menu_context_mark_next_episode_as_seen">Marcar el siguiente ep. como visto</string>
-<string name="menu_context_pin">Pin</string>
+<string name="menu_context_pin">Anclar</string>
 <string name="menu_context_unpin">Soltar</string>
 <string name="dialog_OK">OK</string>
 <string name="dialog_auto_backup">Copia de seguridad diaria automática</string>

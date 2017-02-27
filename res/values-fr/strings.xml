@@ -6,8 +6,8 @@
 <string name="layout_search_no_items">Aucune série trouvée.</string>
 <string name="layout_seasons_no_items">Aucune saison à afficher.</string>
 <string name="archive">Archive</string>
-<string name="addserie_hint">Série à ajouter&#8230;</string>
-<string name="search_hint">Recherche&#8230;</string>
+<string name="addserie_hint">Série à ajouter…</string>
+<string name="search_hint">Recherche…</string>
 <string name="menu_undo">Annuler</string>
 <string name="menu_add_serie">Ajouter une série</string>
 <string name="menu_update">Mettre à jour les séries</string>
@@ -73,7 +73,7 @@
 <string name="messages_update_serie">Récupération des informations sur la série</string>
 <string name="messages_no_internet">Aucune connexion internet</string>
 <string name="messages_title_update_series">Mettre à jour les séries</string>
-<string name="messages_update_series">Récupération des informations sur la série. Cela peut prendre un moment&#8230;</string>
+<string name="messages_update_series">Récupération des informations sur la série. Cela peut prendre un moment…</string>
 <string name="messages_episodes">épisodes</string>
 <string name="messages_new_episodes">nouveaux épisodes</string>
 <string name="messages_new_episode">nouvel épisode</string>
@@ -87,10 +87,10 @@
 <string name="messages_season_completely_watched">Saison regardée intégralement</string>
 <string name="messages_deleted">supprimé</string>
 <string name="messages_title_search_series">Recherche de séries</string>
-<string name="messages_search_series">Récupération des données&#8230;</string>
+<string name="messages_search_series">Récupération des données…</string>
 <string name="messages_series_success">Série %s ajoutée</string>
 <string name="messages_title_adding_serie">Ajout de la série</string>
-<string name="messages_adding_serie">Récupération des informations sur la série&#8230;</string>
+<string name="messages_adding_serie">Récupération des informations sur la série…</string>
 <string name="messages_context_mark_seasonseen">Marquer tout les épisodes comme vus</string>
 <string name="messages_specials">Épisodes spéciaux</string>
 <string name="messsages_view_ep_details">Détail de l\'épisode</string>

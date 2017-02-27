@@ -6,8 +6,8 @@
 <string name="layout_search_no_items">Geen series gevonden.</string>
 <string name="layout_seasons_no_items">Geen seizoenen gevonden.</string>
 <string name="archive">Archief</string>
-<string name="addserie_hint">Nieuwe serie zoeken&#8230;</string>
-<string name="search_hint">Zoeken&#8230;</string>
+<string name="addserie_hint">Nieuwe serie zoeken…</string>
+<string name="search_hint">Zoeken…</string>
 <string name="menu_undo">Ongedaan maken</string>
 <string name="menu_add_serie">Serie toevoegen</string>
 <string name="menu_update">Series bijwerken</string>

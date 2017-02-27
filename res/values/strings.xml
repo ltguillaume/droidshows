@@ -6,8 +6,8 @@
 <string name="layout_search_no_items">No shows found.</string>
 <string name="layout_seasons_no_items">No seasons to display.</string>
 <string name="archive">Archive</string>
-<string name="addserie_hint">Show to add&#8230;</string>
-<string name="search_hint">Search&#8230;</string>
+<string name="addserie_hint">Show to add…</string>
+<string name="search_hint">Search…</string>
 <string name="menu_undo">Undo</string>
 <string name="menu_add_serie">Add a show</string>
 <string name="menu_update">Update shows</string>

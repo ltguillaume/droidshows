@@ -6,8 +6,8 @@
 <string name="layout_search_no_items">Сериалы не найдены.</string>
 <string name="layout_seasons_no_items">Сезонов нет.</string>
 <string name="archive">Архив</string>
-<string name="addserie_hint">Добавить сериал&#x8230;</string>
-<string name="search_hint">Поиск&#x8230;</string>
+<string name="addserie_hint">Добавить сериал…</string>
+<string name="search_hint">Поиск…</string>
 <string name="menu_undo">Отмена</string>
 <string name="menu_add_serie">Добавить сериал</string>
 <string name="menu_update">Обновить</string>
