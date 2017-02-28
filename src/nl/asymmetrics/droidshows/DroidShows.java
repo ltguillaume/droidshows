@@ -297,6 +297,16 @@ public class DroidShows extends ListActivity
 			.setEnabled(!logMode && !searching());
 		menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
 			.setEnabled(!logMode && !searching());
+		menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
+			.setTitle((excludeSeen ? R.string.menu_include_seen : R.string.menu_exclude_seen));
+		menu.findItem(SORT_MENU_ITEM)
+			.setEnabled(!logMode);
+		menu.findItem(UNDO_MENU_ITEM)
+			.setVisible(undo.size() > 0);
+		menu.findItem(LOG_MODE_ITEM)
+			.setTitle((logMode ? R.string.menu_close_log: R.string.menu_log));
+		menu.findItem(UPDATEALL_MENU_ITEM)
+			.setEnabled(!logMode);
 
 		if (showArchive == 1) {
 			menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
@@ -307,13 +317,6 @@ public class DroidShows extends ListActivity
 				.setIcon(android.R.drawable.ic_menu_recent_history)
 				.setTitle(R.string.menu_show_archive);
 		}
-		if (excludeSeen) {
-			menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
-				.setTitle(R.string.menu_include_seen);
-		} else {
-			menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
-				.setTitle(R.string.menu_exclude_seen);
-		}
 		if (sortOption == SORT_BY_LAST_UNSEEN) {
 			menu.findItem(SORT_MENU_ITEM)
 				.setIcon(android.R.drawable.ic_menu_sort_alphabetically)
@@ -322,20 +325,6 @@ public class DroidShows extends ListActivity
 			menu.findItem(SORT_MENU_ITEM)
 				.setIcon(android.R.drawable.ic_menu_sort_by_size)
 				.setTitle(R.string.menu_sort_last_unseen);
-		}
-		if (undo.size() > 0) {
-			menu.findItem(UNDO_MENU_ITEM).setVisible(true);
-		} else {
-			menu.findItem(UNDO_MENU_ITEM).setVisible(false);
-		}
-		if (logMode) {
-			menu.findItem(SORT_MENU_ITEM).setEnabled(false);
-			menu.findItem(UPDATEALL_MENU_ITEM).setEnabled(false);
-			menu.findItem(LOG_MODE_ITEM)
-				.setTitle(R.string.menu_close_log);
-		} else {
-			menu.findItem(LOG_MODE_ITEM)
-			.setTitle(R.string.menu_log);
 		}
 		return super.onPrepareOptionsMenu(menu);
 	}

@@ -122,7 +122,9 @@ public class SerieEpisodes extends ListActivity {
 		if (swipeDetect.value != 0) return;
 		if (DroidShows.fullLineCheckOption) {
 			try {
-				check(v);
+				CheckBox c = (CheckBox) v.findViewById(R.id.seen);
+				c.setChecked(!c.isChecked());
+				check(position, v, -1);
 			} catch (Exception e) {
 				Log.e(SQLiteStore.TAG, "Could not set episode seen state: "+ e.getMessage());
 			}
