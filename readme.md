@@ -2,6 +2,9 @@
 DroidShows: a reboot of DroidSeries Offline TV Show Tracker  
 This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, quick search and filters, separate archive/backlog list, swiping gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. DroidShows only needs an internet connection when updating the show info or watching full-size posters.
 
+<a href="https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="90"/></a>
+
 __Some pointers__:
 * Don't forget to update all shows regularly
 * Long-press items for more options
