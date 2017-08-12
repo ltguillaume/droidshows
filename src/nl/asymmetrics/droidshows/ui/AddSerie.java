@@ -74,7 +74,7 @@ public class AddSerie extends ListActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.add_serie);
 		db = SQLiteStore.getInstance(this);
-		series = db.getSeries(2);	// 2 = archived and current series
+		series = db.getSeries(2, false, null);	// 2 = archive and current shows, false = don't filter networks, null = ignore networks filter
 		List<Serie> search_series = new ArrayList<Serie>();
 		this.seriessearch_adapter = new SeriesSearchAdapter(this, R.layout.row_search_series, search_series);
 		setListAdapter(seriessearch_adapter);
@@ -372,7 +372,7 @@ public class AddSerie extends ListActivity
 				addSerie(sToAdd);
 			}
 		})
-		.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
+		.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				dialog.dismiss();
 			}

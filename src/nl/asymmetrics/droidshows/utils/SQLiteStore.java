@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -256,11 +257,23 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return episodes;
 	}
 
-	public List<String> getSeries(int showArchive) {
+	public List<String> getSeries(int showArchive, boolean filterNetworks, List<String> showNetworks) {
+		String networks = null;
+		if (filterNetworks && showNetworks != null && !showNetworks.isEmpty()) {
+			networks = "(";
+			for (String network : showNetworks) {
+				networks += "'"+ network +"', ";
+			}
+			networks = networks.substring(0, networks.length()-2) +")";
+			Log.d(TAG, "showNetworksStr = "+ networks);
+		}
 		List<String> series = new ArrayList<String>();
-		String showArchiveString = (showArchive < 2 ? " WHERE passiveStatus"
-			+(showArchive == 0 ? "=0 OR passiveStatus IS NULL" : ">=1") : "");	// Solves issue with former bug when adding show directly after restoring backup
-		Cursor cseries = Query("SELECT id FROM series"+ showArchiveString);
+		String showArchiveString = (showArchive < 2 ? " WHERE (passiveStatus"
+			+(showArchive == 0 ? "=0 OR passiveStatus IS NULL)" : ">=1)") : "");	// Solves issue with former bug when adding show directly after restoring backup
+		String showNetworksString = (networks != null ? (showArchiveString == null ? " WHERE " : " AND ")
+			+"network IN "+ networks : "");
+		Log.d(TAG, "SELECT id FROM series"+ showArchiveString + showNetworksString);
+		Cursor cseries = Query("SELECT id FROM series"+ showArchiveString + showNetworksString);
 		try {
 			cseries.moveToFirst();
 			if (cseries != null && cseries.isFirst()) {
@@ -274,6 +287,25 @@ public class SQLiteStore extends SQLiteOpenHelper
 			cseries.close();
 		}
 		return series;
+	}
+	
+	public List<String> getNetworks() {
+		List<String> networks = new ArrayList<String>();
+		Cursor c = Query("SELECT DISTINCT network FROM series");
+		try {
+			c.moveToFirst();
+			if (c != null && c.isFirst()) {
+				do {
+					networks.add(c.getString(0));
+				} while (c.moveToNext());
+			}
+			c.close();
+		} catch (SQLiteException e) {
+			c.close();
+			Log.e(TAG, e.getMessage());
+		}
+		Collections.sort(networks, String.CASE_INSENSITIVE_ORDER);
+		return networks;
 	}
 
 	public List<TVShowItem> getLog() {
@@ -969,7 +1001,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 	}
 	
 	public void updateShowStats() {
-		List<String> series = getSeries(2);	// 2 = archive and current shows
+		List<String> series = getSeries(2, false, null);	// 2 = archive and current shows, false = don't filter networks, null = ignore networks filter
 		for (int i = 0; i < series.size(); i += 1) {
 			updateShowStats(series.get(i));
 		}

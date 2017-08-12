@@ -30,6 +30,7 @@ import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import nl.asymmetrics.droidshows.utils.Update;
 import nl.asymmetrics.droidshows.utils.Utils;
 import nl.asymmetrics.droidshows.utils.SQLiteStore.NextEpisode;
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.Notification;
@@ -73,20 +74,23 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ToggleButton;
 
 public class DroidShows extends ListActivity
 {
 	/* Menus */
-	private static final int TOGGLE_ARCHIVE_MENU_ITEM = Menu.FIRST;
-	private static final int TOGGLE_EXCLUDE_SEEN_MENU_ITEM = TOGGLE_ARCHIVE_MENU_ITEM + 1;
-	private static final int SORT_MENU_ITEM = TOGGLE_EXCLUDE_SEEN_MENU_ITEM + 1;
-	private static final int SEARCH_MENU_ITEM = SORT_MENU_ITEM + 1;
-	private static final int UNDO_MENU_ITEM = SEARCH_MENU_ITEM + 1;
-	private static final int LOG_MODE_ITEM = UNDO_MENU_ITEM + 1;
+	private static final int UNDO_MENU_ITEM = Menu.FIRST;
+	private static final int SEARCH_MENU_ITEM = UNDO_MENU_ITEM + 1;
+	private static final int FILTER_MENU_ITEM = SEARCH_MENU_ITEM + 1;
+	private static final int SORT_MENU_ITEM = FILTER_MENU_ITEM + 1;
+	private static final int TOGGLE_ARCHIVE_MENU_ITEM = SORT_MENU_ITEM + 1;
+	private static final int LOG_MODE_ITEM = TOGGLE_ARCHIVE_MENU_ITEM + 1;
 	private static final int ADD_SERIE_MENU_ITEM = LOG_MODE_ITEM + 1;
 	private static final int UPDATEALL_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
 	private static final int OPTIONS_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
@@ -115,7 +119,7 @@ public class DroidShows extends ListActivity
 	private static boolean autoBackupOption;
 	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
-	private static final int SORT_BY_LAST_UNSEEN = 1;
+	private static final int SORT_BY_UNSEEN = 1;
 	private static int sortOption;
 	private static final String EXCLUDE_SEEN_PREF_NAME = "exclude_seen";
 	private static boolean excludeSeen;
@@ -141,6 +145,10 @@ public class DroidShows extends ListActivity
 	public static String langCode;
 	private static final String PINNED_SHOWS_NAME = "pinned_shows";
 	private static List<String> pinnedShows = new ArrayList<String>();
+	private static final String FILTER_NETWORKS_NAME = "filter_networks";
+	private static boolean filterNetworks;
+	private static final String NETWORKS_NAME = "networks";
+	private static List<String> networks = new ArrayList<String>();
 	public static Thread deleteTh = null;
 	public static Thread updateShowTh = null;
 	public static Thread updateAllShowsTh = null;
@@ -195,6 +203,10 @@ public class DroidShows extends ListActivity
 		String pinnedShowsStr = sharedPrefs.getString(PINNED_SHOWS_NAME, "");
 		if (!pinnedShowsStr.isEmpty())
 			pinnedShows = new ArrayList<String>(Arrays.asList(pinnedShowsStr.replace("[", "").replace("]", "").split(", ")));
+		filterNetworks = sharedPrefs.getBoolean(FILTER_NETWORKS_NAME, false); 
+		String networksStr = sharedPrefs.getString(NETWORKS_NAME, "");
+		if (!networksStr.isEmpty())
+			networks = new ArrayList<String>(Arrays.asList(networksStr.replace("[", "").replace("]", "").split(", ")));
 		series = new ArrayList<TVShowItem>();
 		seriesAdapter = new SeriesAdapter(this, R.layout.row, series);
 		setListAdapter(seriesAdapter);
@@ -204,7 +216,7 @@ public class DroidShows extends ListActivity
 			showArchive = savedInstanceState.getInt("showArchive");
 			getSeries((savedInstanceState.getBoolean("searching") ? 2 : showArchive));
 		} else {
-			getSeries(showArchive);
+			getSeries();
 		}
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
@@ -278,11 +290,11 @@ public class DroidShows extends ListActivity
 	/* Options Menu */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		menu.add(0, TOGGLE_ARCHIVE_MENU_ITEM, 0, "");
-		menu.add(0, TOGGLE_EXCLUDE_SEEN_MENU_ITEM, 0, "").setIcon(android.R.drawable.ic_menu_view);
-		menu.add(0, SORT_MENU_ITEM, 0, "");
-		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
 		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
+		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
+		menu.add(0, FILTER_MENU_ITEM, 0, getString(R.string.menu_filter)).setIcon(android.R.drawable.ic_menu_view);
+		menu.add(0, SORT_MENU_ITEM, 0, "");
+		menu.add(0, TOGGLE_ARCHIVE_MENU_ITEM, 0, "");
 		menu.add(0, LOG_MODE_ITEM, 0, getString(R.string.menu_log)).setIcon(android.R.drawable.ic_menu_agenda);
 		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update)).setIcon(android.R.drawable.ic_menu_upload);
@@ -295,12 +307,11 @@ public class DroidShows extends ListActivity
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
 			.setEnabled(!logMode && !searching());
-		menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
+		menu.findItem(FILTER_MENU_ITEM)
 			.setEnabled(!logMode && !searching());
-		menu.findItem(TOGGLE_EXCLUDE_SEEN_MENU_ITEM)
-			.setTitle((excludeSeen ? R.string.menu_include_seen : R.string.menu_exclude_seen));
 		menu.findItem(SORT_MENU_ITEM)
 			.setEnabled(!logMode);
+
 		menu.findItem(UNDO_MENU_ITEM)
 			.setVisible(undo.size() > 0);
 		menu.findItem(LOG_MODE_ITEM)
@@ -317,14 +328,14 @@ public class DroidShows extends ListActivity
 				.setIcon(android.R.drawable.ic_menu_recent_history)
 				.setTitle(R.string.menu_show_archive);
 		}
-		if (sortOption == SORT_BY_LAST_UNSEEN) {
+		if (sortOption == SORT_BY_UNSEEN) {
 			menu.findItem(SORT_MENU_ITEM)
 				.setIcon(android.R.drawable.ic_menu_sort_alphabetically)
-				.setTitle(R.string.menu_sort_az);
+				.setTitle(R.string.menu_sort_by_name);
 		} else {
 			menu.findItem(SORT_MENU_ITEM)
 				.setIcon(android.R.drawable.ic_menu_sort_by_size)
-				.setTitle(R.string.menu_sort_last_unseen);
+				.setTitle(R.string.menu_sort_by_unseen);
 		}
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -344,8 +355,8 @@ public class DroidShows extends ListActivity
 			case SORT_MENU_ITEM :
 				toggleSort();
 				break;
-			case TOGGLE_EXCLUDE_SEEN_MENU_ITEM :
-				toggleExcludeSeen();
+			case FILTER_MENU_ITEM :
+				filterDialog();
 				break;
 			case UPDATEALL_MENU_ITEM :
 				updateAllSeries();
@@ -372,7 +383,7 @@ public class DroidShows extends ListActivity
 	
 	private void toggleArchive() {
 		showArchive = (showArchive + 1) % 2;
-		getSeries(showArchive);
+		getSeries();
 		listView.setSelection(0);
 	}
 
@@ -381,17 +392,70 @@ public class DroidShows extends ListActivity
 		listView.post(updateListView);
 	}
 	
-	private void toggleExcludeSeen() {
-		excludeSeen ^= true;
-		listView.post(updateListView);
-		setFastScroll();
-	}
-
 	private void toggleLogMode() {
 		logMode ^= true;
-		getSeries(showArchive);
+		getSeries();
 		removeEpisodeFromLog = "";
 		listView.setSelection(0);
+	}
+	
+	private void filterDialog() {
+		if (m_AlertDlg != null) {
+			m_AlertDlg.dismiss();
+		}
+		final View filterV = View.inflate(this, R.layout.alert_filter, null);
+		((CheckBox) filterV.findViewById(R.id.exclude_seen)).setChecked(excludeSeen);
+		List<String> allNetworks = db.getNetworks();
+		final LinearLayout networksFilterV = (LinearLayout) filterV.findViewById(R.id.networks_filter);
+		for (String network : allNetworks) {
+			CheckBox networkCheckBox = new CheckBox(this);
+			networkCheckBox.setText(network);
+			if (!networks.isEmpty())
+				networkCheckBox.setChecked(networks.contains(network));
+			networksFilterV.addView(networkCheckBox);
+		}
+		ToggleButton networksFilter = (ToggleButton) filterV.findViewById(R.id.toggle_networks_filter);
+		networksFilter.setChecked(filterNetworks);
+		toggleNetworksFilter(networksFilter);
+		m_AlertDlg = new AlertDialog.Builder(this)
+		.setView(filterV)
+		.setTitle(R.string.layout_app_name).setIcon(R.drawable.icon)
+		.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				applyFilters((ScrollView) filterV, networksFilterV);
+			}
+		})
+		.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				m_AlertDlg.dismiss();
+			}
+		})
+		.show();
+	}
+	
+	public void toggleNetworksFilter(View v) {
+		boolean enabled = (((ToggleButton) v).isChecked());
+		LinearLayout networksFilterV = (LinearLayout) ((View) v.getParent().getParent()).findViewById(R.id.networks_filter);
+		for (int i = 0; i < networksFilterV.getChildCount(); i++) {
+			networksFilterV.getChildAt(i).setEnabled(enabled);
+		}
+	}
+	
+	private void applyFilters(ScrollView filterV, LinearLayout networksFilterV) {
+		excludeSeen = (((CheckBox) filterV.findViewById(R.id.exclude_seen)).isChecked() ? true : false);
+		filterNetworks = (((ToggleButton) filterV.findViewById(R.id.toggle_networks_filter)).isChecked() == true);
+		for (int i = 0; i < networksFilterV.getChildCount(); i++) {
+			CheckBox networkCheckBox = (CheckBox) networksFilterV.getChildAt(i);
+			String network = (String) networkCheckBox.getText();
+			if (networkCheckBox.isChecked()) {
+				if (!networks.contains(network))
+					networks.add(network);
+			} else {
+				if (networks.contains(network))
+					networks.remove(network);
+			}
+		}
+		getSeries();
 	}
 
 	private void aboutDialog() {
@@ -408,44 +472,20 @@ public class DroidShows extends ListActivity
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
-		TextView changeLangB = (TextView) about.findViewById(R.id.change_language);
-		changeLangB.setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
-		CheckBox autoBackupCheckbox = (CheckBox) about.findViewById(R.id.auto_backup);
-		autoBackupCheckbox.setChecked(autoBackupOption);
-		CheckBox latestSeasonCheckbox = (CheckBox) about.findViewById(R.id.latest_season);
-		latestSeasonCheckbox.setChecked(latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
-		CheckBox includeSpecialsCheckbox = (CheckBox) about.findViewById(R.id.include_specials);
-		includeSpecialsCheckbox.setChecked(includeSpecialsOption);
-		CheckBox fullLineCheckbox = (CheckBox) about.findViewById(R.id.full_line_check);
-		fullLineCheckbox.setChecked(fullLineCheckOption);
-		CheckBox switchSwipeDirectionBox = (CheckBox) about.findViewById(R.id.switch_swipe_direction);
-		switchSwipeDirectionBox.setChecked(switchSwipeDirection);
-		CheckBox showNextAiringBox = (CheckBox) about.findViewById(R.id.show_next_airing);
-		showNextAiringBox.setChecked(showNextAiring);
-		CheckBox useMirrorBox = (CheckBox) about.findViewById(R.id.use_mirror);
-		useMirrorBox.setChecked(useMirror);
+		((TextView) about.findViewById(R.id.change_language)).setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
+		((CheckBox) about.findViewById(R.id.auto_backup)).setChecked(autoBackupOption);
+		((CheckBox) about.findViewById(R.id.latest_season)).setChecked(latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
+		((CheckBox) about.findViewById(R.id.include_specials)).setChecked(includeSpecialsOption);
+		((CheckBox) about.findViewById(R.id.full_line_check)).setChecked(fullLineCheckOption);
+		((CheckBox) about.findViewById(R.id.switch_swipe_direction)).setChecked(switchSwipeDirection);
+		((CheckBox) about.findViewById(R.id.show_next_airing)).setChecked(showNextAiring);
+		((CheckBox) about.findViewById(R.id.use_mirror)).setChecked(useMirror);
 		m_AlertDlg = new AlertDialog.Builder(this)
 			.setView(about)
 			.setTitle(R.string.layout_app_name).setIcon(R.drawable.icon)
-			.setPositiveButton(getString(R.string.dialog_backup), new DialogInterface.OnClickListener() {
+			.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
-					backup(false);
-					asyncInfo = new AsyncInfo();
-					asyncInfo.execute();
-				}
-			})
-			.setNegativeButton(getString(R.string.dialog_restore), new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					new AlertDialog.Builder(DroidShows.this)
-					.setTitle(R.string.dialog_restore)
-					.setMessage(R.string.dialog_restore_now)
-					.setPositiveButton(R.string.dialog_OK, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							restore();
-						}
-					})
-					.setNegativeButton(R.string.dialog_Cancel, null)
-					.show();
+					m_AlertDlg.dismiss();
 				}
 			})
 			.show();
@@ -453,6 +493,21 @@ public class DroidShows extends ListActivity
 	
 	public void dialogOptions(View v) {
 		switch(v.getId()) {
+			case R.id.backup:
+				backup(false);
+				break;
+			case R.id.restore:
+				new AlertDialog.Builder(DroidShows.this)
+				.setTitle(R.string.dialog_restore)
+				.setMessage(R.string.dialog_restore_now)
+				.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						restore();
+					}
+				})
+				.setNegativeButton(R.string.dialog_cancel, null)
+				.show();
+				break;
 			case R.id.auto_backup:
 				autoBackupOption ^= true;
 				break;
@@ -504,6 +559,7 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void backup(boolean auto) {
+//		Add Folder Picker: https://stackoverflow.com/questions/18522784/android-configurable-directory/18523047#comment27270377_18523047
 		File source = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
 		File destination = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db");
 		if (auto && (!autoBackupOption || 
@@ -512,16 +568,16 @@ public class DroidShows extends ListActivity
 				source.lastModified() == destination.lastModified()))
 			return;
 		if (destination.exists()) {
-			File previous0 = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db0");
+			File previous0 = new File(destination.getPath(), "DroidShows.db0");
 			if (previous0.exists()) {
-				File previous1 = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db1");
+				File previous1 = new File(destination.getPath() +"/DroidShows", "DroidShows.db1");
 				if (previous1.exists())
 					previous1.delete();
 				previous0.renameTo(previous1);
 			}
 			destination.renameTo(previous0);
 		}
-		File folder = new File(Environment.getExternalStorageDirectory() +"/DroidShows");
+		File folder = new File(destination.getPath());
 		if (!folder.isDirectory())
 			folder.mkdir();
 		int toastTxt = R.string.dialog_backup_done;
@@ -531,16 +587,23 @@ public class DroidShows extends ListActivity
 			toastTxt = R.string.dialog_backup_failed;
 			e.printStackTrace();
 		}
+		if (!auto) {
+			asyncInfo = new AsyncInfo();
+			asyncInfo.execute();
+		}
 		if (!auto || toastTxt == R.string.dialog_backup_failed)
-			Toast.makeText(getApplicationContext(), toastTxt, Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), getString(toastTxt) + " ("+ destination.getPath() +")", Toast.LENGTH_LONG).show();
 	}
 	
 	private void restore() {
-		int toastTxt = R.string.dialog_restore_done;
+//		Add File Picker: https://stackoverflow.com/questions/18522784/android-configurable-directory/18523047#comment27270377_18523047
+		String toastTxt = getString(R.string.dialog_restore_done);
 		File source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db");
 		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db0");
 		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db1");
+		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory(), "DroidShows.db");
 		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory(), "droidseries.db");
+		if (!source.exists()) source = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "DroidShows.db");
 		if (source.exists()) {
 			File destination = new File(getApplicationInfo().dataDir +"/databases", "DroidShows.db");
 			try {
@@ -554,15 +617,16 @@ public class DroidShows extends ListActivity
 				    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
 				if (showArchive == 1)
 					setTitle(getString(R.string.layout_app_name));
-				getSeries(2);	// Get archived and current shows
+				getSeries(2, false);	// 2 = archive and current shows, false = don't filter networks
 				updateAllSeries();
 				undo.clear();
+				toastTxt += " ("+ source.getPath() +")";
 			} catch (IOException e) {
-				toastTxt = R.string.dialog_restore_failed;
+				toastTxt = getString(R.string.dialog_restore_failed);
 				e.printStackTrace();
 			}
 		} else {
-			toastTxt = R.string.dialog_restore_notfound;
+			toastTxt = getString(R.string.dialog_restore_notfound);
 		}
 		Toast.makeText(getApplicationContext(), toastTxt, Toast.LENGTH_LONG).show();
 	}
@@ -685,14 +749,14 @@ public class DroidShows extends ListActivity
 					.setMessage(String.format(getString(R.string.dialog_delete), seriesAdapter.getItem(info.position).getName()))
 					.setIcon(android.R.drawable.ic_dialog_alert)
 					.setCancelable(false)
-					.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
+					.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							deleteTh = new Thread(deleteserie);
 							deleteTh.start();
 							return;
 						}
 					})
-					.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
+					.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
 							return;
 						}
@@ -894,7 +958,7 @@ public class DroidShows extends ListActivity
 							new AlertDialog.Builder(DroidShows.this)
 								.setTitle(R.string.menu_context_ext_resources)
 								.setView(input)
-								.setPositiveButton(R.string.dialog_OK, new DialogInterface.OnClickListener() {
+								.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int which) {
 										keyboard.hideSoftInputFromWindow(input.getWindowToken(), 0);
 										String resources = input.getText().toString().trim();
@@ -903,7 +967,7 @@ public class DroidShows extends ListActivity
 										return;
 									}
 								})
-								.setNegativeButton(R.string.dialog_Cancel, new DialogInterface.OnClickListener() {
+								.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog, int which) {
 										keyboard.hideSoftInputFromWindow(input.getWindowToken(), 0);
 										return;
@@ -969,6 +1033,7 @@ public class DroidShows extends ListActivity
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void updatePosterThumb(String serieId, Serie sToUpdate) {
 		Cursor c = DroidShows.db.Query("SELECT posterInCache, poster, posterThumb FROM series WHERE id='"+ serieId +"'");
 		c.moveToFirst();
@@ -1042,7 +1107,7 @@ public class DroidShows extends ListActivity
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 		searchV.setText("");
 		findViewById(R.id.search).setVisibility(View.GONE);
-		getSeries(showArchive);
+		getSeries();
 	}
 
 	private void updateAllSeries() {
@@ -1098,7 +1163,7 @@ public class DroidShows extends ListActivity
 				.setMessage(updateMessageAD)
 				.setIcon(android.R.drawable.ic_dialog_alert)
 				.setCancelable(false)
-				.setPositiveButton(getString(R.string.dialog_OK), new DialogInterface.OnClickListener() {
+				.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						updateAllSeriesPD.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 						updateAllSeriesPD.setTitle(R.string.messages_title_updating_series);
@@ -1112,7 +1177,7 @@ public class DroidShows extends ListActivity
 						return;
 					}
 				})
-				.setNegativeButton(getString(R.string.dialog_Cancel), new DialogInterface.OnClickListener() {
+				.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						return;
 					}
@@ -1133,13 +1198,21 @@ public class DroidShows extends ListActivity
 		mNotificationManager.notify(0, notification);
 	}
 
-	private void getSeries(int show) {
+	private void getSeries() {
+		getSeries(showArchive, filterNetworks);
+	}
+	
+	private void getSeries(int showArchive) {
+		getSeries(showArchive, filterNetworks);
+	}
+
+	private void getSeries(int showArchive, boolean filterNetworks) {
 		main.setVisibility(View.INVISIBLE);
 		if (asyncInfo != null)
 			asyncInfo.cancel(true);
 		try {
 			if (!logMode) {
-				List<String> ids = db.getSeries(show);
+				List<String> ids = db.getSeries(showArchive, filterNetworks, networks);
 				series.clear();
 				for (int i = 0; i < ids.size(); i++) {
 					series.add(db.createTVShowItem(ids.get(i)));
@@ -1155,7 +1228,7 @@ public class DroidShows extends ListActivity
 			}
 			setTitle(getString(R.string.layout_app_name)
 					+ (logMode ? " - "+ getString(R.string.menu_log) :
-						(show == 1 ? " - "+ getString(R.string.archive) : "")));
+						(showArchive == 1 ? " - "+ getString(R.string.archive) : "")));
 			listView.post(updateListView);
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, "Error populating TVShowItems or no shows added yet");
@@ -1180,7 +1253,7 @@ public class DroidShows extends ListActivity
 					}
 				} else {
 					for (int i = 0; i < series.size(); i++) {
-						if (series.get(i).equals(seriesAdapter.getItem(i)))
+						if (seriesAdapter.getCount() > i && series.get(i).equals(seriesAdapter.getItem(i)))
 							seriesAdapter.setItem(i, series.get(i));
 						else
 							seriesAdapter.add(series.get(i));
@@ -1195,7 +1268,7 @@ public class DroidShows extends ListActivity
 					else if (pinnedShows.contains(object2.getSerieId()) && !pinnedShows.contains(object1.getSerieId()))
 						return 1;
 
-					if (sortOption == SORT_BY_LAST_UNSEEN) {
+					if (sortOption == SORT_BY_UNSEEN) {
 						int unwatchedAired1 = object1.getUnwatchedAired();
 						int unwatchedAired2 = object2.getUnwatchedAired();
 						if (unwatchedAired1 == unwatchedAired2) {
@@ -1245,6 +1318,8 @@ public class DroidShows extends ListActivity
 		ed.putBoolean(SHOW_NEXT_AIRING, showNextAiring);
 		ed.putBoolean(USE_MIRROR, useMirror);
 		ed.putString(PINNED_SHOWS_NAME, pinnedShows.toString());
+		ed.putBoolean(FILTER_NETWORKS_NAME, filterNetworks);
+		ed.putString(NETWORKS_NAME, networks.toString());
 		ed.commit();
 	}
 	
@@ -1323,6 +1398,7 @@ public class DroidShows extends ListActivity
 								db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +" WHERE id="+ serieId);
 						}
 					}
+					if (isCancelled()) return null;
 					listView.post(updateListView);
 					if (showArchiveTmp == 0 || showArchiveTmp == 2)
 						lastStatsUpdateCurrent = newToday;
@@ -1341,7 +1417,7 @@ public class DroidShows extends ListActivity
 	public boolean onSearchRequested() {
 		if (findViewById(R.id.search).getVisibility() != View.VISIBLE) {
 			findViewById(R.id.search).setVisibility(View.VISIBLE);
-			getSeries(2);	// Get archived and current shows
+			getSeries(2, false);	// 2 = archive and current shows, false = don't filter networks
 		}
 		searchV.requestFocus();
 		searchV.selectAll();
@@ -1438,6 +1514,7 @@ public class DroidShows extends ListActivity
 		}
 		
 		private class ShowsFilter extends Filter {
+			@SuppressLint("DefaultLocale")
 			@Override
 			protected FilterResults performFiltering(CharSequence constraint) {
 				FilterResults results = new FilterResults();
@@ -1459,6 +1536,7 @@ public class DroidShows extends ListActivity
 				return results;
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			protected void publishResults(CharSequence constraint, FilterResults results) {
 				items = (List<TVShowItem>) results.values;
@@ -1577,7 +1655,6 @@ public class DroidShows extends ListActivity
 		private OnTouchListener iconTouchListener = new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				iconListPosition = listView.getPositionForView(v);
-				keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 				iconGestureDetector.onTouchEvent(event);
 				return true;
 			}
@@ -1586,6 +1663,7 @@ public class DroidShows extends ListActivity
 		private final GestureDetector.SimpleOnGestureListener iconGestureListener = new GestureDetector.SimpleOnGestureListener() {
 			@Override
 			public boolean onSingleTapConfirmed(MotionEvent e) {
+				keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 				if (!logMode)
 					episodeDetails(iconListPosition);
 				else
@@ -1594,6 +1672,7 @@ public class DroidShows extends ListActivity
 			}
 			@Override
 			public boolean onDoubleTap(MotionEvent e) {
+				keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 				String[] extResources = seriesAdapter.getItem(iconListPosition).getExtResources().trim().split("\\n");
 				boolean foundResources = false;
 				for (int i = 0; i < extResources.length; i++) {
@@ -1609,6 +1688,7 @@ public class DroidShows extends ListActivity
 
 			@Override
 			public void onLongPress(MotionEvent e) {
+				keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 				showDetails(seriesAdapter.getItem(iconListPosition).getSerieId());
 			}
 		};

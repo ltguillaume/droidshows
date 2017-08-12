@@ -8,12 +8,13 @@
 <string name="archive">Archiv</string>
 <string name="addserie_hint">Serie hinzufügen</string>
 <string name="search_hint">Serie suchen</string>
+<string name="menu_filter">Filter</string>
 <string name="menu_undo">Rückgängig machen</string>
 <string name="menu_add_serie">Serie hinzufügen</string>
 <string name="menu_update">Serien aktualisieren</string>
 <string name="menu_search">Suchen</string>
-<string name="menu_sort_az">Nach Name sortieren</string>
-<string name="menu_sort_last_unseen">Ungesehene zuerst</string>
+<string name="menu_sort_by_name">Nach Name sortieren</string>
+<string name="menu_sort_by_unseen">Ungesehene zuerst</string>
 <string name="menu_about">Einstellungen</string>
 <string name="menu_exit">Beenden</string>
 <string name="menu_context_update">Aktualisieren</string>
@@ -34,7 +35,7 @@
 <string name="menu_context_mark_next_episode_as_seen">Nächste Folge als gesehen markieren</string>
 <string name="menu_context_pin">Anheften</string>
 <string name="menu_context_unpin">Ablösen</string>
-<string name="dialog_OK">OK</string>
+<string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">Tägliche automatische Datensicherung</string>
 <string name="dialog_backup">Daten sichern</string>
 <string name="dialog_backup_done">Datensicherung fertig</string>
@@ -48,7 +49,7 @@
 <string name="dialog_restore_notfound">Sicherungskopie nicht gefunden!</string>
 <string name="dialog_title_delete">Serie löschen?</string>
 <string name="dialog_delete">Soll %s wirklich gelöscht?</string>
-<string name="dialog_Cancel">Abbrechen</string>
+<string name="dialog_cancel">Abbrechen</string>
 <string name="dialog_search">Suchbegriff:</string>
 <string name="dialog_update_series">Sollen jetzt alle Serien aktualisiert werden?</string>
 <string name="dialog_update_speedup">\n\nIm Menü unter Einstellungen kann festgelegt werden, dass nur die letzte Folge aktualisiert wird.</string>
@@ -71,6 +72,7 @@
 \n&#187; Zum Öffnen in einer externen App, großes Poster lange drücken
 \n\nIn Serien-/Folgendetails:
 \n&#187; Auf IMDb Bewertung drücken, um in der IMDb zu bewerten</string>
+<string name="dialog_networks">Netze</string>
 <string name="menu_archive">Archivieren</string>
 <string name="menu_unarchive">Aus dem Archiv entfernen</string>
 <string name="messages_title_updating_series">Serien aktualisieren</string>

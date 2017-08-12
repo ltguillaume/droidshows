@@ -8,12 +8,13 @@
 <string name="archive">Archief</string>
 <string name="addserie_hint">Nieuwe serie zoeken…</string>
 <string name="search_hint">Zoeken…</string>
+<string name="menu_filter">Filter</string>
 <string name="menu_undo">Ongedaan maken</string>
 <string name="menu_add_serie">Serie toevoegen</string>
 <string name="menu_update">Series bijwerken</string>
 <string name="menu_search">Zoeken</string>
-<string name="menu_sort_az">Sorteren op naam</string>
-<string name="menu_sort_last_unseen">Sorteren op datum</string>
+<string name="menu_sort_by_name">Sorteren op naam</string>
+<string name="menu_sort_by_unseen">Sorteren op datum</string>
 <string name="menu_about">Opties</string>
 <string name="menu_exit">Afsluiten</string>
 <string name="menu_context_update">Bijwerken</string>
@@ -34,7 +35,7 @@
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
 <string name="menu_context_pin">Vastpinnen</string>
 <string name="menu_context_unpin">Losmaken</string>
-<string name="dialog_OK">OK</string>
+<string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">Automatisch dagelijks backups maken</string>
 <string name="dialog_backup">Backup maken</string>
 <string name="dialog_backup_done">Backup voltooid</string>
@@ -48,7 +49,7 @@
 <string name="dialog_restore_notfound">Geen backup gevonden op externe opslag!</string>
 <string name="dialog_title_delete">Serie verwijderen?</string>
 <string name="dialog_delete">Weet je zeker dat je de serie %s wilt verwijderen?</string>
-<string name="dialog_Cancel">Annuleren</string>
+<string name="dialog_cancel">Annuleren</string>
 <string name="dialog_search">Zoekterm:</string>
 <string name="dialog_update_series">Weet je zeker dat je alle series in deze lijst nu wilt bijwerken?</string>
 <string name="dialog_update_speedup">\n\nDit kan sneller met de optie in Menu > Opties.</string>
@@ -71,6 +72,7 @@
 \n&#187; Druk lang op grote poster om deze in andere app te openen
 \n\nIn Details van Serie/Aflevering:
 \n&#187; Klik op IMDb-score voor IMDb-pagina</string>
+<string name="dialog_networks">Netwerken</string>
 <string name="menu_archive">Archiveren</string>
 <string name="menu_unarchive">Terughalen</string>
 <string name="messages_title_updating_series">Series bijwerken</string>

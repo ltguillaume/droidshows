@@ -83,7 +83,7 @@ public class SerieEpisodes extends ListActivity {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch (item.getItemId()) {
 		case VIEWEP_CONTEXT:
-			startViewEpisode(episodes.get(info.position).id);
+			startViewEpisode(info.position);
 			return true;
 		case SEENDATE_CONTEXT:
 			int year = 0, month = 0, day = 0;
@@ -130,8 +130,7 @@ public class SerieEpisodes extends ListActivity {
 			}
 		} else {
 			try {
-				backFromEpisode = position;
-				startViewEpisode(episodes.get(position).id);
+				startViewEpisode(position);
 			} catch (Exception e) {
 				Log.e(SQLiteStore.TAG, e.getMessage());
 			}
@@ -250,11 +249,12 @@ public class SerieEpisodes extends ListActivity {
 		db.updateUnwatchedEpisode(serieId, episodes.get(position).id, seen);
 	}
 
-	private void startViewEpisode(String episode) {
+	private void startViewEpisode(int position) {
+		backFromEpisode = position;
 		Intent viewEpisode = new Intent(SerieEpisodes.this, ViewEpisode.class);
 		viewEpisode.putExtra("serieId", serieId);
 		viewEpisode.putExtra("serieName", serieName);
-		viewEpisode.putExtra("episodeId", episode);
+		viewEpisode.putExtra("episodeId", episodes.get(position).id);
 		startActivity(viewEpisode);
 	}
 	

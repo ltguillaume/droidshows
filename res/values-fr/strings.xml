@@ -8,12 +8,13 @@
 <string name="archive">Archive</string>
 <string name="addserie_hint">Série à ajouter…</string>
 <string name="search_hint">Recherche…</string>
+<string name="menu_filter">Filtre</string>
 <string name="menu_undo">Annuler</string>
 <string name="menu_add_serie">Ajouter une série</string>
 <string name="menu_update">Mettre à jour les séries</string>
 <string name="menu_search">Chercher</string>
-<string name="menu_sort_az">Trier par nom</string>
-<string name="menu_sort_last_unseen">Trier par non-vu</string>
+<string name="menu_sort_by_name">Trier par nom</string>
+<string name="menu_sort_by_unseen">Trier par non-vu</string>
 <string name="menu_about">Options</string>
 <string name="menu_exit">Quitter</string>
 <string name="menu_context_update">Mettre à jour</string>
@@ -34,7 +35,7 @@
 <string name="menu_context_mark_next_episode_as_seen">Marquer l\'épisode suivant comme vu</string>
 <string name="menu_context_pin">Épingler</string>
 <string name="menu_context_unpin">Détacher</string>
-<string name="dialog_OK">Ok</string>
+<string name="dialog_ok">Ok</string>
 <string name="dialog_auto_backup">Effectuer automatiquement des sauvegardes journalières</string>
 <string name="dialog_backup">Sauvegarder</string>
 <string name="dialog_backup_done">Sauvegarde de la base de donnée effectuée</string>
@@ -48,7 +49,7 @@
 <string name="dialog_restore_notfound">N\'a pas pu trouver de sauvegarde sur le stockage externe!</string>
 <string name="dialog_title_delete">Supprimer la série?</string>
 <string name="dialog_delete">Êtes-vous sûr de vouloir supprimer %s?</string>
-<string name="dialog_Cancel">Annuler</string>
+<string name="dialog_cancel">Annuler</string>
 <string name="dialog_search">Rechercher:</string>
 <string name="dialog_update_series">Êtes-vous sûr de vouloir mettre à jour toutes les séries listées maintenant?</string>
 <string name="dialog_update_speedup">Vous pouvez accélérer ce processus dans Menu &gt; Options.</string>
@@ -66,6 +67,7 @@
 \n&#187; Pressez longtemps l\'image en plein écran pour ouvrir dans une application externe
 \n\nDans l\'aperçu d\'un épisode/d\'une série:
 \n&#187; Touchez l\'évaluation IMDb pour voir sur le site de IMDb</string>
+<string name="dialog_networks">Réseaux</string>
 <string name="menu_archive">Archiver</string>
 <string name="menu_unarchive">Ne pas archiver</string>
 <string name="messages_title_updating_series">Mise à jour des séries</string>

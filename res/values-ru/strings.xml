@@ -8,12 +8,13 @@
 <string name="archive">Архив</string>
 <string name="addserie_hint">Добавить сериал…</string>
 <string name="search_hint">Поиск…</string>
+<string name="menu_filter">Фильтровать</string>
 <string name="menu_undo">Отмена</string>
 <string name="menu_add_serie">Добавить сериал</string>
 <string name="menu_update">Обновить</string>
 <string name="menu_search">Найти</string>
-<string name="menu_sort_az">В алфавитном порядке</string>
-<string name="menu_sort_last_unseen">Сначала просмотренные</string>
+<string name="menu_sort_by_name">В алфавитном порядке</string>
+<string name="menu_sort_by_unseen">Сначала просмотренные</string>
 <string name="menu_about">Настройки</string>
 <string name="menu_exit">Выход</string>
 <string name="menu_context_update">Обновить</string>
@@ -34,7 +35,7 @@
 <string name="menu_context_mark_next_episode_as_seen">Отметить следующую серию просмотренной</string>
 <string name="menu_context_pin">Закрепить</string>
 <string name="menu_context_unpin">Открепить</string>
-<string name="dialog_OK">OK</string>
+<string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">автоматическое ежедневное резервное копирование</string>
 <string name="dialog_backup">Резервирование</string>
 <string name="dialog_backup_done">Резервная копия создана</string>
@@ -48,7 +49,7 @@
 <string name="dialog_restore_notfound">Резервная копия не найдена на внешнем носителе!</string>
 <string name="dialog_title_delete">Удалить сериал?</string>
 <string name="dialog_delete">Вы действительно хотите удалить %s?</string>
-<string name="dialog_Cancel">Отмена</string>
+<string name="dialog_cancel">Отмена</string>
 <string name="dialog_search">Искать:</string>
 <string name="dialog_update_series">Начать обновление информации о сериалах?</string>
 <string name="dialog_update_speedup">\n\nВы можете ускорить процесс в Меню > Настройки.</string>
@@ -71,6 +72,7 @@
 \n&#187; Долгое нажатия для просмотра в другом приложении
 \n\nВ информации о сериале/серии:
 \n&#187; Нажмите на рейтинг IMDb, чтобы открыть сайт</string>
+<string name="dialog_networks">Сети</string>
 <string name="menu_archive">Архивировать</string>
 <string name="menu_unarchive">Разархивировать</string>
 <string name="messages_title_updating_series">Обновить сериалы</string>
