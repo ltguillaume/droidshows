@@ -570,14 +570,14 @@ public class DroidShows extends ListActivity
 		if (destination.exists()) {
 			File previous0 = new File(destination.getPath(), "DroidShows.db0");
 			if (previous0.exists()) {
-				File previous1 = new File(destination.getPath() +"/DroidShows", "DroidShows.db1");
+				File previous1 = new File(destination.getPath(), "DroidShows.db1");
 				if (previous1.exists())
 					previous1.delete();
 				previous0.renameTo(previous1);
 			}
 			destination.renameTo(previous0);
 		}
-		File folder = new File(destination.getPath());
+		File folder = new File(Environment.getExternalStorageDirectory(), "/DroidShows");
 		if (!folder.isDirectory())
 			folder.mkdir();
 		int toastTxt = R.string.dialog_backup_done;
