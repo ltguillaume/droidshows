@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.FileChannel;
@@ -49,6 +50,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Looper;
@@ -1186,14 +1188,34 @@ public class DroidShows extends ListActivity
 		}
 	}
 	
+	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	private void errorNotify(String error) {
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		PendingIntent appIntent = PendingIntent.getActivity(DroidShows.this, 0, new Intent(), 0);
-		Notification notification = new Notification(R.drawable.noposter,
-			getString(R.string.messages_thetvdb_con_error), System.currentTimeMillis());
-		notification.setLatestEventInfo(getApplicationContext(), getString(R.string.messages_thetvdb_con_error),
-			error, appIntent);
+		
+		Notification notification = null;
+		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+			notification = new Notification(R.drawable.noposter,
+					getString(R.string.messages_thetvdb_con_error), System.currentTimeMillis());
+			try {
+				Method deprecatedMethod = notification.getClass().getMethod("setLatestEventInfo", Context.class, CharSequence.class, CharSequence.class, PendingIntent.class);
+				deprecatedMethod.invoke(notification, getApplicationContext(), getString(R.string.messages_thetvdb_con_error), error, appIntent);
+			} catch (Exception e) {
+				Log.e(SQLiteStore.TAG, "Method setLatestEventInfo not found", e);
+			}
+		} else {
+			Notification.Builder builder = new Notification.Builder(getApplicationContext())
+				.setContentIntent(appIntent)
+				.setSmallIcon(R.drawable.noposter)
+				.setContentTitle(getString(R.string.messages_thetvdb_con_error))
+				.setContentText(error);
+			if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+			    notification = builder.getNotification();
+			else
+			    notification = builder.build();
+		}
+		
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		mNotificationManager.notify(0, notification);
 	}
