@@ -685,6 +685,7 @@ public class DroidShows extends ListActivity
 		    if (pinnedShows.contains(seriesAdapter.getItem(info.position).getSerieId()))
 		    	menu.findItem(PIN_CONTEXT).setTitle(R.string.menu_context_unpin);
 		}
+		menu.setHeaderTitle(seriesAdapter.getItem(info.position).getName());
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -768,6 +769,10 @@ public class DroidShows extends ListActivity
 			default :
 				return super.onContextItemSelected(item);
 		}
+	}
+	
+	public void openContext(View v) {
+		this.openContextMenu(v);
 	}
 	
 	@Override

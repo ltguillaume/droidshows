@@ -70,6 +70,7 @@ public class SerieSeasons extends ListActivity
 		menu.add(0, ALLEPSEEN_CONTEXT, 0, getString(R.string.messages_context_mark_seasonseen));
 		menu.add(0, ALLUPTOTHIS_CONTEXT, 0, getString(R.string.messages_context_mark_asseenuptothis));
 		menu.add(0, ALLEPUNSEEN_CONTEXT, 0, getString(R.string.messages_context_mark_seasonunseen));
+		menu.setHeaderTitle(seasonsAdapter.getItem(((AdapterContextMenuInfo) menuInfo).position).getSeason());
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -92,6 +93,10 @@ public class SerieSeasons extends ListActivity
 			default :
 				return super.onContextItemSelected(item);
 		}
+	}
+	
+	public void openContext(View v) {
+		this.openContextMenu(v);
 	}
 
 	@Override
