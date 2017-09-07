@@ -22,6 +22,7 @@ import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.thetvdb.TheTVDB;
 import nl.asymmetrics.droidshows.thetvdb.model.Serie;
 import nl.asymmetrics.droidshows.thetvdb.model.TVShowItem;
+import nl.asymmetrics.droidshows.ui.BounceListView;
 import nl.asymmetrics.droidshows.ui.IconView;
 import nl.asymmetrics.droidshows.ui.SerieSeasons;
 import nl.asymmetrics.droidshows.ui.ViewEpisode;
@@ -110,7 +111,7 @@ public class DroidShows extends ListActivity
 	private static ProgressDialog m_ProgressDialog = null;
 	private static ProgressDialog updateAllSeriesPD = null;
 	public static SeriesAdapter seriesAdapter;
-	private static ListView listView;
+	private static BounceListView listView;
 	private static String backFromSeasonSerieId;
 	private static TheTVDB theTVDB;
 	private Utils utils = new Utils();
@@ -212,8 +213,9 @@ public class DroidShows extends ListActivity
 		series = new ArrayList<TVShowItem>();
 		seriesAdapter = new SeriesAdapter(this, R.layout.row, series);
 		setListAdapter(seriesAdapter);
-		listView = getListView();
+		listView = (BounceListView) getListView();
 		listView.setDivider(null);
+		listView.setOverscrollHeader(getResources().getDrawable(R.drawable.shape_gradient_ring));
 		if (savedInstanceState != null) {
 			showArchive = savedInstanceState.getInt("showArchive");
 			getSeries((savedInstanceState.getBoolean("searching") ? 2 : showArchive));
@@ -361,7 +363,7 @@ public class DroidShows extends ListActivity
 				filterDialog();
 				break;
 			case UPDATEALL_MENU_ITEM :
-				updateAllSeries();
+				updateAllSeriesDialog();
 				break;
 			case OPTIONS_MENU_ITEM :
 				aboutDialog();
@@ -496,9 +498,11 @@ public class DroidShows extends ListActivity
 	public void dialogOptions(View v) {
 		switch(v.getId()) {
 			case R.id.backup:
+				m_AlertDlg.dismiss();
 				backup(false);
 				break;
 			case R.id.restore:
+				m_AlertDlg.dismiss();
 				new AlertDialog.Builder(DroidShows.this)
 				.setTitle(R.string.dialog_restore)
 				.setMessage(R.string.dialog_restore_now)
@@ -1117,7 +1121,28 @@ public class DroidShows extends ListActivity
 		getSeries();
 	}
 
-	private void updateAllSeries() {
+	public void updateAllSeriesDialog() {
+		String updateMessageAD = getString(R.string.dialog_update_series) + (latestSeasonOption == UPDATE_ALL_SEASONS ? getString(R.string.dialog_update_speedup) : "");
+		AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
+			.setTitle(R.string.messages_title_update_series)
+			.setMessage(updateMessageAD)
+			.setIcon(android.R.drawable.ic_dialog_alert)
+			.setCancelable(false)
+			.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					updateAllSeries();
+					return;
+				}
+			})
+			.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					return;
+				}
+			});
+		alertDialog.show();
+	}
+
+	public void updateAllSeries() {
 		if (!utils.isNetworkAvailable(DroidShows.this)) {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 		} else {
@@ -1157,39 +1182,25 @@ public class DroidShows extends ListActivity
 						});
 					}
 					listView.post(new Runnable() {
-						public void run() {getSeries((searching() ? 2 : showArchive));}
+						public void run() {
+							getSeries((searching() ? 2 : showArchive));
+							listView.updating = false;
+						}
 					});
 					updateAllSeriesPD.dismiss();
 					theTVDB = null;
 				}
 			};
 			updateAllSeriesPD = new ProgressDialog(this);
-			String updateMessageAD = getString(R.string.dialog_update_series) + (latestSeasonOption == UPDATE_ALL_SEASONS ? getString(R.string.dialog_update_speedup) : "");
-			AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
-				.setTitle(R.string.messages_title_update_series)
-				.setMessage(updateMessageAD)
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setCancelable(false)
-				.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						updateAllSeriesPD.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-						updateAllSeriesPD.setTitle(R.string.messages_title_updating_series);
-						updateAllSeriesPD.setMessage(getString(R.string.messages_update_series));
-						updateAllSeriesPD.setCancelable(false);
-						updateAllSeriesPD.setMax(series.size());
-						updateAllSeriesPD.setProgress(0);
-						updateAllSeriesPD.show();
-						updateAllShowsTh = new Thread(updateallseries);
-						updateAllShowsTh.start();
-						return;
-					}
-				})
-				.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int which) {
-						return;
-					}
-				});
-			alertDialog.show();
+			updateAllSeriesPD.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+			updateAllSeriesPD.setTitle(R.string.messages_title_updating_series);
+			updateAllSeriesPD.setMessage(getString(R.string.messages_update_series));
+			updateAllSeriesPD.setCancelable(false);
+			updateAllSeriesPD.setMax(series.size());
+			updateAllSeriesPD.setProgress(0);
+			updateAllSeriesPD.show();
+			updateAllShowsTh = new Thread(updateallseries);
+			updateAllShowsTh.start();
 		}
 	}
 	

@@ -6,8 +6,8 @@ This fork adds quite a bunch of features, among which an improved interface, a m
 <img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="90"/></a>
 
 __Some pointers__:
-* Don't forget to update all shows regularly
-* Long-press items for more options
+* Don't forget to update all shows regularly (pull-to-refresh)
+* Context menu has more options (long-press item or use overflow buttons)
 * Swipe left-to-right to go back  
 __In Shows Overview__:
 * Tap poster for next episode info
@@ -16,7 +16,7 @@ __In Shows Overview__:
 * Swipe right-to-left to mark next as seen  
 __In Show Details__:
 * Tap poster for full-screen view
-* Click full-screen poster image for fan art 
+* Click full-screen poster image for fan art
 * Long-press full-screen poster to open in external app  
 __In Show/Episode Details__:
 * Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage
@@ -51,6 +51,8 @@ __Shows Overview__:
 \+ View full size poster and fan art  
 \+ Quick search (filter)  
 \+ Exclude shows without unseen aired episodes  
+\+ Added overflow buttons for easier access to context menus  
+\+ Pull-To-Refresh to update shows  
 \* Sorting shows by first unseen episode  
 \* Clarified toggle and sort options  
 \* Not showing "null" entries from DB  

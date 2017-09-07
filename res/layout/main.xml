@@ -4,6 +4,6 @@
 		<EditText android:id="@+id/search_text" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="6dp" android:background="@android:color/transparent" android:textColor="@android:color/primary_text_dark" android:hint="@string/search_hint" android:inputType="textFilter" android:imeOptions="actionDone"/>
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="24dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:onClick="clearFilter"/>
 	</LinearLayout>
-	<ListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/android:list"/>
+	<nl.asymmetrics.droidshows.ui.BounceListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/android:list"/>
 	<TextView android:id="@+id/android:empty" android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="6dp" android:text="@string/layout_main_no_items"/>
 </LinearLayout>
