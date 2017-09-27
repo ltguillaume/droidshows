@@ -62,6 +62,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.GestureDetector;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -168,8 +169,10 @@ public class DroidShows extends ListActivity
 	private Vibrator vib = null;
 	private TVShowItem lastSerie;
 	private static View main;
-	private static boolean logMode = false;
+	public static boolean logMode = false;
 	public static String removeEpisodeFromLog = "";
+	private static boolean gettingNextLogged = false;
+	private static boolean contextByButton = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -678,18 +681,22 @@ public class DroidShows extends ListActivity
 			menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
 		} else if (seriesAdapter.getItem(info.position).getUnwatchedAired() == 0)
 	    	menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
-		if (logMode) {
-			menu.findItem(DELETE_CONTEXT).setVisible(false);
-			menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setVisible(false);
-			menu.findItem(PIN_CONTEXT).setVisible(false);
-			menu.findItem(DELETE_CONTEXT).setVisible(false);
-		} else {
+		if (!logMode) {
 		    if (seriesAdapter.getItem(info.position).getPassiveStatus())
 		    	menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setTitle(R.string.menu_unarchive);
 		    if (pinnedShows.contains(seriesAdapter.getItem(info.position).getSerieId()))
 		    	menu.findItem(PIN_CONTEXT).setTitle(R.string.menu_context_unpin);
+		} else {
+			menu.findItem(DELETE_CONTEXT).setVisible(false);
+			menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setVisible(false);
+			menu.findItem(PIN_CONTEXT).setVisible(false);
+			menu.findItem(DELETE_CONTEXT).setVisible(false);
 		}
-		menu.setHeaderTitle(seriesAdapter.getItem(info.position).getName());
+		if (contextByButton || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+			menu.setHeaderTitle(seriesAdapter.getItem(info.position).getName());
+			menu.setHeaderIcon(R.drawable.icon);
+			contextByButton = false;
+		}
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -776,6 +783,7 @@ public class DroidShows extends ListActivity
 	}
 	
 	public void openContext(View v) {
+		contextByButton = true;
 		this.openContextMenu(v);
 	}
 	
@@ -1277,6 +1285,17 @@ public class DroidShows extends ListActivity
 		asyncInfo.execute();
 	}
 	
+	public void getNextLogged() {
+		if (gettingNextLogged) return;
+		gettingNextLogged = true;
+		List<TVShowItem> episodes = db.getLog(series.size());
+		for (int i = 0; i < episodes.size(); i++) {
+			series.add(episodes.get(i));
+			seriesAdapter.notifyDataSetChanged();
+		}
+		gettingNextLogged = false;
+	}
+
 	public static Runnable updateListView = new Runnable() {
 		public void run() {
 			main.setVisibility(View.INVISIBLE);
@@ -1371,7 +1390,10 @@ public class DroidShows extends ListActivity
 	@Override
 	public void onRestart() {
 		super.onRestart();
-		if (logMode) {
+		if (!logMode) {
+			listView.post(updateShowView(backFromSeasonSerieId));
+			backFromSeasonSerieId = null;
+		} else {
 			if (!removeEpisodeFromLog.isEmpty()) {
 				for (int i = 0; i < series.size(); i++)
 					if (series.get(i).getEpisodeId().equals(removeEpisodeFromLog)) {
@@ -1380,9 +1402,6 @@ public class DroidShows extends ListActivity
 					}
 				removeEpisodeFromLog = "";
 			}
-		} else {
-			listView.post(updateShowView(backFromSeasonSerieId));
-			backFromSeasonSerieId = null;
 		}
 	}
 	
@@ -1459,7 +1478,7 @@ public class DroidShows extends ListActivity
 		}
 		searchV.requestFocus();
 		searchV.selectAll();
-		keyboard.showSoftInput(searchV, 0);
+		keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
 		return true;
 	}
 
@@ -1669,9 +1688,12 @@ public class DroidShows extends ListActivity
 					holder.sn.setText(serie.getName());
 					holder.sn.setTextColor(textViewColors);
 				}					
-				if (holder.si != null)
+				if (holder.si != null) {
+					holder.si.setEnabled(true);
 					holder.si.setText(serie.getEpisodeName());
+				}
 				if (holder.sne != null) {
+					holder.sne.setEnabled(true);
 					holder.sne.setText(serie.getEpisodeSeen());
 				}
 				if (holder.icon != null) {
@@ -1698,7 +1720,7 @@ public class DroidShows extends ListActivity
 			}
 		};
 		
-		private final GestureDetector.SimpleOnGestureListener iconGestureListener = new GestureDetector.SimpleOnGestureListener() {
+		private final SimpleOnGestureListener iconGestureListener = new SimpleOnGestureListener() {
 			@Override
 			public boolean onSingleTapConfirmed(MotionEvent e) {
 				keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);

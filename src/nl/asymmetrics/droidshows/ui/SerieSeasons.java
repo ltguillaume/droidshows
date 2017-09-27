@@ -43,6 +43,7 @@ public class SerieSeasons extends ListActivity
 	public static SeriesSeasonsAdapter seasonsAdapter;
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private SQLiteStore db;
+	private static boolean contextByButton = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,11 @@ public class SerieSeasons extends ListActivity
 		menu.add(0, ALLEPSEEN_CONTEXT, 0, getString(R.string.messages_context_mark_seasonseen));
 		menu.add(0, ALLUPTOTHIS_CONTEXT, 0, getString(R.string.messages_context_mark_asseenuptothis));
 		menu.add(0, ALLEPUNSEEN_CONTEXT, 0, getString(R.string.messages_context_mark_seasonunseen));
-		menu.setHeaderTitle(seasonsAdapter.getItem(((AdapterContextMenuInfo) menuInfo).position).getSeason());
+		if (contextByButton || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+			menu.setHeaderTitle(seasonsAdapter.getItem(((AdapterContextMenuInfo) menuInfo).position).getSeason());
+			menu.setHeaderIcon(R.drawable.icon);
+			contextByButton = false;
+		}
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -96,6 +101,7 @@ public class SerieSeasons extends ListActivity
 	}
 	
 	public void openContext(View v) {
+		contextByButton = true;
 		this.openContextMenu(v);
 	}
 

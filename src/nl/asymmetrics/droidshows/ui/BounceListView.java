@@ -15,6 +15,7 @@ public class BounceListView extends ListView {
 	private boolean allowOverscroll = false;
 	private boolean abortUpdate = false;
 	public boolean updating = false;
+	private float startY;
 
 	public BounceListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -28,12 +29,18 @@ public class BounceListView extends ListView {
 	public boolean onTouchEvent(MotionEvent event) {
 		switch(event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
-				allowOverscroll = (getChildCount() > 0 && getChildAt(0).getTop() == 0 && getFirstVisiblePosition() == 0);
 				abortUpdate = true;
+				startY = event.getY();
 				break;
 			case MotionEvent.ACTION_MOVE:
-				if (-getScrollY() < minOverscrollDistance)
+				if (DroidShows.logMode) {
+					allowOverscroll = (event.getY() > startY && getChildCount() > 0 && getChildAt(getChildCount() - 1).getBottom() == getBottom());
+				} else {
+					if (-getScrollY() < minOverscrollDistance)
 					abortUpdate = true;
+					allowOverscroll = (event.getY() > startY && getChildCount() > 0 && getChildAt(0).getTop() == 0 && getFirstVisiblePosition() == 0);
+				}
+
 				break;
 			case MotionEvent.ACTION_UP:
 				abortUpdate = true;
@@ -44,22 +51,15 @@ public class BounceListView extends ListView {
 	
 	@Override
 	protected void onOverScrolled(int scrollX, int scrollY, boolean clampedX, boolean clampedY) {
-//		if (!clampedY)	// Not working for Gingerbread, getScrollY() does
-//			overScrollCanceled = true;
-		
-		if (!updating && -scrollY == maxOverscrollDistance) {
-			abortUpdate = false;
-			updating = true;
-			this.postDelayed(new Runnable() {
-				public void run() {
-					if (abortUpdate)
-						updating = false;
-					else
-						((DroidShows)context).updateAllSeries();
-				}
-			}, 1000);
+		if (DroidShows.logMode) {
+			((DroidShows)context).getNextLogged();
+		} else {
+			if (!updating && -scrollY == maxOverscrollDistance) {
+				abortUpdate = false;
+				updating = true;
+				this.postDelayed(startUpdate, 1000);
+			}
 		}
-		
 		super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);
 	}
 
@@ -72,4 +72,12 @@ public class BounceListView extends ListView {
 		}
 	}
 
+	private Runnable startUpdate = new Runnable() {
+		public void run() {
+			if (abortUpdate)
+				updating = false;
+			else
+				((DroidShows)context).updateAllSeries();
+		}
+	};
 }

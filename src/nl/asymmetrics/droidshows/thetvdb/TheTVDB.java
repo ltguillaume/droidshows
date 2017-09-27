@@ -12,8 +12,8 @@ import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import android.util.Log;
 
 public class TheTVDB {
-	private static final String main = "http://thetvdb.com";
-	private static final String mirror = "http://thetvdb.plexapp.com";
+	private static final String main = "https://thetvdb.com";
+	private static final String mirror = "https://thetvdb.plexapp.com";
 
 	private static String apiKey;
 	private static String xmlMirror;

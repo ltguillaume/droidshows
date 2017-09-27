@@ -272,7 +272,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			+(showArchive == 0 ? "=0 OR passiveStatus IS NULL)" : ">=1)") : "");	// Solves issue with former bug when adding show directly after restoring backup
 		String showNetworksString = (networks != null ? (showArchiveString == null ? " WHERE " : " AND ")
 			+"network IN "+ networks : "");
-		Log.d(TAG, "SELECT id FROM series"+ showArchiveString + showNetworksString);
+//		Log.d(TAG, "SELECT id FROM series"+ showArchiveString + showNetworksString);
 		Cursor cseries = Query("SELECT id FROM series"+ showArchiveString + showNetworksString);
 		try {
 			cseries.moveToFirst();
@@ -309,11 +309,16 @@ public class SQLiteStore extends SQLiteOpenHelper
 	}
 
 	public List<TVShowItem> getLog() {
+		return getLog(0);
+	}
+
+	public List<TVShowItem> getLog(int offset) {
 		List<TVShowItem> episodes = new ArrayList<TVShowItem>();
 		String serieId = "", episodeId = "", episodeName = "", seen = "";
 		int seasonNumber = -1, episodeNumber = -1;
 		Cursor c = Query("SELECT serieId, id, seasonNumber, episodeNumber, episodeName, seen"
-								+ " FROM episodes WHERE seen>1 ORDER BY seen DESC, serieId DESC, episodeNumber DESC LIMIT 100");
+								+" FROM episodes WHERE seen>1 ORDER BY seen DESC, serieId DESC, episodeNumber"
+								+" DESC LIMIT 25 OFFSET "+ offset);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			do {
@@ -716,10 +721,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 		}
 		try {
 			String tmpSOverview = "";
-			if (s.getOverview() != null) {
-				if (!TextUtils.isEmpty(s.getOverview())) {
-					tmpSOverview = s.getOverview();
-				}
+			if (s.getOverview() != null && !TextUtils.isEmpty(s.getOverview())) {
+				tmpSOverview = s.getOverview();
 			}
 			String tmpSName = "";
 			if (!TextUtils.isEmpty(s.getSerieName())) {

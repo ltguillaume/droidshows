@@ -5,5 +5,5 @@
 		<TextView android:id="@+id/unwatched" android:layout_width="fill_parent" android:layout_height="wrap_content" android:ellipsize="marquee" android:maxLines="1" android:singleLine="true"/>
 		<TextView android:id="@+id/nextepisode" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 	</LinearLayout>
-	<ImageButton android:id="@+id/seriecontext" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_alignBottom="@+id/serie" android:layout_alignParentRight="true" android:src="@drawable/context" android:background="@null" android:focusable="false" android:focusableInTouchMode="false" android:onClick="openContext"/>
+	<ImageButton android:id="@+id/seriecontext" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_alignTop="@+id/serie" android:layout_alignBottom="@+id/serie" android:layout_alignParentRight="true" android:src="@drawable/context" android:background="@null" android:focusable="false" android:focusableInTouchMode="false" android:onClick="openContext"/>
 </RelativeLayout>

@@ -77,7 +77,6 @@ public class SerieEpisodes extends ListActivity {
 		menu.add(0, VIEWEP_CONTEXT, 0, getString(R.string.messsages_view_ep_details));
 		menu.add(0, SEENDATE_CONTEXT, 0, getString(R.string.messsages_edit_seen_date));
 		menu.add(0, DELEP_CONTEXT, 0, getString(R.string.menu_context_delete));
-		menu.setHeaderTitle(episodesAdapter.getItem(((AdapterContextMenuInfo) menuInfo).position).name);
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
