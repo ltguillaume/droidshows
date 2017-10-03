@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
@@ -33,6 +34,7 @@ import nl.asymmetrics.droidshows.utils.Update;
 import nl.asymmetrics.droidshows.utils.Utils;
 import nl.asymmetrics.droidshows.utils.SQLiteStore.NextEpisode;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.Notification;
@@ -73,6 +75,8 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -81,6 +85,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -121,6 +126,8 @@ public class DroidShows extends ListActivity
 	private SharedPreferences sharedPrefs;
 	private static final String AUTO_BACKUP_PREF_NAME = "auto_backup";
 	private static boolean autoBackupOption;
+	private static final String BACKUP_FOLDER_PREF_NAME = "backup_folder";
+	private static String defaultBackupFolder;
 	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
 	private static final int SORT_BY_UNSEEN = 1;
@@ -171,8 +178,9 @@ public class DroidShows extends ListActivity
 	private static View main;
 	public static boolean logMode = false;
 	public static String removeEpisodeFromLog = "";
-	private static boolean gettingNextLogged = false;
-	private static boolean contextByButton = false;
+	private File[] dirList;
+	private String[] dirNamesList;
+	private Spinner spinner = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -195,6 +203,7 @@ public class DroidShows extends ListActivity
 		// Preferences
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
 		autoBackupOption = sharedPrefs.getBoolean(AUTO_BACKUP_PREF_NAME, false);
+		defaultBackupFolder = sharedPrefs.getString(BACKUP_FOLDER_PREF_NAME, Environment.getExternalStorageDirectory() +"/DroidShows");
 		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
 		excludeSeen = sharedPrefs.getBoolean(EXCLUDE_SEEN_PREF_NAME, false);
 		latestSeasonOption = sharedPrefs.getInt(LATEST_SEASON_PREF_NAME, UPDATE_LATEST_SEASON_ONLY);
@@ -249,7 +258,7 @@ public class DroidShows extends ListActivity
 				try {	// http://stackoverflow.com/a/26447004
 					Drawable thumb = getResources().getDrawable(R.drawable.thumb);
 					String fieldName = "mFastScroller";
-					if (android.os.Build.VERSION.SDK_INT >= 22)	// 22 = Lollipop
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)	// 22 = Lollipop
 			            fieldName = "mFastScroll";
 	
 					java.lang.reflect.Field fieldFastScroller = AbsListView.class.getDeclaredField(fieldName);
@@ -258,7 +267,7 @@ public class DroidShows extends ListActivity
 					Object thisFastScroller = fieldFastScroller.get(listView);
 					java.lang.reflect.Field fieldToChange;
 	
-					if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 						fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbImage");
 						fieldToChange.setAccessible(true);
 						ImageView iv = (ImageView) fieldToChange.get(thisFastScroller);
@@ -281,7 +290,7 @@ public class DroidShows extends ListActivity
 						fieldToChange.setAccessible(true);
 						fieldToChange.setInt(thisFastScroller, thumb.getIntrinsicWidth());
 	
-						if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 							fieldToChange = fieldFastScroller.getType().getDeclaredField("mTrackDrawable");
 							fieldToChange.setAccessible(true);
 							fieldToChange.set(thisFastScroller, null);
@@ -293,7 +302,7 @@ public class DroidShows extends ListActivity
 			}
 		}
 	}
-	
+
 	/* Options Menu */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -307,21 +316,55 @@ public class DroidShows extends ListActivity
 		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update)).setIcon(android.R.drawable.ic_menu_upload);
 		menu.add(0, OPTIONS_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
 		menu.add(0, EXIT_MENU_ITEM, 0, getString(R.string.menu_exit)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+			arrangeActionBar(menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@SuppressLint("NewApi")
+	private void arrangeActionBar(Menu menu) {
+		menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM).setVisible(false);
+		menu.findItem(LOG_MODE_ITEM).setVisible(false);
+		menu.findItem(SEARCH_MENU_ITEM).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		spinner = new Spinner(this);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+			spinner.setPopupBackgroundResource(R.drawable.menu_dropdown_panel);
+		spinner.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,
+			new String[] {
+				getString(R.string.layout_app_name),
+				getString(R.string.menu_archive),
+				getString(R.string.menu_log),
+			}));
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+			public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+				logMode = position == 2;
+				showArchive = (position == 2 ? showArchive : position);
+				if (logMode)
+					clearFilter(null);
+				getSeries();
+			}
+			public void onNothingSelected(AdapterView<?> arg0) {
+			}
+		});
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+		actionBar.setCustomView(spinner);
 	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
-			.setEnabled(!logMode && !searching());
+		menu.findItem(UNDO_MENU_ITEM)
+			.setVisible(undo.size() > 0);
+		menu.findItem(SEARCH_MENU_ITEM)
+			.setEnabled(!logMode);
 		menu.findItem(FILTER_MENU_ITEM)
 			.setEnabled(!logMode && !searching());
 		menu.findItem(SORT_MENU_ITEM)
 			.setEnabled(!logMode);
-
-		menu.findItem(UNDO_MENU_ITEM)
-			.setVisible(undo.size() > 0);
+		menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
+			.setEnabled(!logMode && !searching());
 		menu.findItem(LOG_MODE_ITEM)
+			.setEnabled(!searching())
 			.setTitle((logMode ? R.string.menu_close_log: R.string.menu_log));
 		menu.findItem(UPDATEALL_MENU_ITEM)
 			.setEnabled(!logMode);
@@ -426,7 +469,8 @@ public class DroidShows extends ListActivity
 		toggleNetworksFilter(networksFilter);
 		m_AlertDlg = new AlertDialog.Builder(this)
 		.setView(filterV)
-		.setTitle(R.string.layout_app_name).setIcon(R.drawable.icon)
+		.setTitle(R.string.menu_filter)
+		.setIcon(R.drawable.icon)
 		.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				applyFilters((ScrollView) filterV, networksFilterV);
@@ -489,7 +533,8 @@ public class DroidShows extends ListActivity
 		((CheckBox) about.findViewById(R.id.use_mirror)).setChecked(useMirror);
 		m_AlertDlg = new AlertDialog.Builder(this)
 			.setView(about)
-			.setTitle(R.string.layout_app_name).setIcon(R.drawable.icon)
+			.setTitle(R.string.menu_about)
+			.setIcon(R.drawable.icon)
 			.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					m_AlertDlg.dismiss();
@@ -506,16 +551,7 @@ public class DroidShows extends ListActivity
 				break;
 			case R.id.restore:
 				m_AlertDlg.dismiss();
-				new AlertDialog.Builder(DroidShows.this)
-				.setTitle(R.string.dialog_restore)
-				.setMessage(R.string.dialog_restore_now)
-				.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
-						restore();
-					}
-				})
-				.setNegativeButton(R.string.dialog_cancel, null)
-				.show();
+				restore();
 				break;
 			case R.id.auto_backup:
 				autoBackupOption ^= true;
@@ -542,14 +578,15 @@ public class DroidShows extends ListActivity
 				break;
 			case R.id.change_language:
 				AlertDialog.Builder changeLang = new AlertDialog.Builder(this);
-				changeLang.setItems(R.array.languages, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int item) {
-						langCode = getResources().getStringArray(R.array.langcodes)[item];
-						TextView changeLangB = (TextView) m_AlertDlg.findViewById(R.id.change_language);
-						changeLangB.setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
-					}
-				});
-				changeLang.show();
+				changeLang.setTitle(R.string.dialog_change_language)
+					.setItems(R.array.languages, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int item) {
+							langCode = getResources().getStringArray(R.array.langcodes)[item];
+							TextView changeLangB = (TextView) m_AlertDlg.findViewById(R.id.change_language);
+							changeLangB.setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
+						}
+					})
+					.show();
 			break;
 		}
 	}
@@ -566,27 +603,125 @@ public class DroidShows extends ListActivity
 		Thread updateShowStatsTh = new Thread(updateShowStats);
 		updateShowStatsTh.start();
 	}
-	
+
 	private void backup(boolean auto) {
-//		Add Folder Picker: https://stackoverflow.com/questions/18522784/android-configurable-directory/18523047#comment27270377_18523047
+		if (auto) {
+			backup(auto, defaultBackupFolder);
+		} else {
+			File folder = new File(defaultBackupFolder);
+			if (!folder.isDirectory())
+				folder.mkdir();
+			filePicker(defaultBackupFolder, getString(R.string.dialog_backup), false);
+		}
+	}
+
+	private void restore() {
+		filePicker(defaultBackupFolder, getString(R.string.dialog_restore), true);
+	}
+	
+	private void filePicker(final String folderString, final String title, final boolean restoring) {
+		File folder = new File(folderString);
+		File[] tempDirList = dirContents(folder, restoring);
+		if (folderString.equals("/")) {
+			dirList = new File[tempDirList.length];
+			dirNamesList = new String[tempDirList.length];
+			for(int i = 0; i < tempDirList.length; i++) {
+				dirList[i] = tempDirList[i];
+				dirNamesList[i] = tempDirList[i].getName();
+				if (restoring && dirList[i].isFile())
+					dirNamesList[i] += " ("+ SimpleDateFormat.getDateTimeInstance().format(tempDirList[i].lastModified()) +")";
+			}
+		} else {
+			dirList = new File[tempDirList.length + 1];
+			dirNamesList = new String[tempDirList.length + 1];
+			dirList[0] = folder.getParentFile();
+			dirNamesList[0] = "..";
+			for(int i = 0; i < tempDirList.length; i++) {
+				dirList[i+1] = tempDirList[i];
+				dirNamesList[i+1] = tempDirList[i].getName();
+				if (restoring && dirList[i+1].isFile())
+					dirNamesList[i+1] += " ("+ SimpleDateFormat.getDateTimeInstance().format(tempDirList[i].lastModified()) +")";
+			}
+		}
+		AlertDialog.Builder filePicker = new AlertDialog.Builder(this)
+			.setTitle(folder.toString())
+			.setItems(dirNamesList, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					File chosenFile = dirList[which];
+					if (chosenFile.isDirectory()) {
+						filePicker(chosenFile.toString(), title, restoring);
+					} else if (restoring) {
+						confirmRestore(chosenFile.toString());
+					}
+				}
+			})
+			.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			});
+		
+		if (!restoring)
+			filePicker.setPositiveButton(R.string.dialog_backup, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					backup(false, folderString);
+				}
+			});
+		filePicker.show();
+	}
+
+	private File[] dirContents(File folder, final boolean showFiles)  {
+		if (!folder.exists())
+			folder = new File(Environment.getExternalStorageDirectory(), "");
+		if (folder.exists()) {
+			FilenameFilter filter = new FilenameFilter() {
+				public boolean accept(File dir, String filename) {
+					File file = new File(dir.getAbsolutePath() + File.separator + filename);
+					if (showFiles)
+						return file.isDirectory()
+							|| file.isFile() && file.getName().toLowerCase().indexOf("droidshows.") == 0;
+					else
+						return file.isDirectory();
+				}
+			};
+			File[] list = folder.listFiles(filter);
+			if (list != null)
+				Arrays.sort(list, filesComperator);
+			return list == null ? new File[0] : list;
+		} else {
+			return new File[0];
+		}
+	}
+	
+	private static Comparator<File> filesComperator = new Comparator<File>() {
+		public int compare(File f1, File f2) {
+			if (f1.isDirectory() && !f2.isDirectory())
+				return 1;
+			if (f2.isDirectory() && !f1.isDirectory())
+				return -1;
+			return f1.getName().compareToIgnoreCase(f2.getName());
+		}
+	};
+
+	private void backup(boolean auto, String backupFolder) {
 		File source = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
-		File destination = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db");
+		File destination = new File(backupFolder, "DroidShows.db");
 		if (auto && (!autoBackupOption || 
 				new SimpleDateFormat("yyyy-MM-dd")
 					.format(destination.lastModified()).equals(lastStatsUpdateCurrent) ||
 				source.lastModified() == destination.lastModified()))
 			return;
 		if (destination.exists()) {
-			File previous0 = new File(destination.getPath(), "DroidShows.db0");
+			File previous0 = new File(backupFolder, "DroidShows.db0");
 			if (previous0.exists()) {
-				File previous1 = new File(destination.getPath(), "DroidShows.db1");
+				File previous1 = new File(backupFolder, "DroidShows.db1");
 				if (previous1.exists())
 					previous1.delete();
 				previous0.renameTo(previous1);
 			}
 			destination.renameTo(previous0);
 		}
-		File folder = new File(Environment.getExternalStorageDirectory(), "/DroidShows");
+		File folder = new File(backupFolder);
 		if (!folder.isDirectory())
 			folder.mkdir();
 		int toastTxt = R.string.dialog_backup_done;
@@ -601,13 +736,25 @@ public class DroidShows extends ListActivity
 			asyncInfo.execute();
 		}
 		if (!auto || toastTxt == R.string.dialog_backup_failed)
-			Toast.makeText(getApplicationContext(), getString(toastTxt) + " ("+ destination.getPath() +")", Toast.LENGTH_LONG).show();
+			Toast.makeText(getApplicationContext(), getString(toastTxt) + " ("+ backupFolder +")", Toast.LENGTH_LONG).show();
 	}
-	
-	private void restore() {
-//		Add File Picker: https://stackoverflow.com/questions/18522784/android-configurable-directory/18523047#comment27270377_18523047
+
+	private void confirmRestore(final String backupFile) {
+		new AlertDialog.Builder(DroidShows.this)
+		.setTitle(R.string.dialog_restore)
+		.setMessage(R.string.dialog_restore_now)
+		.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				restore(backupFile);
+				}
+			})
+		.setNegativeButton(R.string.dialog_cancel, null)
+		.show();
+	}
+
+	private void restore(String backupFile) {
 		String toastTxt = getString(R.string.dialog_restore_done);
-		File source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db");
+		File source = new File(backupFile);
 		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db0");
 		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db1");
 		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory(), "DroidShows.db");
@@ -639,7 +786,7 @@ public class DroidShows extends ListActivity
 		}
 		Toast.makeText(getApplicationContext(), toastTxt, Toast.LENGTH_LONG).show();
 	}
-		
+
 	private void copy(File source, File destination) throws IOException {
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
 			asyncInfo.cancel(true);
@@ -692,11 +839,7 @@ public class DroidShows extends ListActivity
 			menu.findItem(PIN_CONTEXT).setVisible(false);
 			menu.findItem(DELETE_CONTEXT).setVisible(false);
 		}
-		if (contextByButton || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-			menu.setHeaderTitle(seriesAdapter.getItem(info.position).getName());
-			menu.setHeaderIcon(R.drawable.icon);
-			contextByButton = false;
-		}
+		menu.setHeaderTitle(seriesAdapter.getItem(info.position).getName());
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -782,9 +925,12 @@ public class DroidShows extends ListActivity
 		}
 	}
 	
+	@SuppressLint("NewApi")
 	public void openContext(View v) {
-		contextByButton = true;
-		this.openContextMenu(v);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+			listView.showContextMenuForChild(v, v.getX(), v.getY());
+		else
+			openContextMenu(v);
 	}
 	
 	@Override
@@ -1068,7 +1214,7 @@ public class DroidShows extends ListActivity
 					new File(posterThumbPath).delete();
 					posterThumbPath = getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs"+ posterURL.getFile().toString();
 				} catch (MalformedURLException e) {
-					Log.e(SQLiteStore.TAG, "Show "+ serieId +" doesn't have poster URL");
+					Log.e(SQLiteStore.TAG, sToUpdate.getSerieName() +" doesn't have a poster URL");
 					e.printStackTrace();
 					return;
 				}
@@ -1082,7 +1228,7 @@ public class DroidShows extends ListActivity
 				}
 				Bitmap posterThumb = BitmapFactory.decodeFile(posterThumbPath);
 				if (posterThumb == null) {
-					Log.e(SQLiteStore.TAG, "Corrupt or unknown poster file type:"+ posterThumbPath);
+					Log.e(SQLiteStore.TAG, "Corrupt or unknown poster file type: "+ posterThumbPath);
 					return;
 				}
 				int width = getWindowManager().getDefaultDisplay().getWidth();
@@ -1286,14 +1432,11 @@ public class DroidShows extends ListActivity
 	}
 	
 	public void getNextLogged() {
-		if (gettingNextLogged) return;
-		gettingNextLogged = true;
 		List<TVShowItem> episodes = db.getLog(series.size());
 		for (int i = 0; i < episodes.size(); i++) {
 			series.add(episodes.get(i));
 			seriesAdapter.notifyDataSetChanged();
 		}
-		gettingNextLogged = false;
 	}
 
 	public static Runnable updateListView = new Runnable() {
@@ -1318,43 +1461,43 @@ public class DroidShows extends ListActivity
 				}
 			}
 			
-			Comparator<TVShowItem> comperator = new Comparator<TVShowItem>() {
-				public int compare(TVShowItem object1, TVShowItem object2) {
-					if (pinnedShows.contains(object1.getSerieId()) && !pinnedShows.contains(object2.getSerieId()))
-						return -1;
-					else if (pinnedShows.contains(object2.getSerieId()) && !pinnedShows.contains(object1.getSerieId()))
-						return 1;
-
-					if (sortOption == SORT_BY_UNSEEN) {
-						int unwatchedAired1 = object1.getUnwatchedAired();
-						int unwatchedAired2 = object2.getUnwatchedAired();
-						if (unwatchedAired1 == unwatchedAired2) {
-							Date nextAir1 = object1.getNextAir();
-							Date nextAir2 = object2.getNextAir();
-							if (nextAir1 == null && nextAir2 == null)
-								return object1.getName().compareToIgnoreCase(object2.getName());
-							if (nextAir1 == null)
-								return 1;
-							if (nextAir2 == null)
-								return -1;
-							return nextAir1.compareTo(nextAir2);
-						}
-						if (unwatchedAired1 == 0)
-							return 1;
-						if (unwatchedAired2 == 0)
-							return -1;
-						return ((Integer) unwatchedAired2).compareTo(unwatchedAired1);
-					} else {
-						return object1.getName().compareToIgnoreCase(object2.getName());
-					}
-				}
-			};
-			
-			if (!logMode) seriesAdapter.sort(comperator);
+			if (!logMode) seriesAdapter.sort(showsComperator);
 			if (seriesAdapter.isFiltered)
 				seriesAdapter.getFilter().filter(searchV.getText());
 			seriesAdapter.notifyDataSetChanged();
 			main.setVisibility(View.VISIBLE);
+		}
+	};
+	
+	private static Comparator<TVShowItem> showsComperator = new Comparator<TVShowItem>() {
+		public int compare(TVShowItem object1, TVShowItem object2) {
+			if (pinnedShows.contains(object1.getSerieId()) && !pinnedShows.contains(object2.getSerieId()))
+				return -1;
+			else if (pinnedShows.contains(object2.getSerieId()) && !pinnedShows.contains(object1.getSerieId()))
+				return 1;
+
+			if (sortOption == SORT_BY_UNSEEN) {
+				int unwatchedAired1 = object1.getUnwatchedAired();
+				int unwatchedAired2 = object2.getUnwatchedAired();
+				if (unwatchedAired1 == unwatchedAired2) {
+					Date nextAir1 = object1.getNextAir();
+					Date nextAir2 = object2.getNextAir();
+					if (nextAir1 == null && nextAir2 == null)
+						return object1.getName().compareToIgnoreCase(object2.getName());
+					if (nextAir1 == null)
+						return 1;
+					if (nextAir2 == null)
+						return -1;
+					return nextAir1.compareTo(nextAir2);
+				}
+				if (unwatchedAired1 == 0)
+					return 1;
+				if (unwatchedAired2 == 0)
+					return -1;
+				return ((Integer) unwatchedAired2).compareTo(unwatchedAired1);
+			} else {
+				return object1.getName().compareToIgnoreCase(object2.getName());
+			}
 		}
 	};
 	
@@ -1363,6 +1506,7 @@ public class DroidShows extends ListActivity
 		super.onPause();
 		SharedPreferences.Editor ed = sharedPrefs.edit();
 		ed.putBoolean(AUTO_BACKUP_PREF_NAME, autoBackupOption);
+		ed.putString(BACKUP_FOLDER_PREF_NAME, defaultBackupFolder);
 		ed.putInt(SORT_PREF_NAME, sortOption);
 		ed.putBoolean(EXCLUDE_SEEN_PREF_NAME, excludeSeen);
 		ed.putInt(LATEST_SEASON_PREF_NAME, latestSeasonOption);
@@ -1472,6 +1616,8 @@ public class DroidShows extends ListActivity
 
 	@Override
 	public boolean onSearchRequested() {
+		if (logMode)
+			return false;
 		if (findViewById(R.id.search).getVisibility() != View.VISIBLE) {
 			findViewById(R.id.search).setVisibility(View.VISIBLE);
 			getSeries(2, false);	// 2 = archive and current shows, false = don't filter networks
@@ -1486,12 +1632,16 @@ public class DroidShows extends ListActivity
 	public void onBackPressed() {
 		if (searching())
 			clearFilter(null);
-		else if (logMode)
-			toggleLogMode();
-		else if (showArchive == 1)
-			toggleArchive();
-		else
-			super.onBackPressed();
+		else {
+			if (logMode)
+				toggleLogMode();
+			else if (showArchive == 1)
+				toggleArchive();
+			else
+				super.onBackPressed();
+			if (spinner != null)
+				spinner.setSelection(showArchive);
+		}
 	}
 
 	@Override
@@ -1617,6 +1767,7 @@ public class DroidShows extends ListActivity
 				holder.si = (TextView) convertView.findViewById(R.id.serieinfo);
 				holder.sne = (TextView) convertView.findViewById(R.id.serienextepisode);
 				holder.icon = (IconView) convertView.findViewById(R.id.serieicon);
+				holder.context = (ImageView) convertView.findViewById(R.id.seriecontext);
 				convertView.setEnabled(true);
 				convertView.setTag(holder);
 				holder.icon.setOnTouchListener(iconTouchListener);
@@ -1683,6 +1834,11 @@ public class DroidShows extends ListActivity
 						serie.setDIcon(icon);
 					}
 				}
+				if (holder.context != null) {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+						holder.context.setImageResource(R.drawable.context_material);
+					holder.context.setVisibility(View.VISIBLE);
+				}
 			} else {
 				if (holder.sn != null) {
 					holder.sn.setText(serie.getName());
@@ -1707,7 +1863,8 @@ public class DroidShows extends ListActivity
 						serie.setDIcon(icon);
 					}
 				}
-				
+				if (holder.context != null)
+					holder.context.setVisibility(View.GONE);
 			}
 			return convertView;
 		}
@@ -1762,5 +1919,6 @@ public class DroidShows extends ListActivity
 		TextView si;
 		TextView sne;
 		IconView icon;
+		ImageView context;
 	}
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="nl.asymmetrics.droidshows"
-	android:versionCode="762" android:versionName="7.6.2">
+	android:versionCode="770" android:versionName="7.7.0">
 	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="11"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -14,7 +14,7 @@
 		</intent-filter>
 		<meta-data android:name="android.app.default_searchable" android:value=".ui.AddSerie"/>
 	</activity>
-	<activity android:name=".ui.AddSerie" android:configChanges="orientation" android:launchMode="singleTop">
+	<activity android:label="@string/menu_context_add_serie" android:name=".ui.AddSerie" android:configChanges="orientation" android:launchMode="singleTop">
 		<intent-filter>
 			<action android:name="android.intent.action.SEARCH"/>
 			<category android:name="android.intent.category.DEFAULT"/>
@@ -24,6 +24,6 @@
 	<activity android:name=".ui.SerieSeasons" android:configChanges="orientation"/>
 	<activity android:name=".ui.SerieEpisodes" android:configChanges="orientation"/>
 	<activity android:name=".ui.ViewEpisode"/>
-	<activity android:name=".ui.ViewSerie"/>
+	<activity android:label="@string/menu_context_view_serie_details" android:name=".ui.ViewSerie"/>
 	</application>
 </manifest>

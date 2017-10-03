@@ -343,6 +343,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 				episodes.add(episode);
 			} while (c.moveToNext());
 		}
+		c.close();
 		return episodes;
 	}
 

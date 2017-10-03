@@ -8,6 +8,5 @@
 	<item name="android:fastScrollStyle">@null</item>
 	<item name="android:actionOverflowButtonStyle">@style/ob</item>
 	<item name="android:actionOverflowMenuStyle">@style/pu</item>
-	<item name="android:contextPopupMenuStyle">@style/pu</item>
 </style>
 </resources>

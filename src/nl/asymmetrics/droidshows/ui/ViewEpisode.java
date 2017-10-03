@@ -208,7 +208,7 @@ public class ViewEpisode extends Activity
 			return;
 
 		new AlertDialog.Builder(this)
-			.setTitle(R.string.menu_context_view_imdb)
+			.setTitle(R.string.menu_search)
 			.setItems(names.toArray(new CharSequence[names.size()]), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
 					Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri +"find?q="+ names.get(item)));

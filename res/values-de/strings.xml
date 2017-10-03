@@ -8,7 +8,7 @@
 <string name="archive">Archiv</string>
 <string name="addserie_hint">Serie hinzufügen</string>
 <string name="search_hint">Serie suchen</string>
-<string name="menu_filter">Filter</string>
+<string name="menu_filter">Serien filtern</string>
 <string name="menu_undo">Rückgängig machen</string>
 <string name="menu_add_serie">Serie hinzufügen</string>
 <string name="menu_update">Serien aktualisieren</string>
@@ -62,6 +62,7 @@
 \n&#187; Lange antippen um mehrere Aktionen anzuzeigen
 \n&#187; Von links nach rechts wischen um zurück zu gehen
 \n\nIn Serien Übersicht:
+\n&#187; Liste nach unten ziehen, um Update zu starten
 \n&#187; Auf ein Poster tippen um Infos zur nächsten Episode anzuzeigen
 \n&#187; Poster doppel antippen für externe Quellen (für *[url]s direkt oder für Listen)
 \n&#187; Poster lange drücken, um weitere Informationen anzuzeigen

@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
@@ -43,7 +44,6 @@ public class SerieSeasons extends ListActivity
 	public static SeriesSeasonsAdapter seasonsAdapter;
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private SQLiteStore db;
-	private static boolean contextByButton = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,11 +71,7 @@ public class SerieSeasons extends ListActivity
 		menu.add(0, ALLEPSEEN_CONTEXT, 0, getString(R.string.messages_context_mark_seasonseen));
 		menu.add(0, ALLUPTOTHIS_CONTEXT, 0, getString(R.string.messages_context_mark_asseenuptothis));
 		menu.add(0, ALLEPUNSEEN_CONTEXT, 0, getString(R.string.messages_context_mark_seasonunseen));
-		if (contextByButton || Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-			menu.setHeaderTitle(seasonsAdapter.getItem(((AdapterContextMenuInfo) menuInfo).position).getSeason());
-			menu.setHeaderIcon(R.drawable.icon);
-			contextByButton = false;
-		}
+		menu.setHeaderTitle(seasonsAdapter.getItem(((AdapterContextMenuInfo) menuInfo).position).getSeason());
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -100,9 +96,12 @@ public class SerieSeasons extends ListActivity
 		}
 	}
 	
+	@SuppressLint("NewApi")
 	public void openContext(View v) {
-		contextByButton = true;
-		this.openContextMenu(v);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+			listView.showContextMenuForChild(v, v.getX(), v.getY());
+		else
+			openContextMenu(v);
 	}
 
 	@Override
@@ -216,7 +215,8 @@ public class SerieSeasons extends ListActivity
 				holder = new ViewHolder();
 				holder.season = (TextView) convertView.findViewById(R.id.serieseason);
 				holder.unwatched = (TextView) convertView.findViewById(R.id.unwatched);
-				holder.nextEpisode = (TextView) convertView.findViewById(R.id.nextepisode); 
+				holder.nextEpisode = (TextView) convertView.findViewById(R.id.nextepisode);
+				holder.context = (ImageView) convertView.findViewById(R.id.seriecontext);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
@@ -255,6 +255,11 @@ public class SerieSeasons extends ListActivity
 					holder.nextEpisode.setEnabled(s.getNextAir() != null && s.getNextAir().compareTo(Calendar.getInstance().getTime()) <= 0);
 				}
 			}
+			if (holder.context != null) {
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+					holder.context.setImageResource(R.drawable.context_material);
+				holder.context.setVisibility(View.VISIBLE);
+			}
 			return convertView;
 		}
 	}
@@ -263,6 +268,7 @@ public class SerieSeasons extends ListActivity
 		TextView season;
 		TextView unwatched;
 		TextView nextEpisode;
+		ImageView context;
 	}
 	
 	@Override

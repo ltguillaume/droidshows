@@ -201,7 +201,7 @@ public class AddSerie extends ListActivity
 						Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
 					Looper.loop();
 				} else {
-					Log.d(SQLiteStore.TAG, "Adding TV show: getting the poster");
+					Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": getting the poster");
 					// get the poster and save it in cache
 					URL imageUrl = null;
 					URLConnection uc = null;
@@ -252,7 +252,7 @@ public class AddSerie extends ListActivity
 								bAddShowTh = false;
 								return;
 							}
-							Log.d(SQLiteStore.TAG, "Adding TV show: resizing the poster and creating the thumbnail");
+							Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": resizing the poster and creating the thumbnail");
 							Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
 							File dirTmp = new File(getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs/banners/posters");
 							if (!dirTmp.isDirectory()) {
@@ -289,10 +289,10 @@ public class AddSerie extends ListActivity
 							bAddShowTh = false;
 							return;
 						}
-						Log.d(SQLiteStore.TAG, "Adding TV show: saving TV show to database");
+						Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": saving TV show to database");
 						sToAdd.setPassiveStatus((DroidShows.showArchive == 1 ? 1 : 0));
 						sToAdd.saveToDB(db);
-						Log.d(SQLiteStore.TAG, "Adding TV show: creating the TV show item");
+						Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": creating the TV show item");
 						int nseasons = db.getSeasonCount(sToAdd.getId());
 						SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(sToAdd.getId());
 						int unwatchedAired = db.getEPUnwatchedAired(sToAdd.getId());
@@ -308,7 +308,7 @@ public class AddSerie extends ListActivity
 						runOnUiThread(reloadSearchSeries);
 						sucesso = true;
 					} catch (Exception e) {
-						Log.e(SQLiteStore.TAG, "Error adding TV show");
+						Log.e(SQLiteStore.TAG, "Error adding "+ sToAdd.getSerieName());
 					}
 					m_ProgressDialog.dismiss();
 					if (!bAddShowTh) {

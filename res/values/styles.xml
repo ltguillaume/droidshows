@@ -11,9 +11,17 @@
 	<item name="android:scrollbarThumbVertical">@drawable/thumb</item>
 	<item name="android:scrollbarTrackVertical">@null</item>
 	<item name="android:fastScrollTrackDrawable">@null</item>
+	<item name="android:fastScrollStyle">@null</item>
 </style>
 <style name="lst" parent="@android:style/Widget.ListView">
 	<item name="android:divider">@drawable/div</item>
 	<item name="android:dividerHeight">1px</item>
+</style>
+<style name="pu" parent="@android:style/Widget.DeviceDefault.PopupMenu">
+	<item name="android:popupBackground">@drawable/menu_dropdown_panel</item>
+	<item name="android:overlapAnchor">true</item>
+</style>
+<style name="ob" parent="@android:style/Widget.DeviceDefault.ActionButton.Overflow">
+	<item name="android:alpha">.6</item>
 </style>
 </resources>
