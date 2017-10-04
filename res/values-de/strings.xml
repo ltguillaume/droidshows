@@ -56,11 +56,11 @@
 <string name="dialog_latest_season">Nur letzte Folge aktualisieren</string>
 <string name="dialog_include_specials">Besondere Folgen in der Übersicht zeigen</string>
 <string name="dialog_full_line_check">Die ganze Zeile markiert eine Folge als gesehen</string>
-<string name="dialog_switch_swipe_direction">Von rechts nach links wischen um zurück zu gehen</string>
+<string name="dialog_switch_swipe_direction">Von rechts nach links wischen, um zurück zu gehen</string>
 <string name="dialog_show_next_airing">Ausstrahlungstermin statt nächster Folge anzeigen</string>
 <string name="dialog_help">&#187; Vergiss nicht, die Serien regelmäßig zu aktualisieren
-\n&#187; Lange antippen um mehrere Aktionen anzuzeigen
-\n&#187; Von links nach rechts wischen um zurück zu gehen
+\n&#187; Lange antippen, um mehrere Aktionen anzuzeigen
+\n&#187; Von links nach rechts wischen, um zurück zu gehen
 \n\nIn Serien Übersicht:
 \n&#187; Liste nach unten ziehen, um Update zu starten
 \n&#187; Auf ein Poster tippen um Infos zur nächsten Episode anzuzeigen
