@@ -1,7 +1,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
 	<ScrollView android:id="@+id/viewSerie" android:layout_width="fill_parent" android:layout_height="fill_parent">
 	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
-	   	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp">
+		<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="6dp">
 			<TextView android:id="@+id/network" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1"/>
 			<TextView android:id="@+id/contentRating" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="right"/>
 		</LinearLayout>

@@ -11,7 +11,7 @@
 			<TextView android:id="@+id/seendate" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:textSize="12sp"/>
 			<CheckBox android:id="@+id/seen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingTop="6dp" android:paddingBottom="6dp" android:paddingLeft="0dp" android:paddingRight="6dp" android:button="@null" android:drawableRight="?android:attr/listChoiceIndicatorMultiple" android:focusable="false" android:focusableInTouchMode="false" android:onClick="check"/>
 		</LinearLayout>
-    </LinearLayout>
+	</LinearLayout>
 	<LinearLayout android:id="@+id/overviewField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
 		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
 		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_synopsis"/>
