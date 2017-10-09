@@ -37,12 +37,12 @@
 <string name="menu_context_unpin">Ablösen</string>
 <string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">Tägliche automatische Datensicherung</string>
-<string name="dialog_backup">Daten sichern</string>
+<string name="dialog_backup">Sichern</string>
 <string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>
 <string name="dialog_change_language">Sprache der Seriendetails</string>
 <string name="dialog_use_mirror">TheTVDB Spiegel verwenden (ausprobieren, falls Updates zu lange dauern)</string>
-<string name="dialog_restore">Daten wiederherstellen</string>
+<string name="dialog_restore">Einlesen</string>
 <string name="dialog_restore_now">Während der Datenwiederherstellung werden alle Daten in DroidShows überschrieben. Fortfahren?</string>
 <string name="dialog_restore_done">Datenwiederherstellung fertig</string>
 <string name="dialog_restore_failed">Datenwiederherstellung fehlgeschlagen!</string>
@@ -56,11 +56,11 @@
 <string name="dialog_latest_season">Nur letzte Folge aktualisieren</string>
 <string name="dialog_include_specials">Besondere Folgen in der Übersicht zeigen</string>
 <string name="dialog_full_line_check">Die ganze Zeile markiert eine Folge als gesehen</string>
-<string name="dialog_switch_swipe_direction">Von rechts nach links wischen um zurück zu gehen</string>
+<string name="dialog_switch_swipe_direction">Von rechts nach links wischen, um zurück zu gehen</string>
 <string name="dialog_show_next_airing">Ausstrahlungstermin statt nächster Folge anzeigen</string>
 <string name="dialog_help">&#187; Vergiss nicht, die Serien regelmäßig zu aktualisieren
-\n&#187; Lange antippen um mehrere Aktionen anzuzeigen
-\n&#187; Von links nach rechts wischen um zurück zu gehen
+\n&#187; Lange antippen, um mehrere Aktionen anzuzeigen
+\n&#187; Von links nach rechts wischen, um zurück zu gehen
 \n\nIn Serien Übersicht:
 \n&#187; Liste nach unten ziehen, um Update zu starten
 \n&#187; Auf ein Poster tippen um Infos zur nächsten Episode anzuzeigen

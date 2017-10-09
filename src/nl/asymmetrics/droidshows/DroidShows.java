@@ -349,6 +349,8 @@ public class DroidShows extends ListActivity
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
 		actionBar.setCustomView(spinner);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+			actionBar.setIcon(R.drawable.actionbar);
 	}
 
 	@Override
@@ -470,7 +472,7 @@ public class DroidShows extends ListActivity
 		m_AlertDlg = new AlertDialog.Builder(this)
 		.setView(filterV)
 		.setTitle(R.string.menu_filter)
-		.setIcon(R.drawable.icon)
+		.setIcon(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ? R.drawable.icon : 0)
 		.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				applyFilters((ScrollView) filterV, networksFilterV);
@@ -534,7 +536,7 @@ public class DroidShows extends ListActivity
 		m_AlertDlg = new AlertDialog.Builder(this)
 			.setView(about)
 			.setTitle(R.string.menu_about)
-			.setIcon(R.drawable.icon)
+			.setIcon(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ? R.drawable.icon : 0)
 			.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					m_AlertDlg.dismiss();

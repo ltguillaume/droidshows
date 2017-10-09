@@ -1,0 +1,20 @@
+https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html
+
+Launcher icon:
+https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html#foreground.type=image&foreground.space.trim=1&foreground.space.pad=0.2&foreColor=rgb(255%2C 255%2C 255)&backColor=rgb(255%2C 61%2C 0)&crop=0&backgroundShape=square&effects=shadow&name=icon
+Color: #fff
+Scaling: Center
+Background color: #ff3d00
+Padding: 20%
+Shape: Square
+Effect: Cast shadow
+Name: icon
+
+Action Bar:
+https://romannurik.github.io/AndroidAssetStudio/icons-launcher.html#foreground.type=image&foreground.space.trim=1&foreground.space.pad=0.1&foreColor=rgba(255%2C%20255%2C%20255%2C%200.9)&backColor=rgb(255%2C%2061%2C%200)&crop=0&backgroundShape=none&effects=none&name=actionbar
+Color: rgba(255, 255, 255, 0.9)
+Scaling: Center
+Padding: 10%
+Shape: None
+Effect: None
+Name: actionbar
