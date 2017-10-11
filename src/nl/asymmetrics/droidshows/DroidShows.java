@@ -1444,7 +1444,7 @@ public class DroidShows extends ListActivity
 		public void run() {
 			main.setVisibility(View.INVISIBLE);
 			seriesAdapter.notifyDataSetChanged();
-			if (series != null && series.size() > 0) {
+/*			if (series != null && series.size() > 0) {
 				if (seriesAdapter.isFiltered) {
 					for (int i = 0; i < seriesAdapter.getCount(); i++) {
 						String adapterSerie = seriesAdapter.getItem(i).getSerieId();
@@ -1458,10 +1458,12 @@ public class DroidShows extends ListActivity
 							seriesAdapter.setItem(i, series.get(i));
 						else
 							seriesAdapter.add(series.get(i));
+/*	The following is legacy code that now causes java.lang.outOfMemoryError due to seriesAdapter.add(series.get(i));
+ *	ArrayList.ensureCapacityInternal -> ensureExplicitCapacity -> grow -> copyOf -> Failed to allocate a 124606360 byte
 					}
 				}
 			}
-			
+*/			
 			if (!logMode) seriesAdapter.sort(showsComperator);
 			if (seriesAdapter.isFiltered)
 				seriesAdapter.getFilter().filter(searchV.getText());
