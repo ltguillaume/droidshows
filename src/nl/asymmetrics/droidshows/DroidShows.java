@@ -332,7 +332,7 @@ public class DroidShows extends ListActivity
 		spinner.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1,
 			new String[] {
 				getString(R.string.layout_app_name),
-				getString(R.string.menu_archive),
+				getString(R.string.archive),
 				getString(R.string.menu_log),
 			}));
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
