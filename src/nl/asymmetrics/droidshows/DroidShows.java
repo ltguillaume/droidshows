@@ -357,8 +357,6 @@ public class DroidShows extends ListActivity
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.findItem(UNDO_MENU_ITEM)
 			.setVisible(undo.size() > 0);
-		menu.findItem(SEARCH_MENU_ITEM)
-			.setEnabled(!logMode);
 		menu.findItem(FILTER_MENU_ITEM)
 			.setEnabled(!logMode && !searching());
 		menu.findItem(SORT_MENU_ITEM)
@@ -1439,6 +1437,7 @@ public class DroidShows extends ListActivity
 			series.add(episodes.get(i));
 			seriesAdapter.notifyDataSetChanged();
 		}
+		listView.gettingNextLogged = false;
 	}
 
 	public static Runnable updateListView = new Runnable() {
