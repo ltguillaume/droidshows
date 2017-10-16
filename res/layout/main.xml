@@ -5,5 +5,8 @@
 		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="24dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:onClick="clearFilter"/>
 	</LinearLayout>
 	<nl.asymmetrics.droidshows.ui.BounceListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/android:list"/>
-	<TextView android:id="@+id/android:empty" android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="6dp" android:text="@string/layout_main_no_items"/>
+	<LinearLayout android:id="@+id/android:empty" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_horizontal">
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="9dp" android:text="@string/layout_main_no_items"/>
+		<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/menu_context_add_serie" android:onClick="searchForShow"/>
+	</LinearLayout>
 </LinearLayout>

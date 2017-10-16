@@ -23,6 +23,7 @@ import nl.asymmetrics.droidshows.R;
 import nl.asymmetrics.droidshows.thetvdb.TheTVDB;
 import nl.asymmetrics.droidshows.thetvdb.model.Serie;
 import nl.asymmetrics.droidshows.thetvdb.model.TVShowItem;
+import nl.asymmetrics.droidshows.ui.AddSerie;
 import nl.asymmetrics.droidshows.ui.BounceListView;
 import nl.asymmetrics.droidshows.ui.IconView;
 import nl.asymmetrics.droidshows.ui.SerieSeasons;
@@ -41,6 +42,7 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -1273,6 +1275,18 @@ public class DroidShows extends ListActivity
 		searchV.setText("");
 		findViewById(R.id.search).setVisibility(View.GONE);
 		getSeries();
+	}
+	
+	public void searchForShow(View v) {
+		if (searchV.getText().length() > 0) {
+			keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
+			Intent startSearch = new Intent(DroidShows.this, AddSerie.class);
+			startSearch.putExtra(SearchManager.QUERY, searchV.getText().toString());
+			startSearch.setAction(Intent.ACTION_SEARCH);
+			startActivity(startSearch);
+		} else {
+			super.onSearchRequested();
+		}
 	}
 
 	public void updateAllSeriesDialog() {
