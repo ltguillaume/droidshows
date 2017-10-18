@@ -7,6 +7,6 @@
 	<nl.asymmetrics.droidshows.ui.BounceListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/android:list"/>
 	<LinearLayout android:id="@+id/android:empty" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_horizontal">
 		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="9dp" android:text="@string/layout_main_no_items"/>
-		<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/menu_context_add_serie" android:onClick="searchForShow"/>
+		<Button android:id="@+id/add_show" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/menu_context_add_serie" android:onClick="searchForShow"/>
 	</LinearLayout>
 </LinearLayout>

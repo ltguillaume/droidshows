@@ -470,20 +470,20 @@ public class DroidShows extends ListActivity
 		networksFilter.setChecked(filterNetworks);
 		toggleNetworksFilter(networksFilter);
 		m_AlertDlg = new AlertDialog.Builder(this)
-		.setView(filterV)
-		.setTitle(R.string.menu_filter)
-		.setIcon(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ? R.drawable.icon : 0)
-		.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				applyFilters((ScrollView) filterV, networksFilterV);
-			}
-		})
-		.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				m_AlertDlg.dismiss();
-			}
-		})
-		.show();
+			.setView(filterV)
+			.setTitle(R.string.menu_filter)
+			.setIcon(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP ? R.drawable.icon : 0)
+			.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					applyFilters((ScrollView) filterV, networksFilterV);
+				}
+			})
+			.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					m_AlertDlg.dismiss();
+				}
+			})
+			.show();
 	}
 	
 	public void toggleNetworksFilter(View v) {
@@ -743,15 +743,15 @@ public class DroidShows extends ListActivity
 
 	private void confirmRestore(final String backupFile) {
 		new AlertDialog.Builder(DroidShows.this)
-		.setTitle(R.string.dialog_restore)
-		.setMessage(R.string.dialog_restore_now)
-		.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
-				restore(backupFile);
-				}
-			})
-		.setNegativeButton(R.string.dialog_cancel, null)
-		.show();
+			.setTitle(R.string.dialog_restore)
+			.setMessage(R.string.dialog_restore_now)
+			.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					restore(backupFile);
+					}
+				})
+			.setNegativeButton(R.string.dialog_cancel, null)
+			.show();
 	}
 
 	private void restore(String backupFile) {
@@ -1103,57 +1103,57 @@ public class DroidShows extends ListActivity
 				+"\u2026").split("\\n");
 		final EditText input = new EditText(this);
 		final String extResourcesInput = extResourcesString;
+		final TVShowItem serie = seriesAdapter.getItem(position);
 		input.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_MULTI_LINE|InputType.TYPE_TEXT_VARIATION_URI);
 		new AlertDialog.Builder(this)
-		.setTitle(R.string.menu_context_ext_resources)
-		.setItems(extResources, new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int item) {
-				final TVShowItem serie = seriesAdapter.getItem(position);
-				switch(item) {
-					case 0 :
-						IMDbDetails(serie.getSerieId(), serie.getName(), false);
-						break;
-					case 1 :
-						IMDbDetails(serie.getSerieId(), serie.getName(), true);
-						break;
-					case 2 :
-						WikiDetails(serie.getName());
-						break;
-					default :
-						if (item == extResources.length-1) {
-							input.setText(extResourcesInput);
-							new AlertDialog.Builder(DroidShows.this)
-								.setTitle(R.string.menu_context_ext_resources)
-								.setView(input)
-								.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int which) {
-										keyboard.hideSoftInputFromWindow(input.getWindowToken(), 0);
-										String resources = input.getText().toString().trim();
-										serie.setExtResources(resources);
-										db.updateExtResources(serie.getSerieId(), resources);
-										return;
-									}
-								})
-								.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-									public void onClick(DialogInterface dialog, int which) {
-										keyboard.hideSoftInputFromWindow(input.getWindowToken(), 0);
-										return;
-									}
-								})
-							.show();
-							if (extResourcesInput.length() == 0) {
-								input.setText("tvshow.wikia.com\n*double-tap-poster.openstarred.url\ntvshow.blogspot.com");
-								input.selectAll();
+			.setTitle(serie.getName())
+			.setItems(extResources, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					switch(item) {
+						case 0 :
+							IMDbDetails(serie.getSerieId(), serie.getName(), false);
+							break;
+						case 1 :
+							IMDbDetails(serie.getSerieId(), serie.getName(), true);
+							break;
+						case 2 :
+							WikiDetails(serie.getName());
+							break;
+						default :
+							if (item == extResources.length-1) {
+								input.setText(extResourcesInput);
+								new AlertDialog.Builder(DroidShows.this)
+									.setTitle(serie.getName())
+									.setView(input)
+									.setPositiveButton(R.string.dialog_ok, new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int which) {
+											keyboard.hideSoftInputFromWindow(input.getWindowToken(), 0);
+											String resources = input.getText().toString().trim();
+											serie.setExtResources(resources);
+											db.updateExtResources(serie.getSerieId(), resources);
+											return;
+										}
+									})
+									.setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+										public void onClick(DialogInterface dialog, int which) {
+											keyboard.hideSoftInputFromWindow(input.getWindowToken(), 0);
+											return;
+										}
+									})
+									.show();
+								if (extResourcesInput.length() == 0) {
+									input.setText("tvshow.wikia.com\n*double-tap-poster.openstarred.url\ntvshow.blogspot.com");
+									input.selectAll();
+								}
+								input.requestFocus();
+								keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
+							} else {
+								browseExtResource(extResources[item]);
 							}
-							input.requestFocus();
-							keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
-						} else {
-							browseExtResource(extResources[item]);
-						}
+					}
 				}
-			}
-		})
-		.show();
+			})
+			.show();
 	}
 	
 	private void browseExtResource(String url) {
@@ -1441,6 +1441,7 @@ public class DroidShows extends ListActivity
 			e.printStackTrace();
 		}
 		setFastScroll();
+		findViewById(R.id.add_show).setVisibility(logMode ? View.GONE : View.VISIBLE);
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
 	}
@@ -1832,9 +1833,9 @@ public class DroidShows extends ListActivity
 				if (holder.sne != null) {
 					if (nunwatched > 0 && !serie.getNextEpisode().isEmpty()) {
 						holder.sne.setText(serie.getNextEpisode() == null ? "" : serie.getNextEpisode()
-								.replace("[ne]", strNextEp)
-								.replace("[na]", strNextAiring)
-								.replace("[on]", strOn));
+							.replace("[ne]", strNextEp)
+							.replace("[na]", strNextAiring)
+							.replace("[on]", strOn));
 						holder.sne.setEnabled(serie.getNextAir() != null && serie.getNextAir().compareTo(Calendar.getInstance().getTime()) <= 0);
 					} else {
 						holder.sne.setText("");
@@ -1904,8 +1905,16 @@ public class DroidShows extends ListActivity
 					serieSeasons(iconListPosition);
 				return true;
 			}
+
 			@Override
 			public boolean onDoubleTap(MotionEvent e) {
+				keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
+				showDetails(seriesAdapter.getItem(iconListPosition).getSerieId());
+				return true;
+			}
+
+			@Override
+			public void onLongPress(MotionEvent e) {
 				keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 				String[] extResources = seriesAdapter.getItem(iconListPosition).getExtResources().trim().split("\\n");
 				boolean foundResources = false;
@@ -1917,13 +1926,6 @@ public class DroidShows extends ListActivity
 				}
 				if (!foundResources)
 					extResources(seriesAdapter.getItem(iconListPosition).getExtResources(), iconListPosition);
-				return true;
-			}
-
-			@Override
-			public void onLongPress(MotionEvent e) {
-				keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
-				showDetails(seriesAdapter.getItem(iconListPosition).getSerieId());
 			}
 		};
 

@@ -11,8 +11,8 @@ __Some pointers__:
 * Swipe left-to-right to go back  
 __In Shows Overview__:
 * Tap poster for next episode info
-* Double tap for external resource (to \*[url]s directly, or list)
-* Long-press poster for show info
+* Double tap for for show info
+* Long-press poster external resource (to \*[url]s directly, or list)
 * Swipe right-to-left to mark next as seen  
 __In Show Details__:
 * Tap poster for full-screen view

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 <color name="bg">#c000</color>
+<color name="iconbg">#ff4207</color>
 <style name="ani" parent="@android:style/Animation.Activity"/>
 <style name="ds">
 	<item name="android:listViewStyle">@style/lst</item>
