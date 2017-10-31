@@ -9,7 +9,7 @@
 <string name="addserie_hint">Serie hinzufügen</string>
 <string name="search_hint">Serie suchen</string>
 <string name="menu_filter">Serien filtern</string>
-<string name="menu_undo">Rückgängig machen</string>
+<string name="menu_undo">Rückgängig</string>
 <string name="menu_add_serie">Serie hinzufügen</string>
 <string name="menu_update">Serien aktualisieren</string>
 <string name="menu_search">Suchen</string>
@@ -41,7 +41,7 @@
 <string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>
 <string name="dialog_change_language">Sprache der Seriendetails</string>
-<string name="dialog_use_mirror">TheTVDB Spiegel verwenden (ausprobieren, falls Updates zu lange dauern)</string>
+<string name="dialog_use_mirror">TheTVDB verwenden (falls Updates zu lange dauern)</string>
 <string name="dialog_restore">Einlesen</string>
 <string name="dialog_restore_now">Während der Datenwiederherstellung werden alle Daten in DroidShows überschrieben. Fortfahren?</string>
 <string name="dialog_restore_done">Datenwiederherstellung fertig</string>
@@ -52,10 +52,10 @@
 <string name="dialog_cancel">Abbrechen</string>
 <string name="dialog_search">Suchbegriff:</string>
 <string name="dialog_update_series">Sollen jetzt alle Serien aktualisiert werden?</string>
-<string name="dialog_update_speedup">\n\nIm Menü unter Einstellungen kann festgelegt werden, dass nur die letzte Folge aktualisiert wird.</string>
+<string name="dialog_update_speedup">\n\nUnter Einstellungen kann festgelegt werden, dass nur die letzte Folge aktualisiert wird.</string>
 <string name="dialog_latest_season">Nur letzte Folge aktualisieren</string>
 <string name="dialog_include_specials">Besondere Folgen in der Übersicht zeigen</string>
-<string name="dialog_full_line_check">Die ganze Zeile markiert eine Folge als gesehen</string>
+<string name="dialog_full_line_check">Tippen auf ganze Zeile markiert Folge als gesehen</string>
 <string name="dialog_switch_swipe_direction">Von rechts nach links wischen, um zurück zu gehen</string>
 <string name="dialog_show_next_airing">Ausstrahlungstermin statt nächster Folge anzeigen</string>
 <string name="dialog_help">&#187; Vergiss nicht, die Serien regelmäßig zu aktualisieren
@@ -63,13 +63,13 @@
 \n&#187; Von links nach rechts wischen, um zurück zu gehen
 \n\nIn Serien Übersicht:
 \n&#187; Liste nach unten ziehen, um Update zu starten
-\n&#187; Auf ein Poster tippen um Infos zur nächsten Episode anzuzeigen
-\n&#187; Poster doppel antippen um weitere Informationen anzuzeigen
-\n&#187; Poster lange drücken für externe Quellen (für *[url]s direkt oder für Listen)
-\n&#187; Von rechts nach links wischen um die nächste Folge als gesehen zu markieren
+\n&#187; Auf ein Poster tippen, um Infos zur nächsten Episode anzuzeigen
+\n&#187; Poster doppelt antippen, um weitere Informationen anzuzeigen
+\n&#187; Poster lange drücken, um externe Quellen anzuzeigen (für *[url]s direkt oder für Listen)
+\n&#187; Von rechts nach links wischen, um die nächste Folge als gesehen zu markieren
 \n\nIn den Seriendetails:
-\n&#187; Auf ein Poster tippen um es größer zu machen
-\n&#187; Noch mal tippen um "Fan Art" anzuzeigen
+\n&#187; Auf ein Poster tippen, um es größer zu machen
+\n&#187; Noch mal tippen, um "Fan Art" anzuzeigen
 \n&#187; Zum Öffnen in einer externen App, großes Poster lange drücken
 \n\nIn Serien-/Folgendetails:
 \n&#187; Auf IMDb Bewertung drücken, um in der IMDb zu bewerten</string>
@@ -78,7 +78,7 @@
 <string name="menu_unarchive">Aus dem Archiv entfernen</string>
 <string name="messages_title_updating_series">Serien aktualisieren</string>
 <string name="messages_title_updating_db">Datenbank aktualisieren</string>
-<string name="messages_update_serie">Serien Details werden heruntergeladen…</string>
+<string name="messages_update_serie">Seriendetails werden heruntergeladen…</string>
 <string name="messages_no_internet">Keine Internetverbindung vorhanden</string>
 <string name="messages_title_update_series">Serien aktualisieren</string>
 <string name="messages_update_series">Seriendetails werden heruntergeladen. Dies kann einen Moment dauern…</string>
@@ -86,7 +86,7 @@
 <string name="messages_new_episodes">neue Folgen</string>
 <string name="messages_new_episode">neue Folge</string>
 <string name="messages_ep_aired">ausgestrahlt</string>
-<string name="messages_to_be_aired">wird ausgestrahlt</string>
+<string name="messages_to_be_aired">zukünftig ausgestrahlt</string>
 <string name="messages_seasons">Staffeln</string>
 <string name="messages_season">Staffel</string>
 <string name="messages_next_episode">Nächste Folge:</string>
