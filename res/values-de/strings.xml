@@ -41,7 +41,7 @@
 <string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>
 <string name="dialog_change_language">Sprache der Seriendetails</string>
-<string name="dialog_use_mirror">TheTVDB verwenden (falls Updates zu lange dauern)</string>
+<string name="dialog_use_mirror">TheTVDB Spiegel verwenden (falls Updates zu lange dauern)</string>
 <string name="dialog_restore">Einlesen</string>
 <string name="dialog_restore_now">Während der Datenwiederherstellung werden alle Daten in DroidShows überschrieben. Fortfahren?</string>
 <string name="dialog_restore_done">Datenwiederherstellung fertig</string>
@@ -86,7 +86,7 @@
 <string name="messages_new_episodes">neue Folgen</string>
 <string name="messages_new_episode">neue Folge</string>
 <string name="messages_ep_aired">ausgestrahlt</string>
-<string name="messages_to_be_aired">zukünftig ausgestrahlt</string>
+<string name="messages_to_be_aired">wird ausgestrahlt</string>
 <string name="messages_seasons">Staffeln</string>
 <string name="messages_season">Staffel</string>
 <string name="messages_next_episode">Nächste Folge:</string>
