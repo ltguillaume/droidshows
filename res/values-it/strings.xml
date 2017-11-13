@@ -29,10 +29,10 @@
 <string name="menu_close_log">Chiudi cronologia</string>
 <string name="menu_context_view_serie_details">Mostra dettagli</string>
 <string name="menu_context_view_wiki">Dettagli su Wikipedia</string>
-<string name="menu_context_view_imdb">Dettagli su IMDb</string>
+<string name="menu_context_view_imdb">Dettagli serie su IMDb</string>
 <string name="menu_context_view_ep_imdb">Dettagli prossimo episodio su IMDb</string>
 <string name="menu_context_ext_resources">Risorse esterne</string>
-<string name="menu_context_mark_next_episode_as_seen">Segna il prossimo ep. come visto</string>
+<string name="menu_context_mark_next_episode_as_seen">Segna prossimo ep. come visto</string>
 <string name="menu_context_pin">Fissa in alto</string>
 <string name="menu_context_unpin">Togli fissaggio</string>
 <string name="dialog_ok">OK</string>
@@ -50,7 +50,7 @@
 <string name="dialog_title_delete">Eliminare serie?</string>
 <string name="dialog_delete">Sicuro di voler eliminare %s?</string>
 <string name="dialog_cancel">Annulla</string>
-<string name="dialog_search">Cerca testo:</string>
+<string name="dialog_search">Testo cercato:</string>
 <string name="dialog_update_series">Sicuro di voler aggiornare tutte le serie adesso?</string>
 <string name="dialog_update_speedup">\n\nPuoi accelerare questo processo con l\'opzione in Menu > Opzioni.</string>
 <string name="dialog_latest_season">Aggiorna solo l\'ultima stagiona delle serie</string>
@@ -70,10 +70,10 @@
 \n\nIn Dettagli Serie:
 \n&#187; Clicca il poster per vederlo a schermo intero
 \n&#187; Clicca il poster a schermo intero per vedere un fan art
-\n&#187; Pressione prolungata sul poster fullscreen per aprirlo in un app esterna
+\n&#187; Pressione prolungata sul poster fullscreen per aprirlo in un\'app esterna
 \n\nIn Dettagli Serie/Episodio:
 \n&#187; Clicca valutazione IMDb per vederlo in IMDb</string>
-<string name="dialog_networks">Reti</string>
+<string name="dialog_networks">Emittenti</string>
 <string name="menu_archive">Archivia</string>
 <string name="menu_unarchive">Ripristina</string>
 <string name="messages_title_updating_series">Aggiornando serie</string>
@@ -85,7 +85,7 @@
 <string name="messages_episodes">episodi</string>
 <string name="messages_new_episodes">nuovi episodi</string>
 <string name="messages_new_episode">nuovo episodio</string>
-<string name="messages_ep_aired">trasmesso</string>
+<string name="messages_ep_aired">trasmesso/i</string>
 <string name="messages_to_be_aired">da trasmettere</string>
 <string name="messages_seasons">Stagioni</string>
 <string name="messages_season">Stagione</string>
@@ -93,7 +93,7 @@
 <string name="messages_next_airing">Prossimo trasmesso:</string>
 <string name="messages_no_new_eps">Nessun nuovo episodio</string>
 <string name="messages_season_completely_watched">Stagione vista completamente</string>
-<string name="messages_deleted">eliminato</string>
+<string name="messages_deleted">eliminata</string>
 <string name="messages_title_search_series">Cercando serie</string>
 <string name="messages_search_series">Ricevendo dati…</string>
 <string name="messages_series_success">Serie %s aggiunta</string>
@@ -111,7 +111,7 @@
 <string name="messages_context_archived">archiviata</string>
 <string name="messages_context_unarchived">ripristinata</string>
 <string name="messages_aired">Trasmesso:</string>
-<string name="messages_at">a</string>
+<string name="messages_at">alle</string>
 <string name="messages_of">di</string>
 <string name="messages_on">il</string>
 <string name="messages_daily">Giornaliero</string>
@@ -122,6 +122,6 @@
 <string name="series_runtime_minutes">minuti</string>
 <string name="series_synopsis">Sinossi:</string>
 <string name="series_actors">Autori:</string>
-<string name="showstatus_continuing">in trasmissione</string>
-<string name="showstatus_ended">finita</string>
+<string name="showstatus_continuing">in corso</string>
+<string name="showstatus_ended">conclusa</string>
 </resources>
