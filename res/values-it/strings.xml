@@ -52,8 +52,8 @@
 <string name="dialog_cancel">Annulla</string>
 <string name="dialog_search">Cerca testo:</string>
 <string name="dialog_update_series">Sicuro di voler aggiornare tutte le serie adesso?</string>
-<string name="dialog_update_speedup">\n\nPuoi accelerare questo processo con l'opzione in Menu > Opzioni.</string>
-<string name="dialog_latest_season">Aggiorna solo l'ultima stagiona delle serie</string>
+<string name="dialog_update_speedup">\n\nPuoi accelerare questo processo con l\'opzione in Menu > Opzioni.</string>
+<string name="dialog_latest_season">Aggiorna solo l\'ultima stagiona delle serie</string>
 <string name="dialog_include_specials">Includi gli speciali nel conteggio dei non visti</string>
 <string name="dialog_full_line_check">Usa intera linea per contrassegnare un episodio</string>
 <string name="dialog_switch_swipe_direction">Scorri da destra a sinistra per tornare indietro</string>
@@ -81,7 +81,7 @@
 <string name="messages_update_serie">Ottenendo informazioni sulla serie…</string>
 <string name="messages_no_internet">Nessuna connessione internet disponibile</string>
 <string name="messages_title_update_series">Aggiorna serie</string>
-<string name="messages_update_series">Ottenendo informazioni sulla serie. Questa operazione può richiedere un po'…</string>
+<string name="messages_update_series">Ottenendo informazioni sulla serie. Questa operazione può richiedere un po\'…</string>
 <string name="messages_episodes">episodi</string>
 <string name="messages_new_episodes">nuovi episodi</string>
 <string name="messages_new_episode">nuovo episodio</string>
