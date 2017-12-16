@@ -5,14 +5,14 @@
 <string name="layout_main_no_items">No has añadido series.</string>
 <string name="layout_search_no_items">No se encontró ninguna serie.</string>
 <string name="layout_seasons_no_items">No hay temporadas que mostrar.</string>
-<string name="archive">Ver el archivo</string>
+<string name="archive">Ver las series archivadas</string>
 <string name="addserie_hint">Nombre de la serie…</string>
 <string name="search_hint">Buscar…</string>
 <string name="menu_filter">Filtros</string>
 <string name="menu_undo">Deshacer</string>
-<string name="menu_add_serie">Añade una serie</string>
-<string name="menu_update">Actualiza las series</string>
-<string name="menu_search">Busca</string>
+<string name="menu_add_serie">Añadir una serie</string>
+<string name="menu_update">Actualizar las series</string>
+<string name="menu_search">Buscar</string>
 <string name="menu_sort_by_name">Ordenar por nombre</string>
 <string name="menu_sort_by_unseen">Ordenar por no visto</string>
 <string name="menu_about">Opciones</string>
@@ -20,7 +20,7 @@
 <string name="menu_context_update">Actualizar</string>
 <string name="menu_context_updated">actualizado</string>
 <string name="menu_context_delete">Borrar</string>
-<string name="menu_context_add_serie">Añade una serie</string>
+<string name="menu_context_add_serie">Añadir una serie</string>
 <string name="menu_show_archive">Ver las series archivadas</string>
 <string name="menu_show_current">Muestra las series actuales</string>
 <string name="menu_exclude_seen">Ocultar las series completadas</string>
