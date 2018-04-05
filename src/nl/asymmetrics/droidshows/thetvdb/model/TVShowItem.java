@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 
 public class TVShowItem {
         private String serieid;
+        private String language;
         private String icon;
         private Drawable dicon;
         private String name;
@@ -21,11 +22,12 @@ public class TVShowItem {
         private String episodeName;
         private String episodeSeen;
 
-        public TVShowItem(String serieid, String icon, Drawable dicon, String
+        public TVShowItem(String serieid, String language, String icon, Drawable dicon, String
                           name, int snumber, String nextEpisode, Date nextAir,
                           int unwatchedAired, int unwatched, boolean passiveStatus,
                           String showStatus, String extResources) {
                 this.serieid = serieid;
+                this.language = language;
                 this.icon = icon;
                 this.dicon = dicon;
                 this.name = name;
@@ -43,11 +45,15 @@ public class TVShowItem {
                 return this.serieid;
         }
 
+        public String getLanguage() {
+            return this.language;
+        }
+
         public String getIcon() {
                 return this.icon;
         }
 
-	        public void setIcon (String icon) {
+	        public void setIcon(String icon) {
 	                this.icon = icon;
 	        }
 

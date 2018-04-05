@@ -110,15 +110,16 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	/* Get Methods */
 	public TVShowItem createTVShowItem(String serieId) {
-		String name = "", tmpPoster = "", showStatus = "", tmpNextEpisode = "", nextEpisode = "", tmpNextAir = "", extResources = "";
+		String name = "", language = "", tmpPoster = "", showStatus = "", tmpNextEpisode = "", nextEpisode = "", tmpNextAir = "", extResources = "";
 		int tmpStatus = 0, seasonCount = 0, unwatched = 0, unwatchedAired = 0;
 		Date nextAir = null;
-		String query = "SELECT serieName, posterThumb, status, passiveStatus, seasonCount, unwatchedAired, unwatched, nextEpisode, nextAir, extResources FROM series WHERE id = '" + serieId + "'";
+		String query = "SELECT serieName, language, posterThumb, status, passiveStatus, seasonCount, unwatchedAired, unwatched, nextEpisode, nextAir, extResources FROM series WHERE id = '" + serieId + "'";
 		Cursor c = Query(query);
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				name = c.getString(c.getColumnIndex("serieName"));
+				language = c.getString(c.getColumnIndex("language"));
 				tmpPoster = c.getString(c.getColumnIndex("posterThumb"));
 				showStatus = c.getString(c.getColumnIndex("status"));
 				tmpStatus = c.getInt(c.getColumnIndex("passiveStatus"));
@@ -144,7 +145,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			}
 		}
 		boolean status = (tmpStatus == 1);
-		TVShowItem tvsi = new TVShowItem(serieId, tmpPoster, null, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, showStatus, extResources);
+		TVShowItem tvsi = new TVShowItem(serieId, language, tmpPoster, null, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, showStatus, extResources);
 		return tvsi;
 	}
 

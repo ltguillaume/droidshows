@@ -68,6 +68,7 @@ public class AddSerie extends ListActivity
 	private static boolean bAddShowTh = false;
 	private SQLiteStore db;
 	private List<String> series;
+	private String langCode = DroidShows.langCode;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -78,6 +79,7 @@ public class AddSerie extends ListActivity
 		List<Serie> search_series = new ArrayList<Serie>();
 		this.seriessearch_adapter = new SeriesSearchAdapter(this, R.layout.row_search_series, search_series);
 		setListAdapter(seriessearch_adapter);
+		((TextView) findViewById(R.id.change_language)).setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
 		Intent intent = getIntent();
 		getSearchResults(intent); // Guillaume
 	}
@@ -133,7 +135,7 @@ public class AddSerie extends ListActivity
 	private void searchSeries(String searchQuery) {
 		try {
 			search_series = new ArrayList<Serie>();
-			search_series = theTVDB.searchSeries(searchQuery, DroidShows.langCode);
+			search_series = theTVDB.searchSeries(searchQuery, langCode);
 			if (search_series == null) {
 				m_ProgressDialog.dismiss();
 				Looper.prepare();
@@ -172,6 +174,20 @@ public class AddSerie extends ListActivity
 			Log.d(SQLiteStore.TAG, "addShow Thread stopped");
 		}
 	}
+	
+	public void changeLanguage(View v) {
+		AlertDialog.Builder changeLang = new AlertDialog.Builder(this);
+		changeLang.setTitle(R.string.dialog_change_language)
+			.setItems(R.array.languages, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					langCode = getResources().getStringArray(R.array.langcodes)[item];
+					TextView changeLangB = (TextView) findViewById(R.id.change_language);
+					changeLangB.setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
+					getSearchResults(getIntent());
+				}
+			})
+			.show();
+	}
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
@@ -194,7 +210,7 @@ public class AddSerie extends ListActivity
 		Runnable addnewserie = new Runnable() {
 			public void run() {
 				// gathers the TV show and all of its data
-				Serie sToAdd = theTVDB.getSerie(s.getId(), DroidShows.langCode);
+				Serie sToAdd = theTVDB.getSerie(s.getId(), langCode);
 				if (sToAdd == null) {
 					m_ProgressDialog.dismiss();
 					Looper.prepare();
@@ -299,7 +315,7 @@ public class AddSerie extends ListActivity
 						int unwatched = db.getEPUnwatched(sToAdd.getId());
 						String nextEpisodeStr = db.getNextEpisodeString(nextEpisode, DroidShows.showNextAiring && 0 < unwatchedAired && unwatchedAired < unwatched);
 						Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
-						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons,
+						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getLanguage(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons,
 							nextEpisodeStr, nextEpisode.firstAiredDate, unwatchedAired, unwatched, sToAdd.getPassiveStatus() == 1,
 							(sToAdd.getStatus() == null ? "null" : sToAdd.getStatus()), "");
 						DroidShows.series.add(tvsi);
@@ -406,7 +422,8 @@ public class AddSerie extends ListActivity
 				TextView sn = (TextView) v.findViewById(R.id.seriename);
 				CheckedTextView ctv = (CheckedTextView) v.findViewById(R.id.addserieBtn);
 				if (sn != null) {
-					sn.setText(o.getSerieName());
+					String lang = (o.getLanguage() == null ? "" : " ("+ o.getLanguage() +")");
+					sn.setText(o.getSerieName() + lang);
 				}
 				if (ctv != null) {
 					boolean alreadyExists = false;

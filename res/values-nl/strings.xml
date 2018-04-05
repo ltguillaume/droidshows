@@ -40,7 +40,8 @@
 <string name="dialog_backup">Backup maken</string>
 <string name="dialog_backup_done">Backup voltooid</string>
 <string name="dialog_backup_failed">Kon backup niet voltooien!</string>
-<string name="dialog_change_language">Taal Synopsis</string>
+<string name="dialog_backup_usefolder">Voor dagelijkse backups gebruiken</string>
+<string name="dialog_change_language">Taal synopsis</string>
 <string name="dialog_use_mirror">Gebruik TheTVDB mirror (probeer dit als updates te langzaam gaan)</string>
 <string name="dialog_restore">Herstellen</string>
 <string name="dialog_restore_now">Het herstellen van een database zal de huidige informatie in DroidShows verwijderen. Doorgaan?</string>

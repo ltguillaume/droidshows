@@ -107,7 +107,7 @@ public class TheTVDB {
                         if ( xmldata.get(i).contentEquals("<SeriesID>") && !xmldata.get(i+1).contentEquals("</SeriesID>")) {
                                 series.setSerieId(xmldata.get(i+1).trim());
                         }
-                        else if ( xmldata.get(i).contentEquals("<Language>") && !xmldata.get(i+1).contentEquals("</Language>") ) {
+                        else if ( xmldata.get(i).equalsIgnoreCase("<Language>") && !xmldata.get(i+1).equalsIgnoreCase("</Language>") ) {
                                 series.setLanguage(xmldata.get(i+1).trim());
                         }
                         else if ( xmldata.get(i).contentEquals("<SeriesName>") && !xmldata.get(i+1).contentEquals("</SeriesName>") ) {

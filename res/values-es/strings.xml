@@ -40,6 +40,7 @@
 <string name="dialog_backup">Copia de seguridad</string>
 <string name="dialog_backup_done">La copia de seguridad de la base de datos ha sido completada</string>
 <string name="dialog_backup_failed">¡No se ha podido hacer la copia de seguridad!</string>
+<string name="dialog_backup_usefolder">Uso para seguridad diaria</string>
 <string name="dialog_change_language">Idioma de las sinopsis</string>
 <string name="dialog_use_mirror">Utilizar el mirror TheTVDB (Intenta esto si las actualizaciones son demasiado lentas)</string>
 <string name="dialog_restore">Restaurar</string>

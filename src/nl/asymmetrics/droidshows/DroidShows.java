@@ -111,10 +111,11 @@ public class DroidShows extends ListActivity
 	private static final int VIEW_EPISODEDETAILS_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
 	private static final int EXT_RESOURCES_CONTEXT = VIEW_EPISODEDETAILS_CONTEXT + 1;
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = EXT_RESOURCES_CONTEXT + 1;
-	private static final int UPDATE_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
-	private static final int TOGGLE_ARCHIVED_CONTEXT = UPDATE_CONTEXT + 1;
+	private static final int TOGGLE_ARCHIVED_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
 	private static final int PIN_CONTEXT = TOGGLE_ARCHIVED_CONTEXT + 1;
-	private static final int DELETE_CONTEXT = PIN_CONTEXT + 1;
+	private static final int UPDATE_CONTEXT = PIN_CONTEXT + 1;
+	private static final int SYNOPSIS_LANGUAGE = UPDATE_CONTEXT + 1;
+	private static final int DELETE_CONTEXT = SYNOPSIS_LANGUAGE + 1;
 	private static AlertDialog m_AlertDlg;
 	private static ProgressDialog m_ProgressDialog = null;
 	private static ProgressDialog updateAllSeriesPD = null;
@@ -129,7 +130,7 @@ public class DroidShows extends ListActivity
 	private static final String AUTO_BACKUP_PREF_NAME = "auto_backup";
 	private static boolean autoBackupOption;
 	private static final String BACKUP_FOLDER_PREF_NAME = "backup_folder";
-	private static String defaultBackupFolder;
+	private static String backupFolder;
 	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
 	private static final int SORT_BY_UNSEEN = 1;
@@ -205,7 +206,7 @@ public class DroidShows extends ListActivity
 		// Preferences
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
 		autoBackupOption = sharedPrefs.getBoolean(AUTO_BACKUP_PREF_NAME, false);
-		defaultBackupFolder = sharedPrefs.getString(BACKUP_FOLDER_PREF_NAME, Environment.getExternalStorageDirectory() +"/DroidShows");
+		backupFolder = sharedPrefs.getString(BACKUP_FOLDER_PREF_NAME, Environment.getExternalStorageDirectory() +"/DroidShows");
 		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
 		excludeSeen = sharedPrefs.getBoolean(EXCLUDE_SEEN_PREF_NAME, false);
 		latestSeasonOption = sharedPrefs.getInt(LATEST_SEASON_PREF_NAME, UPDATE_LATEST_SEASON_ONLY);
@@ -608,23 +609,23 @@ public class DroidShows extends ListActivity
 
 	private void backup(boolean auto) {
 		if (auto) {
-			backup(auto, defaultBackupFolder);
+			backup(auto, backupFolder);
 		} else {
-			File folder = new File(defaultBackupFolder);
+			File folder = new File(backupFolder);
 			if (!folder.isDirectory())
 				folder.mkdir();
-			filePicker(defaultBackupFolder, getString(R.string.dialog_backup), false);
+			filePicker(backupFolder, getString(R.string.dialog_backup), false);
 		}
 	}
 
 	private void restore() {
-		filePicker(defaultBackupFolder, getString(R.string.dialog_restore), true);
+		filePicker(backupFolder, getString(R.string.dialog_restore), true);
 	}
 	
 	private void filePicker(final String folderString, final String title, final boolean restoring) {
 		File folder = new File(folderString);
 		File[] tempDirList = dirContents(folder, restoring);
-		if (folderString.equals("/")) {
+		if (folderString.equals(Environment.getExternalStorageDirectory() +"")) {
 			dirList = new File[tempDirList.length];
 			dirNamesList = new String[tempDirList.length];
 			for(int i = 0; i < tempDirList.length; i++) {
@@ -705,7 +706,7 @@ public class DroidShows extends ListActivity
 		}
 	};
 
-	private void backup(boolean auto, String backupFolder) {
+	private void backup(boolean auto, final String backupFolder) {
 		File source = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
 		File destination = new File(backupFolder, "DroidShows.db");
 		if (auto && (!autoBackupOption || 
@@ -737,8 +738,19 @@ public class DroidShows extends ListActivity
 			asyncInfo = new AsyncInfo();
 			asyncInfo.execute();
 		}
-		if (!auto || toastTxt == R.string.dialog_backup_failed)
-			Toast.makeText(getApplicationContext(), getString(toastTxt) + " ("+ backupFolder +")", Toast.LENGTH_LONG).show();
+		if (!auto && toastTxt == R.string.dialog_backup_done && !backupFolder.equals(DroidShows.backupFolder)) {
+			final CharSequence[] backupFolders = {backupFolder, DroidShows.backupFolder};
+			new AlertDialog.Builder(DroidShows.this)
+				.setTitle(toastTxt)
+				.setSingleChoiceItems(backupFolders, 1, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int which) {
+						DroidShows.backupFolder = backupFolders[which].toString();
+					}
+				})
+				.setPositiveButton(R.string.dialog_backup_usefolder, null)
+				.show();
+		}
+		Toast.makeText(getApplicationContext(), getString(toastTxt) + " ("+ backupFolder +")", Toast.LENGTH_LONG).show();
 	}
 
 	private void confirmRestore(final String backupFile) {
@@ -816,36 +828,31 @@ public class DroidShows extends ListActivity
 	/* context menu */
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.add(0, VIEW_SERIEDETAILS_CONTEXT, 0, getString(R.string.menu_context_view_serie_details));
-		menu.add(0, VIEW_EPISODEDETAILS_CONTEXT, 0, getString(R.string.messsages_view_ep_details));
-		menu.add(0, EXT_RESOURCES_CONTEXT, 0, getString(R.string.menu_context_ext_resources));
-		menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, 0, getString(R.string.menu_context_mark_next_episode_as_seen));
-		menu.add(0, UPDATE_CONTEXT, 0, getString(R.string.menu_context_update));
-		menu.add(0, TOGGLE_ARCHIVED_CONTEXT, 0, getString(R.string.menu_archive));
-		menu.add(0, PIN_CONTEXT, 0, getString(R.string.menu_context_pin));
-		menu.add(0, DELETE_CONTEXT, 0, getString(R.string.menu_context_delete));
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
-		if (logMode || seriesAdapter.getItem(info.position).getUnwatched() == 0) {
-			menu.findItem(VIEW_EPISODEDETAILS_CONTEXT).setVisible(false);
-			menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
-		} else if (seriesAdapter.getItem(info.position).getUnwatchedAired() == 0)
-	    	menu.findItem(MARK_NEXT_EPISODE_AS_SEEN_CONTEXT).setVisible(false);
+		menu.add(0, VIEW_SERIEDETAILS_CONTEXT, VIEW_SERIEDETAILS_CONTEXT, getString(R.string.menu_context_view_serie_details));
+		if (!logMode && seriesAdapter.getItem(info.position).getUnwatched() > 0)
+			menu.add(0, VIEW_EPISODEDETAILS_CONTEXT, VIEW_EPISODEDETAILS_CONTEXT, getString(R.string.messsages_view_ep_details));
+		menu.add(0, EXT_RESOURCES_CONTEXT, EXT_RESOURCES_CONTEXT, getString(R.string.menu_context_ext_resources));
+		if (!logMode && seriesAdapter.getItem(info.position).getUnwatchedAired() > 0)
+			menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, getString(R.string.menu_context_mark_next_episode_as_seen));
+		if (!logMode) {
+			menu.add(0, TOGGLE_ARCHIVED_CONTEXT, TOGGLE_ARCHIVED_CONTEXT, getString(R.string.menu_archive));
+			menu.add(0, PIN_CONTEXT, PIN_CONTEXT, getString(R.string.menu_context_pin));
+			menu.add(0, DELETE_CONTEXT, DELETE_CONTEXT, getString(R.string.menu_context_delete));
+		}
+		menu.add(0, UPDATE_CONTEXT, UPDATE_CONTEXT, getString(R.string.menu_context_update));
+		menu.add(0, SYNOPSIS_LANGUAGE, SYNOPSIS_LANGUAGE, getString(R.string.dialog_change_language) +" ("+ seriesAdapter.getItem(info.position).getLanguage() +")");
 		if (!logMode) {
 		    if (seriesAdapter.getItem(info.position).getPassiveStatus())
 		    	menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setTitle(R.string.menu_unarchive);
 		    if (pinnedShows.contains(seriesAdapter.getItem(info.position).getSerieId()))
 		    	menu.findItem(PIN_CONTEXT).setTitle(R.string.menu_context_unpin);
-		} else {
-			menu.findItem(DELETE_CONTEXT).setVisible(false);
-			menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setVisible(false);
-			menu.findItem(PIN_CONTEXT).setVisible(false);
-			menu.findItem(DELETE_CONTEXT).setVisible(false);
 		}
 		menu.setHeaderTitle(seriesAdapter.getItem(info.position).getName());
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		switch(item.getItemId()) {
 			case MARK_NEXT_EPISODE_AS_SEEN_CONTEXT :
 				markNextEpSeen(info.position);
@@ -860,7 +867,19 @@ public class DroidShows extends ListActivity
 				extResources(seriesAdapter.getItem(info.position).getExtResources(), info.position);
 				return true;
 			case UPDATE_CONTEXT :
-				updateSerie(seriesAdapter.getItem(info.position).getSerieId(), info.position);
+				updateSerie(seriesAdapter.getItem(info.position), info.position);
+				return true;
+			case SYNOPSIS_LANGUAGE :
+				CharSequence[] langList = Arrays.copyOfRange(getResources().getStringArray(R.array.languages), 1, getResources().getStringArray(R.array.languages).length);
+				AlertDialog.Builder changeLang = new AlertDialog.Builder(this);
+				changeLang.setTitle(R.string.dialog_change_language)
+					.setItems(langList, new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int item) {
+							String langCode = getResources().getStringArray(R.array.langcodes)[item + 1];
+							updateSerie(seriesAdapter.getItem(info.position), langCode, info.position);
+						}
+					})
+					.show();
 				return true;
 			case TOGGLE_ARCHIVED_CONTEXT :
 				asyncInfo.cancel(true);
@@ -1047,7 +1066,8 @@ public class DroidShows extends ListActivity
 	    else if (getApplicationContext().getPackageManager().getLaunchIntentForPackage("org.wikipedia.beta") != null)
 	    	wikiApp = "org.wikipedia.beta";
 	    if (wikiApp == null) {
-	    	String uri = "http://"+ langCode +".m.wikipedia.org/wiki/index.php?search="+ serieName;
+	    	String uri = "http://"+ (langCode.equals("all") ? "" : langCode +".") +"m.wikipedia.org/wiki/index.php?search="+ serieName
+	    		+ (langCode.equals("en") ? " (TV series)" : "");
 	    	wiki = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 	    } else {
 	    	wiki = new Intent(Intent.ACTION_SEND)
@@ -1166,11 +1186,16 @@ public class DroidShows extends ListActivity
 		startActivity(browse);
 	}
 	
-	private void updateSerie(final String serieId, int position) {
+	private void updateSerie(final TVShowItem serie, int position) {
+		updateSerie(serie, serie.getLanguage(), position);
+	}
+	
+	private void updateSerie(TVShowItem serie, final String langCode, int position) {
 		if (!utils.isNetworkAvailable(DroidShows.this)) {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 		} else {
-			final String serieName = seriesAdapter.getItem(position).getName();
+			final String serieId = serie.getSerieId();
+			final String serieName = serie.getName();
 			Runnable updateserierun = new Runnable() {
 				public void run() {
 					if (theTVDB == null)
@@ -1180,21 +1205,21 @@ public class DroidShows extends ListActivity
 						errorNotify(serieName);
 						m_ProgressDialog.dismiss();
 					} else {
-						dialogMsg = getString(R.string.messages_title_updating_db) + " - " + sToUpdate.getSerieName();
+						dialogMsg = getString(R.string.messages_title_updating_db) + " - " + serieName;
 						runOnUiThread(changeMessage);
 						db.updateSerie(sToUpdate, latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
 						updatePosterThumb(serieId, sToUpdate);
 						m_ProgressDialog.dismiss();
 						Looper.prepare();
 							Toast.makeText(getApplicationContext(),
-								serieName +" "+ getString(R.string.menu_context_updated),
+								sToUpdate.getSerieName() +" "+ getString(R.string.menu_context_updated),
 								Toast.LENGTH_SHORT).show();
 							listView.post(updateShowView(serieId));
 						Looper.loop();
 					}
 				}
 			};
-			m_ProgressDialog = ProgressDialog.show(DroidShows.this, serieName, getString(R.string.messages_update_serie), true, false);
+			m_ProgressDialog = ProgressDialog.show(DroidShows.this, serie.getName(), getString(R.string.messages_update_serie), true, false);
 			updateShowTh = new Thread(updateserierun);
 			updateShowTh.start();
 		}
@@ -1331,7 +1356,7 @@ public class DroidShows extends ListActivity
 						dialogMsg = series.get(i).getName() + "\u2026";
 						updateAllSeriesPD.incrementProgressBy(1);
 						runOnUiThread(updateMessage);
-						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), langCode);
+						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), series.get(i).getLanguage());
 						if (sToUpdate == null) {
 							updatesFailed += dialogMsg +" ";
 						} else {
@@ -1524,7 +1549,7 @@ public class DroidShows extends ListActivity
 		super.onPause();
 		SharedPreferences.Editor ed = sharedPrefs.edit();
 		ed.putBoolean(AUTO_BACKUP_PREF_NAME, autoBackupOption);
-		ed.putString(BACKUP_FOLDER_PREF_NAME, defaultBackupFolder);
+		ed.putString(BACKUP_FOLDER_PREF_NAME, backupFolder);
 		ed.putInt(SORT_PREF_NAME, sortOption);
 		ed.putBoolean(EXCLUDE_SEEN_PREF_NAME, excludeSeen);
 		ed.putInt(LATEST_SEASON_PREF_NAME, latestSeasonOption);

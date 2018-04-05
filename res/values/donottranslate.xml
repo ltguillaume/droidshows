@@ -9,6 +9,7 @@
 \n\nIcon is a mix of iconeasy.com/icon/tv-shows-2-icon (Thrasos Varnava) and wallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)
 \nMaterial icon by Listy2021 and ltGuillaume (XDA)</string>
 <string-array name="languages">
+    <item>All</item>
 	<item> עברית</item>
 	<item>čeština</item>
 	<item>Dansk</item>
@@ -34,6 +35,7 @@
 	<item>日本語</item>
 </string-array>
 <string-array name="langcodes">
+    <item>all</item>
 	<item>he</item>
 	<item>cs</item>
 	<item>da</item>

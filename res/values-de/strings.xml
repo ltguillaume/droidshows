@@ -40,6 +40,7 @@
 <string name="dialog_backup">Sichern</string>
 <string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>
+<string name="dialog_backup_usefolder">Für tägliche Sicherung verwenden</string>
 <string name="dialog_change_language">Sprache der Seriendetails</string>
 <string name="dialog_use_mirror">TheTVDB Spiegel verwenden (falls Updates zu lange dauern)</string>
 <string name="dialog_restore">Einlesen</string>

@@ -13,6 +13,7 @@ import nl.asymmetrics.droidshows.utils.SQLiteStore;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -20,7 +21,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.TextView;
 
 public class ViewEpisode extends Activity
@@ -38,6 +41,7 @@ public class ViewEpisode extends Activity
 	private SQLiteStore db;
 	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
 	private SwipeDetect swipeDetect = new SwipeDetect();
+	private DatePickerDialog dateDialog;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -100,16 +104,35 @@ public class ViewEpisode extends Activity
 				ratingV.setText("IMDb Info");
 			ratingV.setOnTouchListener(swipeDetect);
 			
-			CheckBox seenCheckBox = (CheckBox) findViewById(R.id.seen);
-			TextView seenDate = (TextView) findViewById(R.id.seendate);
+			final CheckBox seenCheckBox = (CheckBox) findViewById(R.id.seen);
 			seenCheckBox.setChecked(seen > 0);
-			if (seen > 1)	// If seen value is a date
-				try {
-					seenDate.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
-				} catch (ParseException e) { Log.e(SQLiteStore.TAG, e.getMessage()); }
-			else
-				seenDate.setText("");
+			check(seenCheckBox);
+			seenCheckBox.setOnLongClickListener(new OnLongClickListener() {
+				public boolean onLongClick(View arg0) {
+					int year = 0, month = 0, day = 0;
+					if (seen > 1) {
+						year = seen / 10000;
+						month = seen % 10000 / 100 -1;
+						day = seen % 100;
+					} else {
+						Calendar cal = Calendar.getInstance();
+						year = cal.get(Calendar.YEAR);
+						month = cal.get(Calendar.MONTH);
+						day = cal.get(Calendar.DAY_OF_MONTH);
+					}
 
+					dateDialog = new DatePickerDialog(seenCheckBox.getContext(), new DatePickerDialog.OnDateSetListener() {
+						public void onDateSet(DatePicker view, int year, int month, int day) {
+							seen = 10000 * year + 100 * (month +1) + day;
+							seenCheckBox.setChecked(seen > 1);
+							check(seenCheckBox);
+						}
+					}, year, month, day);
+					dateDialog.show();
+					return true;
+				}
+			});
+			
 			if (!firstAired.equalsIgnoreCase("null") && !firstAired.equals("")) {
 				TextView firstAiredV = (TextView) findViewById(R.id.firstAired);
 				firstAiredV.setText(firstAired);
@@ -225,7 +248,8 @@ public class ViewEpisode extends Activity
 			if (c.isChecked()) {
 				d.setTextColor(getResources().getColor(android.R.color.white));
 				Calendar cal = Calendar.getInstance();
-				seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
+				if (seen == 0)
+					seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
 				try { d.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
 				} catch (ParseException e) { e.printStackTrace(); }
 				DroidShows.removeEpisodeFromLog = "";

@@ -40,6 +40,7 @@
 <string name="dialog_backup">Резервирование</string>
 <string name="dialog_backup_done">Резервная копия создана</string>
 <string name="dialog_backup_failed">Невозможно создать резервную копию!</string>
+<string name="dialog_backup_usefolder">Использовать для ежедневного резервного копирования</string>
 <string name="dialog_change_language">Язык краткого описания</string>
 <string name="dialog_use_mirror">Используйте TheTVDb зеркало (попробуйте так, если обновления слишком медленны)</string>
 <string name="dialog_restore">Восстановить</string>

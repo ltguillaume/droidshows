@@ -69,6 +69,7 @@ __Seasons/Episodes list__:
 __Add show__:  
 \+ Icon resized rate_star_med_on_holo_dark for added shows  
 \+ Icon ic_menu_add for new shows  
+\+ Choose the synopsis language per show  
 \* Fixed search not working after initial search  
 \* Centered icons vertically in search results  
 \* Large-size posters aren't cached, to save space in /data/data/  
@@ -97,5 +98,5 @@ __Other__:
   
 &copy;2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPLv3  
 Modified by [Mikael Berthe](http://gitorious.org/droidseries/mckaels-droidseries)  
-&copy;2014-2017 Guillaume under GPLv3 ([previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume))  
+&copy;2014-2018 Guillaume under GPLv3 ([previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume))  
 New icon is a mix of work by [Thrasos Varnava](http://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)

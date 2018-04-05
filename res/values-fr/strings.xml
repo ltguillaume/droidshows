@@ -40,6 +40,7 @@
 <string name="dialog_backup">Sauvegarder</string>
 <string name="dialog_backup_done">Sauvegarde de la base de donnée effectuée</string>
 <string name="dialog_backup_failed">Impossible d\'effectuer la sauvegarde!</string>
+<string name="dialog_backup_usefolder">Utiliser pour des sauvegardes journalières</string>
 <string name="dialog_change_language">Langue du synopsis</string>
 <string name="dialog_use_mirror">Utiliser le miroir TheTVDB (essayez cela si les mises à jour sont trop longues)</string>
 <string name="dialog_restore">Restaurer</string>

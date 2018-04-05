@@ -40,7 +40,8 @@
 <string name="dialog_backup">Backup</string>
 <string name="dialog_backup_done">Database backup completed</string>
 <string name="dialog_backup_failed">Unable to perform backup!</string>
-<string name="dialog_change_language">Synopsis Language</string>
+<string name="dialog_backup_usefolder">Use folder for daily backups</string>
+<string name="dialog_change_language">Synopsis language</string>
 <string name="dialog_use_mirror">Use TheTVDB mirror (try this if updates are too slow)</string>
 <string name="dialog_restore">Restore</string>
 <string name="dialog_restore_now">Restoring a backup will remove all information currently in DroidShows. Continue?</string>
