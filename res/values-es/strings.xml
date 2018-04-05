@@ -5,14 +5,14 @@
 <string name="layout_main_no_items">No has añadido series.</string>
 <string name="layout_search_no_items">No se encontró ninguna serie.</string>
 <string name="layout_seasons_no_items">No hay temporadas que mostrar.</string>
-<string name="archive">Mover al Archivo</string>
+<string name="archive">Ver las series archivadas</string>
 <string name="addserie_hint">Nombre de la serie…</string>
 <string name="search_hint">Buscar…</string>
-<string name="menu_filter">Filtro</string>
+<string name="menu_filter">Filtros</string>
 <string name="menu_undo">Deshacer</string>
-<string name="menu_add_serie">Añade una serie</string>
-<string name="menu_update">Actualiza las series</string>
-<string name="menu_search">Busca</string>
+<string name="menu_add_serie">Añadir una serie</string>
+<string name="menu_update">Actualizar las series</string>
+<string name="menu_search">Buscar</string>
 <string name="menu_sort_by_name">Ordenar por nombre</string>
 <string name="menu_sort_by_unseen">Ordenar por no visto</string>
 <string name="menu_about">Opciones</string>
@@ -20,10 +20,10 @@
 <string name="menu_context_update">Actualizar</string>
 <string name="menu_context_updated">actualizado</string>
 <string name="menu_context_delete">Borrar</string>
-<string name="menu_context_add_serie">Añade una serie</string>
+<string name="menu_context_add_serie">Añadir una serie</string>
 <string name="menu_show_archive">Ver las series archivadas</string>
 <string name="menu_show_current">Muestra las series actuales</string>
-<string name="menu_exclude_seen">Ocultar las completadas</string>
+<string name="menu_exclude_seen">Ocultar las series completadas</string>
 <string name="menu_include_seen">Mostrar las completadas</string>
 <string name="menu_log">Historial</string>
 <string name="menu_close_log">Cerrar historial</string>
@@ -72,7 +72,7 @@
 \n&#187; Deja pulsado el póster a pantalla completa para abrirlo con otra app
 \n\nDetalles de la serie/episodio:
 \n&#187; Toca la puntuación de IMDb para verla en IMDb</string>
-<string name="dialog_networks">Cadenas</string>
+<string name="dialog_networks">Filtrar por cadena</string>
 <string name="menu_archive">Archivar</string>
 <string name="menu_unarchive">Recuperar</string>
 <string name="messages_title_updating_series">Actualizando las series</string>
@@ -83,19 +83,19 @@
 <string name="messages_update_series">Obteniendo la información de las series. Esta operación puede tardar un poco…</string>
 <string name="messages_episodes">episodios</string>
 <string name="messages_new_episodes">nuevos episodios</string>
-<string name="messages_new_episode">nuevo episodio</string>
+<string name="messages_new_episode">nuevo ep.</string>
 <string name="messages_ep_aired">emitido(s)</string>
 <string name="messages_to_be_aired">por emitir</string>
 <string name="messages_seasons">Temporadas</string>
 <string name="messages_season">Temporada</string>
-<string name="messages_next_episode">Próximo episodio:</string>
+<string name="messages_next_episode">Próximo ep.:</string>
 <string name="messages_next_airing">Próxima emisión:</string>
 <string name="messages_no_new_eps">No hay episodios nuevos</string>
 <string name="messages_season_completely_watched">Temporada vista al completo</string>
 <string name="messages_deleted">borrado</string>
 <string name="messages_title_search_series">Buscando series</string>
 <string name="messages_search_series">Recibiendo los datos…</string>
-<string name="messages_series_success">%s añadida</string>
+<string name="messages_series_success">%s ha sido añadida</string>
 <string name="messages_title_adding_serie">Añadiendo la serie</string>
 <string name="messages_adding_serie">Obteniendo la información de la serie…</string>
 <string name="messages_context_mark_seasonseen">Marcar todos los eps. como vistos</string>
@@ -121,6 +121,6 @@
 <string name="series_runtime_minutes">minutos</string>
 <string name="series_synopsis">Sinopsis:</string>
 <string name="series_actors">Actores:</string>
-<string name="showstatus_continuing">En emisión</string>
-<string name="showstatus_ended">finalizada</string>
+<string name="showstatus_continuing">Emitiendo</string>
+  <string name="showstatus_ended">Finalizada</string>
 </resources>
