@@ -614,37 +614,29 @@ public class DroidShows extends ListActivity
 			File folder = new File(backupFolder);
 			if (!folder.isDirectory())
 				folder.mkdir();
-			filePicker(backupFolder, getString(R.string.dialog_backup), false);
+			filePicker(backupFolder, false);
 		}
 	}
 
 	private void restore() {
-		filePicker(backupFolder, getString(R.string.dialog_restore), true);
+		filePicker(backupFolder, true);
 	}
 	
-	private void filePicker(final String folderString, final String title, final boolean restoring) {
+	private void filePicker(final String folderString, final boolean restoring) {
 		File folder = new File(folderString);
 		File[] tempDirList = dirContents(folder, restoring);
-		if (folderString.equals(Environment.getExternalStorageDirectory() +"")) {
-			dirList = new File[tempDirList.length];
-			dirNamesList = new String[tempDirList.length];
-			for(int i = 0; i < tempDirList.length; i++) {
-				dirList[i] = tempDirList[i];
-				dirNamesList[i] = tempDirList[i].getName();
-				if (restoring && dirList[i].isFile())
-					dirNamesList[i] += " ("+ SimpleDateFormat.getDateTimeInstance().format(tempDirList[i].lastModified()) +")";
-			}
-		} else {
-			dirList = new File[tempDirList.length + 1];
-			dirNamesList = new String[tempDirList.length + 1];
+		int showParent = (folderString.equals(Environment.getExternalStorageDirectory().getPath()) ? 0 : 1);
+		dirList = new File[tempDirList.length + showParent];
+		dirNamesList = new String[tempDirList.length + showParent];
+		if (showParent == 1) {
 			dirList[0] = folder.getParentFile();
 			dirNamesList[0] = "..";
-			for(int i = 0; i < tempDirList.length; i++) {
-				dirList[i+1] = tempDirList[i];
-				dirNamesList[i+1] = tempDirList[i].getName();
-				if (restoring && dirList[i+1].isFile())
-					dirNamesList[i+1] += " ("+ SimpleDateFormat.getDateTimeInstance().format(tempDirList[i].lastModified()) +")";
-			}
+		}
+		for(int i = 0; i < tempDirList.length; i++) {
+			dirList[i + showParent] = tempDirList[i];
+			dirNamesList[i + showParent] = tempDirList[i].getName();
+			if (restoring && tempDirList[i].isFile())
+				dirNamesList[i + showParent] += " ("+ SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.DEFAULT, SimpleDateFormat.SHORT).format(tempDirList[i].lastModified()) +")";
 		}
 		AlertDialog.Builder filePicker = new AlertDialog.Builder(this)
 			.setTitle(folder.toString())
@@ -652,7 +644,7 @@ public class DroidShows extends ListActivity
 				public void onClick(DialogInterface dialog, int which) {
 					File chosenFile = dirList[which];
 					if (chosenFile.isDirectory()) {
-						filePicker(chosenFile.toString(), title, restoring);
+						filePicker(chosenFile.toString(), restoring);
 					} else if (restoring) {
 						confirmRestore(chosenFile.toString());
 					}
@@ -674,15 +666,13 @@ public class DroidShows extends ListActivity
 	}
 
 	private File[] dirContents(File folder, final boolean showFiles)  {
-		if (!folder.exists())
-			folder = new File(Environment.getExternalStorageDirectory(), "");
 		if (folder.exists()) {
 			FilenameFilter filter = new FilenameFilter() {
 				public boolean accept(File dir, String filename) {
 					File file = new File(dir.getAbsolutePath() + File.separator + filename);
 					if (showFiles)
 						return file.isDirectory()
-							|| file.isFile() && file.getName().toLowerCase().indexOf("droidshows.") == 0;
+							|| file.isFile() && file.getName().toLowerCase().indexOf("droidshows.db") == 0;
 					else
 						return file.isDirectory();
 				}
@@ -769,11 +759,6 @@ public class DroidShows extends ListActivity
 	private void restore(String backupFile) {
 		String toastTxt = getString(R.string.dialog_restore_done);
 		File source = new File(backupFile);
-		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db0");
-		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory() +"/DroidShows", "DroidShows.db1");
-		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory(), "DroidShows.db");
-		if (!source.exists()) source = new File(Environment.getExternalStorageDirectory(), "droidseries.db");
-		if (!source.exists()) source = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "DroidShows.db");
 		if (source.exists()) {
 			File destination = new File(getApplicationInfo().dataDir +"/databases", "DroidShows.db");
 			try {
