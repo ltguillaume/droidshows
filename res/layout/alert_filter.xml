@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
-	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_marginTop="6dp">
-		<CheckBox android:id="@+id/exclude_seen" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/menu_exclude_seen"/>
-		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:text="@string/dialog_networks"/>
-		<ToggleButton android:id="@+id/toggle_networks_filter" android:layout_width="wrap_content" android:layout_height="wrap_content" android:onClick="toggleNetworksFilter"/>
-		<LinearLayout android:id="@+id/networks_filter" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical"/>
-	</LinearLayout>
-</ScrollView>
