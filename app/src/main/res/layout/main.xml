@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/main" xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent">
+	<LinearLayout android:id="@+id/search" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:visibility="gone">
+		<EditText android:id="@+id/search_text" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:padding="6dp" android:background="@android:color/transparent" android:textColor="@android:color/primary_text_dark" android:hint="@string/search_hint" android:inputType="textFilter" android:imeOptions="actionDone"/>
+		<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingLeft="24dp" android:src="@android:drawable/ic_menu_close_clear_cancel" android:onClick="clearFilter"/>
+	</LinearLayout>
+	<nl.asymmetrics.droidshows.ui.BounceListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/android:list"/>
+	<LinearLayout android:id="@+id/android:empty" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:gravity="center_horizontal">
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:padding="9dp" android:text="@string/layout_main_no_items"/>
+		<Button android:id="@+id/add_show" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/menu_context_add_serie" android:onClick="searchForShow"/>
+	</LinearLayout>
+</LinearLayout>

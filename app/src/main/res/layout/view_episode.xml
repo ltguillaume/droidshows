@@ -1,0 +1,37 @@
+<ScrollView android:id="@+id/viewEpisodes" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical">
+	<TextView android:id="@+id/episodeName" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:textStyle="bold" android:textSize="24sp"/>
+	<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+	<LinearLayout android:layout_width="fill_parent" android:layout_height="wrap_content" android:baselineAligned="false">
+		<LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:orientation="vertical">
+			<TextView android:id="@+id/rating" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingLeft="6dp" android:paddingBottom="2dp" android:drawableLeft="@drawable/star" android:scaleType="centerInside" android:clickable="true" android:onClick="IMDbDetails"/>
+			<TextView android:id="@+id/firstAired" android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center_vertical" android:paddingLeft="6dp" android:paddingBottom="2dp" android:drawableLeft="@android:drawable/ic_menu_today" android:scaleType="centerInside" android:visibility="gone"/>
+		</LinearLayout>
+		<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+			<TextView android:id="@+id/seendate" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical" android:textSize="12sp"/>
+			<CheckBox android:id="@+id/seen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:paddingTop="6dp" android:paddingBottom="6dp" android:paddingLeft="0dp" android:paddingRight="6dp" android:button="@null" android:drawableRight="?android:attr/listChoiceIndicatorMultiple" android:focusable="false" android:focusableInTouchMode="false" android:onClick="check"/>
+		</LinearLayout>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/overviewField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone">
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/series_synopsis"/>
+		<TextView android:id="@+id/overview" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp"/>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/writerField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone" android:onClick="IMDbNames">
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/episode_writers"/>
+		<TextView android:id="@+id/writer" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp" android:clickable="true" android:onClick="IMDbNames"/>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/directorField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone" android:onClick="IMDbNames">
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/episode_directors"/>
+		<TextView android:id="@+id/director" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp" android:clickable="true" android:onClick="IMDbNames"/>
+	</LinearLayout>
+	<LinearLayout android:id="@+id/guestStarsField" android:layout_width="fill_parent" android:layout_height="wrap_content" android:orientation="vertical" android:visibility="gone" android:onClick="IMDbNames">
+		<View android:layout_width="fill_parent" android:layout_height="1px" android:background="@drawable/div"/>
+		<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingLeft="6dp" android:layout_marginBottom="-6dp" android:textStyle="bold" android:text="@string/episode_guest_stars"/>
+		<TextView android:id="@+id/guestStars" android:layout_width="wrap_content" android:layout_height="wrap_content" android:padding="6dp" android:lineSpacingExtra="0.5dp" android:clickable="true" android:onClick="IMDbNames"/>
+	</LinearLayout>
+	<View android:layout_width="fill_parent" android:layout_height="1px" android:layout_marginBottom="6dp" android:background="@drawable/div"/>
+</LinearLayout>
+</ScrollView>

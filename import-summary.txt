@@ -1,0 +1,67 @@
+ECLIPSE ANDROID PROJECT IMPORT SUMMARY
+======================================
+
+Ignored Files:
+--------------
+The following files were *not* copied into the new Gradle project; you
+should evaluate whether these are still needed in your project and if
+so manually move them:
+
+* .gitignore
+* icon/
+* icon/add.png
+* icon/droid_org.jpg
+* icon/icon1.png
+* icon/icon2.png
+* icon/icon3.png
+* icon/icon4.png
+* icon/icon4a.png
+* icon/icon5.png
+* icon/icon5a.png
+* icon/icon6.png
+* icon/icon_org.png
+* icon/icons.psd
+* icon/material-adaptive-icon_foreground.svg
+* icon/material-adaptive-render-icon.zip
+* icon/material-plain.svg
+* icon/material-render-actionbar.zip
+* icon/material-render-icon.zip
+* icon/material-render.txt
+* icon/material.svg
+* icon/noposter.psd
+* icon/noposter1.png
+* icon/noposter3.png
+* icon/noposter4.png
+* icon/noposter5.png
+* icon/org_droidseries_sharpest+droid.png
+* icon/org_droidseries_sharpest.png
+* icon/screenshot.png
+* icon/screenshot.psd
+* icon/star.png
+* license.md
+* readme.md
+
+Moved Files:
+------------
+Android Gradle projects use a different directory structure than ADT
+Eclipse projects. Here's how the projects were restructured:
+
+* AndroidManifest.xml => app/src/main/AndroidManifest.xml
+* lint.xml => app/lint.xml
+* res/ => app/src/main/res/
+* src/ => app/src/main/java/
+
+Next Steps:
+-----------
+You can now build the project. The Gradle project needs network
+connectivity to download dependencies.
+
+Bugs:
+-----
+If for some reason your project does not build, and you determine that
+it is due to a bug or limitation of the Eclipse to Gradle importer,
+please file a bug at http://b.android.com with category
+Component-Tools.
+
+(This import summary is for your information only, and can be deleted
+after import once you are satisfied with the results.)

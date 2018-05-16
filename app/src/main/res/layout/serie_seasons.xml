@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
+	<ListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/android:list"/>
+	<TextView android:id="@+id/android:empty" android:layout_width="fill_parent" android:layout_height="0dp" android:padding="6dp" android:text="@string/layout_seasons_no_items"/>
+</LinearLayout>
