@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent" android:keepScreenOn="true">
+	<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:paddingTop="4dp" android:paddingBottom="4dp" style="?android:attr/listSeparatorTextViewStyle" android:id="@+id/add_serie_title"/>
+	<Button android:id="@+id/change_language" android:layout_width="fill_parent" android:layout_height="wrap_content" android:onClick="changeLanguage"/>
+	<ListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:id="@+id/android:list"/>
+	<TextView android:id="@+id/android:empty" android:layout_width="fill_parent" android:layout_height="fill_parent" android:padding="6dp" android:text="@string/layout_search_no_items"/>
+</LinearLayout>

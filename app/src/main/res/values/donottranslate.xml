@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="copyright">DroidShows v{v}
+\n&#169;2010 C. Limpinho, P. Cabido: code.google.com/p/droidseries
+\nModified by M. Berthe: gitorious.org/droidseries/mckaels-droidseries
+\n&#169;2014-{y} Guillaume (GPLv3): ltGuillaume.github.io/DroidShows
+\nReleases: github.com/ltGuillaume/DroidShows/releases
+\nForum/Changelog: forum.xda-developers.com/showthread.php?p=58437755
+\n\nIcon is a mix of iconeasy.com/icon/tv-shows-2-icon (Thrasos Varnava) and wallalay.com/wallpapers-for-android-67-177682-desktop-background.html (Taenggo)
+\nMaterial icon by Listy2021 and ltGuillaume (XDA)</string>
+<string-array name="languages">
+    <item>All</item>
+	<item> עברית</item>
+	<item>čeština</item>
+	<item>Dansk</item>
+	<item>Deutsch</item>
+	<item>English</item>
+	<item>Español</item>
+	<item>Français</item>
+	<item>Hrvatski</item>
+	<item>Italiano</item>
+	<item>Magyar</item>
+	<item>Nederlands</item>
+	<item>Norsk</item>
+	<item>Polski</item>
+	<item>Português</item>
+	<item>Slovenski</item>
+	<item>Suomeksi</item>
+	<item>Svenska</item>
+	<item>Türkçe</item>
+	<item>Ελληνικά</item>
+	<item>русский язык</item>
+	<item>한국어</item>
+	<item>中文</item>
+	<item>日本語</item>
+</string-array>
+<string-array name="langcodes">
+    <item>all</item>
+	<item>he</item>
+	<item>cs</item>
+	<item>da</item>
+	<item>de</item>
+	<item>en</item>
+	<item>es</item>
+	<item>fr</item>
+	<item>hr</item>
+	<item>it</item>
+	<item>hu</item>
+	<item>nl</item>
+	<item>no</item>
+	<item>pl</item>
+	<item>pt</item>
+	<item>sl</item>
+	<item>fi</item>
+	<item>sv</item>
+	<item>tr</item>
+	<item>el</item>
+	<item>ru</item>
+	<item>ko</item>
+	<item>zh</item>
+	<item>ja</item>
+</string-array>
+</resources>
