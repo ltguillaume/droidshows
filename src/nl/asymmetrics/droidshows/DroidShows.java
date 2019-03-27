@@ -227,8 +227,10 @@ public class DroidShows extends ListActivity
 		updateDS = new Update(db);
 		if (updateDS.needsUpdate()) {
 			backup(false, backupFolder);
-			if (!updateDS.updateDroidShows())
+			if (updateDS.updateDroidShows())
 				db.updateShowStats();
+			else
+				Toast.makeText(getApplicationContext(), "Error while updating database", Toast.LENGTH_LONG).show();
 		}
 
 		if (!networksStr.isEmpty())
@@ -910,11 +912,13 @@ public class DroidShows extends ListActivity
 					public void run() {
 						TVShowItem serie = seriesAdapter.getItem(position);
 						String sname = serie.getName();
-						db.deleteSerie(serie.getSerieId());
+						String toastMsg = getString(R.string.messages_deleted);
+						if (!db.deleteSerie(serie.getSerieId()))
+							toastMsg = "Database error while deleting show";
 						series.remove(series.indexOf(serie));
 						listView.post(updateListView);
 						Looper.prepare();	// Threads don't have a message loop
-							Toast.makeText(getApplicationContext(), sname +" "+ getString(R.string.messages_deleted), Toast.LENGTH_LONG).show();
+							Toast.makeText(getApplicationContext(), sname +" "+ toastMsg, Toast.LENGTH_LONG).show();
 							asyncInfo = new AsyncInfo();
 							asyncInfo.execute();
 						Looper.loop();
@@ -1185,7 +1189,7 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void updateSerie(final TVShowItem serie, int position) {
-		updateSerie(serie, serie.getLanguage(), position);
+		updateSerie(serie, null, position);
 	}
 	
 	private void updateSerie(TVShowItem serie, final String langCode, int position) {
@@ -1194,23 +1198,26 @@ public class DroidShows extends ListActivity
 		} else {
 			final String serieId = serie.getSerieId();
 			final String serieName = serie.getName();
+			final String currentLang = serie.getLanguage();
 			Runnable updateserierun = new Runnable() {
 				public void run() {
 					if (theTVDB == null)
 						theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
-					Serie sToUpdate = theTVDB.getSerie(serieId, langCode);
+					Serie sToUpdate = theTVDB.getSerie(serieId, langCode == null ? currentLang : langCode);
 					if (sToUpdate == null) {
 						errorNotify(serieName);
 						m_ProgressDialog.dismiss();
 					} else {
 						dialogMsg = getString(R.string.messages_title_updating_db) + " - " + serieName;
 						runOnUiThread(changeMessage);
-						db.updateSerie(sToUpdate, latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
+						String toastMsg = getString(R.string.menu_context_updated);
+						if (!db.updateSerie(sToUpdate, langCode == null ? latestSeasonOption == UPDATE_LATEST_SEASON_ONLY : false))
+							toastMsg = "Database error while updating show";
 						updatePosterThumb(serieId, sToUpdate);
 						m_ProgressDialog.dismiss();
 						Looper.prepare();
 							Toast.makeText(getApplicationContext(),
-								sToUpdate.getSerieName() +" "+ getString(R.string.menu_context_updated),
+								sToUpdate.getSerieName() +" "+ toastMsg,
 								Toast.LENGTH_SHORT).show();
 							listView.post(updateShowView(serieId));
 						Looper.loop();
@@ -1355,7 +1362,11 @@ public class DroidShows extends ListActivity
 							updatesFailed += dialogMsg +" ";
 						} else {
 							try {
-								db.updateSerie(sToUpdate, latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
+								if (!db.updateSerie(sToUpdate, latestSeasonOption == UPDATE_LATEST_SEASON_ONLY)) {
+									Looper.prepare();	// Threads don't have a message loop
+									Toast.makeText(getApplicationContext(), "Database error while updating "+ sToUpdate.getSerieName(), Toast.LENGTH_LONG).show();
+									Looper.loop();
+								}
 								updatePosterThumb(series.get(i).getSerieId(), sToUpdate);
 							} catch (Exception e) {
 								e.printStackTrace();

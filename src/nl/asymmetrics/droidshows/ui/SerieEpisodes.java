@@ -29,6 +29,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.TextView;
 
@@ -107,7 +108,8 @@ public class SerieEpisodes extends ListActivity {
 			dateDialog.show();
 			return true;
 		case DELEP_CONTEXT:
-			db.deleteEpisode(serieId, episodes.get(info.position).id);
+			if (!db.deleteEpisode(serieId, episodes.get(info.position).id))
+				Toast.makeText(getApplicationContext(), "Database error while deleting episode", Toast.LENGTH_LONG).show();
 			episodes.remove(info.position);
 			episodesAdapter.notifyDataSetChanged();
 			return true;

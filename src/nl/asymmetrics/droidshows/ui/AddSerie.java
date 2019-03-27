@@ -82,7 +82,6 @@ public class AddSerie extends ListActivity
 		((TextView) findViewById(R.id.change_language)).setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
 		Intent intent = getIntent();
 		getSearchResults(intent);
-			
 	}
 
 	/* Options Menu */
@@ -184,7 +183,7 @@ public class AddSerie extends ListActivity
 					langCode = getResources().getStringArray(R.array.langcodes)[item];
 					TextView changeLangB = (TextView) findViewById(R.id.change_language);
 					changeLangB.setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
-					getSearchResults(getIntent());
+					doSearch();
 				}
 			})
 			.show();
@@ -211,7 +210,7 @@ public class AddSerie extends ListActivity
 		Runnable addnewserie = new Runnable() {
 			public void run() {
 				// gathers the TV show and all of its data
-				Serie sToAdd = theTVDB.getSerie(s.getId(), langCode);
+				Serie sToAdd = theTVDB.getSerie(s.getId(), s.getLanguage());
 				if (sToAdd == null) {
 					m_ProgressDialog.dismiss();
 					Looper.prepare();
@@ -370,15 +369,18 @@ public class AddSerie extends ListActivity
 			}
 			TextView title = (TextView) findViewById(R.id.add_serie_title);
 			title.setText(getString(R.string.dialog_search) + " " + searchQuery);
-			if (utils.isNetworkAvailable(AddSerie.this)) {
-				Search();
-			} else {
-				Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
-			}
+			doSearch();
 		}
 		listView = getListView();
 		listView.setOnTouchListener(new SwipeDetect());
 		registerForContextMenu(getListView());
+	}
+	
+	private void doSearch() {
+		if (utils.isNetworkAvailable(AddSerie.this))
+			Search();
+		else
+			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 	}
 	
 	@Override
