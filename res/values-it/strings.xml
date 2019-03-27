@@ -59,6 +59,7 @@
 <string name="dialog_full_line_check">Usa intera linea per contrassegnare un episodio</string>
 <string name="dialog_switch_swipe_direction">Scorri da destra a sinistra per tornare indietro</string>
 <string name="dialog_show_next_airing">Mostra data del prossimo ep. trasmesso invece che del prossimo da vedere</string>
+<string name="dialog_mark_from_last_watched">Segna prossimo ep. a partire dall\'ultimo visto</string>
 <string name="dialog_help">&#187; Non dimenticarti di aggiornare le serie regolarmente
 \n&#187; Premi a lungo gli elementi per vedere più opzioni
 \n&#187; Scorri verso destra per tornare indietro

@@ -120,7 +120,7 @@ public class DroidShows extends ListActivity
 	private static ProgressDialog m_ProgressDialog = null;
 	private static ProgressDialog updateAllSeriesPD = null;
 	public static SeriesAdapter seriesAdapter;
-	private static BounceListView listView;
+	private static BounceListView listView = null;
 	private static String backFromSeasonSerieId;
 	private static TheTVDB theTVDB;
 	private Utils utils = new Utils();
@@ -154,6 +154,8 @@ public class DroidShows extends ListActivity
 	private static final String LANGUAGE_CODE_NAME = "language";
 	private static final String SHOW_NEXT_AIRING = "show_next_airing";
 	public static boolean showNextAiring;
+	private static final String MARK_FROM_LAST_WATCHED = "mark_from_last_watched";
+	public static boolean markFromLastWatched;
 	private static final String USE_MIRROR = "use_mirror";
 	public static boolean useMirror;
 	public static String langCode;
@@ -199,10 +201,6 @@ public class DroidShows extends ListActivity
 		main = findViewById(R.id.main);
 		db = SQLiteStore.getInstance(this);
 
-		updateDS = new Update(db);
-		if(updateDS.updateDroidShows())
-			db.updateShowStats();
-
 		// Preferences
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
 		autoBackupOption = sharedPrefs.getBoolean(AUTO_BACKUP_PREF_NAME, false);
@@ -217,12 +215,22 @@ public class DroidShows extends ListActivity
 		lastStatsUpdateArchive = sharedPrefs.getString(LAST_STATS_UPDATE_ARCHIVE_NAME, "");
 		langCode = sharedPrefs.getString(LANGUAGE_CODE_NAME, getString(R.string.lang_code));
 		showNextAiring = sharedPrefs.getBoolean(SHOW_NEXT_AIRING, false);
+		markFromLastWatched = sharedPrefs.getBoolean(MARK_FROM_LAST_WATCHED, false);
 		useMirror = sharedPrefs.getBoolean(USE_MIRROR, false);
 		String pinnedShowsStr = sharedPrefs.getString(PINNED_SHOWS_NAME, "");
 		if (!pinnedShowsStr.isEmpty())
 			pinnedShows = new ArrayList<String>(Arrays.asList(pinnedShowsStr.replace("[", "").replace("]", "").split(", ")));
 		filterNetworks = sharedPrefs.getBoolean(FILTER_NETWORKS_NAME, false); 
 		String networksStr = sharedPrefs.getString(NETWORKS_NAME, "");
+
+		// Update database
+		updateDS = new Update(db);
+		if (updateDS.needsUpdate()) {
+			backup(false, backupFolder);
+			if (!updateDS.updateDroidShows())
+				db.updateShowStats();
+		}
+
 		if (!networksStr.isEmpty())
 			networks = new ArrayList<String>(Arrays.asList(networksStr.replace("[", "").replace("]", "").split(", ")));
 		series = new ArrayList<TVShowItem>();
@@ -533,6 +541,7 @@ public class DroidShows extends ListActivity
 		((CheckBox) about.findViewById(R.id.full_line_check)).setChecked(fullLineCheckOption);
 		((CheckBox) about.findViewById(R.id.switch_swipe_direction)).setChecked(switchSwipeDirection);
 		((CheckBox) about.findViewById(R.id.show_next_airing)).setChecked(showNextAiring);
+		((CheckBox) about.findViewById(R.id.mark_from_last_watched)).setChecked(markFromLastWatched);
 		((CheckBox) about.findViewById(R.id.use_mirror)).setChecked(useMirror);
 		m_AlertDlg = new AlertDialog.Builder(this)
 			.setView(about)
@@ -575,6 +584,9 @@ public class DroidShows extends ListActivity
 			case R.id.show_next_airing:
 				showNextAiring ^= true;
 				updateShowStats();
+				break;
+			case R.id.mark_from_last_watched:
+				markFromLastWatched ^= true;
 				break;
 			case R.id.use_mirror:
 				useMirror ^= true;
@@ -724,10 +736,6 @@ public class DroidShows extends ListActivity
 			toastTxt = R.string.dialog_backup_failed;
 			e.printStackTrace();
 		}
-		if (!auto) {
-			asyncInfo = new AsyncInfo();
-			asyncInfo.execute();
-		}
 		if (!auto && toastTxt == R.string.dialog_backup_done && !backupFolder.equals(DroidShows.backupFolder)) {
 			final CharSequence[] backupFolders = {backupFolder, DroidShows.backupFolder};
 			new AlertDialog.Builder(DroidShows.this)
@@ -740,7 +748,11 @@ public class DroidShows extends ListActivity
 				.setPositiveButton(R.string.dialog_backup_usefolder, null)
 				.show();
 		}
-		Toast.makeText(getApplicationContext(), getString(toastTxt) + " ("+ backupFolder +")", Toast.LENGTH_LONG).show();
+		if (!auto && listView != null) {
+			Toast.makeText(getApplicationContext(), getString(toastTxt) + " ("+ backupFolder +")", Toast.LENGTH_LONG).show();
+			asyncInfo = new AsyncInfo();
+			asyncInfo.execute();
+		}
 	}
 
 	private void confirmRestore(final String backupFile) {
@@ -788,7 +800,8 @@ public class DroidShows extends ListActivity
 
 	private void copy(File source, File destination) throws IOException {
 		if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-			asyncInfo.cancel(true);
+			if (asyncInfo != null)
+				asyncInfo.cancel(true);
 			db.close();
 			FileChannel sourceCh = null, destinationCh = null;
 			try {
@@ -874,7 +887,7 @@ public class DroidShows extends ListActivity
 				String message = serie.getName() +" "+
 					(passiveStatus ? getString(R.string.messages_context_unarchived) : getString(R.string.messages_context_archived));
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-				if (!seriesAdapter.isFiltered)
+				if (!searching())
 					series.remove(serie);
 				else
 					serie.setPassiveStatus(!passiveStatus);
@@ -1288,15 +1301,11 @@ public class DroidShows extends ListActivity
 	}
 	
 	public void searchForShow(View v) {
-		if (searchV.getText().length() > 0) {
-			keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
-			Intent startSearch = new Intent(DroidShows.this, AddSerie.class);
-			startSearch.putExtra(SearchManager.QUERY, searchV.getText().toString());
-			startSearch.setAction(Intent.ACTION_SEARCH);
-			startActivity(startSearch);
-		} else {
-			super.onSearchRequested();
-		}
+		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
+		Intent startSearch = new Intent(DroidShows.this, AddSerie.class);
+		startSearch.putExtra(SearchManager.QUERY, searchV.getText().toString());
+		startSearch.setAction(Intent.ACTION_SEARCH);
+		startActivity(startSearch);
 	}
 
 	public void updateAllSeriesDialog() {
@@ -1545,6 +1554,7 @@ public class DroidShows extends ListActivity
 		ed.putString(LAST_STATS_UPDATE_ARCHIVE_NAME, lastStatsUpdateArchive);
 		ed.putString(LANGUAGE_CODE_NAME, langCode);
 		ed.putBoolean(SHOW_NEXT_AIRING, showNextAiring);
+		ed.putBoolean(MARK_FROM_LAST_WATCHED, markFromLastWatched);
 		ed.putBoolean(USE_MIRROR, useMirror);
 		ed.putString(PINNED_SHOWS_NAME, pinnedShows.toString());
 		ed.putBoolean(FILTER_NETWORKS_NAME, filterNetworks);
@@ -1808,11 +1818,8 @@ public class DroidShows extends ListActivity
 				int nunwatchedAired = serie.getUnwatchedAired();
 				String ended = (serie.getShowStatus().equalsIgnoreCase("Ended") ? " \u2020" : "");
 				if (holder.sn != null) {
-					holder.sn.setText(serie.getName() + ended);
-					if (pinnedShows.contains(serie.getSerieId()))
-						holder.sn.setTextColor(getResources().getColor(android.R.color.white));
-					else
-						holder.sn.setTextColor(textViewColors);
+					holder.sn.setText((pinnedShows.contains(serie.getSerieId()) ? "\u2022 " : "") + serie.getName() + ended);
+					holder.sn.setEnabled(!searching() || !serie.getPassiveStatus());
 				}
 				if (holder.si != null) {
 					String siText = "";

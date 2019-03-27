@@ -59,6 +59,7 @@
 <string name="dialog_full_line_check">Utiliser une ligne entière pour marquer l\'épisode</string>
 <string name="dialog_switch_swipe_direction">Glissez votre doigt de droite à gauche pour revenir en arrière</string>
 <string name="dialog_show_next_airing">Montrer la date de épisode qui sort prochainement au lieu de celle du prochain épisode à regarder</string>
+<string name="dialog_mark_from_last_watched">Marquer l\'épisode suivant à partir du dernier visionné</string>
 <string name="dialog_help">&#187; N\'oubliez pas de mettre à jour les séries régulièrement
 \n&#187; Pressez longtemps les éléments pour plus d\'options
 \n&#187; Glissez de gauche à droite pour revenir en arrière

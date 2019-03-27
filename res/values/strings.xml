@@ -53,12 +53,13 @@
 <string name="dialog_cancel">Cancel</string>
 <string name="dialog_search">Search string:</string>
 <string name="dialog_update_series">Are you sure you want to update all listed shows now?</string>
-<string name="dialog_update_speedup">\n\nYou can speed up this process with the option in Menu > Options.</string>
+<string name="dialog_update_speedup">\n\nYou can speed up this process with the option Update shows\' latest season only.</string>
 <string name="dialog_latest_season">Update shows\' latest season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to mark episode</string>
 <string name="dialog_switch_swipe_direction">Swipe right-to-left to go back</string>
-<string name="dialog_show_next_airing">Show date of next airing episode instead of next episode\'s</string>
+<string name="dialog_show_next_airing">Show date of next airing episode, instead of next episode\'s date</string>
+<string name="dialog_mark_from_last_watched">Mark next episode starting from the most recently watched</string>
 <string name="dialog_help">&#187; Don\'t forget to update shows regularly
 \n&#187; Long-press items for more options
 \n&#187; Swipe left-to-right to go back

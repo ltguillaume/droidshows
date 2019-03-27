@@ -59,6 +59,7 @@
 <string name="dialog_full_line_check">Toca en toda la línea para marcar un ep.</string>
 <string name="dialog_switch_swipe_direction">Retrocede deslizando de derecha a izquierda</string>
 <string name="dialog_show_next_airing">Muestra la próxima emisión en lugar del próximo episodio</string>
+<string name="dialog_mark_from_last_watched">Marca el siguiente ep. a partir de los más vistos recientemente</string>
 <string name="dialog_help">&#187; No olvides actualizar las series de forma regular
 \n&#187; Deja pulsado los elementos ver para más opciones
 \n&#187; Desliza de izquierda a derecha para retroceder.

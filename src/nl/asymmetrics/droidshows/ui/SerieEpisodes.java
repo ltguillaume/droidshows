@@ -1,5 +1,6 @@
 package nl.asymmetrics.droidshows.ui;
 
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
@@ -14,8 +15,6 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-
-import java.text.ParseException;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -41,7 +40,6 @@ public class SerieEpisodes extends ListActivity {
 	private List<EpisodeRow> episodes = null;
 	private ListView listView;
 	private SwipeDetect swipeDetect = new SwipeDetect();
-	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
 	private SQLiteStore db;
 	private DatePickerDialog dateDialog;
 	private int backFromEpisode = -1;
@@ -87,11 +85,12 @@ public class SerieEpisodes extends ListActivity {
 			return true;
 		case SEENDATE_CONTEXT:
 			int year = 0, month = 0, day = 0;
-			int seen = episodes.get(info.position).seen;
+			long seen = episodes.get(info.position).seen;
 			if (seen > 1) {
-				year = seen / 10000;
-				month = seen % 10000 / 100 -1;
-				day = seen % 100;
+				Date seenDate = new Date(seen * 1000);
+				year = seenDate.getYear();
+				month = seenDate.getMonth();
+				day = seenDate.getDay();
 			} else {
 				Calendar cal = Calendar.getInstance();
 				year = cal.get(Calendar.YEAR);
@@ -102,7 +101,7 @@ public class SerieEpisodes extends ListActivity {
 			final int position = info.position;
 			dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {			
 				public void onDateSet(DatePicker view, int year, int month, int day) {
-					check(position, 10000 * year + 100 * (month +1) + day);
+					check(position, System.currentTimeMillis() / 1000);
 				}
 			}, year, month, day);
 			dateDialog.show();
@@ -190,12 +189,10 @@ public class SerieEpisodes extends ListActivity {
 			}
 			
 			holder.seen.setChecked(ep.seen > 0);
-			if (ep.seen > 1)	// If seen value is a date
-				try {
-					holder.seenDate.setTextColor(textViewColors);
-					holder.seenDate.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(ep.seen +"")));
-				} catch (ParseException e) { Log.e(SQLiteStore.TAG, e.getMessage()); }
-			else
+			if (ep.seen > 1) {	// If seen value is a date
+				holder.seenDate.setTextColor(textViewColors);
+				holder.seenDate.setText(SimpleDateFormat.getDateInstance().format(new Date(ep.seen * 1000)));
+			} else
 				holder.seenDate.setText("");
 
 			return convertView;
@@ -226,11 +223,11 @@ public class SerieEpisodes extends ListActivity {
 		check(position, v, -1);
 	}
 	
-	private void check(int position, int seen) {
+	private void check(int position, long seen) {
 		check(position, getViewByPosition(position), seen);
 	}
 	
-	private void check(int position, View v, int seen) {
+	private void check(int position, View v, long seen) {
 		if (v != null) {
 			CheckBox c = (CheckBox) v.findViewById(R.id.seen);
 			TextView d = (TextView) getViewByPosition(position).findViewById(R.id.seendate);
@@ -238,13 +235,10 @@ public class SerieEpisodes extends ListActivity {
 				c.setChecked(true);
 			if (c.isChecked()) {
 				d.setTextColor(getResources().getColor(android.R.color.white));
-				if (seen == -1) {
-					Calendar cal = Calendar.getInstance();
-					seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
-				}
+				if (seen == -1)
+					seen = System.currentTimeMillis() / 1000;
 				episodes.get(position).seen = seen;
-				try { d.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
-				} catch (ParseException e) { e.printStackTrace(); }
+				d.setText(SimpleDateFormat.getDateInstance().format(new Date(seen * 1000)));
 			} else {
 				d.setText("");
 				episodes.get(position).seen = 0;

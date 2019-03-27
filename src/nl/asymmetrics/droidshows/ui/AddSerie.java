@@ -81,7 +81,8 @@ public class AddSerie extends ListActivity
 		setListAdapter(seriessearch_adapter);
 		((TextView) findViewById(R.id.change_language)).setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
 		Intent intent = getIntent();
-		getSearchResults(intent); // Guillaume
+		getSearchResults(intent);
+			
 	}
 
 	/* Options Menu */
@@ -363,6 +364,10 @@ public class AddSerie extends ListActivity
 	private void getSearchResults(Intent intent) {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			searchQuery = intent.getStringExtra(SearchManager.QUERY);
+			if (searchQuery.length() == 0) {
+				onSearchRequested();
+				return;
+			}
 			TextView title = (TextView) findViewById(R.id.add_serie_title);
 			title.setText(getString(R.string.dialog_search) + " " + searchQuery);
 			if (utils.isNetworkAvailable(AddSerie.this)) {

@@ -34,12 +34,11 @@ public class ViewEpisode extends Activity
 			episodeId = "",
 			imdbId = "",
 			uri = "imdb:///";
-	private int seen = 0;
+	private long seen = 0;
 	private List<String> writers = new ArrayList<String>();
 	private List<String> directors = new ArrayList<String>();
 	private List<String> guestStars = new ArrayList<String>();
 	private SQLiteStore db;
-	private SimpleDateFormat sdfseen = new SimpleDateFormat("yyyyMMdd");
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private DatePickerDialog dateDialog;
 	
@@ -110,12 +109,13 @@ public class ViewEpisode extends Activity
 			seenCheckBox.setOnLongClickListener(new OnLongClickListener() {
 				public boolean onLongClick(View arg0) {
 					int year = 0, month = 0, day = 0;
+					Calendar cal = Calendar.getInstance();
 					if (seen > 1) {
-						year = seen / 10000;
-						month = seen % 10000 / 100 -1;
-						day = seen % 100;
+						cal.setTime(new Date(seen * 1000));
+						year = cal.get(Calendar.YEAR);
+						month = cal.get(Calendar.MONTH);
+						day = cal.get(Calendar.DAY_OF_MONTH);
 					} else {
-						Calendar cal = Calendar.getInstance();
 						year = cal.get(Calendar.YEAR);
 						month = cal.get(Calendar.MONTH);
 						day = cal.get(Calendar.DAY_OF_MONTH);
@@ -123,7 +123,11 @@ public class ViewEpisode extends Activity
 
 					dateDialog = new DatePickerDialog(seenCheckBox.getContext(), new DatePickerDialog.OnDateSetListener() {
 						public void onDateSet(DatePicker view, int year, int month, int day) {
-							seen = 10000 * year + 100 * (month +1) + day;
+							Calendar cal = Calendar.getInstance();
+							cal.set(Calendar.YEAR, year);
+							cal.set(Calendar.MONTH, month);
+							cal.set(Calendar.DAY_OF_MONTH, day);
+							seen = cal.getTimeInMillis() / 1000;
 							seenCheckBox.setChecked(seen > 1);
 							check(seenCheckBox);
 						}
@@ -247,11 +251,9 @@ public class ViewEpisode extends Activity
 			TextView d = (TextView) findViewById(R.id.seendate);
 			if (c.isChecked()) {
 				d.setTextColor(getResources().getColor(android.R.color.white));
-				Calendar cal = Calendar.getInstance();
 				if (seen == 0)
-					seen = 10000 * cal.get(Calendar.YEAR) + 100 * (cal.get(Calendar.MONTH) +1) + cal.get(Calendar.DAY_OF_MONTH);
-				try { d.setText(SimpleDateFormat.getDateInstance().format(sdfseen.parse(seen +"")));
-				} catch (ParseException e) { e.printStackTrace(); }
+					seen = System.currentTimeMillis() / 1000;
+				d.setText(SimpleDateFormat.getDateTimeInstance().format(new Date(seen * 1000)));
 				DroidShows.removeEpisodeFromLog = "";
 			} else {
 				d.setText("");
