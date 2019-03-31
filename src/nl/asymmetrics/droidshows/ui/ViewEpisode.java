@@ -14,6 +14,7 @@ import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -34,6 +35,8 @@ public class ViewEpisode extends Activity
 			episodeId = "",
 			imdbId = "",
 			uri = "imdb:///";
+	private int seasonNumber, episodeNumber;
+	private Date epDate;
 	private long seen = 0;
 	private List<String> writers = new ArrayList<String>();
 	private List<String> directors = new ArrayList<String>();
@@ -41,6 +44,7 @@ public class ViewEpisode extends Activity
 	private SQLiteStore db;
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private DatePickerDialog dateDialog;
+	private Calendar cal = Calendar.getInstance();
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +75,7 @@ public class ViewEpisode extends Activity
 			String firstAired = c.getString(airedCol);
 			if (!firstAired.equals("") && !firstAired.equals("null")) {
 				try {
-					Date epDate = SQLiteStore.dateFormat.parse(firstAired);
+					epDate = SQLiteStore.dateFormat.parse(firstAired);
 					firstAired = SimpleDateFormat.getDateInstance().format(epDate);
 				} catch (ParseException e) {
 					Log.e(SQLiteStore.TAG, e.getMessage());
@@ -80,8 +84,8 @@ public class ViewEpisode extends Activity
 				firstAired = "";
 			}
 	
-			int seasonNumber = c.getInt(seasonNumberCol);
-			int episodeNumber = c.getInt(episodeNumberCol);
+			seasonNumber = c.getInt(seasonNumberCol);
+			episodeNumber = c.getInt(episodeNumberCol);
 			episodeName = c.getString(enameCol);
 			String overview = c.getString(overviewCol);
 			String rating = c.getString(ratingCol);
@@ -109,7 +113,6 @@ public class ViewEpisode extends Activity
 			seenCheckBox.setOnLongClickListener(new OnLongClickListener() {
 				public boolean onLongClick(View arg0) {
 					int year = 0, month = 0, day = 0;
-					Calendar cal = Calendar.getInstance();
 					if (seen > 1) {
 						cal.setTime(new Date(seen * 1000));
 						year = cal.get(Calendar.YEAR);
@@ -123,7 +126,6 @@ public class ViewEpisode extends Activity
 
 					dateDialog = new DatePickerDialog(seenCheckBox.getContext(), new DatePickerDialog.OnDateSetListener() {
 						public void onDateSet(DatePicker view, int year, int month, int day) {
-							Calendar cal = Calendar.getInstance();
 							cal.set(Calendar.YEAR, year);
 							cal.set(Calendar.MONTH, month);
 							cal.set(Calendar.DAY_OF_MONTH, day);
@@ -207,6 +209,17 @@ public class ViewEpisode extends Activity
 		Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
 		if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
 			uri = "http://m.imdb.com/";
+	}
+	
+	public void calendarEvent(View v) {
+		Intent intent = new Intent(Intent.ACTION_EDIT);
+		intent.setType("vnd.android.cursor.item/event");
+		intent.putExtra("title", serieName +" "+ seasonNumber +(episodeNumber < 10 ? "x0" : "x") + episodeNumber);
+		intent.putExtra("description", episodeName);
+		intent.putExtra("beginTime", epDate.getTime());
+		intent.putExtra("endTime", epDate.getTime());
+		intent.putExtra("allDay", true);
+		startActivity(intent);
 	}
 	
 	public void IMDbDetails(View v) {

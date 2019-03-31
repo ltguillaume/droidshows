@@ -28,9 +28,9 @@
 <string name="menu_log">Historial</string>
 <string name="menu_close_log">Cerrar historial</string>
 <string name="menu_context_view_serie_details">Detalles de la serie</string>
-<string name="menu_context_view_wiki">Detalles en Wikipedia</string>
 <string name="menu_context_view_imdb">Detalles en IMDb</string>
 <string name="menu_context_view_ep_imdb">Próximo episodio en IMDb</string>
+<string name="menu_context_search_on">Detalles en</string>
 <string name="menu_context_ext_resources">Recursos externos</string>
 <string name="menu_context_mark_next_episode_as_seen">Marcar el siguiente ep. como visto</string>
 <string name="menu_context_pin">Anclar</string>

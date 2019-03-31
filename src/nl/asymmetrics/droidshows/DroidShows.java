@@ -220,7 +220,7 @@ public class DroidShows extends ListActivity
 		String pinnedShowsStr = sharedPrefs.getString(PINNED_SHOWS_NAME, "");
 		if (!pinnedShowsStr.isEmpty())
 			pinnedShows = new ArrayList<String>(Arrays.asList(pinnedShowsStr.replace("[", "").replace("]", "").split(", ")));
-		filterNetworks = sharedPrefs.getBoolean(FILTER_NETWORKS_NAME, false); 
+		filterNetworks = sharedPrefs.getBoolean(FILTER_NETWORKS_NAME, false);
 		String networksStr = sharedPrefs.getString(NETWORKS_NAME, "");
 
 		// Update database
@@ -229,8 +229,11 @@ public class DroidShows extends ListActivity
 			backup(false, backupFolder);
 			if (updateDS.updateDroidShows())
 				db.updateShowStats();
-			else
-				Toast.makeText(getApplicationContext(), "Error while updating database", Toast.LENGTH_LONG).show();
+			else {
+				String error = getString(R.string.messages_error_dbupdate);
+				Log.e(SQLiteStore.TAG, error);
+				Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+			}
 		}
 
 		if (!networksStr.isEmpty())
@@ -263,50 +266,45 @@ public class DroidShows extends ListActivity
 	}
 	
 	private void setFastScroll() {
-		listView.setVerticalScrollBarEnabled(!excludeSeen);
-		listView.setFastScrollEnabled(!excludeSeen);
 		listView.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
+		listView.setVerticalScrollBarEnabled(!excludeSeen || logMode);
+/*		listView.setFastScrollEnabled(!excludeSeen || logMode);
 		if (!excludeSeen || logMode) {
 			if (seriesAdapter.getCount() > 20) {
 				try {	// http://stackoverflow.com/a/26447004
-					Drawable thumb = getResources().getDrawable(R.drawable.thumb);
-					String fieldName = "mFastScroller";
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1)	// 22 = Lollipop
-			            fieldName = "mFastScroll";
-	
-					java.lang.reflect.Field fieldFastScroller = AbsListView.class.getDeclaredField(fieldName);
+					java.lang.reflect.Field fieldFastScroller = AbsListView.class.getDeclaredField(
+						Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? "mFastScroll" : "mFastScroller");
 					fieldFastScroller.setAccessible(true);
-					listView.setFastScrollEnabled(true);
 					Object thisFastScroller = fieldFastScroller.get(listView);
-					java.lang.reflect.Field fieldToChange;
+					Drawable thumb = getResources().getDrawable(R.drawable.thumb);
+					java.lang.reflect.Field i;
 	
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-						fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbImage");
-						fieldToChange.setAccessible(true);
-						ImageView iv = (ImageView) fieldToChange.get(thisFastScroller);
-						fieldToChange.set(thisFastScroller, iv);
-						iv.setMinimumWidth(thumb.getIntrinsicWidth());	//IS//THIS//NECESSARY//?//
-						iv.setMaxWidth(thumb.getIntrinsicWidth());	//IS//THIS//NECESSARY//?//
+						i = fieldFastScroller.getType().getDeclaredField("mThumbImage");
+						i.setAccessible(true);
+						ImageView iv = (ImageView) i.get(thisFastScroller);
 						iv.setImageDrawable(thumb);
-	
-						fieldToChange = fieldFastScroller.getType().getDeclaredField("mTrackImage");
-						fieldToChange.setAccessible(true);
-						iv = (ImageView) fieldToChange.get(thisFastScroller);
-						fieldToChange.set(thisFastScroller, iv);
-						iv.setImageDrawable(null);	// getResources().getDrawable(R.drawable.div)
+						
+						i = fieldFastScroller.getType().getDeclaredField("mThumbWidth");
+						i.setAccessible(true);
+						i.setInt(thisFastScroller, thumb.getIntrinsicWidth());
+
+						i = fieldFastScroller.getType().getDeclaredField("mTrackImage");
+						i.setAccessible(true);
+						i.set(thisFastScroller, null);
 					} else {
-						fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbDrawable");
-						fieldToChange.setAccessible(true);
-						fieldToChange.set(thisFastScroller, thumb);
-	
-						fieldToChange = fieldFastScroller.getType().getDeclaredField("mThumbW");
-						fieldToChange.setAccessible(true);
-						fieldToChange.setInt(thisFastScroller, thumb.getIntrinsicWidth());
+						i = fieldFastScroller.getType().getDeclaredField("mThumbDrawable");
+						i.setAccessible(true);
+						i.set(thisFastScroller, thumb);
+						
+						i = fieldFastScroller.getType().getDeclaredField("mThumbW");
+						i.setAccessible(true);
+						i.setInt(thisFastScroller, thumb.getIntrinsicWidth());
 	
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-							fieldToChange = fieldFastScroller.getType().getDeclaredField("mTrackDrawable");
-							fieldToChange.setAccessible(true);
-							fieldToChange.set(thisFastScroller, null);
+							i = fieldFastScroller.getType().getDeclaredField("mTrackDrawable");
+							i.setAccessible(true);
+							i.set(thisFastScroller, null);
 						}
 					}
 				} catch (Exception e) {
@@ -314,7 +312,7 @@ public class DroidShows extends ListActivity
 				}
 			}
 		}
-	}
+*/	}
 
 	/* Options Menu */
 	@Override
@@ -589,6 +587,7 @@ public class DroidShows extends ListActivity
 				break;
 			case R.id.mark_from_last_watched:
 				markFromLastWatched ^= true;
+				updateShowStats();
 				break;
 			case R.id.use_mirror:
 				useMirror ^= true;
@@ -1059,6 +1058,12 @@ public class DroidShows extends ListActivity
 		}
 	}
 	
+	private void Search(String url, String serieName) {
+		serieName = serieName.replaceAll(" \\(....\\)", "");
+		Intent rt = new Intent(Intent.ACTION_VIEW, Uri.parse(url + serieName));
+	    startActivity(rt);
+	}
+	
 	private void WikiDetails(String serieName) {
 		serieName = serieName.replaceAll(" \\(....\\)", "");
 		Intent wiki;
@@ -1118,10 +1123,13 @@ public class DroidShows extends ListActivity
 					extResourcesString += url +"\n";
 			}
 		}
-		final String[] extResources = (getString(R.string.menu_context_view_imdb) +"\n"
-				+ getString(R.string.menu_context_view_ep_imdb) +"\n"
-				+ getString(R.string.menu_context_view_wiki) +"\n"
-				+ extResourcesString
+		final String[] extResources = (
+				getString(R.string.menu_context_view_imdb) +"\n"+
+				getString(R.string.menu_context_view_ep_imdb) +"\n"+
+				getString(R.string.menu_context_search_on) +" FANDOM (Wikia)\n"+
+				getString(R.string.menu_context_search_on) +" Rotten Tomatoes\n"+
+				getString(R.string.menu_context_search_on) +" Wikipedia\n"+
+				extResourcesString
 				+"\u2026").split("\\n");
 		final EditText input = new EditText(this);
 		final String extResourcesInput = extResourcesString;
@@ -1139,6 +1147,12 @@ public class DroidShows extends ListActivity
 							IMDbDetails(serie.getSerieId(), serie.getName(), true);
 							break;
 						case 2 :
+							Search("https://www.fandom.com/?s=", serie.getName());
+							break;
+						case 3 :
+							Search("https://www.rottentomatoes.com/search/?search=", serie.getName());
+							break;
+						case 4 :
 							WikiDetails(serie.getName());
 							break;
 						default :
@@ -1364,7 +1378,9 @@ public class DroidShows extends ListActivity
 							try {
 								if (!db.updateSerie(sToUpdate, latestSeasonOption == UPDATE_LATEST_SEASON_ONLY)) {
 									Looper.prepare();	// Threads don't have a message loop
-									Toast.makeText(getApplicationContext(), "Database error while updating "+ sToUpdate.getSerieName(), Toast.LENGTH_LONG).show();
+									String error = getString(R.string.messages_error_dbupdate) +" "+ sToUpdate.getSerieName();
+									Log.e(SQLiteStore.TAG, error);
+									Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
 									Looper.loop();
 								}
 								updatePosterThumb(series.get(i).getSerieId(), sToUpdate);

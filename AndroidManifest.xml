@@ -5,6 +5,7 @@
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.VIBRATE"/>
+	<uses-permission android:name="android.permission.WRITE_CALENDAR"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<application android:icon="@drawable/icon" android:label="@string/layout_app_name" android:allowBackup="true" android:theme="@style/ds">
 	<activity android:label="@string/layout_app_name" android:name="nl.asymmetrics.droidshows.DroidShows" android:configChanges="orientation">

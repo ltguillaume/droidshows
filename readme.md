@@ -1,4 +1,4 @@
-# DroidShows<img src="/icon/icon6.png" align="right"/>
+# DroidShows<img src="https://github.com/ltGuillaume/DroidShows/raw/master/icon/icon6.png" align="right"/>
 DroidShows: A Reboot of DroidSeries Offline TV Shows Tracker  
 This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, pinning, quick search and filters, a separate archive/backlog list, a last seen episodes log, swipe gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. DroidShows only needs an internet connection when updating the show info or watching full-size posters.
 
@@ -37,13 +37,14 @@ __Shows Overview__:
 \+ Status of show in details, and † in overview if show is not continuing  
 \+ If show position changed, scroll back to show after [Mark next episode as seen] and Seasons list  
 \+ Option to only update shows' latest season  
-\+ Context items to view show details on Wikipedia and IMDb  
+\+ Context items to view show details on FANDOM (Wikia), Rotten Tomatoes, Wikipedia and IMDb  
 \+ Add your own per-show external resources (links to Wikia, blogs etc.)  
 \+ Pin shows to the top of the list for easy access  
 \+ Tap cover for next episode's info, long-press for show info, double tap for external resources  
 \+ Swipe right-to-left to mark next episode as seen (shows confirmation toast)  
 \+ Option to include specials in unwatched count  
 \+ Mark next episode seen via swipe now vibrates  
+\+ Optionally determine next episode by first unseen overall, or by last marked as watched  
 \+ Undo function (until full exit)  
 \+ A log that shows the last shows you've marked as seen
 \+ Showing middot · when all new episodes are aired  
@@ -78,11 +79,12 @@ __Update__:
 \* Prevent double episode entries  
   
 __Other__:  
+\+ Click on an episode air date to add it to your calendar  
 \+ Option to use a mirror if TheTVDB.com is too slow in your region  
 \+ Menu (overflow) button should show up in Android 3.0+  
 \+ Dutch, French, German, Spanish and Russian translations  
 \+ Choose which synopsis language to fetch from TheTVDB  
-\+ Translucent background  
+\+ Modern looking layout  
 \+ Swipe left-to-right acts as back button  
 \+ Animations that help understand the app's structure  
 \+ Backup/restore database  

@@ -28,9 +28,9 @@
 <string name="menu_log">Journal</string>
 <string name="menu_close_log">Fermer journal</string>
 <string name="menu_context_view_serie_details">Détails de la série</string>
-<string name="menu_context_view_wiki">Chercher sur Wikipédia</string>
 <string name="menu_context_view_imdb">page IMDb de la série</string>
 <string name="menu_context_view_ep_imdb">page IMDb de l\'épisode</string>
+<string name="menu_context_search_on">Chercher sur</string>
 <string name="menu_context_ext_resources">Ressources externes</string>
 <string name="menu_context_mark_next_episode_as_seen">Marquer l\'épisode suivant comme vu</string>
 <string name="menu_context_pin">Épingler</string>

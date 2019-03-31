@@ -28,9 +28,9 @@
 <string name="menu_log">Журнал</string>
 <string name="menu_close_log">Закрыть журнал</string>
 <string name="menu_context_view_serie_details">Информация о сериале</string>
-<string name="menu_context_view_wiki">Подробности на Wikipedia</string>
 <string name="menu_context_view_imdb">Подробности на IMDb</string>
 <string name="menu_context_view_ep_imdb">Следующая серия на IMDb</string>
+<string name="menu_context_search_on">Подробности на</string>
 <string name="menu_context_ext_resources">Внешние ресурсы</string>
 <string name="menu_context_mark_next_episode_as_seen">Отметить следующую серию просмотренной</string>
 <string name="menu_context_pin">Закрепить</string>

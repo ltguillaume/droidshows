@@ -60,4 +60,5 @@
 	<item>zh</item>
 	<item>ja</item>
 </string-array>
+<string name="messages_error_dbupdate">Database error while updating</string>
 </resources>

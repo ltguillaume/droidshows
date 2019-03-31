@@ -28,9 +28,9 @@
 <string name="menu_log">Log</string>
 <string name="menu_close_log">Close log</string>
 <string name="menu_context_view_serie_details">Show details</string>
-<string name="menu_context_view_wiki">Search on Wikipedia</string>
 <string name="menu_context_view_imdb">IMDb show page</string>
 <string name="menu_context_view_ep_imdb">IMDb episode page</string>
+<string name="menu_context_search_on">Search on</string>
 <string name="menu_context_ext_resources">External resources</string>
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>
 <string name="menu_context_pin">Pin</string>

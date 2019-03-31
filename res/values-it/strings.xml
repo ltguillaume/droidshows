@@ -28,9 +28,9 @@
 <string name="menu_log">Cronologia</string>
 <string name="menu_close_log">Chiudi cronologia</string>
 <string name="menu_context_view_serie_details">Mostra dettagli</string>
-<string name="menu_context_view_wiki">Dettagli su Wikipedia</string>
 <string name="menu_context_view_imdb">Dettagli serie su IMDb</string>
 <string name="menu_context_view_ep_imdb">Dettagli prossimo episodio su IMDb</string>
+<string name="menu_context_search_on">Dettagli su</string>
 <string name="menu_context_ext_resources">Risorse esterne</string>
 <string name="menu_context_mark_next_episode_as_seen">Segna prossimo ep. come visto</string>
 <string name="menu_context_pin">Fissa in alto</string>
