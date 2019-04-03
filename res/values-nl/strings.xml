@@ -27,7 +27,7 @@
 <string name="menu_include_seen">Toon bekeken</string>
 <string name="menu_log">Logboek</string>
 <string name="menu_close_log">Logboek sluiten</string>
-<string name="menu_context_view_serie_details">Details</string>
+<string name="menu_context_view_serie_details">Details serie</string>
 <string name="menu_context_view_imdb">Serie op IMDb</string>
 <string name="menu_context_view_ep_imdb">Aflevering op IMDb</string>
 <string name="menu_context_search_on">Zoeken op</string>
@@ -103,7 +103,7 @@
 <string name="messages_adding_serie">Bezig met downloaden gegevens…</string>
 <string name="messages_context_mark_seasonseen">Alle afleveringen gezien</string>
 <string name="messages_specials">Specials</string>
-<string name="messsages_view_ep_details">Informatie aflevering</string>
+<string name="messsages_view_ep_details">Details aflevering</string>
 <string name="messsages_edit_seen_date">Datum gezien wijzigen</string>
 <string name="messages_thetvdb_con_error">Kan geen verbinding maken met TheTVDB. Probeer opnieuw.</string>
 <string name="messages_marked_seen">gemarkeerd als gezien</string>

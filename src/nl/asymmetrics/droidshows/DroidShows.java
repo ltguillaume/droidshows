@@ -76,7 +76,6 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -97,12 +96,12 @@ public class DroidShows extends ListActivity
 {
 	/* Menus */
 	private static final int UNDO_MENU_ITEM = Menu.FIRST;
-	private static final int SEARCH_MENU_ITEM = UNDO_MENU_ITEM + 1;
-	private static final int FILTER_MENU_ITEM = SEARCH_MENU_ITEM + 1;
+	private static final int FILTER_MENU_ITEM = UNDO_MENU_ITEM + 1;
 	private static final int SORT_MENU_ITEM = FILTER_MENU_ITEM + 1;
 	private static final int TOGGLE_ARCHIVE_MENU_ITEM = SORT_MENU_ITEM + 1;
 	private static final int LOG_MODE_ITEM = TOGGLE_ARCHIVE_MENU_ITEM + 1;
-	private static final int ADD_SERIE_MENU_ITEM = LOG_MODE_ITEM + 1;
+	private static final int SEARCH_MENU_ITEM = LOG_MODE_ITEM + 1;
+	private static final int ADD_SERIE_MENU_ITEM = SEARCH_MENU_ITEM + 1;
 	private static final int UPDATEALL_MENU_ITEM = ADD_SERIE_MENU_ITEM + 1;
 	private static final int OPTIONS_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
 	private static final int EXIT_MENU_ITEM = OPTIONS_MENU_ITEM + 1;
@@ -318,11 +317,11 @@ public class DroidShows extends ListActivity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
-		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
 		menu.add(0, FILTER_MENU_ITEM, 0, getString(R.string.menu_filter)).setIcon(android.R.drawable.ic_menu_view);
 		menu.add(0, SORT_MENU_ITEM, 0, "");
 		menu.add(0, TOGGLE_ARCHIVE_MENU_ITEM, 0, "");
 		menu.add(0, LOG_MODE_ITEM, 0, getString(R.string.menu_log)).setIcon(android.R.drawable.ic_menu_agenda);
+		menu.add(0, SEARCH_MENU_ITEM, 0, getString(R.string.menu_search)).setIcon(android.R.drawable.ic_menu_search);
 		menu.add(0, ADD_SERIE_MENU_ITEM, 0, getString(R.string.menu_add_serie)).setIcon(android.R.drawable.ic_menu_add);
 		menu.add(0, UPDATEALL_MENU_ITEM, 0, getString(R.string.menu_update)).setIcon(android.R.drawable.ic_menu_upload);
 		menu.add(0, OPTIONS_MENU_ITEM, 0, getString(R.string.menu_about)).setIcon(android.R.drawable.ic_menu_manage);
@@ -376,7 +375,7 @@ public class DroidShows extends ListActivity
 			.setEnabled(!logMode && !searching());
 		menu.findItem(LOG_MODE_ITEM)
 			.setEnabled(!searching())
-			.setTitle((logMode ? R.string.menu_close_log: R.string.menu_log));
+			.setTitle((!logMode ? R.string.menu_log : R.string.menu_close_log));
 		menu.findItem(UPDATEALL_MENU_ITEM)
 			.setEnabled(!logMode);
 
@@ -838,16 +837,14 @@ public class DroidShows extends ListActivity
 			menu.add(0, TOGGLE_ARCHIVED_CONTEXT, TOGGLE_ARCHIVED_CONTEXT, getString(R.string.menu_archive));
 			menu.add(0, PIN_CONTEXT, PIN_CONTEXT, getString(R.string.menu_context_pin));
 			menu.add(0, DELETE_CONTEXT, DELETE_CONTEXT, getString(R.string.menu_context_delete));
-		}
-		menu.add(0, UPDATE_CONTEXT, UPDATE_CONTEXT, getString(R.string.menu_context_update));
-		menu.add(0, SYNOPSIS_LANGUAGE, SYNOPSIS_LANGUAGE, getString(R.string.dialog_change_language) +" ("+ seriesAdapter.getItem(info.position).getLanguage() +")");
-		if (!logMode) {
+			menu.add(0, UPDATE_CONTEXT, UPDATE_CONTEXT, getString(R.string.menu_context_update));
+			menu.add(0, SYNOPSIS_LANGUAGE, SYNOPSIS_LANGUAGE, getString(R.string.dialog_change_language) +" ("+ seriesAdapter.getItem(info.position).getLanguage() +")");
 		    if (seriesAdapter.getItem(info.position).getPassiveStatus())
 		    	menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setTitle(R.string.menu_unarchive);
 		    if (pinnedShows.contains(seriesAdapter.getItem(info.position).getSerieId()))
 		    	menu.findItem(PIN_CONTEXT).setTitle(R.string.menu_context_unpin);
 		}
-		menu.setHeaderTitle(seriesAdapter.getItem(info.position).getName());
+		menu.setHeaderTitle(!logMode ? seriesAdapter.getItem(info.position).getName() : seriesAdapter.getItem(info.position).getEpisodeName());
 	}
 
 	public boolean onContextItemSelected(MenuItem item) {
@@ -1085,19 +1082,18 @@ public class DroidShows extends ListActivity
 	    startActivity(wiki);
 	}
 	
-	private void IMDbDetails(String serieId, String serieName, boolean viewNextEpisode) {
-		String nextEpisode = (viewNextEpisode ? db.getNextEpisodeId(serieId) : "-1");
+	private void IMDbDetails(String serieId, String serieName, String episode) {
 		String query;
-		if (!nextEpisode.equals("-1"))
-			query = "SELECT imdbId, episodeName FROM episodes WHERE id = '"+ nextEpisode +"' AND serieId='"+ serieId +"'";
+		if (episode != null)
+			query = "SELECT imdbId, episodeName FROM episodes WHERE id = '"+ episode +"' AND serieId='"+ serieId +"'";
 		else
 			query = "SELECT imdbId, serieName FROM series WHERE id = '" + serieId + "'";
 		Cursor c = db.Query(query);
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			String imdbId = c.getString(0);
-		    if (!nextEpisode.equals("-1") && imdbId.equals(db.getSerieIMDbId(serieId)))	// Sometimes the given episode's IMDb id is that of the show's
-		    	imdbId = "-1";	// So we want to search for the episode instead of go to the show's page 
+		    if (episode != null && imdbId.equals(db.getSerieIMDbId(serieId)))	// Sometimes the given episode's IMDb id is that of the show's
+		    	imdbId = "";	// So we want to search for the episode instead of go to the show's page 
 		    String name = c.getString(1);
 			c.close();
 			String uri = "imdb:///";
@@ -1107,7 +1103,7 @@ public class DroidShows extends ListActivity
 			if (imdbId.startsWith("tt"))
 				uri += "title/"+ imdbId;
 			else
-				uri += "find?q="+ (!nextEpisode.equals("-1") ? serieName.replaceAll(" \\(....\\)", "") +" " : "") + name;
+				uri += "find?q="+ (episode != null ? serieName.replaceAll(" \\(....\\)", "") +" " : "") + name;
 			Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 			startActivity(imdb);
 		}
@@ -1141,10 +1137,10 @@ public class DroidShows extends ListActivity
 				public void onClick(DialogInterface dialog, int item) {
 					switch(item) {
 						case 0 :
-							IMDbDetails(serie.getSerieId(), serie.getName(), false);
+							IMDbDetails(serie.getSerieId(), serie.getName(), null);
 							break;
 						case 1 :
-							IMDbDetails(serie.getSerieId(), serie.getName(), true);
+							IMDbDetails(serie.getSerieId(), serie.getName(), logMode ? serie.getEpisodeId() : db.getNextEpisodeId(serie.getSerieId()));
 							break;
 						case 2 :
 							Search("https://www.fandom.com/?s=", serie.getName());
@@ -1479,15 +1475,15 @@ public class DroidShows extends ListActivity
 				}
 			}
 			setTitle(getString(R.string.layout_app_name)
-					+ (logMode ? " - "+ getString(R.string.menu_log) :
-						(showArchive == 1 ? " - "+ getString(R.string.archive) : "")));
+					+ (!logMode ? (showArchive == 1 ? " - "+ getString(R.string.archive) : "") :
+						" - "+ getString(R.string.menu_log)));
 			listView.post(updateListView);
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, "Error populating TVShowItems or no shows added yet");
 			e.printStackTrace();
 		}
 		setFastScroll();
-		findViewById(R.id.add_show).setVisibility(logMode ? View.GONE : View.VISIBLE);
+		findViewById(R.id.add_show).setVisibility(!logMode ? View.VISIBLE : View.GONE);
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
 	}
@@ -1833,6 +1829,8 @@ public class DroidShows extends ListActivity
 				holder.sne = (TextView) convertView.findViewById(R.id.serienextepisode);
 				holder.icon = (IconView) convertView.findViewById(R.id.serieicon);
 				holder.context = (ImageView) convertView.findViewById(R.id.seriecontext);
+				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+					holder.context.setImageResource(R.drawable.context_material);
 				convertView.setEnabled(true);
 				convertView.setTag(holder);
 				holder.icon.setOnTouchListener(iconTouchListener);
@@ -1896,11 +1894,6 @@ public class DroidShows extends ListActivity
 						serie.setDIcon(icon);
 					}
 				}
-				if (holder.context != null) {
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-						holder.context.setImageResource(R.drawable.context_material);
-					holder.context.setVisibility(View.VISIBLE);
-				}
 			} else {
 				if (holder.sn != null) {
 					holder.sn.setText(serie.getName());
@@ -1925,8 +1918,6 @@ public class DroidShows extends ListActivity
 						serie.setDIcon(icon);
 					}
 				}
-				if (holder.context != null)
-					holder.context.setVisibility(View.GONE);
 			}
 			return convertView;
 		}
