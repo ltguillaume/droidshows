@@ -88,10 +88,11 @@ public class SerieEpisodes extends ListActivity {
 			int year = 0, month = 0, day = 0;
 			long seen = episodes.get(info.position).seen;
 			if (seen > 1) {
-				Date seenDate = new Date(seen * 1000);
-				year = seenDate.getYear();
-				month = seenDate.getMonth();
-				day = seenDate.getDay();
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(seen * 1000);
+				year = cal.get(Calendar.YEAR);
+				month = cal.get(Calendar.MONTH);
+				day = cal.get(Calendar.DAY_OF_MONTH);
 			} else {
 				Calendar cal = Calendar.getInstance();
 				year = cal.get(Calendar.YEAR);
@@ -102,7 +103,9 @@ public class SerieEpisodes extends ListActivity {
 			final int position = info.position;
 			dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {			
 				public void onDateSet(DatePicker view, int year, int month, int day) {
-					check(position, System.currentTimeMillis() / 1000);
+					Calendar cal = Calendar.getInstance();
+					cal.set(year, month, day);
+					check(position, cal.getTimeInMillis() / 1000);
 				}
 			}, year, month, day);
 			dateDialog.show();
