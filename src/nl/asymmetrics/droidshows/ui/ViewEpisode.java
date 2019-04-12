@@ -114,7 +114,7 @@ public class ViewEpisode extends Activity
 				public boolean onLongClick(View arg0) {
 					int year = 0, month = 0, day = 0;
 					if (seen > 1) {
-						cal.setTime(new Date(seen * 1000));
+						cal.setTimeInMillis(seen * 1000);
 						year = cal.get(Calendar.YEAR);
 						month = cal.get(Calendar.MONTH);
 						day = cal.get(Calendar.DAY_OF_MONTH);
@@ -126,9 +126,7 @@ public class ViewEpisode extends Activity
 
 					dateDialog = new DatePickerDialog(seenCheckBox.getContext(), new DatePickerDialog.OnDateSetListener() {
 						public void onDateSet(DatePicker view, int year, int month, int day) {
-							cal.set(Calendar.YEAR, year);
-							cal.set(Calendar.MONTH, month);
-							cal.set(Calendar.DAY_OF_MONTH, day);
+							cal.set(year, month, day);
 							seen = cal.getTimeInMillis() / 1000;
 							seenCheckBox.setChecked(seen > 1);
 							check(seenCheckBox);

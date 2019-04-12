@@ -44,6 +44,7 @@ public class SerieEpisodes extends ListActivity {
 	private SQLiteStore db;
 	private DatePickerDialog dateDialog;
 	private int backFromEpisode = -1;
+	private Calendar cal = Calendar.getInstance();
 
 	/* Context Menus */
 	private static final int VIEWEP_CONTEXT = Menu.FIRST;
@@ -85,24 +86,20 @@ public class SerieEpisodes extends ListActivity {
 			startViewEpisode(info.position);
 			return true;
 		case SEENDATE_CONTEXT:
-			int year = 0, month = 0, day = 0;
 			long seen = episodes.get(info.position).seen;
-			if (seen > 1) {
-				Date seenDate = new Date(seen * 1000);
-				year = seenDate.getYear();
-				month = seenDate.getMonth();
-				day = seenDate.getDay();
-			} else {
-				Calendar cal = Calendar.getInstance();
-				year = cal.get(Calendar.YEAR);
-				month = cal.get(Calendar.MONTH);
-				day = cal.get(Calendar.DAY_OF_MONTH);
-			}
+			if (seen > 1)
+				cal.setTimeInMillis(seen * 1000);
+			else
+				cal.getInstance();
+			int year = cal.get(Calendar.YEAR);
+			int month = cal.get(Calendar.MONTH);
+			int day = cal.get(Calendar.DAY_OF_MONTH);
 
 			final int position = info.position;
 			dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {			
 				public void onDateSet(DatePicker view, int year, int month, int day) {
-					check(position, System.currentTimeMillis() / 1000);
+					cal.set(year, month, day);
+					check(position, cal.getTimeInMillis() / 1000);
 				}
 			}, year, month, day);
 			dateDialog.show();
