@@ -90,7 +90,7 @@ public class SerieEpisodes extends ListActivity {
 			if (seen > 1)
 				cal.setTimeInMillis(seen * 1000);
 			else
-				cal.getInstance();
+				cal.setTimeInMillis(System.currentTimeMillis());
 			int year = cal.get(Calendar.YEAR);
 			int month = cal.get(Calendar.MONTH);
 			int day = cal.get(Calendar.DAY_OF_MONTH);
