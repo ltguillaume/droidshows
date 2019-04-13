@@ -106,7 +106,8 @@ public class DroidShows extends ListActivity
 	private static final int OPTIONS_MENU_ITEM = UPDATEALL_MENU_ITEM + 1;
 	private static final int EXIT_MENU_ITEM = OPTIONS_MENU_ITEM + 1;
 	/* Context Menus */
-	private static final int VIEW_SERIEDETAILS_CONTEXT = Menu.FIRST;
+	private static final int VIEW_SEASONS_CONTEXT = Menu.FIRST;
+	private static final int VIEW_SERIEDETAILS_CONTEXT = VIEW_SEASONS_CONTEXT + 1;
 	private static final int VIEW_EPISODEDETAILS_CONTEXT = VIEW_SERIEDETAILS_CONTEXT + 1;
 	private static final int EXT_RESOURCES_CONTEXT = VIEW_EPISODEDETAILS_CONTEXT + 1;
 	private static final int MARK_NEXT_EPISODE_AS_SEEN_CONTEXT = EXT_RESOURCES_CONTEXT + 1;
@@ -827,6 +828,8 @@ public class DroidShows extends ListActivity
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+		if (logMode)
+			menu.add(0, VIEW_SEASONS_CONTEXT, VIEW_SEASONS_CONTEXT, getString(R.string.messages_seasons));
 		menu.add(0, VIEW_SERIEDETAILS_CONTEXT, VIEW_SERIEDETAILS_CONTEXT, getString(R.string.menu_context_view_serie_details));
 		if (!logMode && seriesAdapter.getItem(info.position).getUnwatched() > 0)
 			menu.add(0, VIEW_EPISODEDETAILS_CONTEXT, VIEW_EPISODEDETAILS_CONTEXT, getString(R.string.messsages_view_ep_details));
@@ -852,6 +855,9 @@ public class DroidShows extends ListActivity
 		switch(item.getItemId()) {
 			case MARK_NEXT_EPISODE_AS_SEEN_CONTEXT :
 				markNextEpSeen(info.position);
+				return true;
+			case VIEW_SEASONS_CONTEXT :
+				serieSeasons(info.position);
 				return true;
 			case VIEW_SERIEDETAILS_CONTEXT :
 				showDetails(seriesAdapter.getItem(info.position).getSerieId());
