@@ -83,6 +83,7 @@
 <string name="messages_new_episode">nouvel épisode</string>
 <string name="messages_ep_aired">sortis</string>
 <string name="messages_to_be_aired">doit sortir</string>
+<string name="messages_to_be_aired_pl">doit sortir</string>
 <string name="messages_seasons">Saisons</string>
 <string name="messages_season">Saison</string>
 <string name="messages_next_episode">Prochain épisode:</string>

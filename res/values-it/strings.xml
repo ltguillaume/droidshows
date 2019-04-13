@@ -89,6 +89,7 @@
 <string name="messages_new_episode">nuovo episodio</string>
 <string name="messages_ep_aired">trasmesso/i</string>
 <string name="messages_to_be_aired">da trasmettere</string>
+<string name="messages_to_be_aired_pl">da trasmettere</string>
 <string name="messages_seasons">Stagioni</string>
 <string name="messages_season">Stagione</string>
 <string name="messages_next_episode">Prossimo episodio:</string>

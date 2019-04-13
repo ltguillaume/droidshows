@@ -87,6 +87,7 @@
 <string name="messages_new_episode">nuevo ep.</string>
 <string name="messages_ep_aired">emitido(s)</string>
 <string name="messages_to_be_aired">por emitir</string>
+<string name="messages_to_be_aired_pl">por emitir</string>
 <string name="messages_seasons">Temporadas</string>
 <string name="messages_season">Temporada</string>
 <string name="messages_next_episode">Próximo ep.:</string>

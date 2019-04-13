@@ -185,7 +185,7 @@ public class DroidShows extends ListActivity
 	private File[] dirList;
 	private String[] dirNamesList;
 	private Spinner spinner = null;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -263,7 +263,7 @@ public class DroidShows extends ListActivity
 		padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
 		vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 	}
-	
+
 	private void setFastScroll() {
 		listView.setOverScrollMode(View.OVER_SCROLL_ALWAYS);
 		listView.setVerticalScrollBarEnabled(!excludeSeen || logMode);
@@ -277,13 +277,13 @@ public class DroidShows extends ListActivity
 					Object thisFastScroller = fieldFastScroller.get(listView);
 					Drawable thumb = getResources().getDrawable(R.drawable.thumb);
 					java.lang.reflect.Field i;
-	
+
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 						i = fieldFastScroller.getType().getDeclaredField("mThumbImage");
 						i.setAccessible(true);
 						ImageView iv = (ImageView) i.get(thisFastScroller);
 						iv.setImageDrawable(thumb);
-						
+
 						i = fieldFastScroller.getType().getDeclaredField("mThumbWidth");
 						i.setAccessible(true);
 						i.setInt(thisFastScroller, thumb.getIntrinsicWidth());
@@ -295,11 +295,11 @@ public class DroidShows extends ListActivity
 						i = fieldFastScroller.getType().getDeclaredField("mThumbDrawable");
 						i.setAccessible(true);
 						i.set(thisFastScroller, thumb);
-						
+
 						i = fieldFastScroller.getType().getDeclaredField("mThumbW");
 						i.setAccessible(true);
 						i.setInt(thisFastScroller, thumb.getIntrinsicWidth());
-	
+
 						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 							i = fieldFastScroller.getType().getDeclaredField("mTrackDrawable");
 							i.setAccessible(true);
@@ -330,7 +330,7 @@ public class DroidShows extends ListActivity
 			arrangeActionBar(menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@SuppressLint("NewApi")
 	private void arrangeActionBar(Menu menu) {
 		menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM).setVisible(false);
@@ -440,7 +440,7 @@ public class DroidShows extends ListActivity
 		}
 		return super.onOptionsItemSelected(item);
 	}
-	
+
 	private void toggleArchive() {
 		showArchive = (showArchive + 1) % 2;
 		getSeries();
@@ -451,14 +451,14 @@ public class DroidShows extends ListActivity
 		sortOption ^= 1;
 		listView.post(updateListView);
 	}
-	
+
 	private void toggleLogMode() {
 		logMode ^= true;
 		getSeries();
 		removeEpisodeFromLog = "";
 		listView.setSelection(0);
 	}
-	
+
 	private void filterDialog() {
 		if (m_AlertDlg != null) {
 			m_AlertDlg.dismiss();
@@ -493,7 +493,7 @@ public class DroidShows extends ListActivity
 			})
 			.show();
 	}
-	
+
 	public void toggleNetworksFilter(View v) {
 		boolean enabled = (((ToggleButton) v).isChecked());
 		LinearLayout networksFilterV = (LinearLayout) ((View) v.getParent().getParent()).findViewById(R.id.networks_filter);
@@ -501,7 +501,7 @@ public class DroidShows extends ListActivity
 			networksFilterV.getChildAt(i).setEnabled(enabled);
 		}
 	}
-	
+
 	private void applyFilters(ScrollView filterV, LinearLayout networksFilterV) {
 		excludeSeen = (((CheckBox) filterV.findViewById(R.id.exclude_seen)).isChecked() ? true : false);
 		filterNetworks = (((ToggleButton) filterV.findViewById(R.id.toggle_networks_filter)).isChecked() == true);
@@ -553,7 +553,7 @@ public class DroidShows extends ListActivity
 			})
 			.show();
 	}
-	
+
 	public void dialogOptions(View v) {
 		switch(v.getId()) {
 			case R.id.backup:
@@ -605,7 +605,7 @@ public class DroidShows extends ListActivity
 			break;
 		}
 	}
-	
+
 	private void updateShowStats() {
 		Runnable updateShowStats = new Runnable() {
 			public void run() {
@@ -633,7 +633,7 @@ public class DroidShows extends ListActivity
 	private void restore() {
 		filePicker(backupFolder, true);
 	}
-	
+
 	private void filePicker(final String folderString, final boolean restoring) {
 		File folder = new File(folderString);
 		File[] tempDirList = dirContents(folder, restoring);
@@ -667,7 +667,7 @@ public class DroidShows extends ListActivity
 					dialog.dismiss();
 				}
 			});
-		
+
 		if (!restoring)
 			filePicker.setPositiveButton(R.string.dialog_backup, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
@@ -697,7 +697,7 @@ public class DroidShows extends ListActivity
 			return new File[0];
 		}
 	}
-	
+
 	private static Comparator<File> filesComperator = new Comparator<File>() {
 		public int compare(File f1, File f2) {
 			if (f1.isDirectory() && !f2.isDirectory())
@@ -711,7 +711,7 @@ public class DroidShows extends ListActivity
 	private void backup(boolean auto, final String backupFolder) {
 		File source = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
 		File destination = new File(backupFolder, "DroidShows.db");
-		if (auto && (!autoBackupOption || 
+		if (auto && (!autoBackupOption ||
 				new SimpleDateFormat("yyyy-MM-dd")
 					.format(destination.lastModified()).equals(lastStatsUpdateCurrent) ||
 				source.lastModified() == destination.lastModified()))
@@ -943,7 +943,7 @@ public class DroidShows extends ListActivity
 				return super.onContextItemSelected(item);
 		}
 	}
-	
+
 	@SuppressLint("NewApi")
 	public void openContext(View v) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
@@ -951,7 +951,7 @@ public class DroidShows extends ListActivity
 		else
 			openContextMenu(v);
 	}
-	
+
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
@@ -968,7 +968,7 @@ public class DroidShows extends ListActivity
 			}
 		}
 	}
-	
+
 	private void markNextEpSeen(int position) {
 		TVShowItem serie = seriesAdapter.getItem(position);
 		String serieId = serie.getSerieId();
@@ -980,7 +980,7 @@ public class DroidShows extends ListActivity
 			updateShowView(serie);
 		}
 	}
-	
+
 	private void markLastEpUnseen() {
 		String[] episodeInfo = undo.get(undo.size()-1);
 		String serieId = episodeInfo[0];
@@ -991,7 +991,7 @@ public class DroidShows extends ListActivity
 		Toast.makeText(getApplicationContext(), serieName +" "+ episodeMarked +" "+ getString(R.string.messages_marked_unseen), Toast.LENGTH_SHORT).show();
 		listView.post(updateShowView(serieId));
 	}
-	
+
 	private void serieSeasons(int position) {
 		backFromSeasonSerieId = seriesAdapter.getItem(position).getSerieId();
 		Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
@@ -999,7 +999,7 @@ public class DroidShows extends ListActivity
 		serieSeasons.putExtra("nextEpisode", seriesAdapter.getItem(position).getUnwatched() > 0);
 		startActivity(serieSeasons);
 	}
-	
+
 	private Runnable updateShowView(final String serieId) {
 		Runnable updateView = new Runnable(){
 			public void run() {
@@ -1013,7 +1013,7 @@ public class DroidShows extends ListActivity
 		};
 		return updateView;
 	}
-	
+
 	private void updateShowView(final TVShowItem serie) {
 		final int position = seriesAdapter.getPosition(serie);
 		final TVShowItem newSerie = db.createTVShowItem(serie.getSerieId());
@@ -1031,13 +1031,13 @@ public class DroidShows extends ListActivity
 			}
 		});
 	}
-	
+
 	private void showDetails(String serieId) {
 		Intent viewSerie = new Intent(DroidShows.this, ViewSerie.class);
 		viewSerie.putExtra("serieId", serieId);
 		startActivity(viewSerie);
 	}
-	
+
 	private void episodeDetails(int position) {
 		String serieId = seriesAdapter.getItem(position).getSerieId();
 		String episodeId = "-1";
@@ -1054,13 +1054,13 @@ public class DroidShows extends ListActivity
 			startActivity(viewEpisode);
 		}
 	}
-	
+
 	private void Search(String url, String serieName) {
 		serieName = serieName.replaceAll(" \\(....\\)", "");
 		Intent rt = new Intent(Intent.ACTION_VIEW, Uri.parse(url + serieName));
 	    startActivity(rt);
 	}
-	
+
 	private void WikiDetails(String serieName) {
 		serieName = serieName.replaceAll(" \\(....\\)", "");
 		Intent wiki;
@@ -1081,7 +1081,7 @@ public class DroidShows extends ListActivity
 	    }
 	    startActivity(wiki);
 	}
-	
+
 	private void IMDbDetails(String serieId, String serieName, String episode) {
 		String query;
 		if (episode != null)
@@ -1092,9 +1092,9 @@ public class DroidShows extends ListActivity
 		c.moveToFirst();
 		if (c != null && c.isFirst()) {
 			String imdbId = c.getString(0);
-		    if (episode != null && imdbId.equals(db.getSerieIMDbId(serieId)))	// Sometimes the given episode's IMDb id is that of the show's
-		    	imdbId = "";	// So we want to search for the episode instead of go to the show's page 
-		    String name = c.getString(1);
+			if (episode != null && imdbId.equals(db.getSerieIMDbId(serieId)))	// Sometimes the given episode's IMDb id is that of the show's
+				imdbId = "";	// So we want to search for the episode instead of go to the show's page
+			String name = c.getString(1);
 			c.close();
 			String uri = "imdb:///";
 			Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
@@ -1108,7 +1108,7 @@ public class DroidShows extends ListActivity
 			startActivity(imdb);
 		}
 	}
-	
+
 	private void extResources(String extResourcesString, final int position) {
 		if (extResourcesString.length() > 0) {
 			String[] tmpResources = extResourcesString.trim().split("\\n");
@@ -1187,7 +1187,7 @@ public class DroidShows extends ListActivity
 			})
 			.show();
 	}
-	
+
 	private void browseExtResource(String url) {
 		url = url.trim();
 		if (url.startsWith("*"))
@@ -1197,11 +1197,11 @@ public class DroidShows extends ListActivity
 		Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 		startActivity(browse);
 	}
-	
+
 	private void updateSerie(final TVShowItem serie, int position) {
 		updateSerie(serie, null, position);
 	}
-	
+
 	private void updateSerie(TVShowItem serie, final String langCode, int position) {
 		if (!utils.isNetworkAvailable(DroidShows.this)) {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
@@ -1239,7 +1239,7 @@ public class DroidShows extends ListActivity
 			updateShowTh.start();
 		}
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public void updatePosterThumb(String serieId, Serie sToUpdate) {
 		Cursor c = DroidShows.db.Query("SELECT posterInCache, poster, posterThumb FROM series WHERE id='"+ serieId +"'");
@@ -1308,7 +1308,7 @@ public class DroidShows extends ListActivity
 			m_ProgressDialog.setMessage(dialogMsg);
 		}
 	};
-	
+
 	public void clearFilter(View v) {
 		main.setVisibility(View.INVISIBLE);
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
@@ -1316,7 +1316,7 @@ public class DroidShows extends ListActivity
 		findViewById(R.id.search).setVisibility(View.GONE);
 		getSeries();
 	}
-	
+
 	public void searchForShow(View v) {
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
 		Intent startSearch = new Intent(DroidShows.this, AddSerie.class);
@@ -1413,13 +1413,13 @@ public class DroidShows extends ListActivity
 			updateAllShowsTh.start();
 		}
 	}
-	
+
 	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	private void errorNotify(String error) {
 		NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 		PendingIntent appIntent = PendingIntent.getActivity(DroidShows.this, 0, new Intent(), 0);
-		
+
 		Notification notification = null;
 		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 			notification = new Notification(R.drawable.noposter,
@@ -1441,7 +1441,7 @@ public class DroidShows extends ListActivity
 			else
 			    notification = builder.build();
 		}
-		
+
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		mNotificationManager.notify(0, notification);
 	}
@@ -1449,7 +1449,7 @@ public class DroidShows extends ListActivity
 	private void getSeries() {
 		getSeries(showArchive, filterNetworks);
 	}
-	
+
 	private void getSeries(int showArchive) {
 		getSeries(showArchive, filterNetworks);
 	}
@@ -1487,7 +1487,7 @@ public class DroidShows extends ListActivity
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
 	}
-	
+
 	public void getNextLogged() {
 		List<TVShowItem> episodes = db.getLog(series.size());
 		for (int i = 0; i < episodes.size(); i++) {
@@ -1520,7 +1520,7 @@ public class DroidShows extends ListActivity
 					}
 				}
 			}
-*/			
+*/
 			if (!logMode) seriesAdapter.sort(showsComperator);
 			if (seriesAdapter.isFiltered)
 				seriesAdapter.getFilter().filter(searchV.getText());
@@ -1528,7 +1528,7 @@ public class DroidShows extends ListActivity
 			main.setVisibility(View.VISIBLE);
 		}
 	};
-	
+
 	private static Comparator<TVShowItem> showsComperator = new Comparator<TVShowItem>() {
 		public int compare(TVShowItem object1, TVShowItem object2) {
 			if (pinnedShows.contains(object1.getSerieId()) && !pinnedShows.contains(object2.getSerieId()))
@@ -1560,7 +1560,7 @@ public class DroidShows extends ListActivity
 			}
 		}
 	};
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -1584,7 +1584,7 @@ public class DroidShows extends ListActivity
 		ed.putString(NETWORKS_NAME, networks.toString());
 		ed.commit();
 	}
-	
+
 	@Override
 	protected void onDestroy() {
 		if (autoBackupOption)
@@ -1609,7 +1609,7 @@ public class DroidShows extends ListActivity
 			}
 		}
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -1622,7 +1622,7 @@ public class DroidShows extends ListActivity
 			asyncInfo.execute();
 		}
 	}
-	
+
 	private class AsyncInfo extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -1713,7 +1713,7 @@ public class DroidShows extends ListActivity
 			m_ProgressDialog.dismiss();
 		super.onSaveInstanceState(outState);
 	}
-		
+
 	public String translateStatus(String statusValue) {
 		if (statusValue.equalsIgnoreCase("Continuing")) {
 			return getString(R.string.showstatus_continuing);
@@ -1727,7 +1727,7 @@ public class DroidShows extends ListActivity
 	private boolean searching() {
 		return (seriesAdapter.isFiltered || findViewById(R.id.search).getVisibility() == View.VISIBLE);
 	}
-	
+
 	public class SeriesAdapter extends ArrayAdapter<TVShowItem> {
 		private List<TVShowItem> items;
 		private ShowsFilter filter;
@@ -1747,40 +1747,41 @@ public class DroidShows extends ListActivity
 		private final String strSeason = getString(R.string.messages_season);
 		private final String strSeasons = getString(R.string.messages_seasons);
 		private final String strToBeAired = getString(R.string.messages_to_be_aired);
-		
+		private final String strToBeAiredPl = getString(R.string.messages_to_be_aired_pl);
+
 		public SeriesAdapter(Context context, int textViewResourceId, List<TVShowItem> series) {
 			super(context, textViewResourceId, series);
 			items = series;
 			isFiltered = false;
 		}
-		
+
 		public void updateData(List<TVShowItem> series) {
 			items = series;
 			notifyDataSetChanged();
 		}
-		
+
 		@Override
 		public int getCount() {
 			return items.size();
 		}
-		
+
 		@Override
 		public Filter getFilter() {
 			if (filter == null)
 				filter = new ShowsFilter();
 			return filter;
 		}
-		
+
 		@Override
 		public TVShowItem getItem(int position) {
 			return items.get(position);
 		}
-		
+
 		public void setItem(int location, TVShowItem serie) {
 			items.set(location, serie);
 			notifyDataSetChanged();
 		}
-		
+
 		private class ShowsFilter extends Filter {
 			@SuppressLint("DefaultLocale")
 			@Override
@@ -1866,7 +1867,7 @@ public class DroidShows extends ListActivity
 							unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired +" "+ strOf +" ") + unwatched + strEpAired + (nunwatchedAired == nunwatched && ended.isEmpty() ? " \u00b7" : "");
 							holder.si.setEnabled(true);
 						} else {
-							unwatched += strToBeAired;
+							unwatched += (nunwatched > 1 ? strToBeAiredPl : strToBeAired);
 							holder.si.setEnabled(false);
 						}
 					}
@@ -1898,7 +1899,7 @@ public class DroidShows extends ListActivity
 				if (holder.sn != null) {
 					holder.sn.setText(serie.getName());
 					holder.sn.setTextColor(textViewColors);
-				}					
+				}
 				if (holder.si != null) {
 					holder.si.setEnabled(true);
 					holder.si.setText(serie.getEpisodeName());
@@ -1921,7 +1922,7 @@ public class DroidShows extends ListActivity
 			}
 			return convertView;
 		}
-		
+
 		private OnTouchListener iconTouchListener = new OnTouchListener() {
 			public boolean onTouch(View v, MotionEvent event) {
 				iconListPosition = listView.getPositionForView(v);
@@ -1929,7 +1930,7 @@ public class DroidShows extends ListActivity
 				return true;
 			}
 		};
-		
+
 		private final SimpleOnGestureListener iconGestureListener = new SimpleOnGestureListener() {
 			@Override
 			public boolean onSingleTapConfirmed(MotionEvent e) {
