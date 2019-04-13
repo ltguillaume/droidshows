@@ -89,6 +89,7 @@
 <string name="messages_new_episode">new episode</string>
 <string name="messages_ep_aired">aired</string>
 <string name="messages_to_be_aired">to be aired</string>
+<string name="messages_to_be_aired_pl">to be aired</string>
 <string name="messages_seasons">Seasons</string>
 <string name="messages_season">Season</string>
 <string name="messages_next_episode">Next episode:</string>

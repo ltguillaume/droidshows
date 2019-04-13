@@ -89,6 +89,7 @@
 <string name="messages_new_episode">aflevering</string>
 <string name="messages_ep_aired">uitgezonden</string>
 <string name="messages_to_be_aired">resterend</string>
+<string name="messages_to_be_aired_pl">resterend</string>
 <string name="messages_seasons">Seizoenen</string>
 <string name="messages_season">Seizoen</string>
 <string name="messages_next_episode">Volgende:</string>

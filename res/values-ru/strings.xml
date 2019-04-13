@@ -88,6 +88,7 @@
 <string name="messages_new_episode">новая серия</string>
 <string name="messages_ep_aired">показана</string>
 <string name="messages_to_be_aired">будет показан</string>
+<string name="messages_to_be_aired_pl">будет показан</string>
 <string name="messages_seasons">Сезоны</string>
 <string name="messages_season">Сезон</string>
 <string name="messages_next_episode">Следующая серия:</string>

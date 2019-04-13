@@ -89,6 +89,7 @@
 <string name="messages_new_episode">neue Folge</string>
 <string name="messages_ep_aired">ausgestrahlt</string>
 <string name="messages_to_be_aired">wird ausgestrahlt</string>
+<string name="messages_to_be_aired_pl">werden ausgestrahlt</string>
 <string name="messages_seasons">Staffeln</string>
 <string name="messages_season">Staffel</string>
 <string name="messages_next_episode">Nächste Folge:</string>

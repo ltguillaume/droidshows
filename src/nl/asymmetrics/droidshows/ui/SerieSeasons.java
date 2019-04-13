@@ -44,7 +44,7 @@ public class SerieSeasons extends ListActivity
 	public static SeriesSeasonsAdapter seasonsAdapter;
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private SQLiteStore db;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		this.overridePendingTransition(R.anim.right_enter, R.anim.right_exit);
@@ -64,7 +64,7 @@ public class SerieSeasons extends ListActivity
 		if (getIntent().getBooleanExtra("nextEpisode", false))
 			listView.setSelection(db.getNextEpisode(serieId).season -1);
 	}
-	
+
 	/* context menu */
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -95,7 +95,7 @@ public class SerieSeasons extends ListActivity
 				return super.onContextItemSelected(item);
 		}
 	}
-	
+
 	@SuppressLint("NewApi")
 	public void openContext(View v) {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
@@ -139,12 +139,12 @@ public class SerieSeasons extends ListActivity
 			Season newSeason = new Season(serieId, seasonNumbers.get(i), season, -1, -1, null, null);
 			seasons.add(newSeason);
 		}
-	}	
-	
+	}
+
 	private void getInfo() {
 		new AsyncInfo().execute();
 	}
-	
+
 	private final OnGlobalLayoutListener listDone = new OnGlobalLayoutListener() {
 		@SuppressWarnings("deprecation")
 		@SuppressLint("NewApi")
@@ -156,7 +156,7 @@ public class SerieSeasons extends ListActivity
 			getInfo();
 		}
 	};
-	
+
 	private class AsyncInfo extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
@@ -187,7 +187,7 @@ public class SerieSeasons extends ListActivity
 		super.onRestart();
 		getInfo();
 	}
-	
+
 	private class SeriesSeasonsAdapter extends ArrayAdapter<Season>
 	{
 		private List<Season> items;
@@ -202,6 +202,7 @@ public class SerieSeasons extends ListActivity
 		private final String strOn = getString(R.string.messages_on);
 		private final String strSeasonWatched = getString(R.string.messages_season_completely_watched);
 		private final String strToBeAired = getString(R.string.messages_to_be_aired);
+		private final String strToBeAiredPl = getString(R.string.messages_to_be_aired_pl);
 
 		public SeriesSeasonsAdapter(Context context, int textViewResourceId, List<Season> seasons) {
 			super(context, textViewResourceId, seasons);
@@ -236,10 +237,10 @@ public class SerieSeasons extends ListActivity
 					String unwatched = "";
 					unwatched = nunwatched +" "+ (nunwatched > 1 ? strNewEps : strNewEp) +" ";
 					if (nunwatchedAired > 0)
-						unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired 
+						unwatched = (nunwatchedAired == nunwatched ? "" : nunwatchedAired
 							+" "+ strOf +" ") + unwatched + strEpAired;
 					else
-						unwatched += strToBeAired;
+						unwatched += (nunwatched > 1 ? strToBeAiredPl : strToBeAired);
 					unwatchedText += " | "+ unwatched;
 				}
 				holder.unwatched.setText(unwatchedText);
@@ -270,7 +271,7 @@ public class SerieSeasons extends ListActivity
 		TextView nextEpisode;
 		ImageView context;
 	}
-	
+
 	@Override
 	public void onBackPressed() {
 		super.onBackPressed();
