@@ -785,8 +785,10 @@ public class DroidShows extends ListActivity
 				    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
 				if (showArchive == 1)
 					setTitle(getString(R.string.layout_app_name));
-				getSeries(2, false);	// 2 = archive and current shows, false = don't filter networks
-				updateAllSeries();
+				logMode = false;
+				if (spinner != null)
+					spinner.setSelection(0);
+				updateAllSeries(2);	// 2 = update archive and current shows
 				undo.clear();
 				toastTxt += " ("+ source.getPath() +")";
 			} catch (IOException e) {
@@ -1340,7 +1342,7 @@ public class DroidShows extends ListActivity
 			.setCancelable(false)
 			.setPositiveButton(getString(R.string.dialog_ok), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					updateAllSeries();
+					updateAllSeries(showArchive);
 					return;
 				}
 			})
@@ -1352,7 +1354,7 @@ public class DroidShows extends ListActivity
 		alertDialog.show();
 	}
 
-	public void updateAllSeries() {
+	public void updateAllSeries(final int showArchive) {
 		if (!utils.isNetworkAvailable(DroidShows.this)) {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 		} else {
@@ -1367,6 +1369,10 @@ public class DroidShows extends ListActivity
 					if (theTVDB == null)
 						theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
 					String updatesFailed = "";
+					List<TVShowItem> series = new ArrayList<TVShowItem>();
+					List<String> ids = db.getSeries(showArchive, false, null);
+					for (String id : ids)
+						series.add(db.createTVShowItem(id));
 					for (int i = 0; i < series.size(); i++) {
 						Log.d(SQLiteStore.TAG, "Getting updated info from TheTVDB "+ (useMirror ? "MIRROR " : "")
 							+"for TV show " + series.get(i).getName() +" ["+ (i+1) +"/"+ (series.size()) +"]");

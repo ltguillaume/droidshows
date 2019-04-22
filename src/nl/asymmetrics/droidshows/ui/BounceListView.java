@@ -76,7 +76,7 @@ public class BounceListView extends ListView {
 			if (abortUpdate)
 				updating = false;
 			else
-				((DroidShows)context).updateAllSeries();
+				((DroidShows)context).updateAllSeries(DroidShows.showArchive);
 		}
 	};
 }
