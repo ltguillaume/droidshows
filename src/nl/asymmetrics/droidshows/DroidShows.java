@@ -783,11 +783,6 @@ public class DroidShows extends ListActivity
 						thumb.delete();
 				for (File file : new File(getApplicationInfo().dataDir +"/databases").listFiles())
 				    if (!file.getName().equalsIgnoreCase("DroidShows.db")) file.delete();
-				if (showArchive == 1)
-					setTitle(getString(R.string.layout_app_name));
-				logMode = false;
-				if (spinner != null)
-					spinner.setSelection(0);
 				updateAllSeries(2);	// 2 = update archive and current shows
 				undo.clear();
 				toastTxt += " ("+ source.getPath() +")";
@@ -1358,6 +1353,10 @@ public class DroidShows extends ListActivity
 		if (!utils.isNetworkAvailable(DroidShows.this)) {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
 		} else {
+			final List<TVShowItem> seriesToUpdate = new ArrayList<TVShowItem>();
+			List<String> ids = db.getSeries(showArchive, false, null);
+			for (String id : ids)
+				seriesToUpdate.add(db.createTVShowItem(id));
 			final Runnable updateMessage = new Runnable() {
 				public void run() {
 					updateAllSeriesPD.setMessage(dialogMsg);
@@ -1365,14 +1364,11 @@ public class DroidShows extends ListActivity
 				}
 			};
 			final Runnable updateallseries = new Runnable() {
+				List<TVShowItem> series = seriesToUpdate;
 				public void run() {
 					if (theTVDB == null)
 						theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
 					String updatesFailed = "";
-					List<TVShowItem> series = new ArrayList<TVShowItem>();
-					List<String> ids = db.getSeries(showArchive, false, null);
-					for (String id : ids)
-						series.add(db.createTVShowItem(id));
 					for (int i = 0; i < series.size(); i++) {
 						Log.d(SQLiteStore.TAG, "Getting updated info from TheTVDB "+ (useMirror ? "MIRROR " : "")
 							+"for TV show " + series.get(i).getName() +" ["+ (i+1) +"/"+ (series.size()) +"]");
@@ -1403,12 +1399,7 @@ public class DroidShows extends ListActivity
 							public void run() {errorNotify(updatesFailedResult);}
 						});
 					}
-					listView.post(new Runnable() {
-						public void run() {
-							getSeries((searching() ? 2 : showArchive));
-							listView.updating = false;
-						}
-					});
+					updateShowStats();
 					updateAllSeriesPD.dismiss();
 					theTVDB = null;
 				}
@@ -1418,7 +1409,7 @@ public class DroidShows extends ListActivity
 			updateAllSeriesPD.setTitle(R.string.messages_title_updating_series);
 			updateAllSeriesPD.setMessage(getString(R.string.messages_update_series));
 			updateAllSeriesPD.setCancelable(false);
-			updateAllSeriesPD.setMax(series.size());
+			updateAllSeriesPD.setMax(seriesToUpdate.size());
 			updateAllSeriesPD.setProgress(0);
 			updateAllSeriesPD.show();
 			updateAllShowsTh = new Thread(updateallseries);
