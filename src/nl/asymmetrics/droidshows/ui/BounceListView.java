@@ -8,7 +8,7 @@ import android.widget.ListView;
 
 public class BounceListView extends ListView {
 	private static final int MAX_OVERSCROLL_DISTANCE = 70;
-	private static final int MIN_OVERSCROLL_DISTANCE = 68;
+	private static final int MIN_OVERSCROLL_DISTANCE = 60;
 	private int maxOverScrollDistance;
 	private int minOverScrollDistance;
 	private Context context;
@@ -40,6 +40,7 @@ public class BounceListView extends ListView {
 					allowOverScroll = event.getY() > startY && getChildCount() > 0 && getChildAt(0).getTop() == 0 && getFirstVisiblePosition() == 0;
 				break;
 			case MotionEvent.ACTION_UP:
+				allowOverScroll = false;
 				abortUpdate = true;
 		}
 		return super.onTouchEvent(event);
@@ -64,19 +65,16 @@ public class BounceListView extends ListView {
 	protected boolean overScrollBy(int deltaX, int deltaY, int scrollX, int scrollY, int scrollRangeX, int scrollRangeY, int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent) {
 		if (-scrollY <= minOverScrollDistance)
 			abortUpdate = true;
-		if (allowOverScroll) {
-			return super.overScrollBy(deltaX, deltaY, scrollX, scrollY, scrollRangeX, scrollRangeY, maxOverScrollX, maxOverScrollDistance, isTouchEvent);
-		} else {
-			return super.overScrollBy(deltaX, deltaY, scrollX, scrollY, scrollRangeX, scrollRangeY, maxOverScrollX, maxOverScrollY, isTouchEvent);
-		}
+		if (allowOverScroll)
+			maxOverScrollY = maxOverScrollDistance;
+		return super.overScrollBy(deltaX, deltaY, scrollX, scrollY, scrollRangeX, scrollRangeY, maxOverScrollX, maxOverScrollY, isTouchEvent);
 	}
 
 	private Runnable startUpdate = new Runnable() {
 		public void run() {
-			if (abortUpdate)
-				updating = false;
-			else
+			if (!abortUpdate)
 				((DroidShows)context).updateAllSeries(DroidShows.showArchive);
+			updating = false;
 		}
 	};
 }

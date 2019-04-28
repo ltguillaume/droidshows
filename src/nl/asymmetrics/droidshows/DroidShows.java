@@ -1,3 +1,7 @@
+/*	AsyncInfo might have the same issue as updateAllSeries() had when show order is changed during iteration...
+ * 	Get list of series in another way?
+ */
+
 package nl.asymmetrics.droidshows;
 
 import java.io.File;
@@ -1364,18 +1368,17 @@ public class DroidShows extends ListActivity
 				}
 			};
 			final Runnable updateallseries = new Runnable() {
-				List<TVShowItem> series = seriesToUpdate;
 				public void run() {
 					if (theTVDB == null)
 						theTVDB = new TheTVDB("8AC675886350B3C3", useMirror);
 					String updatesFailed = "";
-					for (int i = 0; i < series.size(); i++) {
+					for (int i = 0; i < seriesToUpdate.size(); i++) {
 						Log.d(SQLiteStore.TAG, "Getting updated info from TheTVDB "+ (useMirror ? "MIRROR " : "")
-							+"for TV show " + series.get(i).getName() +" ["+ (i+1) +"/"+ (series.size()) +"]");
-						dialogMsg = series.get(i).getName() + "\u2026";
+							+"for TV show " + seriesToUpdate.get(i).getName() +" ["+ (i+1) +"/"+ (seriesToUpdate.size()) +"]");
+						dialogMsg = seriesToUpdate.get(i).getName() + "\u2026";
 						updateAllSeriesPD.incrementProgressBy(1);
 						runOnUiThread(updateMessage);
-						Serie sToUpdate = theTVDB.getSerie(series.get(i).getSerieId(), series.get(i).getLanguage());
+						Serie sToUpdate = theTVDB.getSerie(seriesToUpdate.get(i).getSerieId(), seriesToUpdate.get(i).getLanguage());
 						if (sToUpdate == null) {
 							updatesFailed += dialogMsg +" ";
 						} else {
@@ -1387,7 +1390,7 @@ public class DroidShows extends ListActivity
 									Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
 									Looper.loop();
 								}
-								updatePosterThumb(series.get(i).getSerieId(), sToUpdate);
+								updatePosterThumb(seriesToUpdate.get(i).getSerieId(), sToUpdate);
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
@@ -1633,7 +1636,7 @@ public class DroidShows extends ListActivity
 			try {
 				int showArchiveTmp = showArchive;
 				String newToday = new SimpleDateFormat("yyyy-MM-dd").format(Calendar.getInstance().getTime());	// thread needs own SimpleDateFormat to prevent collisions in formatting of other dates
-				String lastStatsUpdate = (showArchiveTmp == 0 ? lastStatsUpdateCurrent: lastStatsUpdateArchive);
+				String lastStatsUpdate = (showArchiveTmp == 0 ? lastStatsUpdateCurrent : lastStatsUpdateArchive);
 				if (!lastStatsUpdate.equals(newToday)) {
 					db.updateToday(newToday);
 //					Log.d(SQLiteStore.TAG, "AsyncInfo RUNNING | Today = "+ newToday);
