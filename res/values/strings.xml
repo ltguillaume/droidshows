@@ -74,7 +74,8 @@
 \n&#187; Click full-screen poster image for fan art
 \n&#187; Long-press full-screen poster to open in external app
 \n\nIn Show/Episode Details:
-\n&#187; Tap IMDb rating to view in IMDb</string>
+\n&#187; Tap IMDb rating to view in IMDb
+\n&#187; Tap date to add to calendar</string>
 <string name="dialog_networks">Networks</string>
 <string name="menu_archive">Archive</string>
 <string name="menu_unarchive">Recover</string>

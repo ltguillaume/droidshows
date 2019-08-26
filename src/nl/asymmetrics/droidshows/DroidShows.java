@@ -1122,7 +1122,7 @@ public class DroidShows extends ListActivity
 			extResourcesString = "";
 			for (int i = 0; i < tmpResources.length; i++) {
 				String url = tmpResources[i].trim();
-				if (url.length() > 3)
+				if (url.length() > 0)
 					extResourcesString += url +"\n";
 			}
 		}
@@ -1181,7 +1181,7 @@ public class DroidShows extends ListActivity
 									})
 									.show();
 								if (extResourcesInput.length() == 0) {
-									input.setText("tvshow.wikia.com\n*double-tap-poster.openstarred.url\ntvshow.blogspot.com");
+									input.setText("Examples:\ntvshow.wikia.com\n*tvshow.blogspot.com\nLong-press show poster to directly open the starred url");
 									input.selectAll();
 								}
 								input.requestFocus();
@@ -1356,9 +1356,9 @@ public class DroidShows extends ListActivity
 	public void updateAllSeries(final int showArchive) {
 		if (!utils.isNetworkAvailable(DroidShows.this)) {
 			Toast.makeText(getApplicationContext(), R.string.messages_no_internet, Toast.LENGTH_LONG).show();
-		} else {
+		} else if (updateAllSeriesPD == null || !updateAllSeriesPD.isShowing()) {
 			final List<TVShowItem> seriesToUpdate = new ArrayList<TVShowItem>();
-			List<String> ids = db.getSeries(showArchive, false, null);
+			List<String> ids = db.getSeries(searching() ? 2 : showArchive, false, null);
 			for (String id : ids)
 				seriesToUpdate.add(db.createTVShowItem(id));
 			final Runnable updateMessage = new Runnable() {
@@ -1650,9 +1650,6 @@ public class DroidShows extends ListActivity
 							if (isCancelled()) return null;
 							serie.setUnwatched(unwatched);
 							serie.setUnwatchedAired(unwatchedAired);
-							runOnUiThread(new Runnable() {
-								public void run() {seriesAdapter.notifyDataSetChanged();}
-							});
 							if (isCancelled()) return null;
 							if (showNextAiring && 0 < unwatchedAired) {
 								NextEpisode nextEpisode = db.getNextEpisode(serieId);
@@ -1726,7 +1723,7 @@ public class DroidShows extends ListActivity
 		} else if (statusValue.equalsIgnoreCase("Ended")) {
 			return getString(R.string.showstatus_ended);
 		} else {
-			return statusValue;
+			return statusValue.toLowerCase();
 		}
 	}
 
