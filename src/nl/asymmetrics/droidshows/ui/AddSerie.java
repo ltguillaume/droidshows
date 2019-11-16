@@ -321,7 +321,6 @@ public class AddSerie extends ListActivity
 						DroidShows.series.add(tvsi);
 						series.add(sToAdd.getId());
 						runOnUiThread(DroidShows.updateListView);
-						runOnUiThread(reloadSearchSeries);
 						sucesso = true;
 					} catch (Exception e) {
 						Log.e(SQLiteStore.TAG, "Error adding "+ sToAdd.getSerieName());
@@ -337,6 +336,7 @@ public class AddSerie extends ListActivity
 						Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
 						Looper.loop();
 					}
+					runOnUiThread(reloadSearchSeries);
 				}
 			}
 		};

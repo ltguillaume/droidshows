@@ -101,10 +101,13 @@ public class ViewEpisode extends Activity
 			episodeNameV.setText(episodeName);
 			
 			TextView ratingV = (TextView) findViewById(R.id.rating);
-			if (!rating.equalsIgnoreCase("null") && !rating.equals(""))
-				ratingV.setText("IMDb: "+ rating);
+			if (!rating.equalsIgnoreCase("null") && !rating.equals("") && !rating.equals("0"))
+				ratingV.setText("IMDb: "+ rating +" \u00b7 "
+					+ (imdbId.startsWith("tt") ? getString(R.string.menu_context_view_ep_imdb) : getString(R.string.menu_search)));
+			else if (imdbId.startsWith("tt"))
+				ratingV.setText(getString(R.string.menu_context_view_ep_imdb));
 			else
-				ratingV.setText("IMDb Info");
+				ratingV.setText(getString(R.string.menu_context_search_on) + " IMDb");
 			ratingV.setOnTouchListener(swipeDetect);
 			
 			final CheckBox seenCheckBox = (CheckBox) findViewById(R.id.seen);
