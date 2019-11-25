@@ -2,13 +2,6 @@
 DroidShows: A Reboot of DroidSeries Offline TV Shows Tracker  
 This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, pinning, quick search and filters, a separate archive/backlog list, a last seen episodes log, swipe gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. DroidShows only needs an internet connection when updating the show info or watching full-size posters.
 
-### WARNING
-
-#### This app gets its info from TheTVDB.com, which currently has serious problems with its API. Until these are fixed, expect issues like empty show names, the absence of posters and info. It is recommended to at least enable DroidShows' option _Update shows' latest season only_ or to not update at all until these issues are resolved.
-
-<a href="https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows" target="_blank">
-<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="90"/></a>
-
 __Some pointers__:
 * Don't forget to update all shows regularly (pull-to-refresh)
 * Context menu has more options (long-press item or use overflow buttons)
@@ -24,6 +17,9 @@ __In Show Details__:
 * Long-press full-screen poster to open in external app  
 __In Show/Episode Details__:
 * Tap IMDb rating to view in IMDb App when installed, or on IMDb's mobile webpage
+
+<a href="https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="90"/></a>
 
 [Homepage](http://ltguillaume.github.io/DroidShows)  
 [Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
