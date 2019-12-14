@@ -117,7 +117,7 @@ public class SerieSeasons extends ListActivity
 
 	private void getSeasons() {
 		try {
-			Cursor cseasons = db.Query("SELECT season FROM serie_seasons WHERE serieId = '"+ serieId +"' ORDER BY season ASC");
+			Cursor cseasons = db.Query("SELECT season FROM serie_seasons WHERE serieId = '"+ serieId +"'  ORDER BY 0+season ASC");	// 0+ to treat VARCHAR as integer an sort properly
 			cseasons.moveToFirst();
 			if (cseasons.getCount() != 0) {
 				do {

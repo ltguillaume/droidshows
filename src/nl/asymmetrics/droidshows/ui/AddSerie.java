@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -64,11 +65,10 @@ public class AddSerie extends ListActivity
 	private ListView listView;
 	private Utils utils = new Utils();
 	static String searchQuery = "";
-	private volatile Thread threadAddShow;
-	private static boolean bAddShowTh = false;
 	private SQLiteStore db;
 	private List<String> series;
 	private String langCode = DroidShows.langCode;
+	private AsyncAddSerie addSerieTask = null;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -127,8 +127,8 @@ public class AddSerie extends ListActivity
 				for (int i = 0; i < search_series.size(); i++)
 					seriessearch_adapter.add(search_series.get(i));
 			}
-			m_ProgressDialog.dismiss();
 			seriessearch_adapter.notifyDataSetChanged();
+			m_ProgressDialog.dismiss();
 		}
 	};
 
@@ -159,22 +159,6 @@ public class AddSerie extends ListActivity
 		}).start();
 	}
 
-	public synchronized void startAddShowTh() {
-		if (threadAddShow == null) {
-			threadAddShow = new Thread();
-			threadAddShow.start();
-		}
-	}
-
-	public synchronized void stopAddShowTh() {
-		if (threadAddShow != null) {
-			Thread moribund = threadAddShow;
-			threadAddShow = null;
-			moribund.interrupt();
-			Log.d(SQLiteStore.TAG, "addShow Thread stopped");
-		}
-	}
-	
 	public void changeLanguage(View v) {
 		AlertDialog.Builder changeLang = new AlertDialog.Builder(this);
 		changeLang.setTitle(R.string.dialog_change_language)
@@ -194,166 +178,152 @@ public class AddSerie extends ListActivity
 		m_ProgressDialog.dismiss();
 		super.onSaveInstanceState(outState);
 	}
-
-	@Override
-	protected void onPause() {
-		if (threadAddShow != null) {
-			if (threadAddShow.isAlive()) {
-				Log.i(SQLiteStore.TAG, "!!! Thread is running!");
-				bAddShowTh = true;
-			}
+	
+	private void addSerie(Serie s) {
+		if (addSerieTask == null || addSerieTask.getStatus() != AsyncTask.Status.RUNNING) {
+			addSerieTask = new AsyncAddSerie();
+			addSerieTask.execute(s);
+		} else {
+			Log.d(SQLiteStore.TAG, "Still busy, not adding "+ s.getSerieName());
+			Toast.makeText(getApplicationContext(), R.string.messages_error_dbupdate, Toast.LENGTH_SHORT).show();
 		}
-		super.onPause();
 	}
 
-	public void addSerie(final Serie s) {
-		Runnable addnewserie = new Runnable() {
-			public void run() {
-				// gathers the TV show and all of its data
-				Serie sToAdd = theTVDB.getSerie(s.getId(), s.getLanguage());
-				if (sToAdd == null) {
-					m_ProgressDialog.dismiss();
-					Looper.prepare();
-						Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
-					Looper.loop();
-				} else {
-					Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": getting the poster");
-					// get the poster and save it in cache
-					URL imageUrl = null;
-					URLConnection uc = null;
-					String contentType = "";
+	private class AsyncAddSerie extends AsyncTask<Serie, Void, Boolean> {
+		String msg = null;
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			m_ProgressDialog = ProgressDialog.show(AddSerie.this, getString(R.string.messages_title_adding_serie), getString(R.string.messages_adding_serie), true, false);
+		}
+
+		protected Boolean doInBackground(Serie... params) {
+			Serie s = params[0];
+			Boolean success = false;
+			
+			boolean alreadyExists = false;
+			for (String serieId : series)
+				if (serieId.equals(s.getId())) {
+					alreadyExists = true;
+					break;
+				}
+			if (alreadyExists) return false;
+			
+			Serie sToAdd = theTVDB.getSerie(s.getId(), s.getLanguage());
+			if (sToAdd == null) {
+				msg = getString(R.string.messages_thetvdb_con_error);
+			} else {
+				Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": getting the poster");
+				// get the poster and save it in cache
+				URL imageUrl = null;
+				URLConnection uc = null;
+				String contentType = "";
+				try {
 					try {
-						if (bAddShowTh) {
-							stopAddShowTh();
-							bAddShowTh = false;
-							return;
-						}
-						try {
-							imageUrl = new URL(sToAdd.getPoster());
-							uc = imageUrl.openConnection();
-							// timetout, 10s for slow connections
-							uc.setConnectTimeout(10000);
-							contentType = uc.getContentType();
-						} catch (MalformedURLException e) {
-							Log.e(SQLiteStore.TAG, e.getMessage());
-						} catch (IOException e) {
-							Log.e(SQLiteStore.TAG, e.getMessage());
-						} catch (Exception e) {
-							Log.d(SQLiteStore.TAG, e.getMessage());
-						}
-						int contentLength = uc.getContentLength();
-						if (!TextUtils.isEmpty(contentType)) {
-							if (!contentType.startsWith("image/") || contentLength == -1) {
-								// throw new IOException("This is not a binary file.");
-								Log.e(SQLiteStore.TAG, "This is not a image.");
-							}
-						}
-						try {
-							if (bAddShowTh) {
-								stopAddShowTh();
-								bAddShowTh = false;
-								return;
-							}
-							File cacheImage = new File(getApplicationContext().getFilesDir().getAbsolutePath()
-								+ imageUrl.getFile().toString());
-							FileUtils.copyURLToFile(imageUrl, cacheImage);
-							Bitmap posterThumb = BitmapFactory.decodeFile(getApplicationContext().getFilesDir().getAbsolutePath() + imageUrl.getFile().toString());
-							Display display = getWindowManager().getDefaultDisplay();
-							int width = display.getWidth();
-							int height = display.getHeight();
-							int newHeight = (int) ((height > width ? height : width) * 0.265);
-							int newWidth = (int) (1.0 * posterThumb.getWidth() / posterThumb.getHeight() * newHeight);
-							if (bAddShowTh) {
-								stopAddShowTh();
-								bAddShowTh = false;
-								return;
-							}
-							Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": resizing the poster and creating the thumbnail");
-							Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
-							File dirTmp = new File(getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs/banners/posters");
-							if (!dirTmp.isDirectory()) {
-								dirTmp.mkdirs();
-							}
-							OutputStream fOut = null;
-							File thumFile = new File(getApplicationContext().getFilesDir().getAbsolutePath(), "thumbs"
-								+ imageUrl.getFile().toString());
-							fOut = new FileOutputStream(thumFile);
-							resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
-							fOut.flush();
-							fOut.close();
-							// removes the bitmaps from memory
-							posterThumb.recycle();
-							resizedBitmap.recycle();
-							System.gc();
-							posterThumb = null;
-							resizedBitmap = null;
-							sToAdd.setPosterThumb(getApplicationContext().getFilesDir().getAbsolutePath()
-								+ "/thumbs" + imageUrl.getFile().toString());
-							cacheImage.delete();
-							sToAdd.setPosterInCache("true");
-						} catch (Exception e) {
-							sToAdd.setPosterInCache("");
-							Log.e(SQLiteStore.TAG, "Error copying the poster to cache.");
-						}
-					} catch (Exception e) {
+						imageUrl = new URL(sToAdd.getPoster());
+						uc = imageUrl.openConnection();
+						// timetout, 10s for slow connections
+						uc.setConnectTimeout(10000);
+						contentType = uc.getContentType();
+					} catch (MalformedURLException e) {
 						Log.e(SQLiteStore.TAG, e.getMessage());
-					}
-					boolean sucesso = false;
-					try {
-						if (bAddShowTh) {
-							stopAddShowTh();
-							bAddShowTh = false;
-							return;
-						}
-						Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": saving TV show to database");
-						sToAdd.setPassiveStatus((DroidShows.showArchive == 1 ? 1 : 0));
-						sToAdd.saveToDB(db);
-						Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": creating the TV show item");
-						int nseasons = db.getSeasonCount(sToAdd.getId());
-						SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(sToAdd.getId());
-						int unwatchedAired = db.getEPUnwatchedAired(sToAdd.getId());
-						int unwatched = db.getEPUnwatched(sToAdd.getId());
-						String nextEpisodeStr = db.getNextEpisodeString(nextEpisode, DroidShows.showNextAiring && 0 < unwatchedAired && unwatchedAired < unwatched);
-						Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
-						TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getLanguage(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons,
-							nextEpisodeStr, nextEpisode.firstAiredDate, unwatchedAired, unwatched, sToAdd.getPassiveStatus() == 1,
-							(sToAdd.getStatus() == null ? "null" : sToAdd.getStatus()), "");
-						DroidShows.series.add(tvsi);
-						series.add(sToAdd.getId());
-						runOnUiThread(DroidShows.updateListView);
-						sucesso = true;
+					} catch (IOException e) {
+						Log.e(SQLiteStore.TAG, e.getMessage());
 					} catch (Exception e) {
-						Log.e(SQLiteStore.TAG, "Error adding "+ sToAdd.getSerieName());
+						Log.d(SQLiteStore.TAG, e.getMessage());
 					}
-					m_ProgressDialog.dismiss();
-					if (!bAddShowTh) {
-						bAddShowTh = false;
+					int contentLength = uc.getContentLength();
+					if (!TextUtils.isEmpty(contentType)) {
+						if (!contentType.startsWith("image/") || contentLength == -1) {
+							// throw new IOException("This is not a binary file.");
+							Log.e(SQLiteStore.TAG, "This is not a image.");
+						}
 					}
-					if (sucesso) {
-						CharSequence text = String.format(getString(R.string.messages_series_success), sToAdd.getSerieName())
-								+(DroidShows.showArchive == 1 ? " ("+ getString(R.string.messages_context_archived) +")": "");
-						Looper.prepare();
-						Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
-						Looper.loop();
+					try {
+						File cacheImage = new File(getApplicationContext().getFilesDir().getAbsolutePath()
+							+ imageUrl.getFile().toString());
+						FileUtils.copyURLToFile(imageUrl, cacheImage);
+						Bitmap posterThumb = BitmapFactory.decodeFile(getApplicationContext().getFilesDir().getAbsolutePath() + imageUrl.getFile().toString());
+						Display display = getWindowManager().getDefaultDisplay();
+						int width = display.getWidth();
+						int height = display.getHeight();
+						int newHeight = (int) ((height > width ? height : width) * 0.265);
+						int newWidth = (int) (1.0 * posterThumb.getWidth() / posterThumb.getHeight() * newHeight);
+						Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": resizing the poster and creating the thumbnail");
+						Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
+						File dirTmp = new File(getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs/banners/posters");
+						if (!dirTmp.isDirectory()) {
+							dirTmp.mkdirs();
+						}
+						OutputStream fOut = null;
+						File thumFile = new File(getApplicationContext().getFilesDir().getAbsolutePath(), "thumbs"
+							+ imageUrl.getFile().toString());
+						fOut = new FileOutputStream(thumFile);
+						resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+						fOut.flush();
+						fOut.close();
+						// removes the bitmaps from memory
+						posterThumb.recycle();
+						resizedBitmap.recycle();
+						System.gc();
+						posterThumb = null;
+						resizedBitmap = null;
+						sToAdd.setPosterThumb(getApplicationContext().getFilesDir().getAbsolutePath()
+							+ "/thumbs" + imageUrl.getFile().toString());
+						cacheImage.delete();
+						sToAdd.setPosterInCache("true");
+					} catch (Exception e) {
+						sToAdd.setPosterInCache("");
+						Log.e(SQLiteStore.TAG, "Error copying the poster to cache.");
 					}
-					runOnUiThread(reloadSearchSeries);
+				} catch (Exception e) {
+					Log.e(SQLiteStore.TAG, e.getMessage());
+				}
+				try {
+					Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": saving TV show to database");
+					sToAdd.setPassiveStatus((DroidShows.showArchive == 1 ? 1 : 0));
+					sToAdd.saveToDB(db);
+					Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": creating the TV show item");
+					int nseasons = db.getSeasonCount(sToAdd.getId());
+					SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(sToAdd.getId());
+					int unwatchedAired = db.getEPUnwatchedAired(sToAdd.getId());
+					int unwatched = db.getEPUnwatched(sToAdd.getId());
+					String nextEpisodeStr = db.getNextEpisodeString(nextEpisode, DroidShows.showNextAiring && 0 < unwatchedAired && unwatchedAired < unwatched);
+					Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
+					TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getLanguage(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons,
+						nextEpisodeStr, nextEpisode.firstAiredDate, unwatchedAired, unwatched, sToAdd.getPassiveStatus() == 1,
+						(sToAdd.getStatus() == null ? "null" : sToAdd.getStatus()), "");
+					DroidShows.series.add(tvsi);
+					series.add(sToAdd.getId());
+					runOnUiThread(DroidShows.updateListView);
+					success = true;
+				} catch (Exception e) {
+					Log.e(SQLiteStore.TAG, "Error adding "+ sToAdd.getSerieName());
+				}
+				if (success) {
+					msg = String.format(getString(R.string.messages_series_success), sToAdd.getSerieName())
+						+ (DroidShows.showArchive == 1 ? " ("+ getString(R.string.messages_context_archived) +")": "");
 				}
 			}
-		};
-		boolean alreadyExists = false;
-		for (String serieId : series) {
-			if (serieId.equals(s.getId())) {
-				alreadyExists = true;
-				break;
-			}
+			return success;
 		}
-		if (!alreadyExists) {
-			m_ProgressDialog = ProgressDialog.show(AddSerie.this, getString(R.string.messages_title_adding_serie), getString(R.string.messages_adding_serie), true, false);
-			threadAddShow = new Thread(null, addnewserie, "MagentoBackground");
-			threadAddShow.start();
+
+		@Override
+		protected void onPostExecute(Boolean result) {
+			super.onPostExecute(result);
+			runOnUiThread(reloadSearchSeries);
+			if (msg != null) Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+			m_ProgressDialog.dismiss();
+		}
+
+		@Override
+		protected void onCancelled(Boolean result) {
+			this.onPostExecute(result);
+			super.onCancelled();
 		}
 	}
-
+	
 	// Guillaume: searches from within this activity were discarded
 	@Override
 	protected void onNewIntent(Intent intent) {
@@ -392,6 +362,7 @@ public class AddSerie extends ListActivity
 		.setMessage(sToAdd.getOverview())
 		.setPositiveButton(getString(R.string.menu_context_add_serie), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
+				dialog.dismiss();
 				addSerie(sToAdd);
 			}
 		})
@@ -454,7 +425,6 @@ public class AddSerie extends ListActivity
 						ctv.setCheckMarkDrawable(getResources().getDrawable(R.drawable.add));
 						ctv.setOnClickListener(new OnClickListener() {
 							public void onClick(View v) {
-								bAddShowTh = false;
 								addSerie(o);
 							}
 						});
