@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="nl.asymmetrics.droidshows"
-	android:versionCode="801" android:versionName="7.9.9d">
-	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="21" android:maxSdkVersion="28"/>
+	android:versionCode="70910" android:versionName="7.9.10">
+	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="21"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 	<uses-permission android:name="android.permission.VIBRATE"/>
 	<uses-permission android:name="android.permission.WRITE_CALENDAR"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<application android:icon="@drawable/icon" android:label="@string/layout_app_name" android:allowBackup="true" android:theme="@style/ds">
+	<application android:icon="@drawable/icon" android:label="@string/layout_app_name" android:allowBackup="true" android:theme="@style/ds" android:resizeableActivity="true">
 	<activity android:label="@string/layout_app_name" android:name="nl.asymmetrics.droidshows.DroidShows" android:configChanges="orientation">
 		<intent-filter>
 			<action android:name="android.intent.action.MAIN"/>
