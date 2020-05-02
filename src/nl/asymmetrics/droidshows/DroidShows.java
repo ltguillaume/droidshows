@@ -350,17 +350,21 @@ public class DroidShows extends ListActivity
 				getString(R.string.archive),
 				getString(R.string.menu_log),
 			}));
-		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
-			public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-				logMode = position == 2;
-				showArchive = (position == 2 ? showArchive : position);
-				if (logMode)
-					clearFilter(null);
-				getSeries();
+		listView.postDelayed(new Runnable() {
+			public void run() {
+				spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+					public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+						logMode = position == 2;
+						showArchive = (position == 2 ? showArchive : position);
+						if (logMode)
+							clearFilter(null);
+						getSeries();
+					}
+					public void onNothingSelected(AdapterView<?> arg0) {
+					}
+				});
 			}
-			public void onNothingSelected(AdapterView<?> arg0) {
-			}
-		});
+		}, 1000);
 		ActionBar actionBar = getActionBar();
 		actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
 		actionBar.setCustomView(spinner);
