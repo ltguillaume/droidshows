@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,6 +68,7 @@ public class AddSerie extends ListActivity
 	private List<String> series;
 	private String langCode = DroidShows.langCode;
 	private AsyncAddSerie addSerieTask = null;
+	private Serie sToAdd;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -209,76 +209,11 @@ public class AddSerie extends ListActivity
 				}
 			if (alreadyExists) return false;
 			
-			Serie sToAdd = theTVDB.getSerie(s.getId(), s.getLanguage());
+			sToAdd = theTVDB.getSerie(s.getId(), s.getLanguage());
 			if (sToAdd == null) {
 				msg = getString(R.string.messages_thetvdb_con_error);
 			} else {
-				Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": getting the poster");
-				// get the poster and save it in cache
-				URL imageUrl = null;
-				URLConnection uc = null;
-				String contentType = "";
-				try {
-					try {
-						imageUrl = new URL(sToAdd.getPoster());
-						uc = imageUrl.openConnection();
-						// timetout, 10s for slow connections
-						uc.setConnectTimeout(10000);
-						contentType = uc.getContentType();
-					} catch (MalformedURLException e) {
-						Log.e(SQLiteStore.TAG, e.getMessage());
-					} catch (IOException e) {
-						Log.e(SQLiteStore.TAG, e.getMessage());
-					} catch (Exception e) {
-						Log.d(SQLiteStore.TAG, e.getMessage());
-					}
-					int contentLength = uc.getContentLength();
-					if (!TextUtils.isEmpty(contentType)) {
-						if (!contentType.startsWith("image/") || contentLength == -1) {
-							// throw new IOException("This is not a binary file.");
-							Log.e(SQLiteStore.TAG, "This is not a image.");
-						}
-					}
-					try {
-						File cacheImage = new File(getApplicationContext().getFilesDir().getAbsolutePath()
-							+ imageUrl.getFile().toString());
-						FileUtils.copyURLToFile(imageUrl, cacheImage);
-						Bitmap posterThumb = BitmapFactory.decodeFile(getApplicationContext().getFilesDir().getAbsolutePath() + imageUrl.getFile().toString());
-						Display display = getWindowManager().getDefaultDisplay();
-						int width = display.getWidth();
-						int height = display.getHeight();
-						int newHeight = (int) ((height > width ? height : width) * 0.265);
-						int newWidth = (int) (1.0 * posterThumb.getWidth() / posterThumb.getHeight() * newHeight);
-						Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": resizing the poster and creating the thumbnail");
-						Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
-						File dirTmp = new File(getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs/banners/posters");
-						if (!dirTmp.isDirectory()) {
-							dirTmp.mkdirs();
-						}
-						OutputStream fOut = null;
-						File thumFile = new File(getApplicationContext().getFilesDir().getAbsolutePath(), "thumbs"
-							+ imageUrl.getFile().toString());
-						fOut = new FileOutputStream(thumFile);
-						resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
-						fOut.flush();
-						fOut.close();
-						// removes the bitmaps from memory
-						posterThumb.recycle();
-						resizedBitmap.recycle();
-						System.gc();
-						posterThumb = null;
-						resizedBitmap = null;
-						sToAdd.setPosterThumb(getApplicationContext().getFilesDir().getAbsolutePath()
-							+ "/thumbs" + imageUrl.getFile().toString());
-						cacheImage.delete();
-						sToAdd.setPosterInCache("true");
-					} catch (Exception e) {
-						sToAdd.setPosterInCache("");
-						Log.e(SQLiteStore.TAG, "Error copying the poster to cache.");
-					}
-				} catch (Exception e) {
-					Log.e(SQLiteStore.TAG, e.getMessage());
-				}
+				addPosterThumb();
 				try {
 					Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": saving TV show to database");
 					sToAdd.setPassiveStatus((DroidShows.showArchive == 1 ? 1 : 0));
@@ -305,7 +240,57 @@ public class AddSerie extends ListActivity
 						+ (DroidShows.showArchive == 1 ? " ("+ getString(R.string.messages_context_archived) +")": "");
 				}
 			}
+			sToAdd = null;
 			return success;
+		}
+		
+		private void addPosterThumb() {
+			Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": getting the poster");
+			// get the poster and save it in cache
+			String poster = sToAdd.getPoster();
+			URL posterURL = null;
+			String posterThumbPath = null;
+			try {
+				posterURL = new URL(poster);
+				posterThumbPath = getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs"+ posterURL.getFile().toString();
+			} catch (MalformedURLException e) {
+				Log.e(SQLiteStore.TAG, sToAdd.getSerieName() +" doesn't have a poster URL");
+				e.printStackTrace();
+			}
+			File posterThumbFile = new File(posterThumbPath);
+			try {
+				FileUtils.copyURLToFile(posterURL, posterThumbFile);
+			} catch (IOException e) {
+				Log.e(SQLiteStore.TAG, "Could not download poster: "+ posterURL);
+				e.printStackTrace();
+				return;
+			}
+			Bitmap posterThumb = BitmapFactory.decodeFile(posterThumbPath);
+			if (posterThumb == null) {
+				Log.e(SQLiteStore.TAG, "Corrupt or unknown poster file type: "+ posterThumbPath);
+				return;
+			}
+			int width = getWindowManager().getDefaultDisplay().getWidth();
+			int height = getWindowManager().getDefaultDisplay().getHeight();
+			int newHeight = (int) ((height > width ? height : width) * 0.265);
+			int newWidth = (int) (1.0 * posterThumb.getWidth() / posterThumb.getHeight() * newHeight);
+			Bitmap resizedBitmap = Bitmap.createScaledBitmap(posterThumb, newWidth, newHeight, true);
+			OutputStream fOut = null;
+			try {
+				fOut = new FileOutputStream(posterThumbFile, false);
+				resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 90, fOut);
+				fOut.flush();
+				fOut.close();
+				sToAdd.setPosterInCache("true");
+				sToAdd.setPosterThumb(posterThumbPath);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			posterThumb.recycle();
+			resizedBitmap.recycle();
+			System.gc();
+			posterThumb = null;
+			resizedBitmap = null;
 		}
 
 		@Override
