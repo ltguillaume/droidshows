@@ -174,11 +174,16 @@ public class SerieSeasons extends ListActivity
 						seasons.get(i).setNextEpisode(db.getNextEpisodeString(nextEpisode));
 					}
 				}
-				listView.post(new Runnable() { public void run() { seasonsAdapter.notifyDataSetChanged(); }});
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Void result) {
+			seasonsAdapter.notifyDataSetChanged();
+			super.onPostExecute(result);
 		}
 	}
 

@@ -123,7 +123,6 @@ public class AddSerie extends ListActivity
 		public void run() {
 			seriessearch_adapter.clear();
 			if (search_series != null && search_series.size() > 0) {
-				seriessearch_adapter.notifyDataSetChanged();
 				for (int i = 0; i < search_series.size(); i++)
 					seriessearch_adapter.add(search_series.get(i));
 			}

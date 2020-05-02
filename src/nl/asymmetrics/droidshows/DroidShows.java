@@ -1472,70 +1472,43 @@ public class DroidShows extends ListActivity
 			if (!logMode) {
 				List<String> ids = db.getSeries(showArchive, filterNetworks, networks);
 				series.clear();
-				for (int i = 0; i < ids.size(); i++) {
+				for (int i = 0; i < ids.size(); i++)
 					series.add(db.createTVShowItem(ids.get(i)));
-					seriesAdapter.notifyDataSetChanged();
-				}
 			} else {
 				List<TVShowItem> episodes = db.getLog();
 				series.clear();
-				for (int i = 0; i < episodes.size(); i++) {
+				for (int i = 0; i < episodes.size(); i++)
 					series.add(episodes.get(i));
-					seriesAdapter.notifyDataSetChanged();
-				}
 			}
 			setTitle(getString(R.string.layout_app_name)
 					+ (!logMode ? (showArchive == 1 ? " - "+ getString(R.string.archive) : "") :
 						" - "+ getString(R.string.menu_log)));
-			listView.post(updateListView);
+			runOnUiThread(updateListView);
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, "Error populating TVShowItems or no shows added yet");
 			e.printStackTrace();
 		}
 		setFastScroll();
 		findViewById(R.id.add_show).setVisibility(!logMode ? View.VISIBLE : View.GONE);
+		main.setVisibility(View.VISIBLE);
 		asyncInfo = new AsyncInfo();
 		asyncInfo.execute();
 	}
 
 	public void getNextLogged() {
 		List<TVShowItem> episodes = db.getLog(series.size());
-		for (int i = 0; i < episodes.size(); i++) {
+		for (int i = 0; i < episodes.size(); i++)
 			series.add(episodes.get(i));
-			seriesAdapter.notifyDataSetChanged();
-		}
+		seriesAdapter.notifyDataSetChanged();
 		listView.gettingNextLogged = false;
 	}
 
 	public static Runnable updateListView = new Runnable() {
 		public void run() {
-			main.setVisibility(View.INVISIBLE);
 			seriesAdapter.notifyDataSetChanged();
-/*			if (series != null && series.size() > 0) {
-				if (seriesAdapter.isFiltered) {
-					for (int i = 0; i < seriesAdapter.getCount(); i++) {
-						String adapterSerie = seriesAdapter.getItem(i).getSerieId();
-						for (TVShowItem serie : series)
-							if (serie.getSerieId().equals(adapterSerie))
-								seriesAdapter.setItem(i, serie);
-					}
-				} else {
-					for (int i = 0; i < series.size(); i++) {
-						if (seriesAdapter.getCount() > i && series.get(i).equals(seriesAdapter.getItem(i)))
-							seriesAdapter.setItem(i, series.get(i));
-						else
-							seriesAdapter.add(series.get(i));
-/*	The following is legacy code that now causes java.lang.outOfMemoryError due to seriesAdapter.add(series.get(i));
- *	ArrayList.ensureCapacityInternal -> ensureExplicitCapacity -> grow -> copyOf -> Failed to allocate a 124606360 byte
-					}
-				}
-			}
-*/
 			if (!logMode) seriesAdapter.sort(showsComperator);
 			if (seriesAdapter.isFiltered)
 				seriesAdapter.getFilter().filter(searchV.getText());
-			seriesAdapter.notifyDataSetChanged();
-			main.setVisibility(View.VISIBLE);
 		}
 	};
 
@@ -1654,17 +1627,16 @@ public class DroidShows extends ListActivity
 							if (isCancelled()) return null;
 							serie.setUnwatched(unwatched);
 							serie.setUnwatchedAired(unwatchedAired);
-							if (isCancelled()) return null;
-							if (showNextAiring && 0 < unwatchedAired) {
+							if (showNextAiring && unwatchedAired > 0) {
 								NextEpisode nextEpisode = db.getNextEpisode(serieId);
 								String nextEpisodeString = db.getNextEpisodeString(nextEpisode, true);
-								db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +", nextEpisode='"+ nextEpisodeString +"' WHERE id="+ serieId);
 								serie.setNextEpisode(nextEpisodeString);
-								runOnUiThread(new Runnable() {
-									public void run() {seriesAdapter.notifyDataSetChanged();}
-								});
-							} else
+								if (isCancelled()) return null;
+								db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +", nextEpisode='"+ nextEpisodeString +"' WHERE id="+ serieId);
+							} else {
+								if (isCancelled()) return null;
 								db.execQuery("UPDATE series SET unwatched="+ unwatched +", unwatchedAired="+ unwatchedAired +" WHERE id="+ serieId);
+							}
 						}
 					}
 					if (isCancelled()) return null;
@@ -1760,11 +1732,6 @@ public class DroidShows extends ListActivity
 			super(context, textViewResourceId, series);
 			items = series;
 			isFiltered = false;
-		}
-
-		public void updateData(List<TVShowItem> series) {
-			items = series;
-			notifyDataSetChanged();
 		}
 
 		@Override
