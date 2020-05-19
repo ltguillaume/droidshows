@@ -1472,11 +1472,13 @@ public class DroidShows extends ListActivity
 			if (!logMode) {
 				List<String> ids = db.getSeries(showArchive, filterNetworks, networks);
 				series.clear();
+				seriesAdapter.notifyDataSetChanged();
 				for (int i = 0; i < ids.size(); i++)
 					series.add(db.createTVShowItem(ids.get(i)));
 			} else {
 				List<TVShowItem> episodes = db.getLog();
 				series.clear();
+				seriesAdapter.notifyDataSetChanged();
 				for (int i = 0; i < episodes.size(); i++)
 					series.add(episodes.get(i));
 			}
