@@ -12,6 +12,7 @@ import nl.asymmetrics.droidshows.utils.SQLiteStore.EpisodeRow;
 import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.DatePickerDialog;
 import android.app.ListActivity;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -32,6 +33,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class SerieEpisodes extends ListActivity {
 	private EpisodesAdapter episodesAdapter;
@@ -43,6 +45,7 @@ public class SerieEpisodes extends ListActivity {
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private SQLiteStore db;
 	private DatePickerDialog dateDialog;
+	private TimePickerDialog timeDialog;
 	private int backFromEpisode = -1;
 	private Calendar cal = Calendar.getInstance();
 
@@ -91,17 +94,26 @@ public class SerieEpisodes extends ListActivity {
 				cal.setTimeInMillis(seen * 1000);
 			else
 				cal.setTimeInMillis(System.currentTimeMillis());
-			int year = cal.get(Calendar.YEAR);
-			int month = cal.get(Calendar.MONTH);
-			int day = cal.get(Calendar.DAY_OF_MONTH);
+			int sYear = cal.get(Calendar.YEAR);
+			int sMonth = cal.get(Calendar.MONTH);
+			int sDay = cal.get(Calendar.DAY_OF_MONTH);
+			final int sHour = cal.get(Calendar.HOUR_OF_DAY);
+			final int sMinute = cal.get(Calendar.MINUTE);
 
 			final int position = info.position;
 			dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {			
 				public void onDateSet(DatePicker view, int year, int month, int day) {
 					cal.set(year, month, day);
-					check(position, cal.getTimeInMillis() / 1000);
+					timeDialog = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
+						public void onTimeSet(TimePicker view, int hour, int minute) {
+							cal.set(Calendar.HOUR_OF_DAY, hour);
+							cal.set(Calendar.MINUTE, minute);
+							check(position, cal.getTimeInMillis() / 1000);
+						}
+					}, sHour, sMinute, true);
+					timeDialog.show();
 				}
-			}, year, month, day);
+			}, sYear, sMonth, sDay);
 			dateDialog.show();
 			return true;
 		case DELEP_CONTEXT:

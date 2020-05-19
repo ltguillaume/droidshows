@@ -14,7 +14,7 @@ import nl.asymmetrics.droidshows.utils.SwipeDetect;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.ContentValues;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -26,6 +26,7 @@ import android.view.View.OnLongClickListener;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class ViewEpisode extends Activity
 {
@@ -44,6 +45,7 @@ public class ViewEpisode extends Activity
 	private SQLiteStore db;
 	private SwipeDetect swipeDetect = new SwipeDetect();
 	private DatePickerDialog dateDialog;
+	private TimePickerDialog timeDialog;
 	private Calendar cal = Calendar.getInstance();
 	
 	@Override
@@ -115,26 +117,32 @@ public class ViewEpisode extends Activity
 			check(seenCheckBox);
 			seenCheckBox.setOnLongClickListener(new OnLongClickListener() {
 				public boolean onLongClick(View arg0) {
-					int year = 0, month = 0, day = 0;
-					if (seen > 1) {
+					if (seen > 1)
 						cal.setTimeInMillis(seen * 1000);
-						year = cal.get(Calendar.YEAR);
-						month = cal.get(Calendar.MONTH);
-						day = cal.get(Calendar.DAY_OF_MONTH);
-					} else {
-						year = cal.get(Calendar.YEAR);
-						month = cal.get(Calendar.MONTH);
-						day = cal.get(Calendar.DAY_OF_MONTH);
-					}
+					else
+						cal.setTimeInMillis(System.currentTimeMillis());
+					int sYear = cal.get(Calendar.YEAR);
+					int sMonth = cal.get(Calendar.MONTH);
+					int sDay = cal.get(Calendar.DAY_OF_MONTH);
+					final int sHour = cal.get(Calendar.HOUR_OF_DAY);
+					final int sMinute = cal.get(Calendar.MINUTE);
 
 					dateDialog = new DatePickerDialog(seenCheckBox.getContext(), new DatePickerDialog.OnDateSetListener() {
 						public void onDateSet(DatePicker view, int year, int month, int day) {
 							cal.set(year, month, day);
-							seen = cal.getTimeInMillis() / 1000;
-							seenCheckBox.setChecked(seen > 1);
-							check(seenCheckBox);
+							timeDialog = new TimePickerDialog(seenCheckBox.getContext(), new TimePickerDialog.OnTimeSetListener() {
+								public void onTimeSet(TimePicker view, int hour, int minute) {
+									cal.set(Calendar.HOUR_OF_DAY, hour);
+									cal.set(Calendar.MINUTE, minute);
+									seen = cal.getTimeInMillis() / 1000;
+									seenCheckBox.setChecked(seen > 1);
+									check(seenCheckBox);
+								}
+							}, sHour, sMinute, true);
+							timeDialog.show();
 						}
-					}, year, month, day);
+					}, sYear, sMonth, sDay);
+					
 					dateDialog.show();
 					return true;
 				}
