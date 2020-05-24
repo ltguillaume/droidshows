@@ -103,7 +103,7 @@
 <string name="messages_context_mark_seasonseen">Marcar todos los eps. como vistos</string>
 <string name="messages_specials">Especiales</string>
 <string name="messsages_view_ep_details">Ver los detalles del episodio</string>
-<string name="messsages_edit_seen_date">Editar la fecha de visionado</string>
+<string name="messsages_edit_seen_timestamp">Editar la fecha de visionado</string>
 <string name="messages_thetvdb_con_error">Error al conectar a TheTVDB. Inténtalo de nuevo.</string>
 <string name="messages_marked_seen">marcado como visto</string>
 <string name="messages_marked_unseen">marcado como no visto</string>

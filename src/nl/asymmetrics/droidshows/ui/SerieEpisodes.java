@@ -51,8 +51,8 @@ public class SerieEpisodes extends ListActivity {
 
 	/* Context Menus */
 	private static final int VIEWEP_CONTEXT = Menu.FIRST;
-	private static final int SEENDATE_CONTEXT = Menu.FIRST + 1;
-	private static final int DELEP_CONTEXT = SEENDATE_CONTEXT + 1;
+	private static final int SEENTIMESTAMP_CONTEXT = Menu.FIRST + 1;
+	private static final int DELEP_CONTEXT = SEENTIMESTAMP_CONTEXT + 1;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class SerieEpisodes extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		menu.add(0, VIEWEP_CONTEXT, 0, getString(R.string.messsages_view_ep_details));
-		menu.add(0, SEENDATE_CONTEXT, 0, getString(R.string.messsages_edit_seen_date));
+		menu.add(0, SEENTIMESTAMP_CONTEXT, 0, getString(R.string.messsages_edit_seen_timestamp));
 		menu.add(0, DELEP_CONTEXT, 0, getString(R.string.menu_context_delete));
 	}
 
@@ -88,7 +88,7 @@ public class SerieEpisodes extends ListActivity {
 		case VIEWEP_CONTEXT:
 			startViewEpisode(info.position);
 			return true;
-		case SEENDATE_CONTEXT:
+		case SEENTIMESTAMP_CONTEXT:
 			long seen = episodes.get(info.position).seen;
 			if (seen > 1)
 				cal.setTimeInMillis(seen * 1000);
@@ -175,7 +175,7 @@ public class SerieEpisodes extends ListActivity {
 				holder = new ViewHolder();
 				holder.name = (TextView) convertView.findViewById(R.id.name);
 				holder.aired = (TextView) convertView.findViewById(R.id.aired);
-				holder.seenDate = (TextView) convertView.findViewById(R.id.seendate);
+				holder.seenTimestamp = (TextView) convertView.findViewById(R.id.seenTimestamp);
 				holder.seen = (CheckBox) convertView.findViewById(R.id.seen);
 
 				convertView.setTag(holder);
@@ -201,17 +201,17 @@ public class SerieEpisodes extends ListActivity {
 			
 			holder.seen.setChecked(ep.seen > 0);
 			if (ep.seen > 1) {	// If seen value is a date
-				holder.seenDate.setTextColor(textViewColors);
-				holder.seenDate.setText(SimpleDateFormat.getDateInstance().format(new Date(ep.seen * 1000)));
+				holder.seenTimestamp.setTextColor(textViewColors);
+				holder.seenTimestamp.setText(SimpleDateFormat.getDateInstance().format(new Date(ep.seen * 1000)));
 			} else
-				holder.seenDate.setText("");
+				holder.seenTimestamp.setText("");
 
 			return convertView;
 		}
 	}
 
 	static class ViewHolder {
-		TextView name, aired, seenDate;
+		TextView name, aired, seenTimestamp;
 		CheckBox seen;
 	}
 
@@ -241,7 +241,7 @@ public class SerieEpisodes extends ListActivity {
 	private void check(int position, View v, long seen) {
 		if (v != null) {
 			CheckBox c = (CheckBox) v.findViewById(R.id.seen);
-			TextView d = (TextView) getViewByPosition(position).findViewById(R.id.seendate);
+			TextView d = (TextView) getViewByPosition(position).findViewById(R.id.seenTimestamp);
 			if (seen > -1)
 				c.setChecked(true);
 			if (c.isChecked()) {

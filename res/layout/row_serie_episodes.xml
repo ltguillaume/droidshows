@@ -4,6 +4,6 @@
 		<TextView android:id="@+id/name" android:layout_width="fill_parent" android:layout_height="wrap_content" android:textSize="16sp" android:textStyle="bold" android:ellipsize="marquee" android:singleLine="true"/>
 		<TextView android:id="@+id/aired" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 	</LinearLayout>
-	<TextView android:id="@+id/seendate" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:textSize="12sp"/>
+	<TextView android:id="@+id/seenTimestamp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:textSize="12sp"/>
 	<CheckBox android:id="@+id/seen" android:layout_width="wrap_content" android:layout_height="fill_parent" android:paddingTop="6dp" android:paddingBottom="6dp" android:paddingLeft="0dp" android:paddingRight="6dp" android:button="@null" android:drawableRight="?android:attr/listChoiceIndicatorMultiple" android:focusable="false" android:focusableInTouchMode="false" android:onClick="check"/>
 </LinearLayout>

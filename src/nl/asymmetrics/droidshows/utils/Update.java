@@ -101,7 +101,7 @@ public class Update
 	private boolean u0157GTo0157G3() {
 		Log.d(SQLiteStore.TAG, "UPDATING TO VERSION 0.1.5-7G3");
 		try {
-			if (!db.convertSeenDates()) return false;
+			if (!db.convertSeenTimestamps()) return false;
 			db.execQuery("UPDATE droidseries SET version='0.1.5-7G3'");
 			return true;
 		} catch (Exception e) {

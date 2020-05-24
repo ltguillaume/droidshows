@@ -403,7 +403,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return episodesSeen;
 	}
 
-	public boolean convertSeenDates() {
+	public boolean convertSeenTimestamps() {
 		boolean result = true;
 		int converted = 0;
 		List<EpisodeSeen> episodesSeen = new ArrayList<EpisodeSeen>();
@@ -416,12 +416,12 @@ public class SQLiteStore extends SQLiteOpenHelper
 					episodesSeen.add(new EpisodeSeen(c.getString(0), c.getInt(1)));
 				} while (c.moveToNext());
 			}
-			Date seenDate;
+			Date seenTimestamp;
 			for (EpisodeSeen ep : episodesSeen) {
 				if (ep.seen > 1) {
 					try {
-						seenDate = SQLiteStore.dateFormatSeen.parse(""+ ep.seen);
-						long seen = seenDate.getTime() / 1000;
+						seenTimestamp = SQLiteStore.dateFormatSeen.parse(""+ ep.seen);
+						long seen = seenTimestamp.getTime() / 1000;
 //						Log.d(TAG, "Converting seen from\n"+ ep.seen +" to\n"+ SQLiteStore.dateFormatSeen.format(new Date(seen * 1000))  +"(db-value ="+ seen +")");
 						execQuery("UPDATE episodes SET seen ="+ seen +" WHERE id='"+ ep.episode +"'");
 						converted++;

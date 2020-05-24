@@ -270,7 +270,7 @@ public class ViewEpisode extends Activity
 	public void check(View v) {
 		if (v != null) {
 			CheckBox c = (CheckBox) findViewById(R.id.seen);
-			TextView d = (TextView) findViewById(R.id.seendate);
+			TextView d = (TextView) findViewById(R.id.seenTimestamp);
 			if (c.isChecked()) {
 				d.setTextColor(getResources().getColor(android.R.color.white));
 				if (seen == 0)
