@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.ArrayAdapter;
@@ -89,32 +90,7 @@ public class SerieEpisodes extends ListActivity {
 			startViewEpisode(info.position);
 			return true;
 		case SEENTIMESTAMP_CONTEXT:
-			long seen = episodes.get(info.position).seen;
-			if (seen > 1)
-				cal.setTimeInMillis(seen * 1000);
-			else
-				cal.setTimeInMillis(System.currentTimeMillis());
-			int sYear = cal.get(Calendar.YEAR);
-			int sMonth = cal.get(Calendar.MONTH);
-			int sDay = cal.get(Calendar.DAY_OF_MONTH);
-			final int sHour = cal.get(Calendar.HOUR_OF_DAY);
-			final int sMinute = cal.get(Calendar.MINUTE);
-
-			final int position = info.position;
-			dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {			
-				public void onDateSet(DatePicker view, int year, int month, int day) {
-					cal.set(year, month, day);
-					timeDialog = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
-						public void onTimeSet(TimePicker view, int hour, int minute) {
-							cal.set(Calendar.HOUR_OF_DAY, hour);
-							cal.set(Calendar.MINUTE, minute);
-							check(position, cal.getTimeInMillis() / 1000);
-						}
-					}, sHour, sMinute, true);
-					timeDialog.show();
-				}
-			}, sYear, sMonth, sDay);
-			dateDialog.show();
+			seenTimestamp(info.position);
 			return true;
 		case DELEP_CONTEXT:
 			if (!db.deleteEpisode(serieId, episodes.get(info.position).id))
@@ -177,6 +153,12 @@ public class SerieEpisodes extends ListActivity {
 				holder.aired = (TextView) convertView.findViewById(R.id.aired);
 				holder.seenTimestamp = (TextView) convertView.findViewById(R.id.seenTimestamp);
 				holder.seen = (CheckBox) convertView.findViewById(R.id.seen);
+				holder.seen.setOnLongClickListener(new OnLongClickListener() {
+					public boolean onLongClick(View v) {
+						seenTimestamp(listView.getPositionForView(v));
+						return true;
+					}
+				});
 
 				convertView.setTag(holder);
 			} else {
@@ -256,6 +238,34 @@ public class SerieEpisodes extends ListActivity {
 			}
 		}
 		db.updateUnwatchedEpisode(serieId, episodes.get(position).id, seen);
+	}
+
+	private void seenTimestamp(final int position) {
+		long seen = episodes.get(position).seen;
+		if (seen > 1)
+			cal.setTimeInMillis(seen * 1000);
+		else
+			cal.setTimeInMillis(System.currentTimeMillis());
+		int sYear = cal.get(Calendar.YEAR);
+		int sMonth = cal.get(Calendar.MONTH);
+		int sDay = cal.get(Calendar.DAY_OF_MONTH);
+		final int sHour = cal.get(Calendar.HOUR_OF_DAY);
+		final int sMinute = cal.get(Calendar.MINUTE);
+	
+		dateDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {			
+			public void onDateSet(DatePicker view, int year, int month, int day) {
+				cal.set(year, month, day);
+				timeDialog = new TimePickerDialog(view.getContext(), new TimePickerDialog.OnTimeSetListener() {
+					public void onTimeSet(TimePicker view, int hour, int minute) {
+						cal.set(Calendar.HOUR_OF_DAY, hour);
+						cal.set(Calendar.MINUTE, minute);
+						check(position, cal.getTimeInMillis() / 1000);
+					}
+				}, sHour, sMinute, true);
+				timeDialog.show();
+			}
+		}, sYear, sMonth, sDay);
+		dateDialog.show();
 	}
 
 	private void startViewEpisode(int position) {
