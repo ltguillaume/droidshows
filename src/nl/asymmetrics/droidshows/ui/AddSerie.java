@@ -30,10 +30,8 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -256,6 +254,7 @@ public class AddSerie extends ListActivity
 			} catch (MalformedURLException e) {
 				Log.e(SQLiteStore.TAG, sToAdd.getSerieName() +" doesn't have a poster URL");
 				e.printStackTrace();
+				return;
 			}
 			File posterThumbFile = new File(posterThumbPath);
 			try {
