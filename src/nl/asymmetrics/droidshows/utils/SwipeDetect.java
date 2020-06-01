@@ -7,12 +7,13 @@ import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.ui.ViewSerie;
 
 public class SwipeDetect implements View.OnTouchListener {
-	private int onDownX, onDownY;
+	private int vWidth, onDownX, onDownY;
 	public int value = 0;
 	
 	public boolean onTouch(View v, MotionEvent event) {
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_DOWN:
+				vWidth = v.getWidth();
 				onDownX = (int) event.getX();
 				onDownY = (int) event.getY();
 				value = 0;
@@ -23,22 +24,24 @@ public class SwipeDetect implements View.OnTouchListener {
 				int deltaXabs = deltaX > 0 ? deltaX : -deltaX,
 					deltaYabs = deltaY > 0 ? deltaY : -deltaY;
 				
-				if (deltaXabs > v.getWidth() / 4 && deltaXabs > deltaYabs) {
+				if (value >= 0 && onDownX != 0 && deltaXabs > deltaYabs * 2) {
+					if (deltaXabs < vWidth / 4)
+						return true;
+					
 					if (deltaX > 0) {	// > 0 = RTL
 						if (v.getContext() instanceof DroidShows) {
 							value = 1;	// mark next episode seen
-							return true;
 						} else if (DroidShows.switchSwipeDirection || v.getContext() instanceof ViewSerie) {
 							((Activity)v.getContext()).onBackPressed();
 							value = -1;
-							return true;
 						}
-						value = -1;	// Don't fire more than once
+//						value = -1;	// Don't fire more than once
 					} else if (!DroidShows.switchSwipeDirection) {	// < 0 = LTR
 						((Activity)v.getContext()).onBackPressed();
 						value = -1;
-						return true;
 					}
+					
+					return true;
 				}
 		}
 		return false;
