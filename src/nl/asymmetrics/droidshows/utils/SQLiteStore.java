@@ -476,7 +476,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return sname;
 	}
 
-	public int getEPUnwatchedAired(String serieId) {
+	public int getEpsUnwatchedAired(String serieId) {
 		int unwatchedAired = 0;
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId
 			+"' AND seen=0 AND firstAired < '"+ today +"' AND firstAired <> ''"
@@ -490,11 +490,11 @@ public class SQLiteStore extends SQLiteOpenHelper
 			Log.e(TAG, e.getMessage());
 		}
 		if (c != null) c.close();
-//		Log.d(TAG, "serie="+serieId+" getEPUnwatchedAired"+" today="+today+" | unwatchedAired="+unwatchedAired);
+//		Log.d(TAG, "serie="+serieId+" getEpsUnwatchedAired"+" today="+today+" | unwatchedAired="+unwatchedAired);
 		return unwatchedAired;
 	}
 
-	public int getSeasonEPUnwatchedAired(String serieId, int snumber) {
+	public int getEpsUnwatchedAired(String serieId, int snumber) {
 		int unwatched = -1;
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="+ snumber
 				+" AND seen=0 AND firstAired < '"+ today +"' AND firstAired <> ''");
@@ -507,11 +507,11 @@ public class SQLiteStore extends SQLiteOpenHelper
 			Log.e(TAG, e.getMessage());
 		}
 		if (c != null) c.close();
-//		Log.d(TAG, "serie="+serieId+" getSeasonEPUnwatchedAired"+" today="+today+" | season ="+snumber+" | unwatchedAired="+unwatched);
+//		Log.d(TAG, "serie="+serieId+" getSeasonEpsUnwatchedAired"+" today="+today+" | season ="+snumber+" | unwatchedAired="+unwatched);
 		return unwatched;
 	}
 
-	public int getEPUnwatched(String serieId) {
+	public int getEpsUnwatched(String serieId) {
 		int unwatched = -1;
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId
 			+"' AND seen=0 "+ (DroidShows.includeSpecialsOption ? "" : "AND seasonNumber <> 0"));
@@ -527,7 +527,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return unwatched;
 	}
 
-	public int getSeasonEPUnwatched(String serieId, int snumber) {
+	public int getEpsUnwatched(String serieId, int snumber) {
 		int unwatched = 0;
 		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId
 			+"' AND seasonNumber="+ snumber +" AND seen=0");
@@ -1069,8 +1069,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 	
 	public void updateShowStats(String serieId) {
 		int seasonCount = getSeasonCount(serieId);
-		int unwatchedAired = getEPUnwatchedAired(serieId);
-		int unwatched = getEPUnwatched(serieId);
+		int unwatchedAired = getEpsUnwatchedAired(serieId);
+		int unwatched = getEpsUnwatched(serieId);
 		NextEpisode nextEpisode = getNextEpisode(serieId);
 		String nextEpisodeString = getNextEpisodeString(nextEpisode, DroidShows.showNextAiring && 0 < unwatchedAired && unwatchedAired < unwatched);
 		execQuery("UPDATE series SET seasonCount="+ seasonCount +", unwatchedAired="+ unwatchedAired +", unwatched="+ unwatched +", nextEpisode='"+ nextEpisodeString +"', nextAir='"+ nextEpisode.firstAired +"' WHERE id="+ serieId);

@@ -1623,8 +1623,8 @@ public class DroidShows extends ListActivity
 						TVShowItem serie = series.get(i);
 						if (isCancelled()) return null;
 						String serieId = serie.getSerieId();
-						int unwatched = db.getEPUnwatched(serieId);
-						int unwatchedAired = db.getEPUnwatchedAired(serieId);
+						int unwatched = db.getEpsUnwatched(serieId);
+						int unwatchedAired = db.getEpsUnwatchedAired(serieId);
 						if (unwatched != serie.getUnwatched() || unwatchedAired != serie.getUnwatchedAired()) {
 							if (isCancelled()) return null;
 							serie.setUnwatched(unwatched);

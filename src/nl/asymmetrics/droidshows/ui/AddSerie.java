@@ -219,8 +219,8 @@ public class AddSerie extends ListActivity
 					Log.d(SQLiteStore.TAG, "Adding "+ sToAdd.getSerieName() +": creating the TV show item");
 					int nseasons = db.getSeasonCount(sToAdd.getId());
 					SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(sToAdd.getId());
-					int unwatchedAired = db.getEPUnwatchedAired(sToAdd.getId());
-					int unwatched = db.getEPUnwatched(sToAdd.getId());
+					int unwatchedAired = db.getEpsUnwatchedAired(sToAdd.getId());
+					int unwatched = db.getEpsUnwatched(sToAdd.getId());
 					String nextEpisodeStr = db.getNextEpisodeString(nextEpisode, DroidShows.showNextAiring && 0 < unwatchedAired && unwatchedAired < unwatched);
 					Drawable d = Drawable.createFromPath(sToAdd.getPosterThumb());
 					TVShowItem tvsi = new TVShowItem(sToAdd.getId(), sToAdd.getLanguage(), sToAdd.getPosterThumb(), d, sToAdd.getSerieName(), nseasons,

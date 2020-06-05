@@ -164,8 +164,8 @@ public class SerieSeasons extends ListActivity
 				for (int i = 0; i < seasons.size(); i++) {
 					String serieId = seasons.get(i).getSerieId();
 					int seasonNumber = seasons.get(i).getSNumber();
-					int unwatchedAired = db.getSeasonEPUnwatchedAired(serieId, seasonNumber);
-					int unwatched = db.getSeasonEPUnwatched(serieId, seasonNumber);
+					int unwatchedAired = db.getEpsUnwatchedAired(serieId, seasonNumber);
+					int unwatched = db.getEpsUnwatched(serieId, seasonNumber);
 					seasons.get(i).setUnwatchedAired(unwatchedAired);
 					seasons.get(i).setUnwatched(unwatched);
 					if (unwatched > 0) {
