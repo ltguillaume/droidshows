@@ -161,6 +161,19 @@ public class ViewSerie extends Activity
 				TextView runtimeV = (TextView) findViewById(R.id.runtime);
 				runtimeV.setText(runtime +" "+ getString(R.string.series_runtime_minutes));
 				runtimeV.setVisibility(View.VISIBLE);
+				try {
+					int runtimeInt = Integer.parseInt(runtime);
+					int epCount = db.getEpsWatched(serieId);
+					if (epCount > 0) {
+						int minutes = runtimeInt * epCount;
+						int hours = minutes / 60;
+						minutes = minutes % 60;
+						runtimeV.setText(runtimeV.getText()
+							+" ("+ (hours > 0 ? hours +":" : "")
+							+ (minutes < 10 ? "0" : "") + minutes
+							+" "+ getString(R.string.messages_marked_seen) +")");
+					}
+				} catch (Exception e) { e.printStackTrace(); }
 			}
 			
 			TextView serieOverviewV = (TextView) findViewById(R.id.serieOverview);

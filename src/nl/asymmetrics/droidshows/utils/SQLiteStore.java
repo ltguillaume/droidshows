@@ -475,6 +475,24 @@ public class SQLiteStore extends SQLiteOpenHelper
 		if (c != null) c.close();
 		return sname;
 	}
+	
+	public int getEpsWatched(String serieId) {
+		int watched = 0;
+		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId
+			+"' AND seen>0"
+			+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0"));
+		try {
+			c.moveToFirst();
+			if (c != null && c.isFirst()) {
+				watched = c.getInt(0);
+			}
+		} catch (SQLiteException e) {
+			Log.e(TAG, e.getMessage());
+		}
+		if (c != null) c.close();
+//		Log.d(TAG, "serie="+serieId+" getEpsWatched="+ watched);
+		return watched;
+	}
 
 	public int getEpsUnwatchedAired(String serieId) {
 		int unwatchedAired = 0;
