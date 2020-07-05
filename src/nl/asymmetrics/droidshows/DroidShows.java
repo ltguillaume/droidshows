@@ -101,7 +101,8 @@ public class DroidShows extends ListActivity
 	/* Menus */
 	private static final int UNDO_MENU_ITEM = Menu.FIRST;
 	private static final int FILTER_MENU_ITEM = UNDO_MENU_ITEM + 1;
-	private static final int SORT_MENU_ITEM = FILTER_MENU_ITEM + 1;
+	private static final int SEEN_MENU_ITEM = FILTER_MENU_ITEM + 1;
+	private static final int SORT_MENU_ITEM = SEEN_MENU_ITEM + 1;
 	private static final int TOGGLE_ARCHIVE_MENU_ITEM = SORT_MENU_ITEM + 1;
 	private static final int LOG_MODE_ITEM = TOGGLE_ARCHIVE_MENU_ITEM + 1;
 	private static final int SEARCH_MENU_ITEM = LOG_MODE_ITEM + 1;
@@ -135,12 +136,12 @@ public class DroidShows extends ListActivity
 	private static boolean autoBackupOption;
 	private static final String BACKUP_FOLDER_PREF_NAME = "backup_folder";
 	private static String backupFolder;
+	private static final String EXCLUDE_SEEN_PREF_NAME = "exclude_seen";
+	private static boolean excludeSeen;
 	private static final String SORT_PREF_NAME = "sort";
 	private static final int SORT_BY_NAME = 0;
 	private static final int SORT_BY_UNSEEN = 1;
 	private static int sortOption;
-	private static final String EXCLUDE_SEEN_PREF_NAME = "exclude_seen";
-	private static boolean excludeSeen;
 	private static final String LATEST_SEASON_PREF_NAME = "last_season";
 	private static final int UPDATE_ALL_SEASONS = 0;
 	private static final int UPDATE_LATEST_SEASON_ONLY = 1;
@@ -209,8 +210,8 @@ public class DroidShows extends ListActivity
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
 		autoBackupOption = sharedPrefs.getBoolean(AUTO_BACKUP_PREF_NAME, false);
 		backupFolder = sharedPrefs.getString(BACKUP_FOLDER_PREF_NAME, Environment.getExternalStorageDirectory() +"/DroidShows");
-		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
 		excludeSeen = sharedPrefs.getBoolean(EXCLUDE_SEEN_PREF_NAME, false);
+		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
 		latestSeasonOption = sharedPrefs.getInt(LATEST_SEASON_PREF_NAME, UPDATE_LATEST_SEASON_ONLY);
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
@@ -323,6 +324,7 @@ public class DroidShows extends ListActivity
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, UNDO_MENU_ITEM, 0, getString(R.string.menu_undo)).setIcon(android.R.drawable.ic_menu_revert);
 		menu.add(0, FILTER_MENU_ITEM, 0, getString(R.string.menu_filter)).setIcon(android.R.drawable.ic_menu_view);
+		menu.add(0, SEEN_MENU_ITEM, 0, "").setIcon(android.R.drawable.ic_menu_myplaces);
 		menu.add(0, SORT_MENU_ITEM, 0, "");
 		menu.add(0, TOGGLE_ARCHIVE_MENU_ITEM, 0, "");
 		menu.add(0, LOG_MODE_ITEM, 0, getString(R.string.menu_log)).setIcon(android.R.drawable.ic_menu_agenda);
@@ -378,6 +380,8 @@ public class DroidShows extends ListActivity
 			.setVisible(undo.size() > 0);
 		menu.findItem(FILTER_MENU_ITEM)
 			.setEnabled(!logMode && !searching());
+		menu.findItem(SEEN_MENU_ITEM)
+			.setEnabled(!logMode && !searching());
 		menu.findItem(SORT_MENU_ITEM)
 			.setEnabled(!logMode);
 		menu.findItem(TOGGLE_ARCHIVE_MENU_ITEM)
@@ -397,6 +401,7 @@ public class DroidShows extends ListActivity
 				.setIcon(android.R.drawable.ic_menu_recent_history)
 				.setTitle(R.string.menu_show_archive);
 		}
+		menu.findItem(SEEN_MENU_ITEM).setTitle(excludeSeen ? R.string.menu_include_seen : R.string.menu_exclude_seen);
 		if (sortOption == SORT_BY_UNSEEN) {
 			menu.findItem(SORT_MENU_ITEM)
 				.setIcon(android.R.drawable.ic_menu_sort_alphabetically)
@@ -420,6 +425,9 @@ public class DroidShows extends ListActivity
 				break;
 			case TOGGLE_ARCHIVE_MENU_ITEM :
 				toggleArchive();
+				break;
+			case SEEN_MENU_ITEM :
+				toggleSeen();
 				break;
 			case SORT_MENU_ITEM :
 				toggleSort();
@@ -454,6 +462,11 @@ public class DroidShows extends ListActivity
 		showArchive = (showArchive + 1) % 2;
 		getSeries();
 		listView.setSelection(0);
+	}
+
+	private void toggleSeen() {
+		excludeSeen ^= true;
+		listView.post(updateListView);
 	}
 
 	private void toggleSort() {
