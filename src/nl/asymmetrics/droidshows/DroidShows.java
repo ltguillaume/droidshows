@@ -195,7 +195,7 @@ public class DroidShows extends ListActivity
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (!isTaskRoot()) {	// Prevent multiple instances: http://stackoverflow.com/a/11042163
+		if (!isTaskRoot()) {	// Prevent multiple instances: https://stackoverflow.com/a/11042163
 			final Intent intent = getIntent();
 			if (intent.hasCategory(Intent.CATEGORY_LAUNCHER) && Intent.ACTION_MAIN.equals(intent.getAction())) {
 				finish();
@@ -276,7 +276,7 @@ public class DroidShows extends ListActivity
 /*		listView.setFastScrollEnabled(!excludeSeen || logMode);
 		if (!excludeSeen || logMode) {
 			if (seriesAdapter.getCount() > 20) {
-				try {	// http://stackoverflow.com/a/26447004
+				try {	// https://stackoverflow.com/a/26447004
 					java.lang.reflect.Field fieldFastScroller = AbsListView.class.getDeclaredField(
 						Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? "mFastScroll" : "mFastScroller");
 					fieldFastScroller.setAccessible(true);
@@ -1094,7 +1094,7 @@ public class DroidShows extends ListActivity
 	    else if (getApplicationContext().getPackageManager().getLaunchIntentForPackage("org.wikipedia.beta") != null)
 	    	wikiApp = "org.wikipedia.beta";
 	    if (wikiApp == null) {
-	    	String uri = "http://"+ (langCode.equals("all") ? "" : langCode +".") +"m.wikipedia.org/wiki/index.php?search="+ serieName
+	    	String uri = "https://"+ (langCode.equals("all") ? "" : langCode +".") +"m.wikipedia.org/wiki/index.php?search="+ serieName
 	    		+ (langCode.equals("en") ? " (TV series)" : "");
 	    	wiki = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 	    } else {
@@ -1123,7 +1123,7 @@ public class DroidShows extends ListActivity
 			String uri = "imdb:///";
 			Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
 			if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
-				uri = "http://m.imdb.com/";
+				uri = "https://m.imdb.com/";
 			if (imdbId.startsWith("tt"))
 				uri += "title/"+ imdbId;
 			else
@@ -1217,7 +1217,7 @@ public class DroidShows extends ListActivity
 		if (url.startsWith("*"))
 			url = url.substring(1).trim();
 		if (!url.startsWith("http"))
-			url = "http://"+ url;
+			url = "https://"+ url;
 		Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 		startActivity(browse);
 	}

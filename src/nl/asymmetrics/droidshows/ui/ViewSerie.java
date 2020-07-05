@@ -199,7 +199,7 @@ public class ViewSerie extends Activity
 		
 		Intent testForApp = new Intent(Intent.ACTION_VIEW, Uri.parse("imdb:///find"));
 		if (getApplicationContext().getPackageManager().resolveActivity(testForApp, 0) == null)
-			uri = "http://m.imdb.com/";
+			uri = "https://m.imdb.com/";
 
 	}
 	

@@ -21,10 +21,10 @@ __In Show/Episode Details__:
 <a href="https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows" target="_blank">
 <img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="90"/></a>
 
-[Homepage](http://ltguillaume.github.io/DroidShows)  
+[Homepage](https://ltguillaume.github.io/DroidShows)  
 [Wiki (FAQ)](https://github.com/ltGuillaume/DroidShows/wiki)  
-[Screenshots & comparison with original DroidSeries](http://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKipkNGNiZTJhYzk1NjZmYWIwOTZhYWZiNGM4OWQyMTYyMA)  
-[XDA Forum post / Changelog](http://forum.xda-developers.com/showthread.php?t=3136787)  
+[Screenshots & comparison with original DroidSeries](https://gallery.asymmetrics.nl/index.php?sfpg=RHJvaWRTZXJpZXMvKipkNGNiZTJhYzk1NjZmYWIwOTZhYWZiNGM4OWQyMTYyMA)  
+[XDA Forum post / Changelog](https://forum.xda-developers.com/showthread.php?t=3136787)  
 __Download APK__: from XDA forum post, [F-Droid Repository](https://f-droid.org/repository/browse/?fdid=nl.asymmetrics.droidshows) or [here](https://github.com/ltGuillaume/DroidShows/releases)
 
 ![DroidShows Screenshot](/icon/screenshot.png)  
@@ -98,7 +98,7 @@ __Other__:
 \* Fixed UI glitches/styles  
 \* Code clean-up (all layouts revised)  
   
-&copy;2010 [Carlos Limpinho, Paulo Cabido](http://code.google.com/p/droidseries) under GPLv3  
-Modified by [Mikael Berthe](http://gitorious.org/droidseries/mckaels-droidseries)  
-&copy;2014-2018 Guillaume under GPLv3 ([previously on Gitorious](http://gitorious.org/droidseries/droidseries-guillaume))  
-New icon is a mix of work by [Thrasos Varnava](http://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](http://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)
+&copy;2010 [Carlos Limpinho, Paulo Cabido](https://code.google.com/p/droidseries) under GPLv3  
+Modified by Mikael Berthe  
+&copy;2014-2018 Guillaume under GPLv3  
+New icon is a mix of work by [Thrasos Varnava](https://iconeasy.com/icon/tv-shows-2-icon) and [Taenggo](https://wallalay.com/wallpapers-for-android-67-177682-desktop-background.html)

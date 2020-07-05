@@ -11,10 +11,10 @@ import java.io.BufferedInputStream;
 
 import android.util.Log;
 
+import javax.net.ssl.HttpsURLConnection;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
@@ -31,11 +31,11 @@ public class XMLParser {
                     XMLHandler handler = new XMLHandler();
                     xr.setContentHandler(handler);
 
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
                     con.setRequestMethod("GET");
                     con.setConnectTimeout(5000);
                     con.setReadTimeout(5000);
-                    if (con.getResponseCode() == HttpURLConnection.HTTP_OK) {
+                    if (con.getResponseCode() == HttpsURLConnection.HTTP_OK) {
                         InputStream inputStream = new BufferedInputStream(con.getInputStream());
                         InputSource inputSourceURL = new InputSource(inputStream);
                         xr.parse(inputSourceURL);
