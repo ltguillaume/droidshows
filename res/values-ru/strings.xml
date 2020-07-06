@@ -37,6 +37,7 @@
 <string name="menu_context_unpin">Открепить</string>
 <string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">автоматическое ежедневное резервное копирование</string>
+<string name="dialog_backup_versioning">Использовать версионирование для резервного копирования</string>
 <string name="dialog_backup">Резервирование</string>
 <string name="dialog_backup_done">Резервная копия создана</string>
 <string name="dialog_backup_failed">Невозможно создать резервную копию!</string>

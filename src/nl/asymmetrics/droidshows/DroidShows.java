@@ -133,9 +133,11 @@ public class DroidShows extends ListActivity
 	private static final String PREF_NAME = "DroidShowsPref";
 	private SharedPreferences sharedPrefs;
 	private static final String AUTO_BACKUP_PREF_NAME = "auto_backup";
-	private static boolean autoBackupOption;
+	private static boolean autoBackup;
 	private static final String BACKUP_FOLDER_PREF_NAME = "backup_folder";
 	private static String backupFolder;
+	private static final String BACKUP_VERSIONING_PREF_NAME = "backup_versioning";
+	private static boolean backupVersioning;
 	private static final String EXCLUDE_SEEN_PREF_NAME = "exclude_seen";
 	private static boolean excludeSeen;
 	private static final String SORT_PREF_NAME = "sort";
@@ -208,8 +210,9 @@ public class DroidShows extends ListActivity
 
 		// Preferences
 		sharedPrefs = getSharedPreferences(PREF_NAME, 0);
-		autoBackupOption = sharedPrefs.getBoolean(AUTO_BACKUP_PREF_NAME, false);
+		autoBackup = sharedPrefs.getBoolean(AUTO_BACKUP_PREF_NAME, false);
 		backupFolder = sharedPrefs.getString(BACKUP_FOLDER_PREF_NAME, Environment.getExternalStorageDirectory() +"/DroidShows");
+		backupVersioning = sharedPrefs.getBoolean(BACKUP_VERSIONING_PREF_NAME, true);
 		excludeSeen = sharedPrefs.getBoolean(EXCLUDE_SEEN_PREF_NAME, false);
 		sortOption = sharedPrefs.getInt(SORT_PREF_NAME, SORT_BY_NAME);
 		latestSeasonOption = sharedPrefs.getInt(LATEST_SEASON_PREF_NAME, UPDATE_LATEST_SEASON_ONLY);
@@ -556,7 +559,8 @@ public class DroidShows extends ListActivity
 			e.printStackTrace();
 		}
 		((TextView) about.findViewById(R.id.change_language)).setText(getString(R.string.dialog_change_language) +" ("+ langCode +")");
-		((CheckBox) about.findViewById(R.id.auto_backup)).setChecked(autoBackupOption);
+		((CheckBox) about.findViewById(R.id.auto_backup)).setChecked(autoBackup);
+		((CheckBox) about.findViewById(R.id.backup_versioning)).setChecked(backupVersioning);
 		((CheckBox) about.findViewById(R.id.latest_season)).setChecked(latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
 		((CheckBox) about.findViewById(R.id.include_specials)).setChecked(includeSpecialsOption);
 		((CheckBox) about.findViewById(R.id.full_line_check)).setChecked(fullLineCheckOption);
@@ -587,7 +591,10 @@ public class DroidShows extends ListActivity
 				restore();
 				break;
 			case R.id.auto_backup:
-				autoBackupOption ^= true;
+				autoBackup ^= true;
+				break;
+			case R.id.backup_versioning:
+				backupVersioning ^= true;
 				break;
 			case R.id.latest_season:
 				latestSeasonOption ^= 1;
@@ -733,12 +740,12 @@ public class DroidShows extends ListActivity
 	private void backup(boolean auto, final String backupFolder) {
 		File source = new File(getApplicationInfo().dataDir +"/databases/DroidShows.db");
 		File destination = new File(backupFolder, "DroidShows.db");
-		if (auto && (!autoBackupOption ||
+		if (auto && (!autoBackup ||
 				new SimpleDateFormat("yyyy-MM-dd")
 					.format(destination.lastModified()).equals(lastStatsUpdateCurrent) ||
 				source.lastModified() == destination.lastModified()))
 			return;
-		if (destination.exists()) {
+		if (backupVersioning && destination.exists()) {
 			File previous0 = new File(backupFolder, "DroidShows.db0");
 			if (previous0.exists()) {
 				File previous1 = new File(backupFolder, "DroidShows.db1");
@@ -747,7 +754,8 @@ public class DroidShows extends ListActivity
 				previous0.renameTo(previous1);
 			}
 			destination.renameTo(previous0);
-		}
+		} else
+			destination.delete();
 		File folder = new File(backupFolder);
 		if (!folder.isDirectory())
 			folder.mkdir();
@@ -1563,8 +1571,9 @@ public class DroidShows extends ListActivity
 	public void onPause() {
 		super.onPause();
 		SharedPreferences.Editor ed = sharedPrefs.edit();
-		ed.putBoolean(AUTO_BACKUP_PREF_NAME, autoBackupOption);
+		ed.putBoolean(AUTO_BACKUP_PREF_NAME, autoBackup);
 		ed.putString(BACKUP_FOLDER_PREF_NAME, backupFolder);
+		ed.putBoolean(BACKUP_VERSIONING_PREF_NAME, backupVersioning);
 		ed.putInt(SORT_PREF_NAME, sortOption);
 		ed.putBoolean(EXCLUDE_SEEN_PREF_NAME, excludeSeen);
 		ed.putInt(LATEST_SEASON_PREF_NAME, latestSeasonOption);
@@ -1585,7 +1594,7 @@ public class DroidShows extends ListActivity
 
 	@Override
 	protected void onDestroy() {
-		if (autoBackupOption)
+		if (autoBackup)
 			backup(true);
 		super.onDestroy();
 	}

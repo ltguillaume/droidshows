@@ -6,6 +6,7 @@
 			<Button android:id="@+id/restore" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="@string/dialog_restore" android:onClick="dialogOptions"/>
 		</LinearLayout>
 		<CheckBox android:id="@+id/auto_backup" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_auto_backup" android:onClick="dialogOptions"/>
+		<CheckBox android:id="@+id/backup_versioning" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_backup_versioning" android:onClick="dialogOptions"/>
 		<CheckBox android:id="@+id/latest_season" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_latest_season" android:onClick="dialogOptions"/>
 		<CheckBox android:id="@+id/show_next_airing" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_show_next_airing" android:onClick="dialogOptions"/>
 		<CheckBox android:id="@+id/mark_from_last_watched" android:layout_width="fill_parent" android:layout_height="wrap_content" android:focusable="false" android:focusableInTouchMode="false" android:text="@string/dialog_mark_from_last_watched" android:onClick="dialogOptions"/>

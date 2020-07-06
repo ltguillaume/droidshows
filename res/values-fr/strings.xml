@@ -37,6 +37,7 @@
 <string name="menu_context_unpin">Détacher</string>
 <string name="dialog_ok">Ok</string>
 <string name="dialog_auto_backup">Effectuer automatiquement des sauvegardes journalières</string>
+<string name="dialog_backup_versioning">Utiliser le versionnage pour les sauvegardes</string>
 <string name="dialog_backup">Sauvegarder</string>
 <string name="dialog_backup_done">Sauvegarde de la base de donnée effectuée</string>
 <string name="dialog_backup_failed">Impossible d\'effectuer la sauvegarde!</string>

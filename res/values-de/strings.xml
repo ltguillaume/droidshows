@@ -37,6 +37,7 @@
 <string name="menu_context_unpin">Ablösen</string>
 <string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">Tägliche automatische Datensicherung</string>
+<string name="dialog_backup_versioning">Versionierung für Sicherungen verwenden</string>
 <string name="dialog_backup">Sichern</string>
 <string name="dialog_backup_done">Datensicherung fertig</string>
 <string name="dialog_backup_failed">Datensicherung fehlgeschlagen!</string>

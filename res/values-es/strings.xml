@@ -37,6 +37,7 @@
 <string name="menu_context_unpin">Soltar</string>
 <string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">Copia de seguridad diaria automática</string>
+<string name="dialog_backup_versioning">Versionado para copias de seguridad</string>
 <string name="dialog_backup">Copia de seguridad</string>
 <string name="dialog_backup_done">La copia de seguridad de la base de datos ha sido completada</string>
 <string name="dialog_backup_failed">¡No se ha podido hacer la copia de seguridad!</string>
