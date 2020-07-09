@@ -1593,10 +1593,10 @@ public class DroidShows extends ListActivity
 	}
 
 	@Override
-	protected void onDestroy() {
+	protected void onStop() {
 		if (autoBackup)
 			backup(true);
-		super.onDestroy();
+		super.onStop();
 	}
 
 	@Override
