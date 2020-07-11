@@ -14,10 +14,12 @@ import nl.asymmetrics.droidshows.DroidShows;
 import nl.asymmetrics.droidshows.thetvdb.model.Episode;
 import nl.asymmetrics.droidshows.thetvdb.model.Serie;
 import nl.asymmetrics.droidshows.thetvdb.model.TVShowItem;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Build;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
@@ -82,10 +84,13 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return checkDB != null ? true : false;
 	}
 
+	@SuppressLint("NewApi")
 	public void openDataBase() throws SQLException {
 		// Open the database
 		String myPath = DB_PATH + DB_NAME;
 		db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+			db.disableWriteAheadLogging();
 	}
 
 	/* Insert Methods */

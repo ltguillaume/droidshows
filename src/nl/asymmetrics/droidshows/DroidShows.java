@@ -1264,6 +1264,7 @@ public class DroidShows extends ListActivity
 							listView.post(updateShowView(serieId));
 						Looper.loop();
 					}
+					theTVDB = null;
 				}
 			};
 			m_ProgressDialog = ProgressDialog.show(DroidShows.this, serie.getName(), getString(R.string.messages_update_serie), true, false);
@@ -1594,7 +1595,7 @@ public class DroidShows extends ListActivity
 
 	@Override
 	protected void onStop() {
-		if (autoBackup)
+		if (autoBackup && theTVDB == null && asyncInfo.getStatus() != AsyncTask.Status.RUNNING)	// not updating
 			backup(true);
 		super.onStop();
 	}
