@@ -108,6 +108,7 @@
 <string name="messages_specials">Besondere Folgen</string>
 <string name="messsages_view_ep_details">Details der Folge anzeigen</string>
 <string name="messsages_edit_seen_timestamp">Anschau-Zeitpunkt ändern</string>
+<string name="messages_calendar_app_error">Keine Kalender-App gefunden!</string>
 <string name="messages_thetvdb_con_error">Verbindung zu TheTVDB nicht möglich. Versuche es erneut.</string>
 <string name="messages_marked_seen">als gesehen markiert</string>
 <string name="messages_marked_unseen">als ungesehen markiert</string>

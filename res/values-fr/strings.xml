@@ -101,6 +101,7 @@
 <string name="messages_specials">Épisodes spéciaux</string>
 <string name="messsages_view_ep_details">Détail de l\'épisode</string>
 <string name="messsages_edit_seen_timestamp">Modifier l\'horodatage de visualisation</string>
+<string name="messages_calendar_app_error">Aucune application Calendrier trouvée!</string>
 <string name="messages_thetvdb_con_error">Erreur de connexion à TheTVDB. Essayez à nouveau.</string>
 <string name="messages_marked_seen">marqué comme vu</string>
 <string name="messages_marked_unseen">marqué comme non vu</string>

@@ -27,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 public class ViewEpisode extends Activity
 {
@@ -228,7 +229,12 @@ public class ViewEpisode extends Activity
 		intent.putExtra("beginTime", epDate.getTime());
 		intent.putExtra("endTime", epDate.getTime());
 		intent.putExtra("allDay", true);
-		startActivity(intent);
+		try {
+			startActivity(intent);
+		} catch (Exception e) {
+			Toast.makeText(getApplicationContext(), R.string.messages_calendar_app_error, Toast.LENGTH_LONG).show();
+			Log.e(SQLiteStore.TAG, e.getMessage());
+		}
 	}
 	
 	public void IMDbDetails(View v) {

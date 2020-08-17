@@ -108,6 +108,7 @@
 <string name="messages_specials">Specials</string>
 <string name="messsages_view_ep_details">Details aflevering</string>
 <string name="messsages_edit_seen_timestamp">Tijdstip gezien wijzigen</string>
+<string name="messages_calendar_app_error">Geen Agenda-app gevonden!</string>
 <string name="messages_thetvdb_con_error">Kan geen verbinding maken met TheTVDB. Probeer opnieuw.</string>
 <string name="messages_marked_seen">gemarkeerd als gezien</string>
 <string name="messages_marked_unseen">gemarkeerd als niet gezien</string>

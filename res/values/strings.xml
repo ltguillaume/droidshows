@@ -108,6 +108,7 @@
 <string name="messages_specials">Specials</string>
 <string name="messsages_view_ep_details">Episode details</string>
 <string name="messsages_edit_seen_timestamp">Edit seen timestamp</string>
+<string name="messages_calendar_app_error">No Calendar app found!</string>
 <string name="messages_thetvdb_con_error">Error connecting to TheTVDB. Try again.</string>
 <string name="messages_marked_seen">marked as seen</string>
 <string name="messages_marked_unseen">marked as unseen</string>
