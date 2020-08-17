@@ -55,7 +55,7 @@ public class BounceListView extends ListView {
 			if (!updating && -scrollY > minOverScrollDistance) {
 				abortUpdate = false;
 				updating = true;
-				this.postDelayed(startUpdate, 1000);
+				this.postDelayed(startUpdate, 500);
 			}
 		}
 		super.onOverScrolled(scrollX, scrollY, clampedX, clampedY);

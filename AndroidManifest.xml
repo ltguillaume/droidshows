@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="nl.asymmetrics.droidshows"
-	android:versionCode="71100" android:versionName="7.11.0">
+	android:versionCode="71101" android:versionName="7.11.1">
 	<uses-sdk android:minSdkVersion="9" android:targetSdkVersion="21"/>
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -8,23 +8,23 @@
 	<uses-permission android:name="android.permission.WRITE_CALENDAR"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<application android:icon="@drawable/icon" android:label="@string/layout_app_name" android:allowBackup="true" android:theme="@style/ds" android:resizeableActivity="true">
-	<activity android:label="@string/layout_app_name" android:name="nl.asymmetrics.droidshows.DroidShows" android:configChanges="orientation">
+	<activity android:label="@string/layout_app_name" android:name="nl.asymmetrics.droidshows.DroidShows" android:configChanges="orientation|screenSize">
 		<intent-filter>
 			<action android:name="android.intent.action.MAIN"/>
 			<category android:name="android.intent.category.LAUNCHER"/>
 		</intent-filter>
 		<meta-data android:name="android.app.default_searchable" android:value=".ui.AddSerie"/>
 	</activity>
-	<activity android:label="@string/menu_context_add_serie" android:name=".ui.AddSerie" android:configChanges="orientation" android:launchMode="singleTop">
+	<activity android:label="@string/menu_context_add_serie" android:name=".ui.AddSerie" android:configChanges="orientation|screenSize" android:launchMode="singleTop">
 		<intent-filter>
 			<action android:name="android.intent.action.SEARCH"/>
 			<category android:name="android.intent.category.DEFAULT"/>
 		</intent-filter>
 		<meta-data android:name="android.app.searchable" android:resource="@layout/add_serie_search"/>
 	</activity>
-	<activity android:name=".ui.SerieSeasons" android:configChanges="orientation"/>
-	<activity android:name=".ui.SerieEpisodes" android:configChanges="orientation"/>
-	<activity android:name=".ui.ViewEpisode"/>
-	<activity android:label="@string/menu_context_view_serie_details" android:name=".ui.ViewSerie"/>
+	<activity android:name=".ui.SerieSeasons" android:configChanges="orientation|screenSize"/>
+	<activity android:name=".ui.SerieEpisodes" android:configChanges="orientation|screenSize"/>
+	<activity android:name=".ui.ViewEpisode" android:configChanges="orientation|screenSize"/>
+	<activity android:label="@string/menu_context_view_serie_details" android:name=".ui.ViewSerie" android:configChanges="orientation|screenSize"/>
 	</application>
 </manifest>
