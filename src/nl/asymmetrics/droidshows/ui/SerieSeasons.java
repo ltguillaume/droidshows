@@ -35,7 +35,7 @@ public class SerieSeasons extends ListActivity
 {
 	private String serieId;
 	private List<Integer> seasonNumbers = new ArrayList<Integer>();
-	private List<Season> seasons = new ArrayList<Season>();
+	private static List<Season> seasons;
 	// Context Menus
 	private static final int ALLEPSEEN_CONTEXT = Menu.FIRST;
 	private static final int ALLUPTOTHIS_CONTEXT = ALLEPSEEN_CONTEXT + 1;
@@ -43,7 +43,7 @@ public class SerieSeasons extends ListActivity
 	private static ListView listView;
 	public static SeriesSeasonsAdapter seasonsAdapter;
 	private SwipeDetect swipeDetect = new SwipeDetect();
-	private SQLiteStore db;
+	private static SQLiteStore db;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -116,6 +116,7 @@ public class SerieSeasons extends ListActivity
 	}
 
 	private void getSeasons() {
+		seasons = new ArrayList<Season>();
 		try {
 			Cursor cseasons = db.Query("SELECT season FROM serie_seasons WHERE serieId = '"+ serieId +"'  ORDER BY 0+season ASC");	// 0+ to treat VARCHAR as integer an sort properly
 			cseasons.moveToFirst();
@@ -157,7 +158,7 @@ public class SerieSeasons extends ListActivity
 		}
 	};
 
-	private class AsyncInfo extends AsyncTask<Void, Void, Void> {
+	private static class AsyncInfo extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
 			try {

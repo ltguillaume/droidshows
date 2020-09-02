@@ -1631,7 +1631,7 @@ public class DroidShows extends ListActivity
 		}
 	}
 
-	private class AsyncInfo extends AsyncTask<Void, Void, Void> {
+	private static class AsyncInfo extends AsyncTask<Void, Void, Void> {
 		@Override
 		protected Void doInBackground(Void... params) {
 //			Log.d(SQLiteStore.TAG, "AsyncInfo Initializing");
