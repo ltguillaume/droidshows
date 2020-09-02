@@ -117,7 +117,7 @@ public class AddSerie extends ListActivity
 				return super.onContextItemSelected(item);
 		}
 	}
-	private Runnable reloadSearchSeries = new Runnable() {
+	private Runnable loadSearchSeries = new Runnable() {
 		public void run() {
 			seriessearch_adapter.clear();
 			if (search_series != null && search_series.size() > 0) {
@@ -139,7 +139,7 @@ public class AddSerie extends ListActivity
 					Toast.makeText(getApplicationContext(), R.string.messages_thetvdb_con_error, Toast.LENGTH_LONG).show();
 				Looper.loop();
 			} else {
-				runOnUiThread(reloadSearchSeries);
+				runOnUiThread(loadSearchSeries);
 			}
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, e.getMessage());
@@ -295,7 +295,7 @@ public class AddSerie extends ListActivity
 		@Override
 		protected void onPostExecute(Boolean result) {
 			super.onPostExecute(result);
-			runOnUiThread(reloadSearchSeries);
+			seriessearch_adapter.notifyDataSetChanged();
 			if (msg != null) Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
 			m_ProgressDialog.dismiss();
 		}
