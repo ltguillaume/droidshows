@@ -1082,12 +1082,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 	
 	public void updateShowStats() {
 		List<String> series = getSeries(2, false, null);	// 2 = archive and current shows, false = don't filter networks, null = ignore networks filter
-		db.beginTransaction();
-		for (int i = 0; i < series.size(); i += 1) {
+		for (int i = 0; i < series.size(); i += 1)
 			updateShowStats(series.get(i));
-		}
-		db.setTransactionSuccessful();
-		db.endTransaction();
 	}
 	
 	public void updateShowStats(String serieId) {
