@@ -41,6 +41,7 @@ public class SerieEpisodes extends ListActivity {
 	private String serieName;
 	private String serieId;
 	private int seasonNumber;
+	private boolean dvdOrder;
 	private List<EpisodeRow> episodes = null;
 	private ListView listView;
 	private SwipeDetect swipeDetect = new SwipeDetect();
@@ -64,15 +65,16 @@ public class SerieEpisodes extends ListActivity {
 		serieId = getIntent().getStringExtra("serieId");
 		serieName = db.getSerieName(serieId);
 		seasonNumber = getIntent().getIntExtra("seasonNumber", 0);
+		dvdOrder = getIntent().getBooleanExtra("dvdOrder", false);
 		setTitle(serieName +" - "+ (seasonNumber == 0 ? getString(R.string.messages_specials) : getString(R.string.messages_season) +" "+ seasonNumber));
-		episodes = db.getEpisodeRows(serieId, seasonNumber);
+		episodes = db.getEpisodeRows(serieId, seasonNumber, dvdOrder);
 		episodesAdapter = new EpisodesAdapter(this, R.layout.row_serie_episodes, episodes);
 		setListAdapter(episodesAdapter);
 		listView = getListView();
 		listView.setOnTouchListener(swipeDetect);
 		registerForContextMenu(getListView());
 		if (getIntent().getBooleanExtra("nextEpisode", false))
-			listView.setSelection(db.getNextEpisode(serieId, seasonNumber).episode -3);
+			listView.setSelection(db.getNextEpisode(serieId, seasonNumber, dvdOrder).episode -3);
 	}
 
 	/* context menu */
@@ -287,7 +289,7 @@ public class SerieEpisodes extends ListActivity {
 	public void onRestart() {
 		super.onRestart();
 		if (backFromEpisode != -1) {
-			episodes.set(backFromEpisode, db.getEpisodeRow(serieId, seasonNumber, episodes.get(backFromEpisode).id));
+			episodes.set(backFromEpisode, db.getEpisodeRow(serieId, seasonNumber, episodes.get(backFromEpisode).id, dvdOrder));
 			episodesAdapter.notifyDataSetChanged();
 			backFromEpisode = -1;
 		}

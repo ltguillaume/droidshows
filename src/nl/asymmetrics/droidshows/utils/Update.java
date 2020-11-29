@@ -7,7 +7,7 @@ import android.util.Log;
 public class Update
 {
 	private SQLiteStore db;
-	private String currentVersion = "0.1.5-7G3";
+	private String currentVersion = "0.1.5-7G4";
 	
 	public Update(SQLiteStore db) {
 		this.db = db;
@@ -35,6 +35,9 @@ public class Update
 		if (version.equals("0.1.5-7G2")) {
 			done = u0157GTo0157G3();
 		}
+		if (version.equals("0.1.5-7G3")) {
+			done = u0157GTo0157G4();
+		}
 		return done;
 	}
 
@@ -44,6 +47,7 @@ public class Update
 			Cursor c = db.Query("SELECT version FROM droidseries");
 			if (c != null && c.moveToFirst()) {
 				version = c.getString(0);
+				Log.d(SQLiteStore.TAG, "Current database version: "+ version);
 				return version;
 			}
 			c.close();
@@ -103,6 +107,19 @@ public class Update
 		try {
 			if (!db.convertSeenTimestamps()) return false;
 			db.execQuery("UPDATE droidseries SET version='0.1.5-7G3'");
+			return true;
+		} catch (Exception e) {
+			Log.e(SQLiteStore.TAG, "Error updating database");
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	private boolean u0157GTo0157G4() {
+		Log.d(SQLiteStore.TAG, "UPDATING TO VERSION 0.1.5-7G4");
+		try {
+			db.execQuery("ALTER TABLE series ADD COLUMN dvdOrder TINYINT NOT NULL DEFAULT 0");
+			db.execQuery("UPDATE droidseries SET version='0.1.5-7G4'");
 			return true;
 		} catch (Exception e) {
 			Log.e(SQLiteStore.TAG, "Error updating database");

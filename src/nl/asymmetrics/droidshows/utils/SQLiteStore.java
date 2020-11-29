@@ -118,8 +118,9 @@ public class SQLiteStore extends SQLiteOpenHelper
 	public TVShowItem createTVShowItem(String serieId) {
 		String name = "", language = "", tmpPoster = "", showStatus = "", tmpNextEpisode = "", nextEpisode = "", tmpNextAir = "", extResources = "";
 		int tmpStatus = 0, seasonCount = 0, unwatched = 0, unwatchedAired = 0;
+		boolean dvdOrder = false;
 		Date nextAir = null;
-		Cursor c = Query("SELECT serieName, language, posterThumb, status, passiveStatus, seasonCount, unwatchedAired, unwatched, nextEpisode, nextAir, extResources FROM series WHERE id = '" + serieId + "'");
+		Cursor c = Query("SELECT serieName, language, posterThumb, status, passiveStatus, seasonCount, unwatchedAired, unwatched, nextEpisode, nextAir, extResources, dvdOrder FROM series WHERE id = '" + serieId + "'");
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -134,6 +135,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 				tmpNextEpisode = c.getString(c.getColumnIndex("nextEpisode"));
 				tmpNextAir = c.getString(c.getColumnIndex("nextAir"));
 				extResources = c.getString(c.getColumnIndex("extResources"));
+				dvdOrder = c.getInt(c.getColumnIndex("dvdOrder")) == 1;
 			}
 		} catch (SQLiteException e) {
 			Log.e(TAG, e.getMessage());
@@ -149,7 +151,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 			}
 		}
 		boolean status = (tmpStatus == 1);
-		TVShowItem tvsi = new TVShowItem(serieId, language, tmpPoster, null, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, showStatus, extResources);
+		TVShowItem tvsi = new TVShowItem(serieId, language, tmpPoster, null, name, seasonCount, nextEpisode, nextAir, unwatchedAired, unwatched, status, showStatus, extResources, dvdOrder);
 		return tvsi;
 	}
 
@@ -273,7 +275,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		}
 		List<String> series = new ArrayList<String>();
 		String showArchiveString = (showArchive < 2 ? " WHERE (passiveStatus"
-			+(showArchive == 0 ? "=0 OR passiveStatus IS NULL)" : ">=1)") : "");	// Solves issue with former bug when adding show directly after restoring backup
+			+ (showArchive == 0 ? "=0 OR passiveStatus IS NULL)" : ">=1)") : "");	// Solves issue with former bug when adding show directly after restoring backup
 		String showNetworksString = (networks != null ? (showArchiveString == null ? " WHERE " : " AND ")
 			+"network IN "+ networks : "");
 //		Log.d(TAG, "SELECT id FROM series"+ showArchiveString + showNetworksString);
@@ -320,7 +322,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 		String serieId = "", episodeId = "", episodeName = "";
 		long seen;
 		int seasonNumber = -1, episodeNumber = -1;
-		Cursor c = Query("SELECT serieId, id, seasonNumber, episodeNumber, episodeName, seen"
+		Cursor c = Query("SELECT serieId, id, seasonNumber, episodeNumber, dvdSeason, dvdEpisodeNumber, episodeName, seen"
 								+" FROM episodes WHERE seen>1 ORDER BY seen DESC, serieId DESC, episodeNumber"
 								+" DESC LIMIT 25 OFFSET "+ offset);
 		c.moveToFirst();
@@ -328,11 +330,17 @@ public class SQLiteStore extends SQLiteOpenHelper
 			do {
 				serieId = c.getString(c.getColumnIndex("serieId"));
 				episodeId = c.getString(c.getColumnIndex("id"));
-				seasonNumber = c.getInt(c.getColumnIndex("seasonNumber"));
-				episodeNumber = c.getInt(c.getColumnIndex("episodeNumber"));
-				episodeName = c.getString(c.getColumnIndex("episodeName"));
 				seen = c.getInt(c.getColumnIndex("seen"));
-		
+				
+				Cursor o = Query("SELECT dvdOrder FROM series WHERE id = '" + serieId +"'");
+				if (o != null && o.isFirst() && o.getInt(0) == 1) {
+					seasonNumber = c.getInt(c.getColumnIndex("dvdSeason"));
+					episodeNumber = c.getInt(c.getColumnIndex("dvdEpisodeNumber"));
+				} else {
+					episodeNumber = c.getInt(c.getColumnIndex("episodeNumber"));
+					episodeName = c.getString(c.getColumnIndex("episodeName"));
+				}
+				
 				TVShowItem episode = createTVShowItem(serieId);
 
 				episode.setEpisodeId(episodeId);
@@ -347,19 +355,20 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return episodes;
 	}
 
-	public EpisodeRow getEpisodeRow(String serieId, int seasonNumber, String episodeId) {
-		return getEpisodeRows(serieId, seasonNumber, episodeId).get(0);
+	public EpisodeRow getEpisodeRow(String serieId, int seasonNumber, String episodeId, boolean dvdOrder) {
+		return getEpisodeRows(serieId, seasonNumber, episodeId, dvdOrder).get(0);
 	}
 
-	public List<EpisodeRow> getEpisodeRows(String serieId, int seasonNumber) {
-		return getEpisodeRows(serieId, seasonNumber, "");
+	public List<EpisodeRow> getEpisodeRows(String serieId, int seasonNumber, boolean dvdOrder) {
+		return getEpisodeRows(serieId, seasonNumber, "", dvdOrder);
 	}
 	
-	private List<EpisodeRow> getEpisodeRows(String serieId, int seasonNumber, String episodeId) {
+	private List<EpisodeRow> getEpisodeRows(String serieId, int seasonNumber, String episodeId, boolean dvdOrder) {
 		List<EpisodeRow> episodes = new ArrayList<EpisodeRow>();
-		Cursor c = Query("SELECT id, episodeName, episodeNumber, seen, firstAired FROM episodes WHERE "
+		Cursor c = Query("SELECT id, episodeName, episodeNumber, dvdEpisodeNumber, seen, firstAired FROM episodes WHERE "
 			+ (episodeId.isEmpty() ? "" : "id="+ episodeId +" AND ")
-			+ "serieId='"+ serieId +"' AND seasonNumber="+ seasonNumber
+			+ "serieId='"+ serieId +"' AND "
+			+ (dvdOrder ? "dvdSeason=" : "seasonNumber=") + seasonNumber
 			+" ORDER BY episodeNumber ASC");
 		try {
 			c.moveToFirst();
@@ -389,16 +398,18 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return episodes;
 	}
 
-	private List<EpisodeSeen> getSeen(String serieId, int max_season) {
+	private List<EpisodeSeen> getSeen(String serieId, int max_season, boolean dvdOrder) {
 		List<EpisodeSeen> episodesSeen = new ArrayList<EpisodeSeen>();
-		Cursor c = Query("SELECT seasonNumber, episodeNumber, seen FROM episodes WHERE serieId='"+ serieId +"'"
+		Cursor c = Query("SELECT seasonNumber, episodeNumber, dvdSeason, dvdEpisodeNumber, seen FROM episodes WHERE serieId='"+ serieId +"'"
 			+ (max_season != -1 ? " AND (seasonNumber="+ max_season +" OR seasonNumber=0)": "")
 			+" AND seen>0");
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				do {
-					episodesSeen.add(new EpisodeSeen(c.getInt(0) +"x"+ c.getInt(1), c.getInt(2)));
+					int  season = c.getInt(dvdOrder ? 2 : 0),
+						episode = c.getInt(dvdOrder ? 3 : 1);
+					episodesSeen.add(new EpisodeSeen(season +"x"+ episode, c.getInt(4)));
 				} while (c.moveToNext());
 			}
 		} catch (SQLiteException e) {
@@ -483,7 +494,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 	
 	public int getEpsWatched(String serieId) {
 		int watched = 0;
-		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId
+		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId
 			+"' AND seen>0"
 			+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0"));
 		try {
@@ -499,11 +510,12 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return watched;
 	}
 
-	public int getEpsUnwatchedAired(String serieId) {
+	public int getEpsUnwatchedAired(String serieId, boolean dvdOrder) {
 		int unwatchedAired = 0;
-		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId
+		Cursor c = Query("SELECT COUNT(*) FROM episodes WHERE serieId='"+ serieId
 			+"' AND seen=0 AND firstAired < '"+ today +"' AND firstAired <> ''"
-			+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0"));
+			+ (DroidShows.includeSpecialsOption ? "" : " AND "
+			+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" <> 0"));
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -517,9 +529,10 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return unwatchedAired;
 	}
 
-	public int getEpsUnwatchedAired(String serieId, int snumber) {
+	public int getEpsUnwatchedAired(String serieId, int snumber, boolean dvdOrder) {
 		int unwatched = -1;
-		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="+ snumber
+		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId +"' AND "
+				+ (dvdOrder ? "dvdSeason=" : "seasonNumber=") + snumber
 				+" AND seen=0 AND firstAired < '"+ today +"' AND firstAired <> ''");
 		try {
 			c.moveToFirst();
@@ -534,10 +547,11 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return unwatched;
 	}
 
-	public int getEpsUnwatched(String serieId) {
+	public int getEpsUnwatched(String serieId, boolean dvdOrder) {
 		int unwatched = -1;
-		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId
-			+"' AND seen=0 "+ (DroidShows.includeSpecialsOption ? "" : "AND seasonNumber <> 0"));
+		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId
+			+"' AND seen=0 "+ (DroidShows.includeSpecialsOption ? "" : " AND "
+			+ (dvdOrder ? "dvdSeason": "seasonNumber") +" <> 0"));
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -550,10 +564,10 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return unwatched;
 	}
 
-	public int getEpsUnwatched(String serieId, int snumber) {
+	public int getEpsUnwatched(String serieId, int snumber, boolean dvdOrder) {
 		int unwatched = 0;
-		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId
-			+"' AND seasonNumber="+ snumber +" AND seen=0");
+		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId +"' AND "
+			+ (dvdOrder ? "dvdSeason=" : "seasonNumber=") + snumber +" AND seen=0");
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -566,17 +580,19 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return unwatched;
 	}
 
-	public String getNextEpisodeId(String serieId) {
-		return getNextEpisodeId(serieId, false);
+	public String getNextEpisodeId(String serieId, boolean dvdOrder) {
+		return getNextEpisodeId(serieId, false, dvdOrder);
 	}
 
-	public String getNextEpisodeId(String serieId, boolean noFutureEp) {
-		int[] lastWatched = (DroidShows.markFromLastWatched ? getLastWatchedEpisode(serieId) : null);
+	public String getNextEpisodeId(String serieId, boolean noFutureEp, boolean dvdOrder) {
+		int[] lastWatched = (DroidShows.markFromLastWatched ? getLastWatchedEpisode(serieId, dvdOrder) : null);
 		int id = -1;
 		Cursor c = null;
 		try {
 				c = Query("SELECT id, seasonNumber, episodeNumber FROM episodes WHERE serieId='"+ serieId +"' AND seen=0"
-						+ (lastWatched != null ? " AND seasonNumber >= "+ lastWatched[0] +" AND episodeNumber > "+ lastWatched[1] : "")
+						+ (lastWatched != null ? " AND "
+						+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" >= "+ lastWatched[0] +" AND "
+						+ (dvdOrder ? "dvdEpisodeNumber" : "episodeNumber") +" > "+ lastWatched[1] : "")
 						+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0")
 						+ (noFutureEp ? " AND firstAired <= '"+ today +"' AND firstAired <> ''" : "")
 						+" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
@@ -592,10 +608,12 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return ""+ id;
 	}
 
-	private int[] getLastWatchedEpisode(String serieId) {
+	private int[] getLastWatchedEpisode(String serieId, boolean dvdOrder) {
 		int[] lastSeen = new int[2];
 		Cursor c = Query("SELECT seasonNumber, episodeNumber FROM episodes WHERE serieId='"+ serieId
-				+"' AND seen>=1 ORDER BY seen DESC, seasonNumber DESC, episodeNumber DESC LIMIT 1");
+				+"' AND seen>=1 ORDER BY seen DESC, "
+				+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" DESC, "
+				+ (dvdOrder ? "dvdEpisodeNumber" : "episodeNumber") +" DESC LIMIT 1");
 			try {
 				c.moveToFirst();
 				if (c != null && c.isFirst()) {
@@ -610,33 +628,35 @@ public class SQLiteStore extends SQLiteOpenHelper
 			return lastSeen;
 	}
 
-	public NextEpisode getNextEpisode(String serieId) {
-		return getNextEpisode(serieId, -1, false);
+	public NextEpisode getNextEpisode(String serieId, boolean dvdOrder) {
+		return getNextEpisode(serieId, -1, false, dvdOrder);
 	}
 		
-	public NextEpisode getNextEpisode(String serieId, boolean showNextAiring) {
-		return getNextEpisode(serieId, -1, showNextAiring);
+	public NextEpisode getNextEpisode(String serieId, boolean showNextAiring, boolean dvdOrder) {
+		return getNextEpisode(serieId, -1, showNextAiring, dvdOrder);
 	}
 
-	public NextEpisode getNextEpisode(String serieId, int snumber) {
-		return getNextEpisode(serieId, snumber, false);
+	public NextEpisode getNextEpisode(String serieId, int snumber, boolean dvdOrder) {
+		return getNextEpisode(serieId, snumber, false, dvdOrder);
 	}
 
-	private NextEpisode getNextEpisode(String serieId, int snumber, boolean showNextAiring) {
-		int[] lastWatched = (!showNextAiring && DroidShows.markFromLastWatched ? getLastWatchedEpisode(serieId) : null);
+	private NextEpisode getNextEpisode(String serieId, int snumber, boolean showNextAiring, boolean dvdOrder) {
+		int[] lastWatched = (!showNextAiring && DroidShows.markFromLastWatched ? getLastWatchedEpisode(serieId, dvdOrder) : null);
 		NextEpisode nextEpisode = null;
 		Cursor c = null;
 		try {
 			if (snumber == -1) {
 				c = Query("SELECT seasonNumber, episodeNumber, firstAired FROM episodes WHERE serieId='"+ serieId +"' AND seen=0"
-					+ (lastWatched != null ? " AND seasonNumber >= "+ lastWatched[0] +" AND episodeNumber > "+ lastWatched[1] : "")
+					+ (lastWatched != null ? " AND "
+					+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" >= "+ lastWatched[0] +" AND "
+					+ (dvdOrder ? "dvdEpisodeNumber" : "episodeNumber") +" > "+ lastWatched[1] : "")
 					+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0")
 					+ (showNextAiring ? " AND firstAired >= '"+ today +"'" : "")
 					+" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
 			} else {
-				c = Query("SELECT seasonNumber, episodeNumber, firstAired FROM episodes WHERE serieId='"+ serieId
-					+"' AND seasonNumber="+ snumber +" AND seen=0"
-					+" ORDER BY episodeNumber ASC LIMIT 1");
+				c = Query("SELECT seasonNumber, episodeNumber, firstAired FROM episodes WHERE serieId='"+ serieId +"' AND "
+					+ (dvdOrder ? "dvdSeason=" : "seasonNumber=") + snumber +" AND seen=0 ORDER BY "
+					+ (dvdOrder ? "dvdEpisodeNumber" : "episodeNumber") +" ASC LIMIT 1");
 			}
 			c.moveToFirst();
 			if (c != null && c.isFirst())
@@ -692,9 +712,10 @@ public class SQLiteStore extends SQLiteOpenHelper
 		return count;
 	}
 
-	public int getSeasonEpisodeCount(String serieId, int sNumber) {
+	public int getSeasonEpisodeCount(String serieId, int sNumber, boolean dvdOrder) {
 		int count = -1;
-		Cursor c = Query("SELECT count(id) FROM episodes WHERE serieId='"+ serieId +"' AND seasonNumber="+ sNumber);
+		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId +"' AND "
+			+ (dvdOrder ? "dvdSeason=" : "seasonNumber=") + sNumber);
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -734,15 +755,25 @@ public class SQLiteStore extends SQLiteOpenHelper
 	}
 
 	public String updateUnwatchedEpisode(String serieId, String episodeId, long newSeen) {
-		Cursor c = null;
+		boolean dvdOrder = false;
+		Cursor c = Query("SELECT dvdOrder FROM series WHERE serieID="+ serieId);
+		try {
+			c.moveToFirst();
+			if (c != null && c.isFirst())
+				dvdOrder = c.getInt(0) == 1;
+		} catch (SQLiteException e) {
+			Log.e(TAG, e.getMessage());
+		}
+
+		c = null;
 		String episodeMarked = "";
 		try {
-			c = Query("SELECT seen, seasonNumber, episodeNumber FROM episodes WHERE serieId='"+ serieId+"' AND id='"+ episodeId +"'");
+			c = Query("SELECT seen, seasonNumber, episodeNumber, dvdSeason, dvdEpisodeNumber FROM episodes WHERE serieId='"+ serieId+"' AND id='"+ episodeId +"'");
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
 				long seen = c.getInt(0);
-				int season = c.getInt(1);
-				int episode = c.getInt(2);
+				int season = dvdOrder ? c.getInt(3) : c.getInt(1);
+				int episode = dvdOrder ? c.getInt(4) : c.getInt(2);
 				episodeMarked =  season + (episode < 10 ? "x0" : "x") + episode;
 				if (newSeen > -1) {
 					seen = newSeen;
@@ -777,8 +808,18 @@ public class SQLiteStore extends SQLiteOpenHelper
 			Log.e(TAG, e.getMessage());
 		}
 	}
+	
+	public void setDvdOrder(String serieId, boolean dvdOrder) {
+		try {
+			db.execSQL("UPDATE series SET dvdOrder="+ (dvdOrder ? 1 : 0) +" WHERE id='"+ serieId +"'");
+			updateShowStats(serieId);
+		} catch (SQLiteException e) {
+			Log.e(TAG, e.getMessage());
+		}
+	}
 
 	public boolean updateSerie(Serie s, boolean last_season) {
+		boolean dvdOrder = s.getDvdOrder();
 		if (s == null) {
 			Log.e(TAG, "Error: Serie is null");
 			return false;
@@ -795,7 +836,9 @@ public class SQLiteStore extends SQLiteOpenHelper
 		int max_season = -1;
 		if (last_season) {
 			try {
-				cms = Query("SELECT season FROM serie_seasons WHERE serieID='"+ s.getId() +"'");
+				cms = Query("SELECT "
+					+ (dvdOrder ? "dvdSeason" : "season")
+					+"FROM serie_seasons WHERE serieID='"+ s.getId() +"'");
 				cms.moveToFirst();
 				if (cms != null && cms.isFirst()) {
 					do {
@@ -805,7 +848,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 					} while (cms.moveToNext());
 				}
 				cms.close();
-				Log.d(TAG, "Updating only last season "+ max_season +" and specials of "+ tmpSName);
+				Log.d(TAG, "Updating only last"+ (dvdOrder ? " DVD " : "") +"season "+ max_season +" and specials of "+ tmpSName);
 			} catch (SQLiteException e) {
 				if (cms != null) {
 					cms.close();
@@ -813,7 +856,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 				Log.e(TAG, e.getMessage());
 			}
 		} else {
-			Log.d(TAG, "Updating all seasons of "+ tmpSName);
+			Log.d(TAG, "Updating all"+ (dvdOrder ? " DVD " : "") +" seasons of "+ tmpSName);
 		}
 		// Log.d(TAG, "MAX SEASON: "+ max_season);
 		try {
@@ -841,10 +884,12 @@ public class SQLiteStore extends SQLiteOpenHelper
 				+"',"+ DatabaseUtils.sqlEscapeString(s.getGenres().get(g)) +");");
 			}
 			
+			String seasonType = dvdOrder ? "dvdSeason" : "seasonNumber";
+			
 			if (max_season != -1) {
 				String episodes = "";
-				cms = Query("SELECT id FROM episodes WHERE serieId='"+ s.getId() +"'"
-				+" AND (seasonNumber="+ max_season +" OR seasonNumber=0)");
+				cms = Query("SELECT id FROM episodes WHERE serieId='"+ s.getId() +"' AND ("
+					+ seasonType +"="+ max_season +" OR "+ seasonType +"=0)");
 				cms.moveToFirst();
 				if (cms != null && cms.isFirst()) {
 					do {
@@ -862,9 +907,9 @@ public class SQLiteStore extends SQLiteOpenHelper
 				db.execSQL("DELETE FROM writers WHERE serieId='"+ s.getId() +"'");
 			}
 
-			List<EpisodeSeen> seenEpisodes = getSeen(s.getId(), max_season);
+			List<EpisodeSeen> seenEpisodes = getSeen(s.getId(), max_season, dvdOrder);
 			db.execSQL("DELETE FROM episodes WHERE serieId='"+ s.getId() +"'"
-					+(max_season != -1 ? " AND (seasonNumber="+ max_season +" OR seasonNumber=0)" : ""));
+				+ (max_season != -1 ? " AND ("+ seasonType +"="+ max_season +" OR "+ seasonType +"=0)" : ""));
 			
 			for (int e = 0; e < s.getEpisodes().size(); e++) {
 				if (max_season != -1) {
@@ -1038,7 +1083,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 	public void onCreate(SQLiteDatabase dbase) {
 		try {
 			dbase.execSQL("CREATE TABLE IF NOT EXISTS droidseries (version VARCHAR);");
-			dbase.execSQL("INSERT INTO droidseries (version) VALUES ('0.1.5-7G3');");
+			dbase.execSQL("INSERT INTO droidseries (version) VALUES ('0.1.5-7G4');");
 			// tabela dos directors
 			dbase.execSQL("CREATE TABLE IF NOT EXISTS directors (serieId VARCHAR, episodeId VARCHAR, director VARCHAR);");
 			// tabela dos guestStars
@@ -1069,7 +1114,8 @@ public class SQLiteStore extends SQLiteOpenHelper
 				+"fanart VARCHAR, lastUpdated VARCHAR, passiveStatus INTEGER DEFAULT 0, poster VARCHAR, "
 				+"posterInCache VARCHAR, posterThumb VARCHAR, "
 				+"seasonCount INTEGER, unwatchedAired INTEGER, unwatched INTEGER, nextEpisode VARCHAR, nextAir VARCHAR, "
-				+"extResources VARCHAR NOT NULL DEFAULT '');");
+				+"extResources VARCHAR NOT NULL DEFAULT '', "
+				+"dvdOrder TINYINT NOT NULL DEFAULT 0);");
 		} catch (SQLiteException e) {
 			Log.e(TAG, e.getMessage());
 		}
@@ -1087,10 +1133,20 @@ public class SQLiteStore extends SQLiteOpenHelper
 	}
 	
 	public void updateShowStats(String serieId) {
+		boolean dvdOrder = false;
+		Cursor c = Query("SELECT dvdOrder FROM series WHERE serieID="+ serieId);
+		try {
+			c.moveToFirst();
+			if (c != null && c.isFirst())
+				dvdOrder = c.getInt(0) == 1;
+		} catch (SQLiteException e) {
+			Log.e(TAG, e.getMessage());
+		}
+		
 		int seasonCount = getSeasonCount(serieId);
-		int unwatchedAired = getEpsUnwatchedAired(serieId);
-		int unwatched = getEpsUnwatched(serieId);
-		NextEpisode nextEpisode = getNextEpisode(serieId);
+		int unwatchedAired = getEpsUnwatchedAired(serieId, dvdOrder);
+		int unwatched = getEpsUnwatched(serieId, dvdOrder);
+		NextEpisode nextEpisode = getNextEpisode(serieId, dvdOrder);
 		String nextEpisodeString = getNextEpisodeString(nextEpisode, DroidShows.showNextAiring && 0 < unwatchedAired && unwatchedAired < unwatched);
 		execQuery("UPDATE series SET seasonCount="+ seasonCount +", unwatchedAired="+ unwatchedAired +", unwatched="+ unwatched +", nextEpisode='"+ nextEpisodeString +"', nextAir='"+ nextEpisode.firstAired +"' WHERE id="+ serieId);
 	}

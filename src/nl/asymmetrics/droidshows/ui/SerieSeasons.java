@@ -34,6 +34,7 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 public class SerieSeasons extends ListActivity
 {
 	private String serieId;
+	private static boolean dvdOrder;
 	private List<Integer> seasonNumbers = new ArrayList<Integer>();
 	private static List<Season> seasons;
 	// Context Menus
@@ -62,7 +63,7 @@ public class SerieSeasons extends ListActivity
 		listView.setOnTouchListener(swipeDetect);
 		listView.setSelection(getIntent().getIntExtra("season", 1) -1);
 		if (getIntent().getBooleanExtra("nextEpisode", false))
-			listView.setSelection(db.getNextEpisode(serieId).season -1);
+			listView.setSelection(db.getNextEpisode(serieId, dvdOrder).season -1);
 	}
 
 	/* context menu */
@@ -110,6 +111,7 @@ public class SerieSeasons extends ListActivity
 		Intent serieEpisode = new Intent(SerieSeasons.this, SerieEpisodes.class);
 		serieEpisode.putExtra("serieId", serieId);
 		serieEpisode.putExtra("seasonNumber", seasonNumbers.get(position));
+		serieEpisode.putExtra("dvdOrder", dvdOrder);
 		if (seasonsAdapter.getItem(position).getUnwatched() > 0)
 			serieEpisode.putExtra("nextEpisode", true);
 		startActivity(serieEpisode);
@@ -165,12 +167,12 @@ public class SerieSeasons extends ListActivity
 				for (int i = 0; i < seasons.size(); i++) {
 					String serieId = seasons.get(i).getSerieId();
 					int seasonNumber = seasons.get(i).getSNumber();
-					int unwatchedAired = db.getEpsUnwatchedAired(serieId, seasonNumber);
-					int unwatched = db.getEpsUnwatched(serieId, seasonNumber);
+					int unwatchedAired = db.getEpsUnwatchedAired(serieId, seasonNumber, dvdOrder);
+					int unwatched = db.getEpsUnwatched(serieId, seasonNumber, dvdOrder);
 					seasons.get(i).setUnwatchedAired(unwatchedAired);
 					seasons.get(i).setUnwatched(unwatched);
 					if (unwatched > 0) {
-						SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(serieId, seasonNumber);
+						SQLiteStore.NextEpisode nextEpisode = db.getNextEpisode(serieId, seasonNumber, dvdOrder);
 						seasons.get(i).setNextAir(nextEpisode.firstAiredDate);
 						seasons.get(i).setNextEpisode(db.getNextEpisodeString(nextEpisode));
 					}
@@ -237,7 +239,7 @@ public class SerieSeasons extends ListActivity
 				holder.season.setText(s.getSeason());
 			}
 			if (holder.unwatched != null) {
-				String unwatchedText = db.getSeasonEpisodeCount(serieId, s.getSNumber())
+				String unwatchedText = db.getSeasonEpisodeCount(serieId, s.getSNumber(), dvdOrder)
 						+" "+ strEps;
 				if (nunwatched > 0) {
 					String unwatched = "";

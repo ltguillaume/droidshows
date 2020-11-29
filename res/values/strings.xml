@@ -35,6 +35,8 @@
 <string name="menu_context_mark_next_episode_as_seen">Mark next episode as seen</string>
 <string name="menu_context_pin">Pin</string>
 <string name="menu_context_unpin">Unpin</string>
+<string name="menu_context_dvdorder">Use DVD order</string>
+<string name="menu_context_airedorder">Use airing order</string>
 <string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">Automatically perform daily backups</string>
 <string name="dialog_backup_versioning">Use versioning for backups</string>
