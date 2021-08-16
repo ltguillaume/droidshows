@@ -1,3 +1,5 @@
+<a href="https://buymeacoff.ee/ltGuillaume"><img title="Donate using Buy Me a Coffee" src="https://raw.githubusercontent.com/ltGuillaume/Resources/master/buybeer.svg"></a> <a href="https://liberapay.com/ltGuillaume/donate"><img title="Donate using Liberapay" src="https://raw.githubusercontent.com/ltGuillaume/Resources/master/liberapay.svg"></a>
+
 # DroidShows<img src="icon/icon6.png" align="right"/><img src="icon/material.png" align="right"/>
 DroidShows: A Reboot of DroidSeries Offline TV Shows Tracker  
 This fork adds quite a bunch of features, among which an improved interface, a menu overflow button, pinning, quick search and filters, a separate archive/backlog list, a last seen episodes log, swipe gestures, more show information, backup/restore, double episode entries clean-up, faster updating, cover and fan art view, a modern launcher icon and it speeds up responsiveness significantly by (more) efficient SQL queries and some threading. DroidShows only needs an internet connection when updating the show info or watching full-size posters.
