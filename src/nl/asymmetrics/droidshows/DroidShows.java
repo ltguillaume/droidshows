@@ -251,6 +251,8 @@ public class DroidShows extends ListActivity
 		registerForContextMenu(listView);
 		listView.setOnTouchListener(swipeDetect);
 		searchV = (EditText) findViewById(R.id.search_text);
+		searchV.setFocusable(true);
+		searchV.setFocusableInTouchMode(true);
 		searchV.addTextChangedListener(new TextWatcher() {
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				seriesAdapter.getFilter().filter(s);
@@ -1708,7 +1710,8 @@ public class DroidShows extends ListActivity
 		}
 		searchV.requestFocus();
 		searchV.selectAll();
-		keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
+		keyboard.showSoftInput(searchV, 0);
+//		keyboard.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
 		return true;
 	}
 
