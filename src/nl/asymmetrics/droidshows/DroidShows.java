@@ -1109,7 +1109,8 @@ public class DroidShows extends ListActivity
 	private void Search(String url, String serieName) {
 		serieName = serieName.replaceAll(" \\(....\\)", "");
 		Intent rt = new Intent(Intent.ACTION_VIEW, Uri.parse(url + serieName.replaceAll("&", "%26")));
-	    startActivity(rt);
+		rt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(rt);
 	}
 
 	private void WikiDetails(String serieName) {
@@ -1131,6 +1132,7 @@ public class DroidShows extends ListActivity
 	    		.setType("text/plain")
 	    		.setPackage(wikiApp);
 	    }
+	    wiki.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 	    startActivity(wiki);
 	}
 
@@ -1157,6 +1159,7 @@ public class DroidShows extends ListActivity
 			else
 				uri += "find?q="+ (episode != null ? serieName.replaceAll("&", "%26").replaceAll(" \\(....\\)", "") +" " : "") + name.replaceAll("&", "%26");
 			Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+			imdb.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(imdb);
 		}
 	}
@@ -1247,6 +1250,7 @@ public class DroidShows extends ListActivity
 		if (!url.startsWith("http"))
 			url = "https://"+ url;
 		Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+		browse.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(browse);
 	}
 

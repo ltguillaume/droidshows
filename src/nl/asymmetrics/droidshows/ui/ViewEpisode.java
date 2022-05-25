@@ -230,6 +230,7 @@ public class ViewEpisode extends Activity
 		intent.putExtra("endTime", epDate.getTime());
 		intent.putExtra("allDay", true);
 		try {
+			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(intent);
 		} catch (Exception e) {
 			Toast.makeText(getApplicationContext(), R.string.messages_calendar_app_error, Toast.LENGTH_LONG).show();
@@ -246,6 +247,7 @@ public class ViewEpisode extends Activity
 			uri += "find?q="+ serieName.replaceAll("&", "%26").replaceAll(" \\(....\\)", "") +" "+ episodeName;
 		}
 		Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+		imdb.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(imdb);
 	}
 
@@ -267,6 +269,7 @@ public class ViewEpisode extends Activity
 			.setItems(names.toArray(new CharSequence[names.size()]), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
 					Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri +"find?q="+ names.get(item).replaceAll("&", "%26")));
+					imdb.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(imdb);
 				}
 			})

@@ -222,6 +222,7 @@ public class ViewSerie extends Activity
 			uri += "find?q="+ serieName.replaceAll("&", "%26");
 		}
 		Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+		imdb.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(imdb);
 	}
 	
@@ -232,6 +233,7 @@ public class ViewSerie extends Activity
 			.setItems(actors.toArray(new CharSequence[actors.size()]), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
 					Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri +"find?q="+ actors.get(item).replaceAll("&", "%26")));
+					imdb.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(imdb);
 				}
 			})
@@ -268,6 +270,7 @@ public class ViewSerie extends Activity
 						Intent extViewIntent = new Intent();
 						extViewIntent.setAction(Intent.ACTION_VIEW);
 						extViewIntent.setDataAndType(Uri.parse(hit.getExtra()), "image/*");
+						extViewIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 						startActivity(extViewIntent);
 					}
 					return true;
