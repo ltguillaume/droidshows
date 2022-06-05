@@ -244,7 +244,7 @@ public class ViewEpisode extends Activity
 		if (imdbId.startsWith("tt")) {
 			uri += "title/"+ imdbId;
 		} else {
-			uri += "find?q="+ serieName.replaceAll("&", "%26").replaceAll(" \\(....\\)", "") +" "+ episodeName;
+			uri += "find?q="+ Uri.encode(serieName.replaceAll(" \\(....\\)", "") +" "+ episodeName);
 		}
 		Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 		imdb.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -268,7 +268,7 @@ public class ViewEpisode extends Activity
 			.setTitle(R.string.menu_search)
 			.setItems(names.toArray(new CharSequence[names.size()]), new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
-					Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri +"find?q="+ names.get(item).replaceAll("&", "%26")));
+					Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri +"find?q="+ Uri.encode(names.get(item))));
 					imdb.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 					startActivity(imdb);
 				}

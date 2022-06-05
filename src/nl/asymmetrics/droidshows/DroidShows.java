@@ -1108,7 +1108,7 @@ public class DroidShows extends ListActivity
 
 	private void Search(String url, String serieName) {
 		serieName = serieName.replaceAll(" \\(....\\)", "");
-		Intent rt = new Intent(Intent.ACTION_VIEW, Uri.parse(url + serieName.replaceAll("&", "%26")));
+		Intent rt = new Intent(Intent.ACTION_VIEW, Uri.parse(url + Uri.encode(serieName)));
 		rt.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(rt);
 	}
@@ -1123,8 +1123,7 @@ public class DroidShows extends ListActivity
 	    	wikiApp = "org.wikipedia.beta";
 	    if (wikiApp == null) {
 	    	String uri = "https://"+ (langCode.equals("all") ? "" : langCode +".") +"m.wikipedia.org/wiki/index.php?search="
-	    		+ serieName.replaceAll("&", "%26")
-	    		+ (langCode.equals("en") ? " (TV series)" : "");
+	    		+ Uri.encode(serieName + (langCode.equals("en") ? " (TV series)" : ""));
 	    	wiki = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 	    } else {
 	    	wiki = new Intent(Intent.ACTION_SEND)
@@ -1157,7 +1156,7 @@ public class DroidShows extends ListActivity
 			if (imdbId.startsWith("tt"))
 				uri += "title/"+ imdbId;
 			else
-				uri += "find?q="+ (episode != null ? serieName.replaceAll("&", "%26").replaceAll(" \\(....\\)", "") +" " : "") + name.replaceAll("&", "%26");
+				uri += "find?q="+ Uri.encode((episode != null ? serieName.replaceAll(" \\(....\\)", "") +" " : "") + name);
 			Intent imdb = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
 			imdb.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(imdb);
