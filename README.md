@@ -1,3 +1,16 @@
+## You should stop using DroidShows
+
+DroidShows still uses an old version of TheTVDB API. This worked just fine until recently, but in May 2023, many bugs were introduced:
+
+- For some shows, the API now includes an episode 2 or 3 times
+- For some shows, many episodes or even entire seasons are now completely missing from the API results
+
+If you can, use a DroidShows backup _before_ May, 2023 and start using [this fork that uses TMDB](https://github.com/warren-bank/Android-Tiny-Television-Time-Tracker/releases).
+
+I recommend trying out the [database migration tool](https://github.com/warren-bank/Android-Tiny-Television-Time-Tracker/releases/tag/db-migration-tool/001.00.02-11JRE), because the migration process inside the app itself is extremely slow and has a severe impact on your flash storage due to the many database operations. Otherwise, have _a lot_ of patience and try to keep the screen on during the migration process (`Options` > `Restore` > your `Droidshows.db`).
+
+If these issues are (ever) resolved at TheTVDB, please do contact me and I'll update this message.
+
 # DroidShows<img src="icon/icon6.png" align="right"/><img src="icon/material.png" align="right"/>
 by ltGuillaume: [Codeberg](https://codeberg.org/ltGuillaume) | [GitHub](https://github.com/ltGuillaume) | [Buy me a beer](https://buymeacoff.ee/ltGuillaume) 🍺
 
