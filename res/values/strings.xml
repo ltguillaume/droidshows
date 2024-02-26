@@ -60,6 +60,7 @@
 <string name="dialog_latest_season">Update shows\' latest season only</string>
 <string name="dialog_include_specials">Include specials in unwatched count</string>
 <string name="dialog_full_line_check">Use entire line to mark episode</string>
+<string name="dialog_large_posters">Large posters</string>
 <string name="dialog_switch_swipe_direction">Swipe right-to-left to go back</string>
 <string name="dialog_show_next_airing">Show date of next airing episode, instead of next episode\'s date</string>
 <string name="dialog_mark_from_last_watched">Mark next episode starting from the most recently watched</string>

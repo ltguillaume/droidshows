@@ -60,6 +60,7 @@
 <string name="dialog_latest_season">Nur letzte Folge aktualisieren</string>
 <string name="dialog_include_specials">Besondere Folgen in der Übersicht zeigen</string>
 <string name="dialog_full_line_check">Tippen auf ganze Zeile markiert Folge als gesehen</string>
+<string name="dialog_large_posters">Große Poster</string>
 <string name="dialog_switch_swipe_direction">Von rechts nach links wischen, um zurück zu gehen</string>
 <string name="dialog_show_next_airing">Ausstrahlungstermin statt nächster Folge anzeigen</string>
 <string name="dialog_mark_from_last_watched">Nächste Folge markieren, beginnend mit der zuletzt angesehenen</string>

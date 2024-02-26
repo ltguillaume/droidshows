@@ -60,6 +60,7 @@
 <string name="dialog_latest_season">Обновить только последние сезоны</string>
 <string name="dialog_include_specials">Включить доп. видео в количество просмотренных</string>
 <string name="dialog_full_line_check">Вся строка помечает просмотренным</string>
+<string name="dialog_large_posters">Большие картины</string>
 <string name="dialog_switch_swipe_direction">Проведите справа налево, чтобы вернуться назад</string>
 <string name="dialog_show_next_airing">Показать следующий выход в эфир вместо даты выхода следующего эпизода</string>
 <string name="dialog_mark_from_last_watched">Отметить следующий эпизод, начиная с самых последних просмотренных</string>

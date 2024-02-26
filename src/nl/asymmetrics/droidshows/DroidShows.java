@@ -153,6 +153,9 @@ public class DroidShows extends ListActivity
 	public static boolean includeSpecialsOption;
 	private static final String FULL_LINE_CHECK_NAME = "full_line";
 	public static boolean fullLineCheckOption;
+	private static final String LARGE_POSTERS_NAME = "large_posters";
+	private static final int LARGE_POSTERS_HEIGHT = 270;
+	public static boolean largePostersOption;
 	private static final String SWITCH_SWIPE_DIRECTION = "switch_swipe_direction";
 	public static boolean switchSwipeDirection;
 	private static final String LAST_STATS_UPDATE_NAME = "last_stats_update";
@@ -219,6 +222,7 @@ public class DroidShows extends ListActivity
 		latestSeasonOption = sharedPrefs.getInt(LATEST_SEASON_PREF_NAME, UPDATE_LATEST_SEASON_ONLY);
 		includeSpecialsOption = sharedPrefs.getBoolean(INCLUDE_SPECIALS_NAME, false);
 		fullLineCheckOption = sharedPrefs.getBoolean(FULL_LINE_CHECK_NAME, false);
+		largePostersOption = sharedPrefs.getBoolean(LARGE_POSTERS_NAME, false);
 		switchSwipeDirection = sharedPrefs.getBoolean(SWITCH_SWIPE_DIRECTION, false);
 		lastStatsUpdateCurrent = sharedPrefs.getString(LAST_STATS_UPDATE_NAME, "");
 		lastStatsUpdateArchive = sharedPrefs.getString(LAST_STATS_UPDATE_ARCHIVE_NAME, "");
@@ -573,6 +577,7 @@ public class DroidShows extends ListActivity
 		((CheckBox) about.findViewById(R.id.latest_season)).setChecked(latestSeasonOption == UPDATE_LATEST_SEASON_ONLY);
 		((CheckBox) about.findViewById(R.id.include_specials)).setChecked(includeSpecialsOption);
 		((CheckBox) about.findViewById(R.id.full_line_check)).setChecked(fullLineCheckOption);
+		((CheckBox) about.findViewById(R.id.large_posters)).setChecked(largePostersOption);
 		((CheckBox) about.findViewById(R.id.switch_swipe_direction)).setChecked(switchSwipeDirection);
 		((CheckBox) about.findViewById(R.id.show_next_airing)).setChecked(showNextAiring);
 		((CheckBox) about.findViewById(R.id.mark_from_last_watched)).setChecked(markFromLastWatched);
@@ -614,6 +619,11 @@ public class DroidShows extends ListActivity
 				break;
 			case R.id.full_line_check:
 				fullLineCheckOption ^= true;
+				break;
+			case R.id.large_posters:
+				largePostersOption ^= true;
+				seriesAdapter.clear();
+				getSeries();
 				break;
 			case R.id.switch_swipe_direction:
 				switchSwipeDirection ^= true;
@@ -1609,6 +1619,7 @@ public class DroidShows extends ListActivity
 		ed.putInt(LATEST_SEASON_PREF_NAME, latestSeasonOption);
 		ed.putBoolean(INCLUDE_SPECIALS_NAME, includeSpecialsOption);
 		ed.putBoolean(FULL_LINE_CHECK_NAME, fullLineCheckOption);
+		ed.putBoolean(LARGE_POSTERS_NAME, largePostersOption);
 		ed.putBoolean(SWITCH_SWIPE_DIRECTION, switchSwipeDirection);
 		ed.putString(LAST_STATS_UPDATE_NAME, lastStatsUpdateCurrent);
 		ed.putString(LAST_STATS_UPDATE_ARCHIVE_NAME, lastStatsUpdateArchive);
@@ -1860,6 +1871,7 @@ public class DroidShows extends ListActivity
 				holder.sne = (TextView) convertView.findViewById(R.id.serienextepisode);
 				holder.icon = (IconView) convertView.findViewById(R.id.serieicon);
 				holder.context = (ImageView) convertView.findViewById(R.id.seriecontext);
+				holder.icon.getLayoutParams().height = largePostersOption ? LARGE_POSTERS_HEIGHT : ViewGroup.LayoutParams.FILL_PARENT;
 				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 					holder.context.setImageResource(R.drawable.context_material);
 				convertView.setEnabled(true);
