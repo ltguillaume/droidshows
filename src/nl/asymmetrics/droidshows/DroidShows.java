@@ -98,7 +98,7 @@ import android.widget.ToggleButton;
 
 public class DroidShows extends ListActivity
 {
-	/* Menu items */
+	/* Menu Items */
 	private static final int UNDO_MENU_ITEM = Menu.FIRST;
 	private static final int FILTER_MENU_ITEM = UNDO_MENU_ITEM + 1;
 	private static final int SEEN_MENU_ITEM = FILTER_MENU_ITEM + 1;
@@ -870,7 +870,7 @@ public class DroidShows extends ListActivity
 		if (!logMode && serie.getUnwatched() > 0)
 			menu.add(0, VIEW_EPISODEDETAILS_CONTEXT, VIEW_EPISODEDETAILS_CONTEXT, getString(R.string.messsages_view_ep_details));
 		menu.add(0, EXT_RESOURCES_CONTEXT, EXT_RESOURCES_CONTEXT, getString(R.string.menu_context_ext_resources));
-		if (!logMode && serie.getUnwatchedAired() > 0)
+		if (!logMode && canMarkNextEpSeen(serie))
 			menu.add(0, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, MARK_NEXT_EPISODE_AS_SEEN_CONTEXT, getString(R.string.menu_context_mark_next_episode_as_seen));
 		if (!logMode) {
 			menu.add(0, TOGGLE_ARCHIVED_CONTEXT, TOGGLE_ARCHIVED_CONTEXT, getString(R.string.menu_archive));
@@ -892,6 +892,7 @@ public class DroidShows extends ListActivity
 	public boolean onContextItemSelected(MenuItem item) {
 		final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		final TVShowItem serie = seriesAdapter.getItem(info.position);
+		final String serieId = serie.getSerieId();
 		switch(item.getItemId()) {
 			case MARK_NEXT_EPISODE_AS_SEEN_CONTEXT :
 				markNextEpSeen(info.position);
@@ -900,7 +901,7 @@ public class DroidShows extends ListActivity
 				serieSeasons(info.position);
 				return true;
 			case VIEW_SERIEDETAILS_CONTEXT :
-				showDetails(serie.getSerieId());
+				showDetails(serieId);
 				return true;
 			case VIEW_EPISODEDETAILS_CONTEXT :
 				episodeDetails(info.position);
@@ -912,7 +913,7 @@ public class DroidShows extends ListActivity
 				updateSerie(serie, info.position);
 				return true;
 			case DVDORDER_CONTEXT :
-				db.setDvdOrder(serie.getSerieId(), !serie.getDvdOrder());
+				db.setDvdOrder(serieId, !serie.getDvdOrder());
 				updateShowView(serie);
 				return true;
 			case SYNOPSIS_LANGUAGE :
@@ -930,7 +931,7 @@ public class DroidShows extends ListActivity
 			case TOGGLE_ARCHIVED_CONTEXT :
 				asyncInfo.cancel(true);
 				boolean passiveStatus = serie.getPassiveStatus();
-				db.updateSerieStatus(serie.getSerieId(), (passiveStatus ? 0 : 1));
+				db.updateSerieStatus(serieId, (passiveStatus ? 0 : 1));
 				String message = serie.getName() +" "+
 					(passiveStatus ? getString(R.string.messages_context_unarchived) : getString(R.string.messages_context_archived));
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
@@ -943,7 +944,6 @@ public class DroidShows extends ListActivity
 				asyncInfo.execute();
 				return true;
 			case PIN_CONTEXT :
-				String serieId = serie.getSerieId();
 				if (pinnedShows.contains(serieId))
 					pinnedShows.remove(serieId);
 				else
@@ -958,7 +958,7 @@ public class DroidShows extends ListActivity
 						TVShowItem serie = seriesAdapter.getItem(position);
 						String sname = serie.getName();
 						String toastMsg = getString(R.string.messages_deleted);
-						if (!db.deleteSerie(serie.getSerieId()))
+						if (!db.deleteSerie(serieId))
 							toastMsg = "Database error while deleting show";
 						series.remove(series.indexOf(serie));
 						listView.post(updateListView);
@@ -1004,9 +1004,7 @@ public class DroidShows extends ListActivity
 	@Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		keyboard.hideSoftInputFromWindow(searchV.getWindowToken(), 0);
-		if (swipeDetect.value == 1 && (seriesAdapter.getItem(position).getUnwatchedAired() > 0 ||
-				 seriesAdapter.getItem(position).getNextAir() != null &&
-				!seriesAdapter.getItem(position).getNextAir().after(Calendar.getInstance().getTime()))) {
+		if (swipeDetect.value == 1 && canMarkNextEpSeen(seriesAdapter.getItem(position))) {
 			vib.vibrate(150);
 			markNextEpSeen(position);
 		} else if (swipeDetect.value == 0) {
@@ -1016,6 +1014,11 @@ public class DroidShows extends ListActivity
 				episodeDetails(position);
 			}
 		}
+	}
+
+	private boolean canMarkNextEpSeen(TVShowItem serie) {
+		return (serie.getUnwatchedAired() > 0
+			|| serie.getNextAir() != null && !serie.getNextAir().after(Calendar.getInstance().getTime()));
 	}
 
 	private void markNextEpSeen(int position) {
