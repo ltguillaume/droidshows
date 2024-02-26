@@ -932,6 +932,8 @@ public class DroidShows extends ListActivity
 				asyncInfo.cancel(true);
 				boolean passiveStatus = serie.getPassiveStatus();
 				db.updateSerieStatus(serieId, (passiveStatus ? 0 : 1));
+				if (!passiveStatus && pinnedShows.contains(serieId))
+					pinnedShows.remove(serieId);
 				String message = serie.getName() +" "+
 					(passiveStatus ? getString(R.string.messages_context_unarchived) : getString(R.string.messages_context_archived));
 				Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
