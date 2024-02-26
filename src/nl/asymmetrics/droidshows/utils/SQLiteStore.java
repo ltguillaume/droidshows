@@ -590,9 +590,10 @@ public class SQLiteStore extends SQLiteOpenHelper
 		Cursor c = null;
 		try {
 				c = Query("SELECT id, seasonNumber, episodeNumber FROM episodes WHERE serieId='"+ serieId +"' AND seen=0"
-						+ (lastWatched != null ? " AND "
-						+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" >= "+ lastWatched[0] +" AND "
-						+ (dvdOrder ? "dvdEpisodeNumber" : "episodeNumber") +" > "+ lastWatched[1] : "")
+						+ (lastWatched != null ? " AND ("
+						+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" > "+ lastWatched[0] +" OR ("
+						+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" = "+ lastWatched[0] +" AND "
+						+ (dvdOrder ? "dvdEpisodeNumber" : "episodeNumber") +" > "+ lastWatched[1] +"))" : "")
 						+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0")
 						+ (noFutureEp ? " AND firstAired <= '"+ today +"' AND firstAired <> ''" : "")
 						+" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
@@ -647,9 +648,10 @@ public class SQLiteStore extends SQLiteOpenHelper
 		try {
 			if (snumber == -1) {
 				c = Query("SELECT seasonNumber, episodeNumber, firstAired FROM episodes WHERE serieId='"+ serieId +"' AND seen=0"
-					+ (lastWatched != null ? " AND "
-					+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" >= "+ lastWatched[0] +" AND "
-					+ (dvdOrder ? "dvdEpisodeNumber" : "episodeNumber") +" > "+ lastWatched[1] : "")
+					+ (lastWatched != null ? " AND ("
+					+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" > "+ lastWatched[0] +" OR ("
+					+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" = "+ lastWatched[0] +" AND "
+					+ (dvdOrder ? "dvdEpisodeNumber" : "episodeNumber") +" > "+ lastWatched[1] +"))" : "")
 					+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0")
 					+ (showNextAiring ? " AND firstAired >= '"+ today +"'" : "")
 					+" ORDER BY seasonNumber, episodeNumber ASC LIMIT 1");
