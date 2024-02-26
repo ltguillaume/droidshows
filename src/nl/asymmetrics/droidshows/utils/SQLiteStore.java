@@ -494,7 +494,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 	
 	public int getEpsWatched(String serieId) {
 		int watched = 0;
-		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId
+		Cursor c = Query("SELECT COUNT(id) FROM episodes WHERE serieId='"+ serieId
 			+"' AND seen>0"
 			+ (DroidShows.includeSpecialsOption ? "" : " AND seasonNumber <> 0"));
 		try {
@@ -512,7 +512,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public int getEpsUnwatchedAired(String serieId, boolean dvdOrder) {
 		int unwatchedAired = 0;
-		Cursor c = Query("SELECT COUNT(*) FROM episodes WHERE serieId='"+ serieId
+		Cursor c = Query("SELECT COUNT(id) FROM episodes WHERE serieId='"+ serieId
 			+"' AND seen=0 AND firstAired < '"+ today +"' AND firstAired <> ''"
 			+ (DroidShows.includeSpecialsOption ? "" : " AND "
 			+ (dvdOrder ? "dvdSeason" : "seasonNumber") +" <> 0"));
@@ -531,7 +531,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public int getEpsUnwatchedAired(String serieId, int snumber, boolean dvdOrder) {
 		int unwatched = -1;
-		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId +"' AND "
+		Cursor c = Query("SELECT COUNT(id) FROM episodes WHERE serieId='"+ serieId +"' AND "
 				+ (dvdOrder ? "dvdSeason=" : "seasonNumber=") + snumber
 				+" AND seen=0 AND firstAired < '"+ today +"' AND firstAired <> ''");
 		try {
@@ -549,7 +549,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public int getEpsUnwatched(String serieId, boolean dvdOrder) {
 		int unwatched = -1;
-		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId
+		Cursor c = Query("SELECT COUNT(id) FROM episodes WHERE serieId='"+ serieId
 			+"' AND seen=0 "+ (DroidShows.includeSpecialsOption ? "" : " AND "
 			+ (dvdOrder ? "dvdSeason": "seasonNumber") +" <> 0"));
 		try {
@@ -566,7 +566,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public int getEpsUnwatched(String serieId, int snumber, boolean dvdOrder) {
 		int unwatched = 0;
-		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId +"' AND "
+		Cursor c = Query("SELECT COUNT(id) FROM episodes WHERE serieId='"+ serieId +"' AND "
 			+ (dvdOrder ? "dvdSeason=" : "seasonNumber=") + snumber +" AND seen=0");
 		try {
 			c.moveToFirst();
@@ -699,7 +699,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public int getSeasonCount(String serieId) {
 		int count = 0;
-		Cursor c = Query("SELECT count(season) FROM serie_seasons WHERE serieId = '"+ serieId +"' AND season <> 0");
+		Cursor c = Query("SELECT COUNT(season) FROM serie_seasons WHERE serieId = '"+ serieId +"' AND season <> 0");
 		try {
 			c.moveToFirst();
 			if (c != null && c.isFirst()) {
@@ -714,7 +714,7 @@ public class SQLiteStore extends SQLiteOpenHelper
 
 	public int getSeasonEpisodeCount(String serieId, int sNumber, boolean dvdOrder) {
 		int count = -1;
-		Cursor c = Query("SELECT count(*) FROM episodes WHERE serieId='"+ serieId +"' AND "
+		Cursor c = Query("SELECT COUNT(id) FROM episodes WHERE serieId='"+ serieId +"' AND "
 			+ (dvdOrder ? "dvdSeason=" : "seasonNumber=") + sNumber);
 		try {
 			c.moveToFirst();
