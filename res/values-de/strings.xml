@@ -35,8 +35,6 @@
 <string name="menu_context_mark_next_episode_as_seen">Nächste Folge als gesehen markieren</string>
 <string name="menu_context_pin">Anheften</string>
 <string name="menu_context_unpin">Ablösen</string>
-<string name="menu_context_dvdorder">DVD-Sequenz verwenden</string>
-<string name="menu_context_airedorder">Broadcast-Sequenz verwenden</string>
 <string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">Tägliche automatische Datensicherung</string>
 <string name="dialog_backup_versioning">Versionierung für Sicherungen verwenden</string>

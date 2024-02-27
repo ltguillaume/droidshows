@@ -38,231 +38,222 @@ public class Serie {
     private String posterInCache = "";
     private String posterThumb = "";
     private int passiveStatus = 0;
-    private boolean dvdOrder = false;
 
     public String getId() {
         return id;
     }
 
-	    public void setId(String id) {
-	        this.id = id;
-	    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getSerieId() {
         return serieId;
     }
 
-	    public void setSerieId(String serieId) {
-	        this.serieId = serieId;
-	    }
+    public void setSerieId(String serieId) {
+        this.serieId = serieId;
+    }
 
     public String getLanguage() {
         return language;
     }
 
-	    public void setLanguage(String language) {
-	        this.language = language;
-	    }
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
     public String getSerieName() {
         return serieName;
     }
 
-	    public void setSerieName(String seriesName) {
-	        this.serieName = seriesName;
-	    }
+    public void setSerieName(String seriesName) {
+        this.serieName = seriesName;
+    }
 
     public String getBanner() {
         return banner;
     }
 
-	    public void setBanner(String banner) {
-	        this.banner = banner;
-	    }
+    public void setBanner(String banner) {
+        this.banner = banner;
+    }
 
     public String getOverview() {
         return overview;
     }
 
-	    public void setOverview(String overview) {
-	        this.overview = overview;
-	    }
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
 
     public String getFirstAired() {
         return firstAired;
     }
 
-	    public void setFirstAired(String firstAired) {
-	        this.firstAired = firstAired;
-	    }
+    public void setFirstAired(String firstAired) {
+        this.firstAired = firstAired;
+    }
 
     public String getImdbId() {
         return imdbId;
     }
 
-	    public void setImdbId(String imdbId) {
-	        this.imdbId = imdbId;
-	    }
+    public void setImdbId(String imdbId) {
+        this.imdbId = imdbId;
+    }
 
     public String getZap2ItId() {
         return zap2ItId;
     }
 
-	    public void setZap2ItId(String zap2ItId) {
-	        this.zap2ItId = zap2ItId;
-	    }
+    public void setZap2ItId(String zap2ItId) {
+        this.zap2ItId = zap2ItId;
+    }
 
     public List<String> getActors() {
         return actors;
     }
 
-	    public void setActors(List<String> actors) {
-	        this.actors = actors;
-	    }
+    public void setActors(List<String> actors) {
+        this.actors = actors;
+    }
 
-	    public void addActor(String actor) {
-	        this.actors.add(actor);
-	    }
+    public void addActor(String actor) {
+        this.actors.add(actor);
+    }
 
     public String getAirsDayOfWeek() {
         return airsDayOfWeek;
     }
 
-	    public void setAirsDayOfWeek(String airsDayOfWeek) {
-	        this.airsDayOfWeek = airsDayOfWeek;
-	    }
+    public void setAirsDayOfWeek(String airsDayOfWeek) {
+        this.airsDayOfWeek = airsDayOfWeek;
+    }
 
     public String getAirsTime() {
         return airsTime;
     }
 
-	    public void setAirsTime(String airsTime) {
-	        this.airsTime = airsTime;
-	    }
+    public void setAirsTime(String airsTime) {
+        this.airsTime = airsTime;
+    }
 
     public String getContentRating() {
         return contentRating;
     }
 
-	    public void setContentRating(String contentRating) {
-	        this.contentRating = contentRating;
-	    }
+    public void setContentRating(String contentRating) {
+        this.contentRating = contentRating;
+    }
 
     public List<String> getGenres() {
         return genres;
     }
 
-	    public void setGenres(List<String> genres) {
-	        this.genres = genres;
-	    }
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
 
-	    public void addGenre(String genre) {
-	        this.genres.add(genre);
-	    }
+    public void addGenre(String genre) {
+        this.genres.add(genre);
+    }
 
     public String getNetwork() {
         return network;
     }
 
-	    public void setNetwork(String network) {
-	        this.network = network;
-	    }
+    public void setNetwork(String network) {
+        this.network = network;
+    }
 
     public String getRating() {
         return rating;
     }
 
-	    public void setRating(String rating) {
-	        this.rating = rating;
-	    }
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
 
     public String getRuntime() {
         return runtime;
     }
 
-	    public void setRuntime(String runtime) {
-	        this.runtime = runtime;
-	    }
+    public void setRuntime(String runtime) {
+        this.runtime = runtime;
+    }
 
     public String getStatus() {
         return status;
     }
 
-	    public void setStatus(String status) {
-	        this.status = status;
-	    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getFanart() {
         return fanart;
     }
 
-	    public void setFanart(String fanart) {
-	        this.fanart = fanart;
-	    }
+    public void setFanart(String fanart) {
+        this.fanart = fanart;
+    }
 
     public String getLastUpdated() {
         return lastUpdated;
     }
 
-	    public void setLastUpdated(String lastUpdated) {
-	        this.lastUpdated = lastUpdated;
-	    }
+    public void setLastUpdated(String lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
 
     public String getPoster() {
         return poster;
     }
 
-	    public void setPoster(String poster) {
-	        this.poster = poster;
-	    }
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
 
     public List<Episode> getEpisodes() {
         return episodes;
     }
 
-	    public void setEpisodes(List<Episode> episodes) {
-	        this.episodes = episodes;
-	    }
+    public void setEpisodes(List<Episode> episodes) {
+        this.episodes = episodes;
+    }
 
     public List<Integer> getNSeasons(){
         return nseasons;
     }
 
-	    public void setNSeasons(List<Integer> nseasons) {
-	        this.nseasons = nseasons;
-	    }
+    public void setNSeasons(List<Integer> nseasons) {
+        this.nseasons = nseasons;
+    }
 
     public String getPosterInCache() {
         return posterInCache;
     }
 
-	    public void setPosterInCache(String posterInCache) {
-	        this.posterInCache = posterInCache;
-	    }
+    public void setPosterInCache(String posterInCache) {
+        this.posterInCache = posterInCache;
+    }
 
     public String getPosterThumb() {
         return posterThumb;
     }
 
-	    public void setPosterThumb(String posterThumb) {
-	        this.posterThumb = posterThumb;
-	    }
+    public void setPosterThumb(String posterThumb) {
+        this.posterThumb = posterThumb;
+    }
 
     public int getPassiveStatus() {
         return passiveStatus;
     }
 
-	    public void setPassiveStatus(int passiveStatus) {
-	        this.passiveStatus = passiveStatus;
-	    }
-
-    public boolean getDvdOrder() {
-        return dvdOrder;
+    public void setPassiveStatus(int passiveStatus) {
+        this.passiveStatus = passiveStatus;
     }
-
-	    public void setDvdOrder(boolean dvdOrder) {
-	        this.dvdOrder = dvdOrder;
-	    }
 
     public boolean saveToDB(SQLiteStore SQLS) {
         try{
@@ -288,14 +279,13 @@ public class Serie {
             SQLS.execQuery("INSERT INTO series (id, serieId, language, serieName, banner, overview, "+
                            "firstAired, imdbId, zap2ItId, airsDayOfWeek, airsTime, contentRating, "+
                            "network, rating, runtime, status, fanart, lastUpdated, poster, "+
-                           "posterInCache, posterThumb, passiveStatus, dvdOrder) VALUES ('"+ this.id +"','"+ this.serieId +"','"+ this.language
+                           "posterInCache, posterThumb, passiveStatus) VALUES ('"+ this.id +"','"+ this.serieId +"','"+ this.language
                            +"',"+ DatabaseUtils.sqlEscapeString(this.serieName) +",'"+ this.banner
                            +"',"+ DatabaseUtils.sqlEscapeString(this.overview) +",'"+ this.firstAired
                            +"','"+ this.imdbId +"','"+ this.zap2ItId +"','"+ this.airsDayOfWeek +"','"+ this.airsTime
                            +"','"+ this.contentRating +"','"+ this.network +"','"+ this.rating +"','"+ this.runtime
                            +"','"+ this.status +"','"+ this.fanart +"','"+ this.lastUpdated +"','"+ this.poster
-                           +"','"+ this.posterInCache +"','"+ this.posterThumb +"', '"+ this.passiveStatus
-                           +"','"+ this.dvdOrder +"');");
+                           +"','"+ this.posterInCache +"','"+ this.posterThumb +"', '"+ this.passiveStatus +"');");
 
             for(int e=0; e < this.episodes.size(); e++) {
                 this.episodes.get(e).setSeriesId(this.id);

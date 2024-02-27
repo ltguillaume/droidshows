@@ -35,8 +35,6 @@
 <string name="menu_context_mark_next_episode_as_seen">Volgende aflevering gezien</string>
 <string name="menu_context_pin">Vastpinnen</string>
 <string name="menu_context_unpin">Losmaken</string>
-<string name="menu_context_dvdorder">DVD-volgorde gebruiken</string>
-<string name="menu_context_airedorder">Uitgezonden volgorde</string>
 <string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">Automatisch dagelijks back-ups maken</string>
 <string name="dialog_backup_versioning">Versiebeheer voor back-ups gebruiken</string>

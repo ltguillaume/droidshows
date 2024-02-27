@@ -119,8 +119,7 @@ public class DroidShows extends ListActivity
 	private static final int TOGGLE_ARCHIVED_CONTEXT = MARK_NEXT_EPISODE_AS_SEEN_CONTEXT + 1;
 	private static final int PIN_CONTEXT = TOGGLE_ARCHIVED_CONTEXT + 1;
 	private static final int UPDATE_CONTEXT = PIN_CONTEXT + 1;
-	private static final int DVDORDER_CONTEXT = UPDATE_CONTEXT + 1;
-	private static final int SYNOPSIS_LANGUAGE = DVDORDER_CONTEXT + 1; 
+	private static final int SYNOPSIS_LANGUAGE = UPDATE_CONTEXT + 1;
 	private static final int DELETE_CONTEXT = SYNOPSIS_LANGUAGE + 1;
 	private static AlertDialog m_AlertDlg;
 	private static ProgressDialog m_ProgressDialog = null;
@@ -236,7 +235,18 @@ public class DroidShows extends ListActivity
 		filterNetworks = sharedPrefs.getBoolean(FILTER_NETWORKS_NAME, false);
 		String networksStr = sharedPrefs.getString(NETWORKS_NAME, "");
 
-		updateDatabase();
+		// Update database
+		updateDS = new Update(db);
+		if (updateDS.needsUpdate()) {
+			backup(false, backupFolder);
+			if (updateDS.updateDroidShows())
+				db.updateShowStats();
+			else {
+				String error = getString(R.string.messages_error_dbupdate);
+				Log.e(SQLiteStore.TAG, error);
+				Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
+			}
+		}
 
 		if (!networksStr.isEmpty())
 			networks = new ArrayList<String>(Arrays.asList(networksStr.replace("[", "").replace("]", "").split(", ")));
@@ -267,23 +277,6 @@ public class DroidShows extends ListActivity
 		keyboard = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		padding = (int) (6 * (getApplicationContext().getResources().getDisplayMetrics().densityDpi / 160f));
 		vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-	}
-	
-	private void updateDatabase() {
-		updateDS = new Update(db);
-		Log.d(SQLiteStore.TAG, "Database update routine");
-		if (updateDS.needsUpdate()) {
-			Log.d(SQLiteStore.TAG, "Database needs update");
-			backup(false, backupFolder);
-			if (updateDS.updateDroidShows()) {
-				db.updateShowStats();
-				Log.d(SQLiteStore.TAG, "Database updated");
-			} else {
-				String error = getString(R.string.messages_error_dbupdate);
-				Log.e(SQLiteStore.TAG, error);
-				Toast.makeText(getApplicationContext(), error, Toast.LENGTH_LONG).show();
-			}
-		}
 	}
 
 	private void setFastScroll() {
@@ -824,7 +817,7 @@ public class DroidShows extends ListActivity
 			File destination = new File(getApplicationInfo().dataDir +"/databases", "DroidShows.db");
 			try {
 				copy(source, destination);
-				updateDatabase();
+				updateDS.updateDroidShows();
 				File thumbs[] = new File(getApplicationContext().getFilesDir().getAbsolutePath() +"/thumbs/banners/posters").listFiles();
 				if (thumbs != null)
 					for (File thumb : thumbs)
@@ -887,14 +880,11 @@ public class DroidShows extends ListActivity
 			menu.add(0, PIN_CONTEXT, PIN_CONTEXT, getString(R.string.menu_context_pin));
 			menu.add(0, DELETE_CONTEXT, DELETE_CONTEXT, getString(R.string.menu_context_delete));
 			menu.add(0, UPDATE_CONTEXT, UPDATE_CONTEXT, getString(R.string.menu_context_update));
-			menu.add(0, DVDORDER_CONTEXT, DVDORDER_CONTEXT, getString(R.string.menu_context_dvdorder));
 			menu.add(0, SYNOPSIS_LANGUAGE, SYNOPSIS_LANGUAGE, getString(R.string.dialog_change_language) +" ("+ serie.getLanguage() +")");
 		    if (serie.getPassiveStatus())
 		    	menu.findItem(TOGGLE_ARCHIVED_CONTEXT).setTitle(R.string.menu_unarchive);
 		    if (pinnedShows.contains(serie.getSerieId()))
 		    	menu.findItem(PIN_CONTEXT).setTitle(R.string.menu_context_unpin);
-		    if (serie.getDvdOrder())
-		    	menu.findItem(DVDORDER_CONTEXT).setTitle(R.string.menu_context_airedorder);
 		}
 		menu.setHeaderTitle(!logMode ? serie.getName() : serie.getEpisodeName());
 	}
@@ -921,10 +911,6 @@ public class DroidShows extends ListActivity
 				return true;
 			case UPDATE_CONTEXT :
 				updateSerie(serie, info.position);
-				return true;
-			case DVDORDER_CONTEXT :
-				db.setDvdOrder(serieId, !serie.getDvdOrder());
-				updateShowView(serie);
 				return true;
 			case SYNOPSIS_LANGUAGE :
 				CharSequence[] langList = Arrays.copyOfRange(getResources().getStringArray(R.array.languages), 1, getResources().getStringArray(R.array.languages).length);
@@ -1061,7 +1047,6 @@ public class DroidShows extends ListActivity
 		Intent serieSeasons = new Intent(DroidShows.this, SerieSeasons.class);
 		serieSeasons.putExtra("serieId", backFromSeasonSerieId);
 		serieSeasons.putExtra("nextEpisode", seriesAdapter.getItem(position).getUnwatched() > 0);
-		serieSeasons.putExtra("dvdOrder", seriesAdapter.getItem(position).getDvdOrder());
 		startActivity(serieSeasons);
 	}
 
@@ -1105,10 +1090,9 @@ public class DroidShows extends ListActivity
 
 	private void episodeDetails(int position) {
 		String serieId = seriesAdapter.getItem(position).getSerieId();
-		boolean dvdOrder = seriesAdapter.getItem(position).getDvdOrder();
 		String episodeId = "-1";
 		if (!logMode)
-			episodeId = db.getNextEpisodeId(serieId, dvdOrder);
+			episodeId = db.getNextEpisodeId(serieId);
 		else
 			episodeId = seriesAdapter.getItem(position).getEpisodeId();
 		if (!episodeId.equals("-1")) {
@@ -1209,7 +1193,7 @@ public class DroidShows extends ListActivity
 							IMDbDetails(serie.getSerieId(), serie.getName(), null);
 							break;
 						case 1 :
-							IMDbDetails(serie.getSerieId(), serie.getName(), logMode ? serie.getEpisodeId() : db.getNextEpisodeId(serie.getSerieId(), serie.getDvdOrder()));
+							IMDbDetails(serie.getSerieId(), serie.getName(), logMode ? serie.getEpisodeId() : db.getNextEpisodeId(serie.getSerieId()));
 							break;
 						case 2 :
 							Search("https://www.fandom.com/?s=", serie.getName());
@@ -1686,15 +1670,14 @@ public class DroidShows extends ListActivity
 						TVShowItem serie = series.get(i);
 						if (isCancelled()) return null;
 						String serieId = serie.getSerieId();
-						boolean dvdOrder = serie.getDvdOrder();
-						int unwatched = db.getEpsUnwatched(serieId, dvdOrder);
-						int unwatchedAired = db.getEpsUnwatchedAired(serieId, dvdOrder);
+						int unwatched = db.getEpsUnwatched(serieId);
+						int unwatchedAired = db.getEpsUnwatchedAired(serieId);
 						if (unwatched != serie.getUnwatched() || unwatchedAired != serie.getUnwatchedAired()) {
 							if (isCancelled()) return null;
 							serie.setUnwatched(unwatched);
 							serie.setUnwatchedAired(unwatchedAired);
 							if (showNextAiring && unwatchedAired > 0) {
-								NextEpisode nextEpisode = db.getNextEpisode(serieId, dvdOrder);
+								NextEpisode nextEpisode = db.getNextEpisode(serieId);
 								String nextEpisodeString = db.getNextEpisodeString(nextEpisode, true);
 								serie.setNextEpisode(nextEpisodeString);
 								if (isCancelled()) return null;

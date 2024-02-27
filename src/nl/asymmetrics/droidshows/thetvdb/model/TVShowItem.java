@@ -21,12 +21,11 @@ public class TVShowItem {
         private String episodeId;
         private String episodeName;
         private String episodeSeen;
-        private boolean dvdOrder = false;
 
         public TVShowItem(String serieid, String language, String icon, Drawable dicon, String
                           name, int snumber, String nextEpisode, Date nextAir,
                           int unwatchedAired, int unwatched, boolean passiveStatus,
-                          String showStatus, String extResources, boolean dvdOrder) {
+                          String showStatus, String extResources) {
                 this.serieid = serieid;
                 this.language = language;
                 this.icon = icon;
@@ -40,7 +39,6 @@ public class TVShowItem {
                 this.passiveStatus = passiveStatus;
                 this.showStatus = showStatus;
                 this.extResources = extResources;
-                this.dvdOrder = dvdOrder;
         }
 
         public String getSerieId() {
@@ -158,16 +156,8 @@ public class TVShowItem {
         public String getEpisodeSeen() {
             return this.episodeSeen;
 	    }
-
-        	public void setEpisodeSeen(String episodeSeen) {
-	            this.episodeSeen = episodeSeen;
-		    }
 	
-        public boolean getDvdOrder() {
-            return this.dvdOrder;
-	    }
-	
-		    public void setDvdOrder(boolean dvdOrder) {
-	            this.dvdOrder = dvdOrder;
+		    public void setEpisodeSeen(String episodeSeen) {
+		            this.episodeSeen = episodeSeen;
 		    }
 }

@@ -35,8 +35,6 @@
 <string name="menu_context_mark_next_episode_as_seen">Marcar el siguiente ep. como visto</string>
 <string name="menu_context_pin">Anclar</string>
 <string name="menu_context_unpin">Soltar</string>
-<string name="menu_context_dvdorder">Use DVD order</string>
-<string name="menu_context_airedorder">Use airing order</string>
 <string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">Copia de seguridad diaria automática</string>
 <string name="dialog_backup_versioning">Versionado para copias de seguridad</string>

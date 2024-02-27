@@ -35,8 +35,6 @@
 <string name="menu_context_mark_next_episode_as_seen">Отметить следующую серию просмотренной</string>
 <string name="menu_context_pin">Закрепить</string>
 <string name="menu_context_unpin">Открепить</string>
-<string name="menu_context_dvdorder">Use DVD order</string>
-<string name="menu_context_airedorder">Use airing order</string>
 <string name="dialog_ok">OK</string>
 <string name="dialog_auto_backup">автоматическое ежедневное резервное копирование</string>
 <string name="dialog_backup_versioning">Использовать версионирование для резервного копирования</string>
