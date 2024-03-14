@@ -458,7 +458,7 @@ public class DroidShows extends ListActivity
 				break;
 			case EXIT_MENU_ITEM :
 				onPause();	// save options
-				backup(true);
+				onStop();	// back up database
 				db.close();
 				this.finish();
 				System.gc();
@@ -1618,10 +1618,10 @@ public class DroidShows extends ListActivity
 	}
 
 	@Override
-	protected void onDestroy() {
+	protected void onStop() {
 		if (autoBackup && theTVDB == null && asyncInfo.getStatus() != AsyncTask.Status.RUNNING)	// not updating
 			backup(true);
-		super.onDestroy();
+		super.onStop();
 	}
 
 	@Override
