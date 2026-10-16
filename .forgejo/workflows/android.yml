@@ -1,0 +1,79 @@
+name: Build APK
+
+on: [workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: codeberg-medium
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v7
+
+    - name: set up JDK 19
+      uses: actions/setup-java@v6
+      with:
+        java-version: '19'
+        distribution: 'temurin'
+        cache: gradle
+
+    - name: Build APK
+      env:
+        SDK_REVISION: 15859902
+        BUILD_TOOLS_VERSION: 34.0.0
+        APK_PATH: app/build/outputs/apk/release/app-release-unsigned.apk
+        KEYSTORE_BASE64: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 }}
+        KEYSTORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_STORE_PASSWORD }}
+        KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
+        KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
+      run: |
+        export ANDROID_HOME="$HOME/Android/Sdk"
+        mkdir -p "$ANDROID_HOME"
+
+        SDK_URL="https://dl.google.com/android/repository/commandlinetools-linux-${SDK_REVISION}_latest.zip"
+        echo "Downloading Android SDK $SDK_SHORT_VERSION (revision $SDK_REVISION)..."
+        curl -L -o cmdline-tools.zip "$SDK_URL"
+
+        unzip -q cmdline-tools.zip -d "$ANDROID_HOME/cmdline-tools"
+        mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+        rm cmdline-tools.zip
+
+        export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin"
+
+        echo "sdkmanager path:"
+        which sdkmanager || { echo "sdkmanager not found"; exit 1; }
+
+        # Accept licenses
+        yes | sdkmanager --licenses >/dev/null 2>&1 || true
+
+        echo "Installing build-tools version $BUILD_TOOLS_VERSION..."
+        sdkmanager "build-tools;$BUILD_TOOLS_VERSION"
+
+        # Add build-tools to PATH
+        export PATH="$PATH:$ANDROID_HOME/build-tools/$BUILD_TOOLS_VERSION"
+
+        chmod +x gradlew
+        ./gradlew assemble -x lint
+
+        echo "Decoding keystore..."
+        echo "$KEYSTORE_BASE64" | base64 --decode > keystore.jks
+
+        echo "Aligning APK..."
+        zipalign -v -p 4 "$APK_PATH" aligned.apk
+
+        echo "Signing APK..."
+        apksigner sign --ks keystore.jks \
+                       --ks-pass pass:"$KEYSTORE_PASSWORD" \
+                       --key-pass pass:"$KEY_PASSWORD" \
+                       --out signed.apk aligned.apk
+
+        echo "Verifying signed APK..."
+        apksigner verify signed.apk
+
+        echo "APK signed and verified successfully: signed.apk"
+
+        mv signed.apk droidshows.apk
+
+    - name: Upload a Build Artifact
+      uses: forgejo/upload-artifact@v4
+      with:
+        path: droidshows.apk
