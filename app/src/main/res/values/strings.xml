@@ -123,6 +123,7 @@
 <string name="messages_on">on</string>
 <string name="messages_daily">Daily</string>
 <string name="messages_ep">Ep.</string>
+<string name="messages_no_write_permissions_err">No Permissions to write to %1$s %2$s.</string>
 <string name="episode_directors">Directors:</string>
 <string name="episode_writers">Writers:</string>
 <string name="episode_guest_stars">Guest stars:</string>

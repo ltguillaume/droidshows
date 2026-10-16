@@ -1,6 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
+    buildFeatures {
+        buildConfig = true
+    }
     defaultConfig {
         applicationId "nl.asymmetrics.droidshows"
         minSdkVersion 14
@@ -51,6 +54,7 @@ dependencies {
     def appcompat_version = "1.0.2" // latest 1.0.x requires api 14
 
     implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.documentfile:documentfile:1.0.1"
 
     // implementation "androidx.recyclerview:recyclerview:1.4.0"
     // implementation "androidx.recyclerview:recyclerview:1.0.0" // not used yet
